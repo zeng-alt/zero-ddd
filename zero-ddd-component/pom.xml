@@ -20,5 +20,8 @@
     <modules>
         <module>zero-ddd-core-component</module>
         <module>zero-ddd-domain-component</module>
+        <module>zero-ddd-cache-component</module>
+        <module>zero-ddd-doc-component</module>
+        <module>zero-ddd-security-component</module>
     </modules>
 </project>

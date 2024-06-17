@@ -8,6 +8,11 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
+/**
+ * @author zengJiaJun
+ * @crateTime 2024年06月16日 20:19
+ * @version 1.0
+ */
 @Data
 @NoArgsConstructor
 public class Result<T extends Serializable> implements Serializable {

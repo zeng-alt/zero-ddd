@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>zero-ddd-core-component</artifactId>
-<!--    <packaging>jar</packaging>-->
+    <packaging>jar</packaging>
 
     <name>zero-ddd-core-component</name>
 
@@ -38,6 +38,11 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>io.vavr</groupId>
             <artifactId>vavr</artifactId>
         </dependency>
@@ -47,4 +52,22 @@
             <artifactId>lombok</artifactId>
         </dependency>
     </dependencies>
+
+    <build>
+        <finalName>${project.artifactId}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring-boot.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

@@ -5,19 +5,19 @@
 
     <groupId>com.zjj</groupId>
     <artifactId>zero-ddd</artifactId>
-    <version>${zero-ddd.version}</version>
+    <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>zero-ddd</name>
     <description>zero-ddd</description>
 
     <modules>
         <module>zero-ddd-component</module>
+        <module>zero-ddd-auth</module>
     </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring-boot.version>3.3.0</spring-boot.version>
-        <zero-ddd.version>0.0.1-SNAPSHOT</zero-ddd.version>
         <java.version>17</java.version>
         <spring-cloud.version>2023.0.2</spring-cloud.version>
         <lombok.version>1.18.32</lombok.version>
@@ -25,11 +25,21 @@
         <vavr.version>0.10.4</vavr.version>
         <swagger.core.version>2.2.21</swagger.core.version>
         <springdoc.version>2.5.0</springdoc.version>
-
+        <caffeine.version>3.1.8</caffeine.version>
+        <redisson.version>3.19.3</redisson.version>
     </properties>
 
     <dependencies>
-
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>2.13.9</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-compiler</artifactId>
+            <version>2.13.9</version>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>
@@ -49,6 +59,20 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
+            <dependency>
+                <groupId>org.redisson</groupId>
+                <artifactId>redisson-spring-boot-starter</artifactId>
+                <version>${redisson.version}</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/com.github.ben-manes.caffeine/caffeine -->
+            <dependency>
+                <groupId>com.github.ben-manes.caffeine</groupId>
+                <artifactId>caffeine</artifactId>
+                <version>${caffeine.version}</version>
+            </dependency>
+
 
             <dependency>
                 <groupId>org.projectlombok</groupId>
@@ -91,14 +115,15 @@
             <dependency>
                 <groupId>com.zjj</groupId>
                 <artifactId>zero-ddd-core-component</artifactId>
-                <version>${zero-ddd.version}</version>
+                <version>0.0.1-SNAPSHOT</version>
             </dependency>
 
             <dependency>
                 <groupId>com.zjj</groupId>
                 <artifactId>zero-ddd-domain-component</artifactId>
-                <version>${zero-ddd.version}</version>
+                <version>0.0.1-SNAPSHOT</version>
             </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -141,6 +166,29 @@
                         <arg>-parameters</arg>
                     </compilerArgs>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>net.alchim31.maven</groupId>
+                <artifactId>scala-maven-plugin</artifactId>
+                <version>3.2.2</version>
+                <executions>
+                    <execution>
+                        <id>scala-compile-first</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>scala-test-compile</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
