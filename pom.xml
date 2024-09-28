@@ -22,28 +22,55 @@
         <spring-cloud.version>2023.0.2</spring-cloud.version>
         <lombok.version>1.18.32</lombok.version>
         <mapstruct.version>1.5.2.Final</mapstruct.version>
-        <vavr.version>0.10.4</vavr.version>
+        <vavr.version>0.10.3</vavr.version>
         <swagger.core.version>2.2.21</swagger.core.version>
         <springdoc.version>2.5.0</springdoc.version>
         <caffeine.version>3.1.8</caffeine.version>
         <redisson.version>3.19.3</redisson.version>
+        <h2.version>2.1.214</h2.version>
+        <test.version>3.2.6</test.version>
+        <easyexcel.version>4.0.1</easyexcel.version>
+        <compress.version>1.26.2</compress.version>
+        <gson.version>2.10.1</gson.version>
+        <rxjava.version>3.1.8</rxjava.version>
+        <scala.version>2.13.9</scala.version>
+        <spring-security.verison>3.3.1</spring-security.verison>
+        <jjwt.version>0.9.1</jjwt.version>
+        <jaxb-api.version>2.3.1</jaxb-api.version>
+        <guava.version>33.3.0-jre</guava.version>
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-library</artifactId>
-            <version>2.13.9</version>
-        </dependency>
-        <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-compiler</artifactId>
-            <version>2.13.9</version>
-        </dependency>
+
     </dependencies>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt</artifactId>
+                <version>${jjwt.version}</version>
+            </dependency>
+
+            <!-- Other dependencies -->
+            <dependency>
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+                <version>${jaxb-api.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.scala-lang</groupId>
+                <artifactId>scala-library</artifactId>
+                <version>${scala.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.scala-lang</groupId>
+                <artifactId>scala-compiler</artifactId>
+                <version>${scala.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
@@ -72,6 +99,14 @@
                 <artifactId>caffeine</artifactId>
                 <version>${caffeine.version}</version>
             </dependency>
+
+            <!-- https://mvnrepository.com/artifact/io.reactivex.rxjava3/rxjava -->
+            <dependency>
+                <groupId>io.reactivex.rxjava3</groupId>
+                <artifactId>rxjava</artifactId>
+                <version>${rxjava.version}</version>
+            </dependency>
+
 
 
             <dependency>
@@ -111,6 +146,51 @@
                 <version>${vavr.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>io.vavr</groupId>
+                <artifactId>vavr-jackson</artifactId>
+                <version>${vavr.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>easyexcel</artifactId>
+                <version>${easyexcel.version}</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>${gson.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>${h2.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-security</artifactId>
+                <version>${spring-security.verison}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-test</artifactId>
+                <version>${test.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
+
 
             <dependency>
                 <groupId>com.zjj</groupId>
@@ -124,9 +204,26 @@
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.zjj</groupId>
+                <artifactId>zero-ddd-json-component</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.zjj</groupId>
+                <artifactId>zero-ddd-autoconfigure-component</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.zjj</groupId>
+                <artifactId>zero-ddd-bean-componenet</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
-
 
     <build>
         <plugins>
@@ -140,11 +237,6 @@
                     <encoding>${project.build.sourceEncoding}</encoding>
                     <annotationProcessorPaths>
                         <path>
-                            <groupId>com.github.therapi</groupId>
-                            <artifactId>therapi-runtime-javadoc-scribe</artifactId>
-                            <version>0.15.0</version>
-                        </path>
-                        <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
                             <version>${lombok.version}</version>
@@ -154,44 +246,87 @@
                             <artifactId>spring-boot-configuration-processor</artifactId>
                             <version>${spring-boot.version}</version>
                         </path>
+
                         <path>
                             <groupId>org.mapstruct</groupId>
                             <artifactId>mapstruct-processor</artifactId>
                             <version>${mapstruct.version}</version>
                         </path>
-
-
                     </annotationProcessorPaths>
                     <compilerArgs>
                         <arg>-parameters</arg>
                     </compilerArgs>
                 </configuration>
             </plugin>
-
-            <plugin>
-                <groupId>net.alchim31.maven</groupId>
-                <artifactId>scala-maven-plugin</artifactId>
-                <version>3.2.2</version>
-                <executions>
-                    <execution>
-                        <id>scala-compile-first</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>add-source</goal>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>scala-test-compile</id>
-                        <phase>process-test-resources</phase>
-                        <goals>
-                            <goal>testCompile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
+
     </build>
+
+
+<!--    <build>-->
+<!--        <plugins>-->
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-compiler-plugin</artifactId>-->
+<!--                <version>3.13.0</version>-->
+<!--                <configuration>-->
+<!--                    <source>${java.version}</source>-->
+<!--                    <target>${java.version}</target>-->
+<!--                    <encoding>${project.build.sourceEncoding}</encoding>-->
+<!--                    <annotationProcessorPaths>-->
+<!--                        <path>-->
+<!--                            <groupId>com.github.therapi</groupId>-->
+<!--                            <artifactId>therapi-runtime-javadoc-scribe</artifactId>-->
+<!--                            <version>0.15.0</version>-->
+<!--                        </path>-->
+<!--                        <path>-->
+<!--                            <groupId>org.projectlombok</groupId>-->
+<!--                            <artifactId>lombok</artifactId>-->
+<!--                            <version>${lombok.version}</version>-->
+<!--                        </path>-->
+<!--                        <path>-->
+<!--                            <groupId>org.springframework.boot</groupId>-->
+<!--                            <artifactId>spring-boot-configuration-processor</artifactId>-->
+<!--                            <version>${spring-boot.version}</version>-->
+<!--                        </path>-->
+<!--                        <path>-->
+<!--                            <groupId>org.mapstruct</groupId>-->
+<!--                            <artifactId>mapstruct-processor</artifactId>-->
+<!--                            <version>${mapstruct.version}</version>-->
+<!--                        </path>-->
+
+
+<!--                    </annotationProcessorPaths>-->
+<!--                    <compilerArgs>-->
+<!--                        <arg>-parameters</arg>-->
+<!--                    </compilerArgs>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
+
+<!--            <plugin>-->
+<!--                <groupId>net.alchim31.maven</groupId>-->
+<!--                <artifactId>scala-maven-plugin</artifactId>-->
+<!--                <version>3.2.2</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>scala-compile-first</id>-->
+<!--                        <phase>process-resources</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>add-source</goal>-->
+<!--                            <goal>compile</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                    <execution>-->
+<!--                        <id>scala-test-compile</id>-->
+<!--                        <phase>process-test-resources</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>testCompile</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
+<!--        </plugins>-->
+<!--    </build>-->
 
     <repositories>
         <repository>

@@ -8,15 +8,65 @@
     </parent>
 
     <artifactId>zero-ddd-security-component</artifactId>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
     <name>zero-ddd-security-component</name>
+    <modules>
+        <module>zero-ddd-security-jwt-component</module>
+    </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>org.springframework</groupId>-->
+<!--            <artifactId>spring-context-support</artifactId>-->
+<!--            <scope>provided</scope>-->
+<!--        </dependency>-->
+
+        <dependency>
+            <groupId>com.zjj</groupId>
+            <artifactId>zero-ddd-json-component</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.zjj</groupId>
+            <artifactId>zero-ddd-bean-componenet</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.zjj</groupId>
+            <artifactId>zero-ddd-autoconfigure-component</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>
