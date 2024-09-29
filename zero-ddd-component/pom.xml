@@ -19,6 +19,7 @@
 
 <!--    <packaging>pom</packaging>-->
     <modules>
+        <module>zero-ddd-auth-component</module>
         <module>zero-ddd-core-component</module>
         <module>zero-ddd-domain-component</module>
         <module>zero-ddd-cache-component</module>
