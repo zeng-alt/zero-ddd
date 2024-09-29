@@ -1,9 +1,9 @@
-package com.zjj.autoconfigure.component.jwt;
+package com.zjj.autoconfigure.component.security.jwt;
 
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.BadCredentialsException;
 
 import java.time.LocalDateTime;
-import java.time.temporal.TemporalUnit;
 import java.util.Map;
 
 /**
@@ -13,7 +13,8 @@ import java.util.Map;
  */
 public interface JwtHelper {
 
-    public String generateJWT(String id);
+    @NonNull
+    public String generateJWT(@NonNull String uniqueIdentifier);
 
     public String generateJWT(Map<String, Object> map);
 

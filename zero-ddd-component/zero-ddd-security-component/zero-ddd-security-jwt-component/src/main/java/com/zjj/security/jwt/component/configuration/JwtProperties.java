@@ -1,12 +1,13 @@
-package com.zjj.security.jwt.component;
+package com.zjj.security.jwt.component.configuration;
 
+import com.zjj.security.jwt.component.validator.ValidExpiration;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.annotation.Validated;
 
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author zengJiaJun
@@ -15,10 +16,13 @@ import java.util.concurrent.TimeUnit;
  */
 @Data
 @Component
-@ConfigurationProperties(prefix = "jwt")
+@Validated
+@ValidExpiration
+@ConfigurationProperties(prefix = "security.jwt")
 public class JwtProperties {
 
     private static final String CLAIM_KEY_USERNAME = "sub";
+    private Boolean enabled = true;
     private String tokenHeader = "Authorization";
     private String secret = "mysecret";
     private Long expiration = (long) (60 * 60 * 2);

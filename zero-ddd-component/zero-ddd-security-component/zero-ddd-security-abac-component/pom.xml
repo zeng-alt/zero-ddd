@@ -3,14 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>com.zjj</groupId>
         <artifactId>zero-ddd-security-component</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>zero-ddd-security-jwt-component</artifactId>
+    <artifactId>zero-ddd-security-abac-component</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -19,31 +18,10 @@
     </properties>
 
     <dependencies>
-
         <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt</artifactId>
+            <groupId>com.zjj</groupId>
+            <artifactId>zero-ddd-security-rbac-component</artifactId>
         </dependency>
-
-        <!-- Other dependencies -->
-        <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tomcat.embed</groupId>
-            <artifactId>tomcat-embed-core</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-validation</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-
     </dependencies>
 
 </project>

@@ -1,10 +1,12 @@
-package com.zjj.security.jwt.component;
+package com.zjj.security.jwt.component.supper;
 
 import com.google.common.collect.Maps;
-import com.zjj.autoconfigure.component.jwt.JwtHelper;
+import com.zjj.autoconfigure.component.security.jwt.JwtHelper;
+import com.zjj.security.jwt.component.configuration.JwtProperties;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.BadCredentialsException;
 
 import java.time.LocalDateTime;
@@ -24,8 +26,9 @@ public final class DefaultJwtHelper implements JwtHelper {
         this.jwtProperties = jwtProperties;
     }
 
-    public String generateJWT(String id) {
-        return generateJWT(Map.of(jwtProperties.getChaimKey(), id));
+    @NonNull
+    public String generateJWT(@NonNull String uniqueIdentifier) {
+        return generateJWT(Map.of(jwtProperties.getChaimKey(), uniqueIdentifier));
     }
 
     public String generateJWT(Map<String, Object> map) {

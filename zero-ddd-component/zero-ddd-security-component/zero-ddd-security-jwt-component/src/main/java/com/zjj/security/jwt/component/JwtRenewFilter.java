@@ -1,6 +1,6 @@
-package com.zjj.autoconfigure.component.jwt;
+package com.zjj.security.jwt.component;
 
-import org.springframework.util.Assert;
+import com.zjj.autoconfigure.component.security.jwt.JwtCacheManage;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 /**

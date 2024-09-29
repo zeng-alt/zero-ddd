@@ -1,5 +1,7 @@
-package com.zjj.autoconfigure.component.jwt;
+package com.zjj.security.jwt.component;
 
+import com.zjj.autoconfigure.component.security.jwt.JwtCacheManage;
+import com.zjj.autoconfigure.component.security.jwt.JwtHelper;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 /**

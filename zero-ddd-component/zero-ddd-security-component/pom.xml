@@ -1,6 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>com.zjj</groupId>
         <artifactId>zero-ddd-component</artifactId>
@@ -13,6 +15,9 @@
     <name>zero-ddd-security-component</name>
     <modules>
         <module>zero-ddd-security-jwt-component</module>
+        <module>zero-ddd-security-core-component</module>
+        <module>zero-ddd-security-abac-component</module>
+        <module>zero-ddd-security-rbac-component</module>
     </modules>
 
     <properties>
@@ -48,15 +53,15 @@
 <!--            <scope>provided</scope>-->
 <!--        </dependency>-->
 
-        <dependency>
-            <groupId>com.zjj</groupId>
-            <artifactId>zero-ddd-json-component</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.zjj</groupId>-->
+<!--            <artifactId>zero-ddd-json-component</artifactId>-->
+<!--        </dependency>-->
 
-        <dependency>
-            <groupId>com.zjj</groupId>
-            <artifactId>zero-ddd-bean-componenet</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.zjj</groupId>-->
+<!--            <artifactId>zero-ddd-bean-componenet</artifactId>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>com.zjj</groupId>
@@ -69,4 +74,8 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
+
+    <dependencyManagement>
+
+    </dependencyManagement>
 </project>

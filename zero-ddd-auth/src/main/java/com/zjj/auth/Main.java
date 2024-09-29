@@ -2,15 +2,22 @@ package com.zjj.auth;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 
 /**
  * @author zengJiaJun
  * @version 1.0
  * @crateTime 2024年09月27日 09:20
  */
+@EnableWebSecurity
+//@EnableWebFluxSecurity
 @SpringBootApplication
 public class Main {
     public static void main(String[] args) {
-        SpringApplication.run(Main.class, args);
+        ConfigurableApplicationContext run = SpringApplication.run(Main.class, args);
+        System.out.println(run);
     }
 }

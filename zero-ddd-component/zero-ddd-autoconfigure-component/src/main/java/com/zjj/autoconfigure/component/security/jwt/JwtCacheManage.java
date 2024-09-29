@@ -1,4 +1,4 @@
-package com.zjj.autoconfigure.component.jwt;
+package com.zjj.autoconfigure.component.security.jwt;
 
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;

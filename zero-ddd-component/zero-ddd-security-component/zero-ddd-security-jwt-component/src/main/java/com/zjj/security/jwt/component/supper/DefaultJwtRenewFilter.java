@@ -1,12 +1,12 @@
-package com.zjj.security.jwt.component;
+package com.zjj.security.jwt.component.supper;
 
-import com.zjj.autoconfigure.component.jwt.JwtCacheManage;
-import com.zjj.autoconfigure.component.jwt.JwtRenewFilter;
+import com.zjj.autoconfigure.component.security.jwt.JwtCacheManage;
+import com.zjj.security.jwt.component.JwtDetail;
+import com.zjj.security.jwt.component.JwtRenewFilter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.security.core.userdetails.User;
 
 import java.io.IOException;
 import java.time.LocalDateTime;

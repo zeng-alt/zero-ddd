@@ -1,10 +1,9 @@
-package com.zjj.security.jwt.component;
+package com.zjj.security.jwt.component.supper;
 
-import com.zjj.autoconfigure.component.jwt.JwtAuthenticationTokenFilter;
-import com.zjj.autoconfigure.component.jwt.JwtCacheManage;
-import com.zjj.autoconfigure.component.jwt.JwtHelper;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
+import com.zjj.security.jwt.component.JwtAuthenticationTokenFilter;
+import com.zjj.autoconfigure.component.security.jwt.JwtCacheManage;
+import com.zjj.security.jwt.component.JwtDetail;
+import com.zjj.autoconfigure.component.security.jwt.JwtHelper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,7 +27,7 @@ import java.util.Map;
  */
 public class DefaultJwtAuthenticationTokenFilter extends JwtAuthenticationTokenFilter {
 
-    protected DefaultJwtAuthenticationTokenFilter(JwtHelper jwtHelper, JwtCacheManage jwtCacheManage) {
+    public DefaultJwtAuthenticationTokenFilter(JwtHelper jwtHelper, JwtCacheManage jwtCacheManage) {
         super(jwtHelper, jwtCacheManage);
     }
 
@@ -37,9 +36,9 @@ public class DefaultJwtAuthenticationTokenFilter extends JwtAuthenticationTokenF
         String token = request.getHeader(jwtHelper.tokenHeader());
         if (StringUtils.hasText(token)) {
             Map<String, Object> claims = jwtHelper.getClaimsFromToken(token);
-            String id = (String) jwtHelper.getClaim(claims);
+            String username = (String) jwtHelper.getClaim(claims);
             LocalDateTime expire = jwtHelper.getExpire(claims);
-            UserDetails user = jwtCacheManage.get(id);
+            UserDetails user = jwtCacheManage.get(username);
             if (user == null) {
                 throw new BadCredentialsException("用户登录时间过期，重新登录");
             }
