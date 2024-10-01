@@ -1,10 +1,11 @@
 package com.zjj.security.core.component.configuration;
 
 import com.zjj.autoconfigure.component.security.SecurityBuilderCustomizer;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,7 +19,8 @@ import java.util.List;
  * @version 1.0
  * @crateTime 2024年09月29日 21:04
  */
-@Configuration
+@AutoConfiguration
+@Import({LoginAutoConfiguration.class, JwtHelperAutoConfiguration.class, LoginHandlerAutoConfiguration.class, AccessFailedAutoConfiguration.class})
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 public class SecurityAutoConfiguration {
 
@@ -59,6 +61,7 @@ public class SecurityAutoConfiguration {
                 throw new RuntimeException(e);
             }
         });
+//        http.apply()
         return http.build();
 
 

@@ -1,8 +1,8 @@
-package com.zjj.security.jwt.component.supper;
+package com.zjj.security.core.component.supper;
 
 import com.google.common.collect.Maps;
 import com.zjj.autoconfigure.component.security.jwt.JwtHelper;
-import com.zjj.security.jwt.component.configuration.JwtProperties;
+import com.zjj.autoconfigure.component.security.jwt.JwtProperties;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.checkerframework.checker.nullness.qual.Nullable;

@@ -1,6 +1,6 @@
-package com.zjj.security.jwt.component.validator;
+package com.zjj.autoconfigure.component.security.jwt.validator;
 
-import com.zjj.security.jwt.component.configuration.JwtProperties;
+import com.zjj.autoconfigure.component.security.jwt.JwtProperties;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 

@@ -56,4 +56,22 @@ public final class AuthenticationHelper {
             throw new UtilException(e);
         }
     }
+
+    public static void renderString(@NonNull HttpServletResponse response, int status, String msg) {
+        try {
+            response.setStatus(HttpStatus.OK.value());
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            String result =
+                    """
+                    {
+                        "status":   "%d",
+                        "msg":      "%s",
+                        "date":     "%s"
+                    }
+                    """.formatted(status, msg, LocalDateTime.now());
+            response.getWriter().print(result);
+        } catch (IOException e) {
+            throw new UtilException(e);
+        }
+    }
 }

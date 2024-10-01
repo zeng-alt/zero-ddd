@@ -1,6 +1,7 @@
-package com.zjj.security.jwt.component.configuration;
+package com.zjj.autoconfigure.component.security.jwt;
 
-import com.zjj.security.jwt.component.validator.ValidExpiration;
+
+import com.zjj.autoconfigure.component.security.jwt.validator.ValidExpiration;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;

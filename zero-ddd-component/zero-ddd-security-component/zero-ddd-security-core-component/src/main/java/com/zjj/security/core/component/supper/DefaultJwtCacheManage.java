@@ -1,7 +1,7 @@
-package com.zjj.security.jwt.component.supper;
+package com.zjj.security.core.component.supper;
 
 import com.zjj.autoconfigure.component.security.jwt.JwtCacheManage;
-import com.zjj.security.jwt.component.configuration.JwtProperties;
+import com.zjj.autoconfigure.component.security.jwt.JwtProperties;
 import org.springframework.security.core.userdetails.UserDetails;
 
 /**

@@ -20,11 +20,6 @@
 
     <dependencies>
 
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt</artifactId>
-        </dependency>
-
         <!-- Other dependencies -->
         <dependency>
             <groupId>javax.xml.bind</groupId>

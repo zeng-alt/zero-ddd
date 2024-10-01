@@ -1,4 +1,4 @@
-package com.zjj.security.jwt.component.supper;
+package com.zjj.security.core.component.supper;
 
 import com.zjj.autoconfigure.component.security.AuthenticationHelper;
 import com.zjj.autoconfigure.component.security.jwt.JwtCacheManage;

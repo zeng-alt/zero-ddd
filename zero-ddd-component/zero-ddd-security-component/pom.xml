@@ -18,6 +18,7 @@
         <module>zero-ddd-security-core-component</module>
         <module>zero-ddd-security-abac-component</module>
         <module>zero-ddd-security-rbac-component</module>
+        <module>zero-ddd-security-sms-component</module>
     </modules>
 
     <properties>
