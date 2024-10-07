@@ -32,7 +32,7 @@ public class SmsAuthenticationFilter extends AbstractAuthenticationProcessingFil
     private String mobileParameter = SPRING_SECURITY_FORM_MOBILE_KEY;
     private String codeParameter = SPRING_SECURITY_FORM_CODE_KEY;
 
-    protected SmsAuthenticationFilter() {
+    public SmsAuthenticationFilter() {
         super(DEFAULT_ANT_PATH_REQUEST_MATCHER);
     }
 
@@ -57,12 +57,12 @@ public class SmsAuthenticationFilter extends AbstractAuthenticationProcessingFil
 
     @Nullable
     private String obtainCode(HttpServletRequest request) {
-        return request.getParameter(this.mobileParameter);
+        return request.getParameter(this.codeParameter);
     }
 
     @Nullable
     private String obtainMobile(HttpServletRequest request) {
-        return request.getParameter(this.codeParameter);
+        return request.getParameter(this.mobileParameter);
     }
 
     protected void setDetails(HttpServletRequest request, SmsAuthenticationToken authRequest) {

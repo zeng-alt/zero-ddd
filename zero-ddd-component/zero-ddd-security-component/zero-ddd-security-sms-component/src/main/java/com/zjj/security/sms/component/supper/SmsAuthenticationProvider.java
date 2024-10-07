@@ -3,6 +3,8 @@ package com.zjj.security.sms.component.supper;
 import com.zjj.security.sms.component.CodeService;
 import com.zjj.security.sms.component.MobileNotFoundException;
 import com.zjj.security.sms.component.SmsDetailsService;
+import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
@@ -12,17 +14,12 @@ import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
-import org.springframework.security.authentication.password.CompromisedPasswordException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.SpringSecurityMessageSource;
+import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
+import org.springframework.security.core.authority.mapping.NullAuthoritiesMapper;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsChecker;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.Assert;
 
 /**
@@ -38,8 +35,16 @@ public class SmsAuthenticationProvider
     private CodeService codeService;
     @Setter
     private SmsDetailsService smsDetailsService;
+    @Setter
+    private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
+    @Setter
+    @Getter
     private boolean forcePrincipalAsString = false;
-//    private UserDetailsChecker preAuthenticationChecks = new DefaultPreAuthenticationChecks();
+
+    public SmsAuthenticationProvider(CodeService codeService, SmsDetailsService smsDetailsService) {
+        this.codeService = codeService;
+        this.smsDetailsService = smsDetailsService;
+    }
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -52,7 +57,7 @@ public class SmsAuthenticationProvider
 
 
         try {
-            user = retrieveUser(mobile, (SmsAuthenticationToken) authentication);
+            user = retrieveUser(mobile);
         }
         catch (MobileNotFoundException ex) {
             log.debug("Failed to find user '" + mobile + "'");
@@ -64,7 +69,6 @@ public class SmsAuthenticationProvider
 
 //      this.preAuthenticationChecks.check(user);
         additionalAuthenticationChecks(mobile, (SmsAuthenticationToken) authentication);
-
 //        this.postAuthenticationChecks.check(user);
 
         Object principalToReturn = user;
@@ -81,14 +85,14 @@ public class SmsAuthenticationProvider
                     .getMessage("SmsAuthenticationToken.badCredentials", "Bad credentials"));
         }
         String code = authentication.getCredentials().toString();
-        if (!this.codeService.matches(code, code)) {
+        if (!this.codeService.matches(mobile, code)) {
             log.debug("Failed to authenticate since password does not match stored value");
             throw new BadCredentialsException(this.messages
                     .getMessage("SmsAuthenticationToken.badCredentials", "Bad credentials"));
         }
     }
 
-    protected UserDetails retrieveUser(String mobile, SmsAuthenticationToken authentication) throws AuthenticationException {
+    protected UserDetails retrieveUser(String mobile) throws AuthenticationException {
         try {
             UserDetails loadedUser = this.getSmsDetailsService().loadUserByMobile(mobile);
             if (loadedUser == null) {
@@ -107,19 +111,12 @@ public class SmsAuthenticationProvider
 
     protected Authentication createSuccessAuthentication(Object principal, Authentication authentication,
                                                          UserDetails user) {
-//        String presentedPassword = authentication.getCredentials().toString();
-//        boolean isPasswordCompromised = this.compromisedPasswordChecker != null
-//                && this.compromisedPasswordChecker.check(presentedPassword).isCompromised();
-//        if (isPasswordCompromised) {
-//            throw new CompromisedPasswordException("The provided password is compromised, please change your password");
-//        }
-//        boolean upgradeEncoding = this.userDetailsPasswordService != null
-//                && this.passwordEncoder.upgradeEncoding(user.getPassword());
-//        if (upgradeEncoding) {
-//            String newPassword = this.passwordEncoder.encode(presentedPassword);
-//            user = this.userDetailsPasswordService.updatePassword(user, newPassword);
-//        }
-        return null;
+
+        SmsAuthenticationToken result = SmsAuthenticationToken.authenticated(principal,
+                authentication.getCredentials(), this.authoritiesMapper.mapAuthorities(user.getAuthorities()));
+        result.setDetails(authentication.getDetails());
+        log.debug("Authenticated user");
+        return result;
     }
 
     protected String determineMobile(Authentication authentication) {
@@ -129,14 +126,6 @@ public class SmsAuthenticationProvider
     public void setCodeService(CodeService codeService) {
         Assert.notNull(codeService, "codeService cannot be null");
         this.codeService = codeService;
-    }
-
-    public boolean isForcePrincipalAsString() {
-        return this.forcePrincipalAsString;
-    }
-
-    public void setForcePrincipalAsString(boolean forcePrincipalAsString) {
-        this.forcePrincipalAsString = forcePrincipalAsString;
     }
 
     protected CodeService getCodeService() {
@@ -158,7 +147,7 @@ public class SmsAuthenticationProvider
     }
 
     @Override
-    public void setMessageSource(MessageSource messageSource) {
+    public void setMessageSource(@NonNull MessageSource messageSource) {
         this.messages = new MessageSourceAccessor(messageSource);
     }
 

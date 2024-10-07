@@ -9,6 +9,7 @@ import org.springframework.lang.NonNull;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 
@@ -21,6 +22,7 @@ public final class AuthenticationHelper {
 
 
     public static final String ERROR_KEY = "error:key";
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     private AuthenticationHelper() {}
 
@@ -42,6 +44,7 @@ public final class AuthenticationHelper {
         try {
             response.setStatus(HttpStatus.OK.value());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            response.setCharacterEncoding("utf-8");
             String result =
                     """
                     {
@@ -50,7 +53,7 @@ public final class AuthenticationHelper {
                         "data":     "%s",
                         "date":     "%s"
                     }
-                    """.formatted(status, msg, data, LocalDateTime.now());
+                    """.formatted(status, msg, data, LocalDateTime.now().format(DATE_TIME_FORMATTER));
             response.getWriter().print(result);
         } catch (IOException e) {
             throw new UtilException(e);
@@ -61,6 +64,7 @@ public final class AuthenticationHelper {
         try {
             response.setStatus(HttpStatus.OK.value());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            response.setCharacterEncoding("utf-8");
             String result =
                     """
                     {
@@ -68,7 +72,7 @@ public final class AuthenticationHelper {
                         "msg":      "%s",
                         "date":     "%s"
                     }
-                    """.formatted(status, msg, LocalDateTime.now());
+                    """.formatted(status, msg, LocalDateTime.now().format(DATE_TIME_FORMATTER));
             response.getWriter().print(result);
         } catch (IOException e) {
             throw new UtilException(e);

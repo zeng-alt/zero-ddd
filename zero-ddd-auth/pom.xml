@@ -63,6 +63,16 @@
             <groupId>com.zjj</groupId>
             <artifactId>zero-ddd-security-jwt-component</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.zjj</groupId>
+            <artifactId>zero-ddd-security-sms-component</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

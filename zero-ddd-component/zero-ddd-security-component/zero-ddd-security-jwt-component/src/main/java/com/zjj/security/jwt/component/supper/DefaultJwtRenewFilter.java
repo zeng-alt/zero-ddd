@@ -33,7 +33,7 @@ public class DefaultJwtRenewFilter extends JwtRenewFilter {
             LocalDateTime now = LocalDateTime.now();
             LocalDateTime expire = jwtDetail.getExpire();
             // 如果过期时间小当前时间的前15分钟，不进行刷新
-            if (expire.isAfter(now.minusMinutes(15))) {
+            if (expire.isBefore(now.plusMinutes(15))) {
                 jwtCacheManage.put(jwtDetail.getId(), jwtDetail.getUser());
             }
         }

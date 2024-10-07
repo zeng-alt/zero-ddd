@@ -1,69 +1,79 @@
 package com.zjj.security.core.component.configuration;
 
-import com.zjj.autoconfigure.component.security.SecurityBuilderCustomizer;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
-import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.authentication.*;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 import java.util.List;
 
 /**
  * @author zengJiaJun
+ * @crateTime 2024年10月07日 19:09
  * @version 1.0
- * @crateTime 2024年09月29日 21:04
  */
 @AutoConfiguration
-@Import({LoginAutoConfiguration.class, JwtHelperAutoConfiguration.class, LoginHandlerAutoConfiguration.class, AccessFailedAutoConfiguration.class})
-@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 public class SecurityAutoConfiguration {
 
     @Bean
-    @ConditionalOnMissingBean(SecurityFilterChain.class)
-    public SecurityFilterChain filterChain(HttpSecurity http, List<SecurityBuilderCustomizer> customizers) throws Exception {
+    @ConditionalOnMissingBean
+    public UserDetailsService InMemoryUserDetailsManager(PasswordEncoder passwordEncoder) {
 
-        HttpSecurity httpSecurity = http
-                .authorizeHttpRequests(
-                        author ->
-                                author
-                                        .requestMatchers(HttpMethod.POST, "/login/**").permitAll()
-                                        .requestMatchers("/h2-console/**").permitAll()
-                                        .requestMatchers("/graphiql/**").permitAll()
-                                        .requestMatchers("/graphql/**").permitAll()
-                                        .anyRequest().authenticated()
+        return new InMemoryUserDetailsManager(
+                List.of(
+                        User.withUsername("root").password(passwordEncoder.encode("123456")).roles("ADMIN").build()
                 )
-                .headers(
-                        headers -> headers
-                                .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
-                ).formLogin(Customizer.withDefaults());
-//                .formLogin(
-//                        AbstractHttpConfigurer::disable // 禁用，前后端分离项目
-//                         .loginPage("/login")
-//                        .failureHandler(loginAuthenticationHandler)
-//                        .successHandler(loginAuthenticationHandler)
-//                        .permitAll()
-//                        .loginPage("/login/mobilecode")
-//                        .failureHandler(loginAuthenticationHandler)
-//                        .successHandler(loginAuthenticationHandler)
-//                        .permitAll()
-//                );
-
-        customizers.forEach(customizer -> {
-            try {
-                customizer.customize(httpSecurity);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
-//        http.apply()
-        return http.build();
-
-
+        );
     }
+
+//    @Bean
+//    @ConditionalOnMissingBean
+//    public JacksonSerializer<Map<String, ?>> jacksonSerializer(ObjectMapper objectMapper) {
+//        return new JacksonSerializer<>(objectMapper);
+//    }
+//
+//    @Bean
+//    @ConditionalOnMissingBean
+//    public JacksonDeserializer<Map<String, ?>> jacksonDeserializer(ObjectMapper objectMapper) {
+//        return new JacksonDeserializer<>(objectMapper);
+//    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public PasswordEncoder passwordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(AuthenticationEventPublisher.class)
+    public AuthenticationEventPublisher defaultAuthenticationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+        return new DefaultAuthenticationEventPublisher(applicationEventPublisher);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public DaoAuthenticationProvider daoAuthenticationProvider(UserDetailsService userDetailsService) {
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+        daoAuthenticationProvider.setUserDetailsService(userDetailsService);
+        return daoAuthenticationProvider;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(AuthenticationManager.class)
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration, List<AuthenticationProvider> authenticationProviders, AuthenticationEventPublisher authenticationEventPublisher) throws Exception {
+        AuthenticationManager authenticationManager = configuration.getAuthenticationManager();
+        ProviderManager providerManager = new ProviderManager(authenticationProviders, authenticationManager);
+        providerManager.setAuthenticationEventPublisher(authenticationEventPublisher);
+        return providerManager;
+    }
+
 }

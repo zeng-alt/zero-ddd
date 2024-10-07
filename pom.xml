@@ -35,7 +35,7 @@
         <rxjava.version>3.1.8</rxjava.version>
         <scala.version>2.13.9</scala.version>
         <spring-security.verison>3.3.1</spring-security.verison>
-        <jjwt.version>0.9.1</jjwt.version>
+        <jjwt.version>0.12.6</jjwt.version>
         <jaxb-api.version>2.3.1</jaxb-api.version>
         <guava.version>33.3.0-jre</guava.version>
     </properties>
@@ -46,11 +46,28 @@
 
     <dependencyManagement>
         <dependencies>
+
+            <!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-api -->
             <dependency>
                 <groupId>io.jsonwebtoken</groupId>
-                <artifactId>jjwt</artifactId>
+                <artifactId>jjwt-api</artifactId>
                 <version>${jjwt.version}</version>
             </dependency>
+
+            <!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-impl -->
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-impl</artifactId>
+                <version>${jjwt.version}</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-jackson -->
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-jackson</artifactId>
+                <version>${jjwt.version}</version>
+            </dependency>
+
 
             <!-- Other dependencies -->
             <dependency>
@@ -243,6 +260,12 @@
             <dependency>
                 <groupId>com.zjj</groupId>
                 <artifactId>zero-ddd-security-rbac-component</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.zjj</groupId>
+                <artifactId>zero-ddd-security-sms-component</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
 

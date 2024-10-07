@@ -1,10 +1,10 @@
 package com.zjj.security.sms.component.supper;
 
 import org.springframework.security.authentication.AbstractAuthenticationToken;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.util.Assert;
 
+import java.io.Serial;
 import java.util.Collection;
 
 /**
@@ -14,13 +14,14 @@ import java.util.Collection;
  */
 public class SmsAuthenticationToken extends AbstractAuthenticationToken {
 
-    private static final long serialVersionUID = 620L;
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     private final Object principal;
     private Object credentials;
 
     public SmsAuthenticationToken(Object principal, Object credentials) {
-        super((Collection)null);
+        super(null);
         this.principal = principal;
         this.credentials = credentials;
         this.setAuthenticated(false);

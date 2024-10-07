@@ -1,16 +1,20 @@
 package com.zjj.security.core.component.supper;
 
 import com.google.common.collect.Maps;
+import com.zjj.autoconfigure.component.json.JsonHelper;
 import com.zjj.autoconfigure.component.security.jwt.JwtHelper;
 import com.zjj.autoconfigure.component.security.jwt.JwtProperties;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.jackson.io.JacksonDeserializer;
+import io.jsonwebtoken.jackson.io.JacksonSerializer;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.BadCredentialsException;
 
+import javax.crypto.SecretKey;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalUnit;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -21,9 +25,13 @@ import java.util.Map;
 public final class DefaultJwtHelper implements JwtHelper {
 
     private final JwtProperties jwtProperties;
+    private final JsonHelper jsonHelper;
 
-    public DefaultJwtHelper(JwtProperties jwtProperties) {
+    private final SecretKey key = Jwts.SIG.HS256.key().build();
+
+    public DefaultJwtHelper(JwtProperties jwtProperties, JsonHelper jsonHelper) {
         this.jwtProperties = jwtProperties;
+        this.jsonHelper = jsonHelper;
     }
 
     @NonNull
@@ -37,23 +45,27 @@ public final class DefaultJwtHelper implements JwtHelper {
         LocalDateTime now = LocalDateTime.now();
         Long expiration = jwtProperties.getExpiration();
         TemporalUnit temporalUnit = jwtProperties.getTemporalUnit();
+        LocalDateTime plus = now.plus(expiration, temporalUnit);
         // 当前时间加上过期时间
-        hashMap.put("create", now.plus(expiration, temporalUnit));
-        hashMap.put("expire", LocalDateTime.now());
+        hashMap.put("expire", jsonHelper.toJsonString(plus));
         return Jwts
                 .builder()
-                .setClaims(hashMap)
-                .signWith(SignatureAlgorithm.HS512, jwtProperties.getSecret())
+//                .json(jacksonSerializer)
+                .issuedAt(new Date())
+                .claims(hashMap)
+                .signWith(key)
                 .compact();
     }
 
-    public Map<String, Object> getClaimsFromToken(String token) throws BadCredentialsException {
+    public Claims getClaimsFromToken(String token) throws BadCredentialsException {
         try {
             return Jwts
                     .parser()
-                    .setSigningKey(jwtProperties.getSecret())
-                    .parseClaimsJws(token)
-                    .getBody();
+//                    .json(jacksonDeserializer)
+                    .verifyWith(key)
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
         } catch (Exception var5) {
             throw new BadCredentialsException("jwt校验失败");
         }
@@ -74,13 +86,12 @@ public final class DefaultJwtHelper implements JwtHelper {
 
     @Override
     public LocalDateTime getExpire(Map<String, Object> map) {
-        return (LocalDateTime) map.get("expire");
+        return jsonHelper.parseObject(map.get("expire").toString(), LocalDateTime.class);
     }
 
     @Override
     public String tokenHeader() {
         return jwtProperties.getTokenHeader();
     }
-
 
 }
