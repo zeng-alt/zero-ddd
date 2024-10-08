@@ -19,19 +19,20 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
  * @crateTime 2024年09月30日 20:11
  */
 @AutoConfiguration
-@EnableConfigurationProperties({LoginProperties.class})
+@EnableConfigurationProperties({ LoginProperties.class })
 @ConditionalOnProperty(name = "security.login.enabled", havingValue = "true", matchIfMissing = true)
 public class LoginHandlerAutoConfiguration {
 
-    @Bean
-    @ConditionalOnMissingBean
-    public LoginSuccessHandler loginSuccessAuthenticationHandler(JwtCacheManage jwtCacheManage, JwtHelper jwtHelper) {
-        return new DefaultLoginSuccessHandler(jwtCacheManage, jwtHelper);
-    }
+	@Bean
+	@ConditionalOnMissingBean
+	public LoginSuccessHandler loginSuccessAuthenticationHandler(JwtCacheManage jwtCacheManage, JwtHelper jwtHelper) {
+		return new DefaultLoginSuccessHandler(jwtCacheManage, jwtHelper);
+	}
 
-    @Bean
-    @ConditionalOnMissingBean(AuthenticationFailureHandler.class)
-    public AuthenticationFailureHandler loginFailureAuthenticationHandler() {
-        return new DefaultLoginFailureHandler();
-    }
+	@Bean
+	@ConditionalOnMissingBean(AuthenticationFailureHandler.class)
+	public AuthenticationFailureHandler loginFailureAuthenticationHandler() {
+		return new DefaultLoginFailureHandler();
+	}
+
 }

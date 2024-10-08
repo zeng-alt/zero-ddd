@@ -11,8 +11,9 @@ import org.springframework.security.core.userdetails.UserDetails;
  */
 public interface JwtCacheManage {
 
-    @Nullable
-    public UserDetails get(@NonNull String id);
+	@Nullable
+	public UserDetails get(@NonNull String id);
 
-    public void put(@NonNull String id, @NonNull UserDetails userDetails);
+	public void put(@NonNull String id, @NonNull UserDetails userDetails);
+
 }

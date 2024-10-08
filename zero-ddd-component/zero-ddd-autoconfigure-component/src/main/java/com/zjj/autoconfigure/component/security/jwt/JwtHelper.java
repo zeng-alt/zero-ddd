@@ -13,20 +13,19 @@ import java.util.Map;
  */
 public interface JwtHelper {
 
-    @NonNull
-    public String generateJWT(@NonNull String uniqueIdentifier);
+	@NonNull
+	public String generateJWT(@NonNull String uniqueIdentifier);
 
-    public String generateJWT(Map<String, Object> map);
+	public String generateJWT(Map<String, Object> map);
 
-    public Map<String, Object> getClaimsFromToken(String token) throws BadCredentialsException;
+	public Map<String, Object> getClaimsFromToken(String token) throws BadCredentialsException;
 
-    public Object getClaimFromToken(String token) throws BadCredentialsException;
+	public Object getClaimFromToken(String token) throws BadCredentialsException;
 
+	public Object getClaim(Map<String, Object> map);
 
-    public Object getClaim(Map<String, Object> map);
+	public LocalDateTime getExpire(Map<String, Object> map);
 
-    public LocalDateTime getExpire(Map<String, Object> map);
-
-    public String tokenHeader();
+	public String tokenHeader();
 
 }

@@ -12,11 +12,12 @@ import java.util.List;
  */
 public interface JsonHelper {
 
-    public String toJsonString(Object object) throws UtilException;
+	public String toJsonString(Object object) throws UtilException;
 
-    public <T> T parseObject(String text, Class<T> clazz) throws UtilException;
+	public <T> T parseObject(String text, Class<T> clazz) throws UtilException;
 
-    public  <T> T parseObject(byte[] bytes, Class<T> clazz) throws UtilException;
+	public <T> T parseObject(byte[] bytes, Class<T> clazz) throws UtilException;
 
-    public <T> List<T> parseArray(String text, Class<T> clazz) throws UtilException;
+	public <T> List<T> parseArray(String text, Class<T> clazz) throws UtilException;
+
 }

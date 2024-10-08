@@ -1,6 +1,5 @@
 package com.zjj.domain.component;
 
-
 import com.zjj.bean.componenet.ApplicationContextHelper;
 
 /**
@@ -10,8 +9,8 @@ import com.zjj.bean.componenet.ApplicationContextHelper;
  */
 public interface AggregateRoot<T> {
 
+	default void publishEvent(DomainEvent event) {
+		ApplicationContextHelper.publishEvent(event);
+	}
 
-    default void publishEvent(DomainEvent event) {
-        ApplicationContextHelper.publishEvent(event);
-    }
 }

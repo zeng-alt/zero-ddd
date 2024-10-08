@@ -14,20 +14,22 @@ import java.util.Map;
  */
 public class DefaultJwtCacheManage implements JwtCacheManage {
 
-    private final Map<String, UserDetails> map = new HashMap<>();
-    private final JwtProperties jwtProperties;
+	private final Map<String, UserDetails> map = new HashMap<>();
 
-    public DefaultJwtCacheManage(JwtProperties jwtProperties) {
-        this.jwtProperties = jwtProperties;
-    }
+	private final JwtProperties jwtProperties;
 
-    @Override
-    public UserDetails get(String id) {
-        return map.getOrDefault(id, null);
-    }
+	public DefaultJwtCacheManage(JwtProperties jwtProperties) {
+		this.jwtProperties = jwtProperties;
+	}
 
-    @Override
-    public void put(String id, UserDetails userDetails) {
-        map.put(id, userDetails);
-    }
+	@Override
+	public UserDetails get(String id) {
+		return map.getOrDefault(id, null);
+	}
+
+	@Override
+	public void put(String id, UserDetails userDetails) {
+		map.put(id, userDetails);
+	}
+
 }

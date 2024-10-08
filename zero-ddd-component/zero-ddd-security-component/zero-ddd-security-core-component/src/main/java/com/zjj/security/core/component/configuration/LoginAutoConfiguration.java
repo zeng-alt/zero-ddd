@@ -18,27 +18,21 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 @EnableConfigurationProperties(UsernameLoginProperties.class)
 public class LoginAutoConfiguration {
 
-    @Bean
-    @ConditionalOnProperty(name = "security.username-login.enabled", havingValue = "true", matchIfMissing = true)
-    public SecurityBuilderCustomizer initiateLoginCustomizer(
-            UsernameLoginProperties usernameLoginProperties,
-            AuthenticationSuccessHandler loginSuccessAuthenticationHandler,
-            AuthenticationFailureHandler loginFailureAuthenticationHandler
-    ) {
-        return http -> http
-                .formLogin(
-                    formLogin -> formLogin
-                        .loginProcessingUrl(usernameLoginProperties.getLoginPath())
-                        .usernameParameter(usernameLoginProperties.getUsernameParameter())
-                        .passwordParameter(usernameLoginProperties.getPasswordParameter())
-                        .failureHandler(loginFailureAuthenticationHandler)
-                        .successHandler(loginSuccessAuthenticationHandler)
-                );
-    }
+	@Bean
+	@ConditionalOnProperty(name = "security.username-login.enabled", havingValue = "true", matchIfMissing = true)
+	public SecurityBuilderCustomizer initiateLoginCustomizer(UsernameLoginProperties usernameLoginProperties,
+			AuthenticationSuccessHandler loginSuccessAuthenticationHandler,
+			AuthenticationFailureHandler loginFailureAuthenticationHandler) {
+		return http -> http.formLogin(formLogin -> formLogin.loginProcessingUrl(usernameLoginProperties.getLoginPath())
+				.usernameParameter(usernameLoginProperties.getUsernameParameter())
+				.passwordParameter(usernameLoginProperties.getPasswordParameter())
+				.failureHandler(loginFailureAuthenticationHandler).successHandler(loginSuccessAuthenticationHandler));
+	}
 
-    @Bean
-    @ConditionalOnProperty(name = "security.username-login.enabled", havingValue = "false")
-    public SecurityBuilderCustomizer shutDownLoginCustomizer() {
-        return http -> http.formLogin(AbstractHttpConfigurer::disable);
-    }
+	@Bean
+	@ConditionalOnProperty(name = "security.username-login.enabled", havingValue = "false")
+	public SecurityBuilderCustomizer shutDownLoginCustomizer() {
+		return http -> http.formLogin(AbstractHttpConfigurer::disable);
+	}
+
 }

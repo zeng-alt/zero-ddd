@@ -1,6 +1,5 @@
 package com.zjj.doc.config.properties;
 
-
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.License;
 import lombok.Data;
@@ -17,31 +16,32 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties(prefix = "openapi.info")
 public class InfoProperties {
-    /**
-     * 标题
-     */
-    private String title = null;
 
-    /**
-     * 描述
-     */
-    private String description = null;
+	/**
+	 * 标题
+	 */
+	private String title = null;
 
-    /**
-     * 联系人信息
-     */
-    @NestedConfigurationProperty
-    private Contact contact = null;
+	/**
+	 * 描述
+	 */
+	private String description = null;
 
-    /**
-     * 许可证
-     */
-    @NestedConfigurationProperty
-    private License license = null;
+	/**
+	 * 联系人信息
+	 */
+	@NestedConfigurationProperty
+	private Contact contact = null;
 
-    /**
-     * 版本
-     */
-    private String version = null;
+	/**
+	 * 许可证
+	 */
+	@NestedConfigurationProperty
+	private License license = null;
+
+	/**
+	 * 版本
+	 */
+	private String version = null;
 
 }

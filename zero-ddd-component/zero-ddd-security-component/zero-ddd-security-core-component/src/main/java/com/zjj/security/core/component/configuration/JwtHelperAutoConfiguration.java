@@ -27,18 +27,19 @@ import java.util.Map;
  * @crateTime 2024年09月30日 09:41
  */
 @AutoConfiguration
-@EnableConfigurationProperties({JwtProperties.class, LoginProperties.class})
+@EnableConfigurationProperties({ JwtProperties.class, LoginProperties.class })
 public class JwtHelperAutoConfiguration {
 
-    @Bean
-    @ConditionalOnMissingBean
-    public JwtHelper jwtHelper(JwtProperties jwtProperties, JsonHelper jsonHelper) {
-        return new DefaultJwtHelper(jwtProperties, jsonHelper);
-    }
+	@Bean
+	@ConditionalOnMissingBean
+	public JwtHelper jwtHelper(JwtProperties jwtProperties, JsonHelper jsonHelper) {
+		return new DefaultJwtHelper(jwtProperties, jsonHelper);
+	}
 
-    @Bean
-    @ConditionalOnMissingBean
-    public JwtCacheManage jwtCacheManage(JwtProperties jwtProperties) {
-        return new DefaultJwtCacheManage(jwtProperties);
-    }
+	@Bean
+	@ConditionalOnMissingBean
+	public JwtCacheManage jwtCacheManage(JwtProperties jwtProperties) {
+		return new DefaultJwtCacheManage(jwtProperties);
+	}
+
 }

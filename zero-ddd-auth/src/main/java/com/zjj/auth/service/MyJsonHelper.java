@@ -11,26 +11,27 @@ import java.util.List;
  * @version 1.0
  * @crateTime 2024年09月27日 09:43
  */
-//@Component
+// @Component
 public class MyJsonHelper implements JsonHelper {
 
-    @Override
-    public String toJsonString(Object object) throws UtilException {
-        return "hello";
-    }
+	@Override
+	public String toJsonString(Object object) throws UtilException {
+		return "hello";
+	}
 
-    @Override
-    public <T> T parseObject(String text, Class<T> clazz) throws UtilException {
-        return null;
-    }
+	@Override
+	public <T> T parseObject(String text, Class<T> clazz) throws UtilException {
+		return null;
+	}
 
-    @Override
-    public <T> T parseObject(byte[] bytes, Class<T> clazz) throws UtilException {
-        return null;
-    }
+	@Override
+	public <T> T parseObject(byte[] bytes, Class<T> clazz) throws UtilException {
+		return null;
+	}
 
-    @Override
-    public <T> List<T> parseArray(String text, Class<T> clazz) throws UtilException {
-        return null;
-    }
+	@Override
+	public <T> List<T> parseArray(String text, Class<T> clazz) throws UtilException {
+		return null;
+	}
+
 }

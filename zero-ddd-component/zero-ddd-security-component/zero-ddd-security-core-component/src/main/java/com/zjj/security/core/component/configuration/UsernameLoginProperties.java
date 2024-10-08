@@ -4,7 +4,6 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-
 /**
  * @author zengJiaJun
  * @version 1.0
@@ -14,8 +13,13 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties(prefix = "security.username-login")
 public class UsernameLoginProperties {
-    private Boolean enabled = false;
-    private String usernameParameter = "username";
-    private String passwordParameter = "password";
-    private String loginPath = "/login/username";
+
+	private Boolean enabled = false;
+
+	private String usernameParameter = "username";
+
+	private String passwordParameter = "password";
+
+	private String loginPath = "/login/username";
+
 }

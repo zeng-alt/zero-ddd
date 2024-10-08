@@ -1,6 +1,5 @@
 package com.zjj.excel.component.domain;
 
-
 import java.util.List;
 
 /**
@@ -11,5 +10,6 @@ import java.util.List;
 @FunctionalInterface
 public interface ExcelFailResult {
 
-    List<String> getErrorList();
+	List<String> getErrorList();
+
 }

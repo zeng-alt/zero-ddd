@@ -17,12 +17,12 @@ import java.io.IOException;
  */
 public class DefaultAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
-    @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+	@Override
+	public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception)
+			throws IOException, ServletException {
 
-        AuthenticationHelper.renderString(
-                response, HttpStatus.UNAUTHORIZED.value(),
-                "验证失败: " + AuthenticationHelper.getErrorMsg(request).orElse(exception.getMessage())
-        );
-    }
+		AuthenticationHelper.renderString(response, HttpStatus.UNAUTHORIZED.value(),
+				"验证失败: " + AuthenticationHelper.getErrorMsg(request).orElse(exception.getMessage()));
+	}
+
 }

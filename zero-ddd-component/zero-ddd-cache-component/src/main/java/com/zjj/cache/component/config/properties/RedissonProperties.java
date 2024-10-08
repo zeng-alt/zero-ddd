@@ -14,120 +14,122 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Data
 @ConfigurationProperties(prefix = "redisson")
 public class RedissonProperties {
-    /**
-     * redis缓存key前缀
-     */
-    private String keyPrefix;
 
-    /**
-     * 线程池数量,默认值 = 当前处理核数量 * 2
-     */
-    private int threads;
+	/**
+	 * redis缓存key前缀
+	 */
+	private String keyPrefix;
 
-    /**
-     * Netty线程池数量,默认值 = 当前处理核数量 * 2
-     */
-    private int nettyThreads;
+	/**
+	 * 线程池数量,默认值 = 当前处理核数量 * 2
+	 */
+	private int threads;
 
-    /**
-     * 单机服务配置
-     */
-    private SingleServerConfig singleServerConfig;
+	/**
+	 * Netty线程池数量,默认值 = 当前处理核数量 * 2
+	 */
+	private int nettyThreads;
 
-    /**
-     * 集群服务配置
-     */
-    private ClusterServersConfig clusterServersConfig;
+	/**
+	 * 单机服务配置
+	 */
+	private SingleServerConfig singleServerConfig;
 
-    @Data
-    @NoArgsConstructor
-    public static class SingleServerConfig {
+	/**
+	 * 集群服务配置
+	 */
+	private ClusterServersConfig clusterServersConfig;
 
-        /**
-         * 客户端名称
-         */
-        private String clientName;
+	@Data
+	@NoArgsConstructor
+	public static class SingleServerConfig {
 
-        /**
-         * 最小空闲连接数
-         */
-        private int connectionMinimumIdleSize;
+		/**
+		 * 客户端名称
+		 */
+		private String clientName;
 
-        /**
-         * 连接池大小
-         */
-        private int connectionPoolSize;
+		/**
+		 * 最小空闲连接数
+		 */
+		private int connectionMinimumIdleSize;
 
-        /**
-         * 连接空闲超时，单位：毫秒
-         */
-        private int idleConnectionTimeout;
+		/**
+		 * 连接池大小
+		 */
+		private int connectionPoolSize;
 
-        /**
-         * 命令等待超时，单位：毫秒
-         */
-        private int timeout;
+		/**
+		 * 连接空闲超时，单位：毫秒
+		 */
+		private int idleConnectionTimeout;
 
-        /**
-         * 发布和订阅连接池大小
-         */
-        private int subscriptionConnectionPoolSize;
+		/**
+		 * 命令等待超时，单位：毫秒
+		 */
+		private int timeout;
 
-    }
+		/**
+		 * 发布和订阅连接池大小
+		 */
+		private int subscriptionConnectionPoolSize;
 
-    @Data
-    @NoArgsConstructor
-    public static class ClusterServersConfig {
+	}
 
-        /**
-         * 客户端名称
-         */
-        private String clientName;
+	@Data
+	@NoArgsConstructor
+	public static class ClusterServersConfig {
 
-        /**
-         * master最小空闲连接数
-         */
-        private int masterConnectionMinimumIdleSize;
+		/**
+		 * 客户端名称
+		 */
+		private String clientName;
 
-        /**
-         * master连接池大小
-         */
-        private int masterConnectionPoolSize;
+		/**
+		 * master最小空闲连接数
+		 */
+		private int masterConnectionMinimumIdleSize;
 
-        /**
-         * slave最小空闲连接数
-         */
-        private int slaveConnectionMinimumIdleSize;
+		/**
+		 * master连接池大小
+		 */
+		private int masterConnectionPoolSize;
 
-        /**
-         * slave连接池大小
-         */
-        private int slaveConnectionPoolSize;
+		/**
+		 * slave最小空闲连接数
+		 */
+		private int slaveConnectionMinimumIdleSize;
 
-        /**
-         * 连接空闲超时，单位：毫秒
-         */
-        private int idleConnectionTimeout;
+		/**
+		 * slave连接池大小
+		 */
+		private int slaveConnectionPoolSize;
 
-        /**
-         * 命令等待超时，单位：毫秒
-         */
-        private int timeout;
+		/**
+		 * 连接空闲超时，单位：毫秒
+		 */
+		private int idleConnectionTimeout;
 
-        /**
-         * 发布和订阅连接池大小
-         */
-        private int subscriptionConnectionPoolSize;
+		/**
+		 * 命令等待超时，单位：毫秒
+		 */
+		private int timeout;
 
-        /**
-         * 读取模式
-         */
-        private ReadMode readMode;
+		/**
+		 * 发布和订阅连接池大小
+		 */
+		private int subscriptionConnectionPoolSize;
 
-        /**
-         * 订阅模式
-         */
-        private SubscriptionMode subscriptionMode;
+		/**
+		 * 读取模式
+		 */
+		private ReadMode readMode;
 
-    }
+		/**
+		 * 订阅模式
+		 */
+		private SubscriptionMode subscriptionMode;
+
+	}
+
 }

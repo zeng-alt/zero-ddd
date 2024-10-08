@@ -14,12 +14,11 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
  */
 public class DefaultLoginFailureHandler implements AuthenticationFailureHandler {
 
-    @Override
-    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) {
-        AuthenticationHelper.renderString(
-                response, HttpStatus.OK.value(),
-                "登录失败: " + AuthenticationHelper.getErrorMsg(request).orElse(exception.getMessage()),
-                null
-        );
-    }
+	@Override
+	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
+			AuthenticationException exception) {
+		AuthenticationHelper.renderString(response, HttpStatus.OK.value(),
+				"登录失败: " + AuthenticationHelper.getErrorMsg(request).orElse(exception.getMessage()), null);
+	}
+
 }

@@ -19,38 +19,36 @@ import java.util.function.Consumer;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class RedisPubSubRepositoryImpl implements RedisPubSubRepository {
 
-    private final RedissonClient redissonClient;
+	private final RedissonClient redissonClient;
 
-    /**
-     * 订阅频道并接收消息。
-     *
-     * @param channelKey 频道名
-     */
-    public void subscribe(String channelKey, Class<Message> clazz, Consumer<Message> consumer) {
-        RTopic topic = redissonClient.getTopic(channelKey);
-        topic.addListener(clazz, (channel, msg) -> consumer.accept(msg));
-    }
+	/**
+	 * 订阅频道并接收消息。
+	 * @param channelKey 频道名
+	 */
+	public void subscribe(String channelKey, Class<Message> clazz, Consumer<Message> consumer) {
+		RTopic topic = redissonClient.getTopic(channelKey);
+		topic.addListener(clazz, (channel, msg) -> consumer.accept(msg));
+	}
 
-    /**
-     * 发布消息到频道。
-     *
-     * @param channelKey 频道名
-     * @param message 消息内容
-     */
-    public void publish(String channelKey, Message message, Consumer<Message> consumer) {
-        RTopic topic = redissonClient.getTopic(channelKey);
-        topic.publish(message);
-        consumer.accept(message);
-    }
+	/**
+	 * 发布消息到频道。
+	 * @param channelKey 频道名
+	 * @param message 消息内容
+	 */
+	public void publish(String channelKey, Message message, Consumer<Message> consumer) {
+		RTopic topic = redissonClient.getTopic(channelKey);
+		topic.publish(message);
+		consumer.accept(message);
+	}
 
-    /**
-     * 发布消息到频道。
-     *
-     * @param channelKey 频道名
-     * @param message 消息内容
-     */
-    public void publish(String channelKey, Message message) {
-        RTopic topic = redissonClient.getTopic(channelKey);
-        topic.publish(message);
-    }
+	/**
+	 * 发布消息到频道。
+	 * @param channelKey 频道名
+	 * @param message 消息内容
+	 */
+	public void publish(String channelKey, Message message) {
+		RTopic topic = redissonClient.getTopic(channelKey);
+		topic.publish(message);
+	}
+
 }

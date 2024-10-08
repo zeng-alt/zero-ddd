@@ -2,6 +2,7 @@ package com.zjj.security.core.component.configuration;
 
 import com.zjj.autoconfigure.component.security.AbstractLoginConfigurer;
 import com.zjj.autoconfigure.component.security.SecurityBuilderCustomizer;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -26,68 +27,59 @@ import java.util.List;
  * @crateTime 2024年09月29日 21:04
  */
 @AutoConfiguration
-@Import({LoginAutoConfiguration.class, JwtHelperAutoConfiguration.class, LoginHandlerAutoConfiguration.class, AccessFailedAutoConfiguration.class})
+@Import({ LoginAutoConfiguration.class, JwtHelperAutoConfiguration.class, LoginHandlerAutoConfiguration.class,
+		AccessFailedAutoConfiguration.class })
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 public class WebSecurityAutoConfiguration {
 
-    @Bean
-    @ConditionalOnMissingBean(SecurityFilterChain.class)
-    public SecurityFilterChain filterChain(
-            HttpSecurity http,
-            List<SecurityBuilderCustomizer> customizers,
-            List<AbstractLoginConfigurer> configurers,
-            AuthenticationSuccessHandler loginSuccessAuthenticationHandler,
-            AuthenticationFailureHandler loginFailureAuthenticationHandler,
-            AuthenticationManager authenticationManager,
-            ApplicationEventPublisher applicationEventPublisher
-    ) throws Exception {
+	@Bean
+	@ConditionalOnMissingBean(SecurityFilterChain.class)
+	public SecurityFilterChain filterChain(HttpSecurity http, ObjectProvider<SecurityBuilderCustomizer> customizers,
+			ObjectProvider<AbstractLoginConfigurer> configurers,
+			AuthenticationSuccessHandler loginSuccessAuthenticationHandler,
+			AuthenticationFailureHandler loginFailureAuthenticationHandler, AuthenticationManager authenticationManager,
+			ApplicationEventPublisher applicationEventPublisher) throws Exception {
 
-        HttpSecurity httpSecurity = http
-                .csrf(AbstractHttpConfigurer::disable)
-                .httpBasic(AbstractHttpConfigurer::disable)
-                .cors(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(
-                        author ->
-                                author
-                                        .requestMatchers(HttpMethod.POST, "/login/**").permitAll()
-                                        .requestMatchers("/h2-console/**").permitAll()
-                                        .requestMatchers("/graphiql/**").permitAll()
-                                        .requestMatchers("/graphql/**").permitAll()
-                                        .anyRequest().authenticated()
-                )
-                .headers(
-                        headers -> headers
-                                .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
-                ).formLogin(Customizer.withDefaults());
-//                .formLogin(
-//                        AbstractHttpConfigurer::disable // 禁用，前后端分离项目
-//                         .loginPage("/login")
-//                        .failureHandler(loginAuthenticationHandler)
-//                        .successHandler(loginAuthenticationHandler)
-//                        .permitAll()
-//                        .loginPage("/login/mobilecode")
-//                        .failureHandler(loginAuthenticationHandler)
-//                        .successHandler(loginAuthenticationHandler)
-//                        .permitAll()
-//                );
+		HttpSecurity httpSecurity = http.csrf(AbstractHttpConfigurer::disable)
+				.httpBasic(AbstractHttpConfigurer::disable).cors(AbstractHttpConfigurer::disable)
+				.authorizeHttpRequests(author -> author.requestMatchers(HttpMethod.POST, "/login/**").permitAll()
+						.requestMatchers("/h2-console/**").permitAll().requestMatchers("/graphiql/**").permitAll()
+						.requestMatchers("/graphql/**").permitAll().anyRequest().authenticated())
+				.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
+				.formLogin(Customizer.withDefaults());
+		// .formLogin(
+		// AbstractHttpConfigurer::disable // 禁用，前后端分离项目
+		// .loginPage("/login")
+		// .failureHandler(loginAuthenticationHandler)
+		// .successHandler(loginAuthenticationHandler)
+		// .permitAll()
+		// .loginPage("/login/mobilecode")
+		// .failureHandler(loginAuthenticationHandler)
+		// .successHandler(loginAuthenticationHandler)
+		// .permitAll()
+		// );
 
+		customizers.orderedStream().forEach(customizer -> {
+			try {
+				customizer.customize(httpSecurity);
+			}
+			catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		});
 
-        customizers.forEach(customizer -> {
-            try {
-                customizer.customize(httpSecurity);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
+		configurers.orderedStream().forEach(configurer -> {
+			try {
+				http.with(configurer, c -> c.successHandler(loginSuccessAuthenticationHandler)
+						.failureHandler(loginFailureAuthenticationHandler).authenticationManager(authenticationManager)
+						.eventPublisher(applicationEventPublisher));
+			}
+			catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		});
 
-        for (AbstractLoginConfigurer configurer : configurers) {
-            http.with(configurer, c -> c
-                    .successHandler(loginSuccessAuthenticationHandler)
-                    .failureHandler(loginFailureAuthenticationHandler)
-                    .authenticationManager(authenticationManager)
-                    .eventPublisher(applicationEventPublisher)
-            );
-        }
-        return http.build();
-    }
+		return http.build();
+	}
+
 }

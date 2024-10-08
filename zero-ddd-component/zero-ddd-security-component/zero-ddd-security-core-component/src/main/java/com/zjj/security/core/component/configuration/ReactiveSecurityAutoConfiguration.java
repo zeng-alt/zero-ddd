@@ -23,17 +23,15 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebFluxSecurity
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
 @EnableConfigurationProperties(SecurityProperties.class)
-@ConditionalOnClass({ EnableWebFluxSecurity.class, WebFilterChainProxy.class,})
+@ConditionalOnClass({ EnableWebFluxSecurity.class, WebFilterChainProxy.class, })
 public class ReactiveSecurityAutoConfiguration {
 
-    @Bean
-    public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
-        http
-                .authorizeExchange(exchanges -> exchanges
-                        .anyExchange().authenticated()
-                )
-//                .httpBasic(withDefaults())
-                .formLogin(withDefaults());
-        return http.build();
-    }
+	@Bean
+	public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
+		http.authorizeExchange(exchanges -> exchanges.anyExchange().authenticated())
+				// .httpBasic(withDefaults())
+				.formLogin(withDefaults());
+		return http.build();
+	}
+
 }

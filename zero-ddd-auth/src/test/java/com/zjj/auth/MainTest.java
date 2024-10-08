@@ -24,40 +24,41 @@ import java.util.Map;
 @SpringBootTest
 public class MainTest {
 
-    @Autowired
-    private JsonHelper jsonHelper;
+	@Autowired
+	private JsonHelper jsonHelper;
 
-    @Test
-    public void runTest() {
+	@Test
+	public void runTest() {
 
-    }
+	}
 
-    @Test
-    public void applicationContextHelperTest() {
-        UserService bean = ApplicationContextHelper.getBean(UserService.class);
-        System.out.println(bean.hello());
-    }
+	@Test
+	public void applicationContextHelperTest() {
+		UserService bean = ApplicationContextHelper.getBean(UserService.class);
+		System.out.println(bean.hello());
+	}
 
-    @Test
-    public void jackJsonTest() {
-        JsonHelper bean = ApplicationContextHelper.getBean(JsonHelper.class);
-        SecurityProperties.User user = new SecurityProperties.User();
-        user.setName("name");
-        user.setPassword("123456");
-        System.out.println(bean.toJsonString(user));
-    }
+	@Test
+	public void jackJsonTest() {
+		JsonHelper bean = ApplicationContextHelper.getBean(JsonHelper.class);
+		SecurityProperties.User user = new SecurityProperties.User();
+		user.setName("name");
+		user.setPassword("123456");
+		System.out.println(bean.toJsonString(user));
+	}
 
-    @Test
-    public void jsonHelperTest() {
-        SecurityProperties.User user = new SecurityProperties.User();
-        user.setName("name");
-        user.setPassword("123456");
-        System.out.println(jsonHelper.toJsonString(user));
+	@Test
+	public void jsonHelperTest() {
+		SecurityProperties.User user = new SecurityProperties.User();
+		user.setName("name");
+		user.setPassword("123456");
+		System.out.println(jsonHelper.toJsonString(user));
 
-        LocalDateTime now = LocalDateTime.now();
-        Map<String, Object> map = new HashMap<>();
-        map.put("time", now);
-        System.out.println(jsonHelper.toJsonString(map));
+		LocalDateTime now = LocalDateTime.now();
+		Map<String, Object> map = new HashMap<>();
+		map.put("time", now);
+		System.out.println(jsonHelper.toJsonString(map));
 
-    }
+	}
+
 }

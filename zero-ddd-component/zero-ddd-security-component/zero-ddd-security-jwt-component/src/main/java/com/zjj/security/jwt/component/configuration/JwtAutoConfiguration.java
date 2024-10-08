@@ -26,24 +26,27 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @ConditionalOnProperty(name = "security.jwt.enabled", havingValue = "true", matchIfMissing = true)
 public class JwtAutoConfiguration {
 
-    @Bean
-    @ConditionalOnMissingBean
-    public JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter(JwtHelper jwtHelper, JwtCacheManage jwtCacheManage) {
-        return new DefaultJwtAuthenticationTokenFilter(jwtHelper, jwtCacheManage);
-    }
+	@Bean
+	@ConditionalOnMissingBean
+	public JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter(JwtHelper jwtHelper,
+			JwtCacheManage jwtCacheManage) {
+		return new DefaultJwtAuthenticationTokenFilter(jwtHelper, jwtCacheManage);
+	}
 
-    @Bean
-    @ConditionalOnMissingBean
-    public JwtRenewFilter jwtRenewFilter(JwtCacheManage jwtCacheManage) {
-        return new DefaultJwtRenewFilter(jwtCacheManage);
-    }
+	@Bean
+	@ConditionalOnMissingBean
+	public JwtRenewFilter jwtRenewFilter(JwtCacheManage jwtCacheManage) {
+		return new DefaultJwtRenewFilter(jwtCacheManage);
+	}
 
-    @Bean
-    public SecurityBuilderCustomizer jwtCustomizer(JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter, JwtRenewFilter jwtRenewFilter) {
-        return http -> {
-            Class type = ResolvableType.forType(jwtAuthenticationTokenFilter.getClass()).getRawClass();
-            http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
-            http.addFilterAfter(jwtRenewFilter, type);
-        };
-    }
+	@Bean
+	public SecurityBuilderCustomizer jwtCustomizer(JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter,
+			JwtRenewFilter jwtRenewFilter) {
+		return http -> {
+			Class type = ResolvableType.forType(jwtAuthenticationTokenFilter.getClass()).getRawClass();
+			http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
+			http.addFilterAfter(jwtRenewFilter, type);
+		};
+	}
+
 }

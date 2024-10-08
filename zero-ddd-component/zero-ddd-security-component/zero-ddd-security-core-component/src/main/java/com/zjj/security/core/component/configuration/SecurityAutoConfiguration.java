@@ -23,57 +23,59 @@ import java.util.List;
 @AutoConfiguration
 public class SecurityAutoConfiguration {
 
-    @Bean
-    @ConditionalOnMissingBean
-    public UserDetailsService InMemoryUserDetailsManager(PasswordEncoder passwordEncoder) {
+	@Bean
+	@ConditionalOnMissingBean
+	public UserDetailsService InMemoryUserDetailsManager(PasswordEncoder passwordEncoder) {
 
-        return new InMemoryUserDetailsManager(
-                List.of(
-                        User.withUsername("root").password(passwordEncoder.encode("123456")).roles("ADMIN").build()
-                )
-        );
-    }
+		return new InMemoryUserDetailsManager(
+				List.of(User.withUsername("root").password(passwordEncoder.encode("123456")).roles("ADMIN").build()));
+	}
 
-//    @Bean
-//    @ConditionalOnMissingBean
-//    public JacksonSerializer<Map<String, ?>> jacksonSerializer(ObjectMapper objectMapper) {
-//        return new JacksonSerializer<>(objectMapper);
-//    }
-//
-//    @Bean
-//    @ConditionalOnMissingBean
-//    public JacksonDeserializer<Map<String, ?>> jacksonDeserializer(ObjectMapper objectMapper) {
-//        return new JacksonDeserializer<>(objectMapper);
-//    }
+	// @Bean
+	// @ConditionalOnMissingBean
+	// public JacksonSerializer<Map<String, ?>> jacksonSerializer(ObjectMapper
+	// objectMapper) {
+	// return new JacksonSerializer<>(objectMapper);
+	// }
+	//
+	// @Bean
+	// @ConditionalOnMissingBean
+	// public JacksonDeserializer<Map<String, ?>> jacksonDeserializer(ObjectMapper
+	// objectMapper) {
+	// return new JacksonDeserializer<>(objectMapper);
+	// }
 
-    @Bean
-    @ConditionalOnMissingBean
-    public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    }
+	@Bean
+	@ConditionalOnMissingBean
+	public PasswordEncoder passwordEncoder() {
+		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+	}
 
-    @Bean
-    @ConditionalOnMissingBean(AuthenticationEventPublisher.class)
-    public AuthenticationEventPublisher defaultAuthenticationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
-        return new DefaultAuthenticationEventPublisher(applicationEventPublisher);
-    }
+	@Bean
+	@ConditionalOnMissingBean(AuthenticationEventPublisher.class)
+	public AuthenticationEventPublisher defaultAuthenticationEventPublisher(
+			ApplicationEventPublisher applicationEventPublisher) {
+		return new DefaultAuthenticationEventPublisher(applicationEventPublisher);
+	}
 
-    @Bean
-    @ConditionalOnMissingBean
-    public DaoAuthenticationProvider daoAuthenticationProvider(UserDetailsService userDetailsService) {
-        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
-        daoAuthenticationProvider.setUserDetailsService(userDetailsService);
-        return daoAuthenticationProvider;
-    }
+	@Bean
+	@ConditionalOnMissingBean
+	public DaoAuthenticationProvider daoAuthenticationProvider(UserDetailsService userDetailsService) {
+		DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+		daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+		daoAuthenticationProvider.setUserDetailsService(userDetailsService);
+		return daoAuthenticationProvider;
+	}
 
-    @Bean
-    @ConditionalOnMissingBean(AuthenticationManager.class)
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration, List<AuthenticationProvider> authenticationProviders, AuthenticationEventPublisher authenticationEventPublisher) throws Exception {
-        AuthenticationManager authenticationManager = configuration.getAuthenticationManager();
-        ProviderManager providerManager = new ProviderManager(authenticationProviders, authenticationManager);
-        providerManager.setAuthenticationEventPublisher(authenticationEventPublisher);
-        return providerManager;
-    }
+	@Bean
+	@ConditionalOnMissingBean(AuthenticationManager.class)
+	public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration,
+			List<AuthenticationProvider> authenticationProviders,
+			AuthenticationEventPublisher authenticationEventPublisher) throws Exception {
+		AuthenticationManager authenticationManager = configuration.getAuthenticationManager();
+		ProviderManager providerManager = new ProviderManager(authenticationProviders, authenticationManager);
+		providerManager.setAuthenticationEventPublisher(authenticationEventPublisher);
+		return providerManager;
+	}
 
 }

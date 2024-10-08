@@ -13,8 +13,9 @@ import lombok.EqualsAndHashCode;
 @Data
 public class TenantEntity extends BaseEntity {
 
-    /**
-     * 租户编号
-     */
-    private String tenantId;
+	/**
+	 * 租户编号
+	 */
+	private String tenantId;
+
 }

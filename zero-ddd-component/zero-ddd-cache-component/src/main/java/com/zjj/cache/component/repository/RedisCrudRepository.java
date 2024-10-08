@@ -15,37 +15,36 @@ import java.time.Duration;
 @Getter
 public abstract class RedisCrudRepository<K, V> {
 
-    @Resource
-    protected RedissonClient template;
+	@Resource
+	protected RedissonClient template;
 
-    public abstract V get(K key);
+	public abstract V get(K key);
 
-    public abstract void put(K key, V value);
+	public abstract void put(K key, V value);
 
-    public abstract void putIfAbsent(K key, V value);
+	public abstract void putIfAbsent(K key, V value);
 
-    public long getTimeToLive(final String key) {
-        RBucket<V> rBucket = template.getBucket(key);
-        return rBucket.remainTimeToLive();
-    }
+	public long getTimeToLive(final String key) {
+		RBucket<V> rBucket = template.getBucket(key);
+		return rBucket.remainTimeToLive();
+	}
 
-    /**
-     * 设置过期时间。
-     *
-     * @param key 键
-     * @param expireTime 过期时间（秒）
-     */
-    public void setExpireForExistingKey(String key, long expireTime) {
-        RBucket<String> bucket = template.getBucket(key);
-        bucket.expire(Duration.ofSeconds(expireTime));
-    }
+	/**
+	 * 设置过期时间。
+	 * @param key 键
+	 * @param expireTime 过期时间（秒）
+	 */
+	public void setExpireForExistingKey(String key, long expireTime) {
+		RBucket<String> bucket = template.getBucket(key);
+		bucket.expire(Duration.ofSeconds(expireTime));
+	}
 
-    public boolean containsKey(K key) {
-        return Boolean.TRUE.equals(template.getBucket(key.toString()).isExists());
-    }
+	public boolean containsKey(K key) {
+		return Boolean.TRUE.equals(template.getBucket(key.toString()).isExists());
+	}
 
-    public void remove(K key) {
-        template.getBucket(key.toString()).delete();
-    }
+	public void remove(K key) {
+		template.getBucket(key.toString()).delete();
+	}
 
 }

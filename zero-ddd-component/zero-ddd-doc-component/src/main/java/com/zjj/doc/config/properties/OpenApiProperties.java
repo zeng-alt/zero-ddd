@@ -1,6 +1,5 @@
 package com.zjj.doc.config.properties;
 
-
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.ExternalDocumentation;
 import io.swagger.v3.oas.models.Paths;
@@ -22,28 +21,31 @@ import java.util.List;
 @ConfigurationProperties(prefix = "springdoc")
 public class OpenApiProperties {
 
-    private String devUrl;
-    private String prodUrl;
-    @NestedConfigurationProperty
-    private InfoProperties infoProperties = new InfoProperties();
-    /**
-     * 扩展文档地址
-     */
-    @NestedConfigurationProperty
-    private ExternalDocumentation externalDocs;
+	private String devUrl;
 
-    /**
-     * 标签
-     */
-    private List<Tag> tags = null;
+	private String prodUrl;
 
+	@NestedConfigurationProperty
+	private InfoProperties infoProperties = new InfoProperties();
 
-    /**
-     * 组件
-     */
-    @NestedConfigurationProperty
-    private Components components = null;
+	/**
+	 * 扩展文档地址
+	 */
+	@NestedConfigurationProperty
+	private ExternalDocumentation externalDocs;
 
-    @NestedConfigurationProperty
-    private Paths paths = null;
+	/**
+	 * 标签
+	 */
+	private List<Tag> tags = null;
+
+	/**
+	 * 组件
+	 */
+	@NestedConfigurationProperty
+	private Components components = null;
+
+	@NestedConfigurationProperty
+	private Paths paths = null;
+
 }

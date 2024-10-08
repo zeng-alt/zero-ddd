@@ -10,5 +10,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 @FunctionalInterface
 public interface SecurityBuilderCustomizer {
 
-    void customize(HttpSecurity http) throws Exception;
+	void customize(HttpSecurity http) throws Exception;
+
 }

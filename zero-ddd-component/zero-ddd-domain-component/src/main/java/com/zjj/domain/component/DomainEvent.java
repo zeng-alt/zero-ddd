@@ -14,14 +14,16 @@ import java.util.UUID;
 @Getter
 public abstract class DomainEvent implements Serializable {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+	@Serial
+	private static final long serialVersionUID = 1L;
 
-    protected final Long time;
-    protected final String id;
+	protected final Long time;
 
-    protected DomainEvent() {
-        this.time = System.currentTimeMillis();
-        this.id = UUID.randomUUID().toString();
-    }
+	protected final String id;
+
+	protected DomainEvent() {
+		this.time = System.currentTimeMillis();
+		this.id = UUID.randomUUID().toString();
+	}
+
 }

@@ -1,6 +1,5 @@
 package com.zjj.excel.component.domain;
 
-
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.read.listener.ReadListener;
@@ -18,46 +17,50 @@ import java.util.function.Consumer;
  * @crateTime 2024年07月05日 20:38
  */
 @Slf4j
-public abstract class ExcelSuccessListener<T> extends AnalysisEventListener<T> implements ReadListener<T>, ExcelResult<T>, ImportCall<T> {
+public abstract class ExcelSuccessListener<T> extends AnalysisEventListener<T>
+		implements ReadListener<T>, ExcelResult<T>, ImportCall<T> {
 
-    protected List<T> list;
-    protected List<String> errorList;
-    protected Map<Integer, String> headMap;
+	protected List<T> list;
 
-    protected ExcelSuccessListener() {
-        this.list = Lists.newArrayList();
-        this.errorList = Lists.newArrayList();
-    }
+	protected List<String> errorList;
 
-    @Override
-    public void invokeHeadMap(java.util.Map<Integer, String> headMap, AnalysisContext context) {
-        this.headMap = HashMap.ofAll(headMap);
-        log.debug("解析到表头数据: {}", headMap);
-    }
+	protected Map<Integer, String> headMap;
 
-    @Override
-    public String call(Consumer<List<T>> success, Consumer<List<String>> error) {
-        if (list.isEmpty()) {
-            error.accept(errorList);
-            return "解析失败";
-        }
+	protected ExcelSuccessListener() {
+		this.list = Lists.newArrayList();
+		this.errorList = Lists.newArrayList();
+	}
 
-        if (errorList.isEmpty()) {
-            success.accept(list);
-            return "解析成功";
-        }
+	@Override
+	public void invokeHeadMap(java.util.Map<Integer, String> headMap, AnalysisContext context) {
+		this.headMap = HashMap.ofAll(headMap);
+		log.debug("解析到表头数据: {}", headMap);
+	}
 
-        error.accept(errorList);
-        return "解析失败";
-    }
+	@Override
+	public String call(Consumer<List<T>> success, Consumer<List<String>> error) {
+		if (list.isEmpty()) {
+			error.accept(errorList);
+			return "解析失败";
+		}
 
-    @Override
-    public List<String> getErrorList() {
-        return errorList;
-    }
+		if (errorList.isEmpty()) {
+			success.accept(list);
+			return "解析成功";
+		}
 
-    @Override
-    public List<T> getResult() {
-        return list;
-    }
+		error.accept(errorList);
+		return "解析失败";
+	}
+
+	@Override
+	public List<String> getErrorList() {
+		return errorList;
+	}
+
+	@Override
+	public List<T> getResult() {
+		return list;
+	}
+
 }

@@ -13,36 +13,37 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
  * @crateTime 2024年10月07日 16:40
  * @version 1.0
  */
-public abstract class AbstractLoginConfigurer<T extends AbstractHttpConfigurer<T, B>, B extends HttpSecurityBuilder<B>, F extends AbstractAuthenticationProcessingFilter> extends AbstractHttpConfigurer<T, B> {
+public abstract class AbstractLoginConfigurer<T extends AbstractHttpConfigurer<T, B>, B extends HttpSecurityBuilder<B>, F extends AbstractAuthenticationProcessingFilter>
+		extends AbstractHttpConfigurer<T, B> {
 
-    private F authFilter;
+	private F authFilter;
 
-    protected AbstractLoginConfigurer(F authFilter) {
-        this.authFilter = authFilter;
-    }
+	protected AbstractLoginConfigurer(F authFilter) {
+		this.authFilter = authFilter;
+	}
 
-    public AbstractLoginConfigurer<T, B, F> successHandler(AuthenticationSuccessHandler authenticationSuccessHandler) {
-        authFilter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
-        return this;
-    }
+	public AbstractLoginConfigurer<T, B, F> successHandler(AuthenticationSuccessHandler authenticationSuccessHandler) {
+		authFilter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
+		return this;
+	}
 
+	public AbstractLoginConfigurer<T, B, F> failureHandler(AuthenticationFailureHandler authenticationFailureHandler) {
+		authFilter.setAuthenticationFailureHandler(authenticationFailureHandler);
+		return this;
+	}
 
-    public AbstractLoginConfigurer<T, B, F> failureHandler(AuthenticationFailureHandler authenticationFailureHandler) {
-        authFilter.setAuthenticationFailureHandler(authenticationFailureHandler);
-        return this;
-    }
+	public AbstractLoginConfigurer<T, B, F> eventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+		authFilter.setApplicationEventPublisher(applicationEventPublisher);
+		return this;
+	}
 
-    public AbstractLoginConfigurer<T, B, F> eventPublisher(ApplicationEventPublisher applicationEventPublisher) {
-        authFilter.setApplicationEventPublisher(applicationEventPublisher);
-        return this;
-    }
+	public AbstractLoginConfigurer<T, B, F> authenticationManager(AuthenticationManager authenticationManager) {
+		authFilter.setAuthenticationManager(authenticationManager);
+		return this;
+	}
 
-    public AbstractLoginConfigurer<T, B, F> authenticationManager(AuthenticationManager authenticationManager) {
-        authFilter.setAuthenticationManager(authenticationManager);
-        return this;
-    }
+	protected final F getAuthenticationFilter() {
+		return this.authFilter;
+	}
 
-    protected final F getAuthenticationFilter() {
-        return this.authFilter;
-    }
 }

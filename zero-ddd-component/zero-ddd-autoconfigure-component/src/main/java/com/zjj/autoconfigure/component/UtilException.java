@@ -7,13 +7,15 @@ package com.zjj.autoconfigure.component;
  */
 public class UtilException extends RuntimeException {
 
-    public UtilException() {}
+	public UtilException() {
+	}
 
-    public UtilException(String msg) {
-        super(msg);
-    }
+	public UtilException(String msg) {
+		super(msg);
+	}
 
-    public UtilException(Exception e) {
-        super(e);
-    }
+	public UtilException(Exception e) {
+		super(e);
+	}
+
 }

@@ -10,10 +10,10 @@ import org.springframework.web.filter.OncePerRequestFilter;
  */
 public abstract class JwtRenewFilter extends OncePerRequestFilter {
 
+	protected final JwtCacheManage jwtCacheManage;
 
-    protected final JwtCacheManage jwtCacheManage;
+	protected JwtRenewFilter(JwtCacheManage jwtCacheManage) {
+		this.jwtCacheManage = jwtCacheManage;
+	}
 
-    protected JwtRenewFilter(JwtCacheManage jwtCacheManage) {
-        this.jwtCacheManage = jwtCacheManage;
-    }
 }

@@ -21,6 +21,11 @@
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.zjj</groupId>
+            <artifactId>zero-ddd-memory-component</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

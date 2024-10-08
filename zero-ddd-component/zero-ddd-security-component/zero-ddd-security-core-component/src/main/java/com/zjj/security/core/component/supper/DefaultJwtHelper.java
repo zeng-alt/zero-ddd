@@ -24,74 +24,69 @@ import java.util.Map;
  */
 public final class DefaultJwtHelper implements JwtHelper {
 
-    private final JwtProperties jwtProperties;
-    private final JsonHelper jsonHelper;
+	private final JwtProperties jwtProperties;
 
-    private final SecretKey key = Jwts.SIG.HS256.key().build();
+	private final JsonHelper jsonHelper;
 
-    public DefaultJwtHelper(JwtProperties jwtProperties, JsonHelper jsonHelper) {
-        this.jwtProperties = jwtProperties;
-        this.jsonHelper = jsonHelper;
-    }
+	private final SecretKey key = Jwts.SIG.HS256.key().build();
 
-    @NonNull
-    public String generateJWT(@NonNull String uniqueIdentifier) {
-        return generateJWT(Map.of(jwtProperties.getChaimKey(), uniqueIdentifier));
-    }
+	public DefaultJwtHelper(JwtProperties jwtProperties, JsonHelper jsonHelper) {
+		this.jwtProperties = jwtProperties;
+		this.jsonHelper = jsonHelper;
+	}
 
-    public String generateJWT(Map<String, Object> map) {
-        Map<@Nullable String, @Nullable Object> hashMap = Maps.newHashMap();
-        hashMap.putAll(map);
-        LocalDateTime now = LocalDateTime.now();
-        Long expiration = jwtProperties.getExpiration();
-        TemporalUnit temporalUnit = jwtProperties.getTemporalUnit();
-        LocalDateTime plus = now.plus(expiration, temporalUnit);
-        // 当前时间加上过期时间
-        hashMap.put("expire", jsonHelper.toJsonString(plus));
-        return Jwts
-                .builder()
-//                .json(jacksonSerializer)
-                .issuedAt(new Date())
-                .claims(hashMap)
-                .signWith(key)
-                .compact();
-    }
+	@NonNull
+	public String generateJWT(@NonNull String uniqueIdentifier) {
+		return generateJWT(Map.of(jwtProperties.getChaimKey(), uniqueIdentifier));
+	}
 
-    public Claims getClaimsFromToken(String token) throws BadCredentialsException {
-        try {
-            return Jwts
-                    .parser()
-//                    .json(jacksonDeserializer)
-                    .verifyWith(key)
-                    .build()
-                    .parseSignedClaims(token)
-                    .getPayload();
-        } catch (Exception var5) {
-            throw new BadCredentialsException("jwt校验失败");
-        }
-    }
+	public String generateJWT(Map<String, Object> map) {
+		Map<@Nullable String, @Nullable Object> hashMap = Maps.newHashMap();
+		hashMap.putAll(map);
+		LocalDateTime now = LocalDateTime.now();
+		Long expiration = jwtProperties.getExpiration();
+		TemporalUnit temporalUnit = jwtProperties.getTemporalUnit();
+		LocalDateTime plus = now.plus(expiration, temporalUnit);
+		// 当前时间加上过期时间
+		hashMap.put("expire", jsonHelper.toJsonString(plus));
+		return Jwts.builder()
+				// .json(jacksonSerializer)
+				.issuedAt(new Date()).claims(hashMap).signWith(key).compact();
+	}
 
-    public Object getClaimFromToken(String token) throws BadCredentialsException {
-        try {
-            return getClaimsFromToken(token).get(jwtProperties.getChaimKey());
-        } catch (Exception var5) {
-            throw new BadCredentialsException("jwt校验失败");
-        }
-    }
+	public Claims getClaimsFromToken(String token) throws BadCredentialsException {
+		try {
+			return Jwts.parser()
+					// .json(jacksonDeserializer)
+					.verifyWith(key).build().parseSignedClaims(token).getPayload();
+		}
+		catch (Exception var5) {
+			throw new BadCredentialsException("jwt校验失败");
+		}
+	}
 
-    @Override
-    public Object getClaim(Map<String, Object> map) {
-        return map.get(jwtProperties.getChaimKey());
-    }
+	public Object getClaimFromToken(String token) throws BadCredentialsException {
+		try {
+			return getClaimsFromToken(token).get(jwtProperties.getChaimKey());
+		}
+		catch (Exception var5) {
+			throw new BadCredentialsException("jwt校验失败");
+		}
+	}
 
-    @Override
-    public LocalDateTime getExpire(Map<String, Object> map) {
-        return jsonHelper.parseObject(map.get("expire").toString(), LocalDateTime.class);
-    }
+	@Override
+	public Object getClaim(Map<String, Object> map) {
+		return map.get(jwtProperties.getChaimKey());
+	}
 
-    @Override
-    public String tokenHeader() {
-        return jwtProperties.getTokenHeader();
-    }
+	@Override
+	public LocalDateTime getExpire(Map<String, Object> map) {
+		return jsonHelper.parseObject(map.get("expire").toString(), LocalDateTime.class);
+	}
+
+	@Override
+	public String tokenHeader() {
+		return jwtProperties.getTokenHeader();
+	}
 
 }

@@ -10,14 +10,11 @@
     </parent>
     <packaging>pom</packaging>
 
-<!--    <packaging>pom</packaging>-->
-
     <artifactId>zero-ddd-component</artifactId>
 
     <name>zero-ddd-component</name>
     <description>通用模块</description>
 
-<!--    <packaging>pom</packaging>-->
     <modules>
         <module>zero-ddd-auth-component</module>
         <module>zero-ddd-core-component</module>
@@ -30,7 +27,9 @@
         <module>zero-ddd-excel-component</module>
         <module>zero-ddd-json-component</module>
         <module>zero-ddd-autoconfigure-component</module>
-        <module>zero-ddd-bean-componenet</module>
+        <module>zero-ddd-bean-component</module>
         <module>zero-ddd-graphql-component</module>
+        <module>zero-ddd-memory-component</module>
+        <module>zero-ddd-l2-cache-component</module>
     </modules>
 </project>

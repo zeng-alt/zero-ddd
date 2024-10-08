@@ -8,5 +8,7 @@ import java.util.List;
  * @crateTime 2024年07月23日 16:47
  */
 public interface ExcelFailHandler {
-    void error(List<String> list);
+
+	void error(List<String> list);
+
 }

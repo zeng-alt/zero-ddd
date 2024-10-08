@@ -1,6 +1,5 @@
 package com.zjj.core.component.api;
 
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,48 +18,50 @@ import java.util.List;
 @Setter
 public class PageResponse<T extends Serializable> extends Response<Collection<T>> {
 
-    private Integer pageNum;
-    private Integer pageSize;
-    private Long total;
+	private Integer pageNum;
 
-    public Integer getFirstNum() {
-        return (pageNum - 1) * pageSize;
-    }
+	private Integer pageSize;
 
-    public long getTotalPages() {
-        return this.total % this.pageSize == 0 ? this.total
-                / this.pageSize : (this.total / this.pageSize) + 1;
-    }
+	private Long total;
 
-    @Override
-    public List<T> getData() {
-        if (null == data) {
-            return Collections.emptyList();
-        }
-        if (data instanceof List) {
-            return (List<T>) data;
-        }
-        return new ArrayList<>(data);
-    }
+	public Integer getFirstNum() {
+		return (pageNum - 1) * pageSize;
+	}
 
-    public static <T extends Serializable> PageResponse<T> of(int pageSize, int pageNum) {
-        PageResponse<T> response = new PageResponse<>();
-        response.setData(Collections.emptyList());
-        response.setTotal(0L);
-        response.setPageSize(pageSize);
-        response.setPageNum(pageNum);
-        response.setCode(SUCCESS);
-        return response;
-    }
+	public long getTotalPages() {
+		return this.total % this.pageSize == 0 ? this.total / this.pageSize : (this.total / this.pageSize) + 1;
+	}
 
-    public static <T extends Serializable> PageResponse<T> of(Collection<T> data, long totalCount, int pageSize, int pageNum) {
-        PageResponse<T> response = new PageResponse<>();
-        response.setData(data);
-        response.setTotal(totalCount);
-        response.setPageSize(pageSize);
-        response.setPageNum(pageNum);
-        response.setCode(SUCCESS);
-        return response;
-    }
+	@Override
+	public List<T> getData() {
+		if (null == data) {
+			return Collections.emptyList();
+		}
+		if (data instanceof List) {
+			return (List<T>) data;
+		}
+		return new ArrayList<>(data);
+	}
+
+	public static <T extends Serializable> PageResponse<T> of(int pageSize, int pageNum) {
+		PageResponse<T> response = new PageResponse<>();
+		response.setData(Collections.emptyList());
+		response.setTotal(0L);
+		response.setPageSize(pageSize);
+		response.setPageNum(pageNum);
+		response.setCode(SUCCESS);
+		return response;
+	}
+
+	public static <T extends Serializable> PageResponse<T> of(Collection<T> data, long totalCount, int pageSize,
+			int pageNum) {
+		PageResponse<T> response = new PageResponse<>();
+		response.setData(data);
+		response.setTotal(totalCount);
+		response.setPageSize(pageSize);
+		response.setPageNum(pageNum);
+		response.setCode(SUCCESS);
+		return response;
+	}
 
 }

@@ -7,5 +7,6 @@ package com.zjj.cache.component.repository;
  */
 public abstract class RedisListRepository<V> extends RedisCrudRepository<String, V> {
 
-    public abstract void addToList(String key, V value);
+	public abstract void addToList(String key, V value);
+
 }

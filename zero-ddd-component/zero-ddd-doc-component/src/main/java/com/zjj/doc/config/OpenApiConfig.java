@@ -26,41 +26,37 @@ import java.util.Set;
 @ConditionalOnProperty(name = "springdoc.api-docs.enabled", havingValue = "true", matchIfMissing = true)
 public class OpenApiConfig {
 
-    @Bean
-    @ConditionalOnMissingBean(OpenAPI.class)
-    public OpenAPI openApi(OpenApiProperties openApiProperties) {
-        Server devServer = new Server();
-        devServer.setUrl(openApiProperties.getDevUrl());
-        devServer.setDescription("开发环境");
+	@Bean
+	@ConditionalOnMissingBean(OpenAPI.class)
+	public OpenAPI openApi(OpenApiProperties openApiProperties) {
+		Server devServer = new Server();
+		devServer.setUrl(openApiProperties.getDevUrl());
+		devServer.setDescription("开发环境");
 
-        Server prodServer = new Server();
-        prodServer.setUrl(openApiProperties.getProdUrl());
-        devServer.setDescription("生产环境");
+		Server prodServer = new Server();
+		prodServer.setUrl(openApiProperties.getProdUrl());
+		devServer.setDescription("生产环境");
 
-        List<SecurityRequirement> list = new ArrayList<>();
-        Set<String> keySet = openApiProperties.getComponents().getSecuritySchemes().keySet();
-        SecurityRequirement securityRequirement = new SecurityRequirement();
-        keySet.forEach(securityRequirement::addList);
-        list.add(securityRequirement);
+		List<SecurityRequirement> list = new ArrayList<>();
+		Set<String> keySet = openApiProperties.getComponents().getSecuritySchemes().keySet();
+		SecurityRequirement securityRequirement = new SecurityRequirement();
+		keySet.forEach(securityRequirement::addList);
+		list.add(securityRequirement);
 
-        return new OpenAPI()
-                .info(info(openApiProperties.getInfoProperties()))
-                .externalDocs(openApiProperties.getExternalDocs())
-                .tags(openApiProperties.getTags())
-                .paths(openApiProperties.getPaths())
-                .components(openApiProperties.getComponents())
-                .addServersItem(devServer)
-                .addServersItem(prodServer)
-                .security(list);
-    }
+		return new OpenAPI().info(info(openApiProperties.getInfoProperties()))
+				.externalDocs(openApiProperties.getExternalDocs()).tags(openApiProperties.getTags())
+				.paths(openApiProperties.getPaths()).components(openApiProperties.getComponents())
+				.addServersItem(devServer).addServersItem(prodServer).security(list);
+	}
 
-    private Info info(InfoProperties infoProperties) {
-        Info info = new Info();
-        info.setTitle(infoProperties.getTitle());
-        info.setDescription(infoProperties.getDescription());
-        info.setContact(infoProperties.getContact());
-        info.setLicense(infoProperties.getLicense());
-        info.setVersion(infoProperties.getVersion());
-        return info;
-    }
+	private Info info(InfoProperties infoProperties) {
+		Info info = new Info();
+		info.setTitle(infoProperties.getTitle());
+		info.setDescription(infoProperties.getDescription());
+		info.setContact(infoProperties.getContact());
+		info.setLicense(infoProperties.getLicense());
+		info.setVersion(infoProperties.getVersion());
+		return info;
+	}
+
 }

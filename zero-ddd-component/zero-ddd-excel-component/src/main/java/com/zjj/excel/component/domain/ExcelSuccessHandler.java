@@ -9,5 +9,6 @@ import java.util.List;
  */
 public interface ExcelSuccessHandler<T> {
 
-    ExcelFailHandler success(List<T> list);
+	ExcelFailHandler success(List<T> list);
+
 }

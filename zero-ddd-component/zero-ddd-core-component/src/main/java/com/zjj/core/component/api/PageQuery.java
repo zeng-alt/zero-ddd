@@ -13,22 +13,25 @@ import java.io.Serializable;
 @Data
 public class PageQuery implements Serializable {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+	@Serial
+	private static final long serialVersionUID = 1L;
 
-    public static final String ASC = "ASC";
-    public static final String DESC = "DESC";
-    private Integer page = 1;
-    private Integer size = 10;
-    /**
-     * 排序列
-     */
-    private String orderByColumn;
+	public static final String ASC = "ASC";
 
-    /**
-     * 排序的方向desc或者asc
-     */
-    private String isAsc = DESC;
+	public static final String DESC = "DESC";
 
+	private Integer page = 1;
+
+	private Integer size = 10;
+
+	/**
+	 * 排序列
+	 */
+	private String orderByColumn;
+
+	/**
+	 * 排序的方向desc或者asc
+	 */
+	private String isAsc = DESC;
 
 }

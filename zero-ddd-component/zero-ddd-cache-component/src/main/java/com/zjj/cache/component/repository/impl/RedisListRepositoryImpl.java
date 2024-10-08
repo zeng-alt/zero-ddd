@@ -9,24 +9,25 @@ import com.zjj.cache.component.repository.RedisListRepository;
  */
 public class RedisListRepositoryImpl<V> extends RedisListRepository<V> {
 
-    @Override
-    public void addToList(String key, V value) {
-        put(key, value);
-    }
+	@Override
+	public void addToList(String key, V value) {
+		put(key, value);
+	}
 
-    @Override
-    public V get(String key) {
-//        return template.opsForList().index(key, 0);
-        return null;
-    }
+	@Override
+	public V get(String key) {
+		// return template.opsForList().index(key, 0);
+		return null;
+	}
 
-    @Override
-    public void put(String key, V value) {
-//        template.opsForList().rightPush(key, value);
-    }
+	@Override
+	public void put(String key, V value) {
+		// template.opsForList().rightPush(key, value);
+	}
 
-    @Override
-    public void putIfAbsent(String key, V value) {
-//        template.opsForList().rightPushIfPresent(key, value);
-    }
+	@Override
+	public void putIfAbsent(String key, V value) {
+		// template.opsForList().rightPushIfPresent(key, value);
+	}
+
 }

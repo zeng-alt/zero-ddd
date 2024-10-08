@@ -13,5 +13,7 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties(prefix = "security.login")
 public class LoginProperties {
-    private boolean enabled = false;
+
+	private boolean enabled = false;
+
 }

@@ -28,131 +28,132 @@ import org.springframework.util.Assert;
  * @crateTime 2024年09月30日 21:32
  */
 @Slf4j
-public class SmsAuthenticationProvider
-        implements AuthenticationProvider, InitializingBean, MessageSourceAware {
+public class SmsAuthenticationProvider implements AuthenticationProvider, InitializingBean, MessageSourceAware {
 
-    protected MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();
-    private CodeService codeService;
-    @Setter
-    private SmsDetailsService smsDetailsService;
-    @Setter
-    private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
-    @Setter
-    @Getter
-    private boolean forcePrincipalAsString = false;
+	protected MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();
 
-    public SmsAuthenticationProvider(CodeService codeService, SmsDetailsService smsDetailsService) {
-        this.codeService = codeService;
-        this.smsDetailsService = smsDetailsService;
-    }
+	private CodeService codeService;
 
-    @Override
-    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        Assert.isInstanceOf(SmsAuthenticationToken.class, authentication,
-                () -> this.messages.getMessage("SmsAuthenticationToken.onlySupports",
-                        "Only SmsAuthenticationToken is supported"));
-        String mobile = determineMobile(authentication);
+	@Setter
+	private SmsDetailsService smsDetailsService;
 
-        UserDetails user;
+	@Setter
+	private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
 
+	@Setter
+	@Getter
+	private boolean forcePrincipalAsString = false;
 
-        try {
-            user = retrieveUser(mobile);
-        }
-        catch (MobileNotFoundException ex) {
-            log.debug("Failed to find user '" + mobile + "'");
-            throw new BadCredentialsException(this.messages
-                    .getMessage("SmsAuthenticationToken.badCredentials", "Bad credentials"));
-        }
-        Assert.notNull(user, "retrieveUser returned null - a violation of the interface contract");
+	public SmsAuthenticationProvider(CodeService codeService, SmsDetailsService smsDetailsService) {
+		this.codeService = codeService;
+		this.smsDetailsService = smsDetailsService;
+	}
 
+	@Override
+	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+		Assert.isInstanceOf(SmsAuthenticationToken.class, authentication, () -> this.messages
+				.getMessage("SmsAuthenticationToken.onlySupports", "Only SmsAuthenticationToken is supported"));
+		String mobile = determineMobile(authentication);
 
-//      this.preAuthenticationChecks.check(user);
-        additionalAuthenticationChecks(mobile, (SmsAuthenticationToken) authentication);
-//        this.postAuthenticationChecks.check(user);
+		UserDetails user;
 
-        Object principalToReturn = user;
-        if (this.forcePrincipalAsString) {
-            principalToReturn = user.getUsername();
-        }
-        return createSuccessAuthentication(principalToReturn, authentication, user);
-    }
+		try {
+			user = retrieveUser(mobile);
+		}
+		catch (MobileNotFoundException ex) {
+			log.debug("Failed to find user '" + mobile + "'");
+			throw new BadCredentialsException(
+					this.messages.getMessage("SmsAuthenticationToken.badCredentials", "Bad credentials"));
+		}
+		Assert.notNull(user, "retrieveUser returned null - a violation of the interface contract");
 
-    protected void additionalAuthenticationChecks(String mobile, SmsAuthenticationToken authentication) throws AuthenticationException {
-        if (authentication.getCredentials() == null) {
-            log.debug("Failed to authenticate since no credentials provided");
-            throw new BadCredentialsException(this.messages
-                    .getMessage("SmsAuthenticationToken.badCredentials", "Bad credentials"));
-        }
-        String code = authentication.getCredentials().toString();
-        if (!this.codeService.matches(mobile, code)) {
-            log.debug("Failed to authenticate since password does not match stored value");
-            throw new BadCredentialsException(this.messages
-                    .getMessage("SmsAuthenticationToken.badCredentials", "Bad credentials"));
-        }
-    }
+		// this.preAuthenticationChecks.check(user);
+		additionalAuthenticationChecks(mobile, (SmsAuthenticationToken) authentication);
+		// this.postAuthenticationChecks.check(user);
 
-    protected UserDetails retrieveUser(String mobile) throws AuthenticationException {
-        try {
-            UserDetails loadedUser = this.getSmsDetailsService().loadUserByMobile(mobile);
-            if (loadedUser == null) {
-                throw new InternalAuthenticationServiceException(
-                        "SmsDetailsService returned null, which is an interface contract violation");
-            }
-            return loadedUser;
-        }
-        catch (MobileNotFoundException | InternalAuthenticationServiceException ex) {
-            throw ex;
-        }
-        catch (Exception ex) {
-            throw new InternalAuthenticationServiceException(ex.getMessage(), ex);
-        }
-    }
+		Object principalToReturn = user;
+		if (this.forcePrincipalAsString) {
+			principalToReturn = user.getUsername();
+		}
+		return createSuccessAuthentication(principalToReturn, authentication, user);
+	}
 
-    protected Authentication createSuccessAuthentication(Object principal, Authentication authentication,
-                                                         UserDetails user) {
+	protected void additionalAuthenticationChecks(String mobile, SmsAuthenticationToken authentication)
+			throws AuthenticationException {
+		if (authentication.getCredentials() == null) {
+			log.debug("Failed to authenticate since no credentials provided");
+			throw new BadCredentialsException(
+					this.messages.getMessage("SmsAuthenticationToken.badCredentials", "Bad credentials"));
+		}
+		String code = authentication.getCredentials().toString();
+		if (!this.codeService.matches(mobile, code)) {
+			log.debug("Failed to authenticate since password does not match stored value");
+			throw new BadCredentialsException(
+					this.messages.getMessage("SmsAuthenticationToken.badCredentials", "Bad credentials"));
+		}
+	}
 
-        SmsAuthenticationToken result = SmsAuthenticationToken.authenticated(principal,
-                authentication.getCredentials(), this.authoritiesMapper.mapAuthorities(user.getAuthorities()));
-        result.setDetails(authentication.getDetails());
-        log.debug("Authenticated user");
-        return result;
-    }
+	protected UserDetails retrieveUser(String mobile) throws AuthenticationException {
+		try {
+			UserDetails loadedUser = this.getSmsDetailsService().loadUserByMobile(mobile);
+			if (loadedUser == null) {
+				throw new InternalAuthenticationServiceException(
+						"SmsDetailsService returned null, which is an interface contract violation");
+			}
+			return loadedUser;
+		}
+		catch (MobileNotFoundException | InternalAuthenticationServiceException ex) {
+			throw ex;
+		}
+		catch (Exception ex) {
+			throw new InternalAuthenticationServiceException(ex.getMessage(), ex);
+		}
+	}
 
-    protected String determineMobile(Authentication authentication) {
-        return (authentication.getPrincipal() == null) ? "NONE_PROVIDED" : authentication.getName();
-    }
+	protected Authentication createSuccessAuthentication(Object principal, Authentication authentication,
+			UserDetails user) {
 
-    public void setCodeService(CodeService codeService) {
-        Assert.notNull(codeService, "codeService cannot be null");
-        this.codeService = codeService;
-    }
+		SmsAuthenticationToken result = SmsAuthenticationToken.authenticated(principal, authentication.getCredentials(),
+				this.authoritiesMapper.mapAuthorities(user.getAuthorities()));
+		result.setDetails(authentication.getDetails());
+		log.debug("Authenticated user");
+		return result;
+	}
 
-    protected CodeService getCodeService() {
-        return this.codeService;
-    }
+	protected String determineMobile(Authentication authentication) {
+		return (authentication.getPrincipal() == null) ? "NONE_PROVIDED" : authentication.getName();
+	}
 
-    protected SmsDetailsService getSmsDetailsService() {
-        return this.smsDetailsService;
-    }
+	public void setCodeService(CodeService codeService) {
+		Assert.notNull(codeService, "codeService cannot be null");
+		this.codeService = codeService;
+	}
 
-    protected void doAfterPropertiesSet() {
-        Assert.notNull(this.smsDetailsService, "A SmsDetailsService must be set");
-    }
+	protected CodeService getCodeService() {
+		return this.codeService;
+	}
 
+	protected SmsDetailsService getSmsDetailsService() {
+		return this.smsDetailsService;
+	}
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        doAfterPropertiesSet();
-    }
+	protected void doAfterPropertiesSet() {
+		Assert.notNull(this.smsDetailsService, "A SmsDetailsService must be set");
+	}
 
-    @Override
-    public void setMessageSource(@NonNull MessageSource messageSource) {
-        this.messages = new MessageSourceAccessor(messageSource);
-    }
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		doAfterPropertiesSet();
+	}
 
-    @Override
-    public boolean supports(Class<?> authentication) {
-        return (SmsAuthenticationToken.class.isAssignableFrom(authentication));
-    }
+	@Override
+	public void setMessageSource(@NonNull MessageSource messageSource) {
+		this.messages = new MessageSourceAccessor(messageSource);
+	}
+
+	@Override
+	public boolean supports(Class<?> authentication) {
+		return (SmsAuthenticationToken.class.isAssignableFrom(authentication));
+	}
+
 }

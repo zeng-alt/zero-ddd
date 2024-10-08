@@ -12,10 +12,11 @@ import java.time.temporal.TemporalUnit;
  */
 public class TimeTest {
 
-    @Test
-    public void testTime() {
-        TemporalUnit chronoUnit = ChronoUnit.HOURS;
-        long totalMinutes = 20 * chronoUnit.getDuration().toMinutes();
-        System.out.println(totalMinutes);
-    }
+	@Test
+	public void testTime() {
+		TemporalUnit chronoUnit = ChronoUnit.HOURS;
+		long totalMinutes = 20 * chronoUnit.getDuration().toMinutes();
+		System.out.println(totalMinutes);
+	}
+
 }

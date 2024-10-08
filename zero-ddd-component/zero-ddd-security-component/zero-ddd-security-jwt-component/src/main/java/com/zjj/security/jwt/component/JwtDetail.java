@@ -15,7 +15,11 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 public class JwtDetail implements Serializable {
-    private UserDetails user;
-    private LocalDateTime expire;
-    private String id;
+
+	private UserDetails user;
+
+	private LocalDateTime expire;
+
+	private String id;
+
 }

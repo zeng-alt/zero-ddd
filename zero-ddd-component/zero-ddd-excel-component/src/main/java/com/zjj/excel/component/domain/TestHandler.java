@@ -7,15 +7,16 @@ package com.zjj.excel.component.domain;
  */
 public class TestHandler {
 
-    public TestHandler test1() {
-        return null;
-    }
+	public TestHandler test1() {
+		return null;
+	}
 
-    public TestHandler test2() {
-        return null;
-    }
+	public TestHandler test2() {
+		return null;
+	}
 
-    public TestHandler test3() {
-        return null;
-    }
+	public TestHandler test3() {
+		return null;
+	}
+
 }

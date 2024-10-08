@@ -36,7 +36,7 @@
 
         <dependency>
             <groupId>com.zjj</groupId>
-            <artifactId>zero-ddd-bean-componenet</artifactId>
+            <artifactId>zero-ddd-bean-component</artifactId>
         </dependency>
 
         <dependency>

@@ -19,25 +19,27 @@ import java.util.Objects;
  */
 public class DefaultJwtRenewFilter extends JwtRenewFilter {
 
-    public static final String RENEW_KEY = "renew:jwt:key";
+	public static final String RENEW_KEY = "renew:jwt:key";
 
-    public DefaultJwtRenewFilter(JwtCacheManage jwtCacheManage) {
-        super(jwtCacheManage);
-    }
+	public DefaultJwtRenewFilter(JwtCacheManage jwtCacheManage) {
+		super(jwtCacheManage);
+	}
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        Object attribute = request.getAttribute(RENEW_KEY);
-        if (Objects.nonNull(attribute)) {
-            JwtDetail jwtDetail = (JwtDetail) attribute;
-            LocalDateTime now = LocalDateTime.now();
-            LocalDateTime expire = jwtDetail.getExpire();
-            // 如果过期时间小当前时间的前15分钟，不进行刷新
-            if (expire.isBefore(now.plusMinutes(15))) {
-                jwtCacheManage.put(jwtDetail.getId(), jwtDetail.getUser());
-            }
-        }
+	@Override
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+			throws ServletException, IOException {
+		Object attribute = request.getAttribute(RENEW_KEY);
+		if (Objects.nonNull(attribute)) {
+			JwtDetail jwtDetail = (JwtDetail) attribute;
+			LocalDateTime now = LocalDateTime.now();
+			LocalDateTime expire = jwtDetail.getExpire();
+			// 如果过期时间小当前时间的前15分钟，不进行刷新
+			if (expire.isBefore(now.plusMinutes(15))) {
+				jwtCacheManage.put(jwtDetail.getId(), jwtDetail.getUser());
+			}
+		}
 
-        filterChain.doFilter(request, response);
-    }
+		filterChain.doFilter(request, response);
+	}
+
 }

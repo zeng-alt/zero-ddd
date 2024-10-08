@@ -25,18 +25,16 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 @AutoConfiguration
 public class AccessFailedAutoConfiguration {
 
+	@Bean
+	@ConditionalOnMissingBean
+	public AuthenticationEntryPoint authenticationEntryPoint() {
+		return new DefaultAuthenticationEntryPoint();
+	}
 
-    @Bean
-    @ConditionalOnMissingBean
-    public AuthenticationEntryPoint authenticationEntryPoint() {
-        return new DefaultAuthenticationEntryPoint();
-    }
-
-
-    @Bean
-    @ConditionalOnMissingBean
-    public AccessDeniedHandler accessDeniedHandler() {
-        return new DefaultAccessDeniedHandler();
-    }
+	@Bean
+	@ConditionalOnMissingBean
+	public AccessDeniedHandler accessDeniedHandler() {
+		return new DefaultAccessDeniedHandler();
+	}
 
 }

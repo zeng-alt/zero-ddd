@@ -7,5 +7,4 @@ package com.zjj.cache.component.repository;
  */
 public interface RedisPubSubRepository {
 
-
 }

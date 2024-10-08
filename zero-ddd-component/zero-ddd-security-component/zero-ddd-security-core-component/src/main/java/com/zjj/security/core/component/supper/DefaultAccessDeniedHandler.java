@@ -16,11 +16,12 @@ import java.io.IOException;
  * @crateTime 2024年09月30日 20:15
  */
 public class DefaultAccessDeniedHandler implements AccessDeniedHandler {
-    @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException exception) throws IOException, ServletException {
-        AuthenticationHelper.renderString(
-                response, HttpStatus.FORBIDDEN.value(),
-                "访问拒绝: " + AuthenticationHelper.getErrorMsg(request).orElse(exception.getMessage())
-        );
-    }
+
+	@Override
+	public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException exception)
+			throws IOException, ServletException {
+		AuthenticationHelper.renderString(response, HttpStatus.FORBIDDEN.value(),
+				"访问拒绝: " + AuthenticationHelper.getErrorMsg(request).orElse(exception.getMessage()));
+	}
+
 }

@@ -8,4 +8,5 @@ import java.io.Serializable;
  * @crateTime 2024年06月26日 19:34
  */
 public interface Message extends Serializable {
+
 }

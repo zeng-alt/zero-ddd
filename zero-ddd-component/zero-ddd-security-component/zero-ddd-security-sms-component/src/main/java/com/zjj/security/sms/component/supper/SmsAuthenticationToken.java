@@ -14,55 +14,58 @@ import java.util.Collection;
  */
 public class SmsAuthenticationToken extends AbstractAuthenticationToken {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+	@Serial
+	private static final long serialVersionUID = 1L;
 
-    private final Object principal;
-    private Object credentials;
+	private final Object principal;
 
-    public SmsAuthenticationToken(Object principal, Object credentials) {
-        super(null);
-        this.principal = principal;
-        this.credentials = credentials;
-        this.setAuthenticated(false);
-    }
+	private Object credentials;
 
-    public SmsAuthenticationToken(Object principal, Object credentials, Collection<? extends GrantedAuthority> authorities) {
-        super(authorities);
-        this.principal = principal;
-        this.credentials = credentials;
-        super.setAuthenticated(true);
-    }
+	public SmsAuthenticationToken(Object principal, Object credentials) {
+		super(null);
+		this.principal = principal;
+		this.credentials = credentials;
+		this.setAuthenticated(false);
+	}
 
-    public static SmsAuthenticationToken unauthenticated(Object principal, Object credentials) {
-        return new SmsAuthenticationToken(principal, credentials);
-    }
+	public SmsAuthenticationToken(Object principal, Object credentials,
+			Collection<? extends GrantedAuthority> authorities) {
+		super(authorities);
+		this.principal = principal;
+		this.credentials = credentials;
+		super.setAuthenticated(true);
+	}
 
-    public static SmsAuthenticationToken authenticated(Object principal, Object credentials,
-                                                                    Collection<? extends GrantedAuthority> authorities) {
-        return new SmsAuthenticationToken(principal, credentials, authorities);
-    }
+	public static SmsAuthenticationToken unauthenticated(Object principal, Object credentials) {
+		return new SmsAuthenticationToken(principal, credentials);
+	}
 
-    @Override
-    public Object getCredentials() {
-        return this.credentials;
-    }
+	public static SmsAuthenticationToken authenticated(Object principal, Object credentials,
+			Collection<? extends GrantedAuthority> authorities) {
+		return new SmsAuthenticationToken(principal, credentials, authorities);
+	}
 
-    @Override
-    public Object getPrincipal() {
-        return this.principal;
-    }
+	@Override
+	public Object getCredentials() {
+		return this.credentials;
+	}
 
-    @Override
-    public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
-        Assert.isTrue(!isAuthenticated,
-                "Cannot set this token to trusted - use constructor which takes a GrantedAuthority list instead");
-        super.setAuthenticated(false);
-    }
+	@Override
+	public Object getPrincipal() {
+		return this.principal;
+	}
 
-    @Override
-    public void eraseCredentials() {
-        super.eraseCredentials();
-        this.credentials = null;
-    }
+	@Override
+	public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
+		Assert.isTrue(!isAuthenticated,
+				"Cannot set this token to trusted - use constructor which takes a GrantedAuthority list instead");
+		super.setAuthenticated(false);
+	}
+
+	@Override
+	public void eraseCredentials() {
+		super.eraseCredentials();
+		this.credentials = null;
+	}
+
 }

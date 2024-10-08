@@ -1,10 +1,7 @@
 package com.zjj.excel.component.domain;
 
-
-
 import java.util.List;
 import java.util.function.Consumer;
-
 
 /**
  * @author zengJiaJun
@@ -14,5 +11,6 @@ import java.util.function.Consumer;
 @FunctionalInterface
 public interface ImportCall<T> {
 
-    String call(Consumer<List<T>> success, Consumer<List<String>> error);
+	String call(Consumer<List<T>> success, Consumer<List<String>> error);
+
 }

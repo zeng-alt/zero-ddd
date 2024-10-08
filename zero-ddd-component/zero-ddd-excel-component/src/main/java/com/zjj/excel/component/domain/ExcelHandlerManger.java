@@ -10,15 +10,16 @@ import java.util.function.Consumer;
  */
 public class ExcelHandlerManger<T> {
 
-    public ExcelHandlerManger<T> invoke(InvokeFunction<TestHandler> invokeFunction) {
-        return this;
-    }
+	public ExcelHandlerManger<T> invoke(InvokeFunction<TestHandler> invokeFunction) {
+		return this;
+	}
 
-    public ExcelHandlerManger<T> success(Consumer<List<T>> consumer) {
-        return this;
-    }
+	public ExcelHandlerManger<T> success(Consumer<List<T>> consumer) {
+		return this;
+	}
 
-    public ExcelHandlerManger<T> fail(Consumer<List<String>> consumer) {
-        return this;
-    }
+	public ExcelHandlerManger<T> fail(Consumer<List<String>> consumer) {
+		return this;
+	}
+
 }

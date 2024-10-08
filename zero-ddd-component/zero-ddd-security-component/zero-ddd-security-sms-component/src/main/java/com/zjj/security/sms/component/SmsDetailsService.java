@@ -10,5 +10,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
  */
 public interface SmsDetailsService {
 
-    UserDetails loadUserByMobile(String mobile) throws UsernameNotFoundException;
+	UserDetails loadUserByMobile(String mobile) throws UsernameNotFoundException;
+
 }

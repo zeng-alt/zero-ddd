@@ -17,11 +17,13 @@ import java.io.IOException;
  */
 public abstract class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
-    protected final JwtCacheManage jwtCacheManage;
-    protected final JwtHelper jwtHelper;
+	protected final JwtCacheManage jwtCacheManage;
 
-    protected LoginSuccessHandler(JwtCacheManage jwtCacheManage, JwtHelper jwtHelper) {
-        this.jwtCacheManage = jwtCacheManage;
-        this.jwtHelper = jwtHelper;
-    }
+	protected final JwtHelper jwtHelper;
+
+	protected LoginSuccessHandler(JwtCacheManage jwtCacheManage, JwtHelper jwtHelper) {
+		this.jwtCacheManage = jwtCacheManage;
+		this.jwtHelper = jwtHelper;
+	}
+
 }

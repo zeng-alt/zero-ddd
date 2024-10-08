@@ -32,33 +32,34 @@ import java.util.List;
 @AutoConfiguration(before = JacksonAutoConfiguration.class)
 public class JsonConfig {
 
-    @Bean
-    @ConditionalOnMissingBean
-    public JsonHelper jsonHelper() {
-        return new JacksonHelper();
-    }
+	@Bean
+	@ConditionalOnMissingBean
+	public JsonHelper jsonHelper() {
+		return new JacksonHelper();
+	}
 
-    @Bean
-    @DependsOn({"vavrTimeModule", "javaTimeModule"})
-    public ObjectMapper objectMapper(List<Module> moduleList) {
-        return new ObjectMapper().registerModules(moduleList);
-    }
+	@Bean
+	@DependsOn({ "vavrTimeModule", "javaTimeModule" })
+	public ObjectMapper objectMapper(List<Module> moduleList) {
+		return new ObjectMapper().registerModules(moduleList);
+	}
 
-    @Bean
-    public Module vavrTimeModule() {
-        return new VavrModule();
-    }
+	@Bean
+	public Module vavrTimeModule() {
+		return new VavrModule();
+	}
 
-    @Bean
-    public Module javaTimeModule() {
-        JavaTimeModule javaTimeModule = new JavaTimeModule();
-        javaTimeModule.addSerializer(Long.class, BigNumberConverter.INSTANCE);
-        javaTimeModule.addSerializer(Long.TYPE, BigNumberConverter.INSTANCE);
-        javaTimeModule.addSerializer(BigInteger.class, BigNumberConverter.INSTANCE);
-        javaTimeModule.addSerializer(BigDecimal.class, ToStringSerializer.instance);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(formatter));
-        javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(formatter));
-        return javaTimeModule;
-    }
+	@Bean
+	public Module javaTimeModule() {
+		JavaTimeModule javaTimeModule = new JavaTimeModule();
+		javaTimeModule.addSerializer(Long.class, BigNumberConverter.INSTANCE);
+		javaTimeModule.addSerializer(Long.TYPE, BigNumberConverter.INSTANCE);
+		javaTimeModule.addSerializer(BigInteger.class, BigNumberConverter.INSTANCE);
+		javaTimeModule.addSerializer(BigDecimal.class, ToStringSerializer.instance);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(formatter));
+		javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(formatter));
+		return javaTimeModule;
+	}
+
 }

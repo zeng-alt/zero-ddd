@@ -1,5 +1,8 @@
 package com.zjj.security.sms.component;
 
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
+
 /**
  * @author zengJiaJun
  * @version 1.0
@@ -7,7 +10,10 @@ package com.zjj.security.sms.component;
  */
 public interface CodeService {
 
-    String getCode(CharSequence mobile);
+	@Nullable
+	String getCode(CharSequence mobile);
 
-    boolean matches(CharSequence mobile, String code);
+	@NonNull
+	boolean matches(CharSequence mobile, String code);
+
 }

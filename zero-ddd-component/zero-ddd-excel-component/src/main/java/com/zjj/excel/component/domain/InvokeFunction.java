@@ -1,7 +1,5 @@
 package com.zjj.excel.component.domain;
 
-
-
 /**
  * @author zengJiaJun
  * @version 1.0
@@ -10,10 +8,11 @@ package com.zjj.excel.component.domain;
 @FunctionalInterface
 public interface InvokeFunction<T> {
 
-    void invoke(T t);
+	void invoke(T t);
 
-    static <T> InvokeFunction<T> withDefaults() {
-        return (t) -> {
-        };
-    }
+	static <T> InvokeFunction<T> withDefaults() {
+		return (t) -> {
+		};
+	}
+
 }

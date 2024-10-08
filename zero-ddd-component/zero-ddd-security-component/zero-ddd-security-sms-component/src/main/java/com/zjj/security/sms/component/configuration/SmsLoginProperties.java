@@ -14,8 +14,12 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "security.sms")
 public class SmsLoginProperties {
 
-    private Boolean enable = true;
-    private String mobileParameter = "mobile";
-    private String codeParameter = "code";
-    private String url = "/login/sms";
+	private Boolean enable = true;
+
+	private String mobileParameter = "mobile";
+
+	private String codeParameter = "code";
+
+	private String url = "/login/sms";
+
 }

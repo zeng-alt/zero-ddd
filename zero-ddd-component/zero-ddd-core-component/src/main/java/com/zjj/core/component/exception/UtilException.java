@@ -7,9 +7,11 @@ package com.zjj.core.component.exception;
  */
 public class UtilException extends RuntimeException {
 
-    public UtilException() {}
+	public UtilException() {
+	}
 
-    public UtilException(String msg) {
-        super(msg);
-    }
+	public UtilException(String msg) {
+		super(msg);
+	}
+
 }

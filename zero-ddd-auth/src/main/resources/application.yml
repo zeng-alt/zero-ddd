@@ -1,3 +1,9 @@
 security:
   username-login:
     enabled: true
+
+spring:
+  cache:
+    type: caffeine
+    caffeine:
+      spec: "initialCapacity=100,maximumSize=500,expireAfterAccess=5m,recordStats"
