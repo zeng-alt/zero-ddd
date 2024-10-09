@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import com.zjj.cache.component.config.properties.RedissonProperties;
+//import com.zjj.cache.component.config.properties.RedissonProperties;
 import com.zjj.cache.component.handler.KeyPrefixHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
@@ -30,11 +30,11 @@ import java.util.TimeZone;
  */
 @Slf4j
 @Configuration
-@EnableConfigurationProperties(RedissonProperties.class)
+//@EnableConfigurationProperties(RedissonProperties.class)
 public class RedisConfig {
 
 	@Bean
-	public RedissonAutoConfigurationCustomizer redissonCustomizer(RedissonProperties redissonProperties) {
+	public RedissonAutoConfigurationCustomizer redissonCustomizer() {
 		return config -> {
 			JavaTimeModule javaTimeModule = new JavaTimeModule();
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -49,42 +49,43 @@ public class RedisConfig {
 			TypedJsonJacksonCodec jsonCodec = new TypedJsonJacksonCodec(Object.class, om);
 			// 组合序列化 key 使用 String 内容使用通用 json 格式
 			CompositeCodec codec = new CompositeCodec(StringCodec.INSTANCE, jsonCodec, jsonCodec);
-			config.setThreads(redissonProperties.getThreads()).setNettyThreads(redissonProperties.getNettyThreads())
+//			config.setThreads(redissonProperties.getThreads()).setNettyThreads(redissonProperties.getNettyThreads())
 					// 缓存 Lua 脚本 减少网络传输(redisson 大部分的功能都是基于 Lua 脚本实现)
-					.setUseScriptCache(true).setCodec(codec);
+//					.setUseScriptCache(true).setCodec(codec);
+			config.setUseScriptCache(true).setCodec(codec);
 			// if (SpringUtils.isVirtual()) {
 			// config.setNettyExecutor(new VirtualThreadTaskExecutor("redisson-"));
 			// }
 
-			RedissonProperties.SingleServerConfig singleServerConfig = redissonProperties.getSingleServerConfig();
-			if (ObjectUtils.isNotEmpty(singleServerConfig)) {
-				// 使用单机模式
-				config.useSingleServer()
-						// 设置redis key前缀
-						.setNameMapper(new KeyPrefixHandler(redissonProperties.getKeyPrefix()))
-						.setTimeout(singleServerConfig.getTimeout()).setClientName(singleServerConfig.getClientName())
-						.setIdleConnectionTimeout(singleServerConfig.getIdleConnectionTimeout())
-						.setSubscriptionConnectionPoolSize(singleServerConfig.getSubscriptionConnectionPoolSize())
-						.setConnectionMinimumIdleSize(singleServerConfig.getConnectionMinimumIdleSize())
-						.setConnectionPoolSize(singleServerConfig.getConnectionPoolSize());
-			}
-			// 集群配置方式 参考下方注释
-			RedissonProperties.ClusterServersConfig clusterServersConfig = redissonProperties.getClusterServersConfig();
-			if (ObjectUtils.isNotEmpty(clusterServersConfig)) {
-				config.useClusterServers()
-						// 设置redis key前缀
-						.setNameMapper(new KeyPrefixHandler(redissonProperties.getKeyPrefix()))
-						.setTimeout(clusterServersConfig.getTimeout())
-						.setClientName(clusterServersConfig.getClientName())
-						.setIdleConnectionTimeout(clusterServersConfig.getIdleConnectionTimeout())
-						.setSubscriptionConnectionPoolSize(clusterServersConfig.getSubscriptionConnectionPoolSize())
-						.setMasterConnectionMinimumIdleSize(clusterServersConfig.getMasterConnectionMinimumIdleSize())
-						.setMasterConnectionPoolSize(clusterServersConfig.getMasterConnectionPoolSize())
-						.setSlaveConnectionMinimumIdleSize(clusterServersConfig.getSlaveConnectionMinimumIdleSize())
-						.setSlaveConnectionPoolSize(clusterServersConfig.getSlaveConnectionPoolSize())
-						.setReadMode(clusterServersConfig.getReadMode())
-						.setSubscriptionMode(clusterServersConfig.getSubscriptionMode());
-			}
+//			RedissonProperties.SingleServerConfig singleServerConfig = redissonProperties.getSingleServerConfig();
+//			if (ObjectUtils.isNotEmpty(singleServerConfig)) {
+//				// 使用单机模式
+//				config.useSingleServer()
+//						// 设置redis key前缀
+//						.setNameMapper(new KeyPrefixHandler(redissonProperties.getKeyPrefix()))
+//						.setTimeout(singleServerConfig.getTimeout()).setClientName(singleServerConfig.getClientName())
+//						.setIdleConnectionTimeout(singleServerConfig.getIdleConnectionTimeout())
+//						.setSubscriptionConnectionPoolSize(singleServerConfig.getSubscriptionConnectionPoolSize())
+//						.setConnectionMinimumIdleSize(singleServerConfig.getConnectionMinimumIdleSize())
+//						.setConnectionPoolSize(singleServerConfig.getConnectionPoolSize());
+//			}
+//			// 集群配置方式 参考下方注释
+//			RedissonProperties.ClusterServersConfig clusterServersConfig = redissonProperties.getClusterServersConfig();
+//			if (ObjectUtils.isNotEmpty(clusterServersConfig)) {
+//				config.useClusterServers()
+//						// 设置redis key前缀
+//						.setNameMapper(new KeyPrefixHandler(redissonProperties.getKeyPrefix()))
+//						.setTimeout(clusterServersConfig.getTimeout())
+//						.setClientName(clusterServersConfig.getClientName())
+//						.setIdleConnectionTimeout(clusterServersConfig.getIdleConnectionTimeout())
+//						.setSubscriptionConnectionPoolSize(clusterServersConfig.getSubscriptionConnectionPoolSize())
+//						.setMasterConnectionMinimumIdleSize(clusterServersConfig.getMasterConnectionMinimumIdleSize())
+//						.setMasterConnectionPoolSize(clusterServersConfig.getMasterConnectionPoolSize())
+//						.setSlaveConnectionMinimumIdleSize(clusterServersConfig.getSlaveConnectionMinimumIdleSize())
+//						.setSlaveConnectionPoolSize(clusterServersConfig.getSlaveConnectionPoolSize())
+//						.setReadMode(clusterServersConfig.getReadMode())
+//						.setSubscriptionMode(clusterServersConfig.getSubscriptionMode());
+//			}
 			log.info("初始化 redis 配置");
 		};
 	}
