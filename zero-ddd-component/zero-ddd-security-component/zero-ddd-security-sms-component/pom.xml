@@ -20,11 +20,24 @@
         <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>com.zjj</groupId>
             <artifactId>zero-ddd-memory-component</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

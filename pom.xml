@@ -38,6 +38,8 @@
         <jjwt.version>0.12.6</jjwt.version>
         <jaxb-api.version>2.3.1</jaxb-api.version>
         <guava.version>33.3.0-jre</guava.version>
+        <querydsl.version>5.0.0</querydsl.version>
+        <graphql.java.version>21.0</graphql.java.version>
         <spring.checkstyle.plugin>0.0.29</spring.checkstyle.plugin>
     </properties>
 
@@ -209,6 +211,26 @@
                 <version>${guava.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.querydsl</groupId>
+                <artifactId>querydsl-apt</artifactId>
+                <version>${querydsl.version}</version>
+                <optional>true</optional>
+                <classifier>jakarta</classifier>
+            </dependency>
+
+            <dependency>
+                <groupId>com.querydsl</groupId>
+                <artifactId>querydsl-jpa</artifactId>
+                <classifier>jakarta</classifier>
+                <version>${querydsl.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.graphql-java</groupId>
+                <artifactId>graphql-java-extended-scalars</artifactId>
+                <version>${graphql.java.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>com.zjj</groupId>
@@ -279,6 +301,12 @@
             <dependency>
                 <groupId>com.zjj</groupId>
                 <artifactId>zero-ddd-security-sms-component</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.zjj</groupId>
+                <artifactId>zero-ddd-graphql-component</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
 

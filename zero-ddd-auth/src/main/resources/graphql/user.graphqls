@@ -1,0 +1,16 @@
+
+
+
+input UsersInput {
+    email: String
+    id: ID
+}
+
+
+type Users {
+    id: ID
+    username: String
+    email: String
+    password: String
+    telephoneNumber: String
+}

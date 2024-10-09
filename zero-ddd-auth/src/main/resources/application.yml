@@ -3,6 +3,11 @@ security:
     enabled: true
 
 spring:
+  application:
+    name: graphApplication
+#  graphql:
+#    graphiql:
+#      enabled: true
   cache:
     type: caffeine
     caffeine:

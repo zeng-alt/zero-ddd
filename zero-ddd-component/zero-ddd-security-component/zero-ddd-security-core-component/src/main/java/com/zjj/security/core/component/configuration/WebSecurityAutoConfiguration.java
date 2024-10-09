@@ -15,7 +15,11 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.access.IpAddressAuthorizationManager;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
@@ -34,18 +38,26 @@ public class WebSecurityAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean(SecurityFilterChain.class)
-	public SecurityFilterChain filterChain(HttpSecurity http, ObjectProvider<SecurityBuilderCustomizer> customizers,
+	public SecurityFilterChain filterChain(
+			HttpSecurity http, ObjectProvider<SecurityBuilderCustomizer> customizers,
 			ObjectProvider<AbstractLoginConfigurer> configurers,
 			AuthenticationSuccessHandler loginSuccessAuthenticationHandler,
 			AuthenticationFailureHandler loginFailureAuthenticationHandler, AuthenticationManager authenticationManager,
-			ApplicationEventPublisher applicationEventPublisher) throws Exception {
+			AuthenticationEntryPoint authenticationEntryPoint, AccessDeniedHandler accessDeniedHandler,
+			ApplicationEventPublisher applicationEventPublisher
 
+	) throws Exception {
+//		UserDetails
 		HttpSecurity httpSecurity = http.csrf(AbstractHttpConfigurer::disable)
 				.httpBasic(AbstractHttpConfigurer::disable).cors(AbstractHttpConfigurer::disable)
 				.authorizeHttpRequests(author -> author.requestMatchers(HttpMethod.POST, "/login/**").permitAll()
 						.requestMatchers("/h2-console/**").permitAll().requestMatchers("/graphiql/**").permitAll()
-						.requestMatchers("/graphql/**").permitAll().anyRequest().authenticated())
+						.requestMatchers("/graphql/**").permitAll()
+				)
 				.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
+				.exceptionHandling(e -> e
+						.authenticationEntryPoint(authenticationEntryPoint)
+						.accessDeniedHandler(accessDeniedHandler))
 				.formLogin(Customizer.withDefaults());
 		// .formLogin(
 		// AbstractHttpConfigurer::disable // 禁用，前后端分离项目

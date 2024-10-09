@@ -23,13 +23,6 @@ import java.util.List;
 @AutoConfiguration
 public class SecurityAutoConfiguration {
 
-	@Bean
-	@ConditionalOnMissingBean
-	public UserDetailsService InMemoryUserDetailsManager(PasswordEncoder passwordEncoder) {
-
-		return new InMemoryUserDetailsManager(
-				List.of(User.withUsername("root").password(passwordEncoder.encode("123456")).roles("ADMIN").build()));
-	}
 
 	// @Bean
 	// @ConditionalOnMissingBean
@@ -46,12 +39,6 @@ public class SecurityAutoConfiguration {
 	// }
 
 	@Bean
-	@ConditionalOnMissingBean
-	public PasswordEncoder passwordEncoder() {
-		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-	}
-
-	@Bean
 	@ConditionalOnMissingBean(AuthenticationEventPublisher.class)
 	public AuthenticationEventPublisher defaultAuthenticationEventPublisher(
 			ApplicationEventPublisher applicationEventPublisher) {
@@ -59,19 +46,13 @@ public class SecurityAutoConfiguration {
 	}
 
 	@Bean
-	@ConditionalOnMissingBean
-	public DaoAuthenticationProvider daoAuthenticationProvider(UserDetailsService userDetailsService) {
-		DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-		daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
-		daoAuthenticationProvider.setUserDetailsService(userDetailsService);
-		return daoAuthenticationProvider;
-	}
-
-	@Bean
 	@ConditionalOnMissingBean(AuthenticationManager.class)
-	public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration,
+	public AuthenticationManager authenticationManager(
+			AuthenticationConfiguration configuration,
 			List<AuthenticationProvider> authenticationProviders,
-			AuthenticationEventPublisher authenticationEventPublisher) throws Exception {
+			AuthenticationEventPublisher authenticationEventPublisher
+
+	) throws Exception {
 		AuthenticationManager authenticationManager = configuration.getAuthenticationManager();
 		ProviderManager providerManager = new ProviderManager(authenticationProviders, authenticationManager);
 		providerManager.setAuthenticationEventPublisher(authenticationEventPublisher);
