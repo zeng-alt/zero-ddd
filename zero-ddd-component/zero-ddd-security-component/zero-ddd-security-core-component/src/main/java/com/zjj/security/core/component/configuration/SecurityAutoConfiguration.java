@@ -23,7 +23,6 @@ import java.util.List;
 @AutoConfiguration
 public class SecurityAutoConfiguration {
 
-
 	// @Bean
 	// @ConditionalOnMissingBean
 	// public JacksonSerializer<Map<String, ?>> jacksonSerializer(ObjectMapper
@@ -47,8 +46,7 @@ public class SecurityAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean(AuthenticationManager.class)
-	public AuthenticationManager authenticationManager(
-			AuthenticationConfiguration configuration,
+	public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration,
 			List<AuthenticationProvider> authenticationProviders,
 			AuthenticationEventPublisher authenticationEventPublisher
 

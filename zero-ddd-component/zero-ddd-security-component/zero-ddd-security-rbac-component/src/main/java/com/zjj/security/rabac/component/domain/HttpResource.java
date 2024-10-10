@@ -11,13 +11,12 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
  */
 public interface HttpResource {
 
-    public String getUri();
+	public String getUri();
 
-    public String getMethod();
+	public String getMethod();
 
-
-    default boolean compareTo(HttpServletRequest request) {
-        return AntPathRequestMatcher.antMatcher(HttpMethod.valueOf(getMethod()), getUri()).matcher(request).isMatch();
-    }
+	default boolean compareTo(HttpServletRequest request) {
+		return AntPathRequestMatcher.antMatcher(HttpMethod.valueOf(getMethod()), getUri()).matcher(request).isMatch();
+	}
 
 }

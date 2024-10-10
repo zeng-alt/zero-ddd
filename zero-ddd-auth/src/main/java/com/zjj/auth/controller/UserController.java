@@ -20,15 +20,14 @@ import java.util.List;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class UserController {
 
-    @GetMapping("/{name}")
-    public List<String> getUsers(@PathVariable String name) {
-        return List.of("Abc", "Def", "Ghi");
-    }
+	@GetMapping("/{name}")
+	public List<String> getUsers(@PathVariable String name) {
+		return List.of("Abc", "Def", "Ghi");
+	}
 
-
-    @GetMapping("/name")
-    public List<String> getUser() {
-        return List.of("name");
-    }
+	@GetMapping("/name")
+	public List<String> getUser() {
+		return List.of("name");
+	}
 
 }

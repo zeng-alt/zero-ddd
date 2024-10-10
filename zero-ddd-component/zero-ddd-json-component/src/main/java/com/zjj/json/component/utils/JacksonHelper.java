@@ -4,11 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zjj.autoconfigure.component.UtilException;
 import com.zjj.autoconfigure.component.json.JsonHelper;
-import org.springframework.beans.BeansException;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
@@ -21,12 +16,7 @@ import java.util.List;
  * @version 1.0
  * @crateTime 2024年07月05日 20:40
  */
-public final class JacksonHelper implements JsonHelper, ApplicationContextAware {
-
-	private static ObjectMapper objectMapper;
-
-	public JacksonHelper() {
-	}
+public record JacksonHelper(ObjectMapper objectMapper) implements JsonHelper {
 
 	@Override
 	public String toJsonString(Object object) {
@@ -47,9 +37,9 @@ public final class JacksonHelper implements JsonHelper, ApplicationContextAware 
 			return null;
 		}
 		try {
-			return objectMapper.readValue(text, clazz);
+			return objectMapper.convertValue(text, clazz);
 		}
-		catch (IOException e) {
+		catch (IllegalArgumentException e) {
 			throw new UtilException(e);
 		}
 	}
@@ -60,9 +50,9 @@ public final class JacksonHelper implements JsonHelper, ApplicationContextAware 
 			return null;
 		}
 		try {
-			return objectMapper.readValue(bytes, clazz);
+			return objectMapper.convertValue(bytes, clazz);
 		}
-		catch (IOException e) {
+		catch (IllegalArgumentException e) {
 			throw new UtilException(e);
 		}
 	}
@@ -83,11 +73,6 @@ public final class JacksonHelper implements JsonHelper, ApplicationContextAware 
 
 	public ObjectMapper getObjectMapper() {
 		return objectMapper;
-	}
-
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		objectMapper = applicationContext.getBean(ObjectMapper.class);
 	}
 
 }

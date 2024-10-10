@@ -1,11 +1,23 @@
 package com.zjj.cache.component.repository.impl;
 
+import com.zjj.autoconfigure.component.json.JsonHelper;
 import com.zjj.cache.component.repository.RedisStringRepository;
+import com.zjj.core.component.exception.UtilException;
+import com.zjj.json.component.utils.JacksonHelper;
 import org.redisson.api.RBucket;
+import org.redisson.api.RKeys;
 import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
+import java.lang.reflect.Modifier;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -16,9 +28,52 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class RedisStringRepositoryImpl extends RedisStringRepository {
 
+
+	private final JsonHelper jsonHelper;
+
+	@Autowired
+	public RedisStringRepositoryImpl(RedissonClient template, JsonHelper jsonHelper) {
+		super(template);
+		this.jsonHelper = jsonHelper;
+	}
+
 	@Override
 	public Object get(String key) {
 		return template.getBucket(key).get();
+	}
+
+	@Override
+	public <T> T get(String key, Class<T> tClass) {
+		// 判断tclass是不是final的
+		if (Modifier.isFinal(tClass.getModifiers())) {
+			RBucket<String> bucket = template.getBucket(key);
+			return jsonHelper.parseObject(bucket.get(), tClass);
+		}
+		RBucket<T> bucket = template.getBucket(key);
+		return bucket.get();
+	}
+
+
+	@Override
+	@NonNull
+	public List<Object> getAll(@NonNull String key) {
+		return getAll(key, Object.class);
+	}
+
+	@Override
+	public <T> List<T> getAll(String key, Class<T> tClass) {
+		if (!StringUtils.hasLength(key)) {
+			throw new UtilException("key is not null");
+		}
+		RKeys rKeys = template.getKeys();
+		Iterator<String> iterator = rKeys.getKeysByPattern(key + "*").iterator();
+		List<T> result = new ArrayList<>();
+		RBucket<T> bucket = null;
+		while (iterator.hasNext()) {
+			bucket = template.getBucket(key);
+			result.add(bucket.get());
+		}
+		return result;
 	}
 
 	@Override
@@ -30,12 +85,6 @@ public class RedisStringRepositoryImpl extends RedisStringRepository {
 	public void putIfAbsent(String key, Object value) {
 		RBucket<Object> bucket = template.getBucket(key);
 		bucket.setIfAbsent(value);
-	}
-
-	@Override
-	public <T> T get(String key, Class<T> tClass) {
-		RBucket<T> bucket = template.getBucket(key);
-		return bucket.get();
 	}
 
 	@Override
@@ -78,7 +127,7 @@ public class RedisStringRepositoryImpl extends RedisStringRepository {
 	 * @return 是否成功获取锁
 	 */
 	@Override
-	public boolean lock(String lockName, long waitTime, long leaseTime) throws InterruptedException {
+	public boolean tryLock(String lockName, long waitTime, long leaseTime) throws InterruptedException {
 		RLock lock = template.getLock(lockName);
 		return lock.tryLock(waitTime, leaseTime, TimeUnit.MILLISECONDS);
 	}

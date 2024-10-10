@@ -37,12 +37,22 @@
 
         <dependency>
             <groupId>com.zjj</groupId>
+            <artifactId>zero-ddd-core-component</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.zjj</groupId>
             <artifactId>zero-ddd-bean-component</artifactId>
         </dependency>
 
         <dependency>
             <groupId>com.zjj</groupId>
             <artifactId>zero-ddd-json-component</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
         </dependency>
 
 <!--        <dependency>-->
@@ -55,15 +65,15 @@
             <artifactId>zero-ddd-autoconfigure-component</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.zjj</groupId>
-            <artifactId>zero-ddd-security-core-component</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.zjj</groupId>-->
+<!--            <artifactId>zero-ddd-security-core-component</artifactId>-->
+<!--        </dependency>-->
 
-        <dependency>
-            <groupId>com.zjj</groupId>
-            <artifactId>zero-ddd-security-rbac-component</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.zjj</groupId>-->
+<!--            <artifactId>zero-ddd-security-rbac-component</artifactId>-->
+<!--        </dependency>-->
 
 <!--        <dependency>-->
 <!--            <groupId>com.zjj</groupId>-->
@@ -75,15 +85,25 @@
 <!--            <artifactId>zero-ddd-security-sms-component</artifactId>-->
 <!--        </dependency>-->
 
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.google.guava</groupId>-->
+<!--            <artifactId>guava</artifactId>-->
+<!--        </dependency>-->
 
 <!--        <dependency>-->
 <!--            <groupId>com.zjj</groupId>-->
 <!--            <artifactId>zero-ddd-graphql-component</artifactId>-->
 <!--        </dependency>-->
+
+<!--        <dependency>-->
+<!--            <groupId>com.zjj</groupId>-->
+<!--            <artifactId>zero-ddd-l2-cache-component</artifactId>-->
+<!--        </dependency>-->
+
+        <dependency>
+            <groupId>com.zjj</groupId>
+            <artifactId>zero-ddd-cache-component</artifactId>
+        </dependency>
 
 
 

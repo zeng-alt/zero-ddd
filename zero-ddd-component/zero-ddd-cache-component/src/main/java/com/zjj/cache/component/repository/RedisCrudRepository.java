@@ -1,6 +1,5 @@
 package com.zjj.cache.component.repository;
 
-import jakarta.annotation.Resource;
 import lombok.Getter;
 import org.redisson.api.RBucket;
 import org.redisson.api.RedissonClient;
@@ -15,10 +14,13 @@ import java.time.Duration;
 @Getter
 public abstract class RedisCrudRepository<K, V> {
 
-	@Resource
-	protected RedissonClient template;
+	protected final RedissonClient template;
 
-	public abstract V get(K key);
+    protected RedisCrudRepository(RedissonClient template) {
+        this.template = template;
+    }
+
+    public abstract V get(K key);
 
 	public abstract void put(K key, V value);
 

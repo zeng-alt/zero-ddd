@@ -4,6 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ConfigurableApplicationContext;
+//import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 //import org.springframework.context.annotation.ComponentScan;
 //import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 //import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
@@ -14,7 +15,7 @@ import org.springframework.context.ConfigurableApplicationContext;
  * @version 1.0
  * @crateTime 2024年09月27日 09:20
  */
-//@EnableWebSecurity
+// @EnableWebSecurity
 //@EnableCaching
 // @EnableWebFluxSecurity
 @SpringBootApplication

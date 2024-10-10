@@ -15,20 +15,22 @@ import java.util.Set;
  */
 public class DefaultRbacAccessService implements RbacAccessService {
 
-    private final HttpResourceService httpResourceService;
+	private final HttpResourceService httpResourceService;
 
-    public DefaultRbacAccessService(@NonNull HttpResourceService httpResourceService) {
-        this.httpResourceService = httpResourceService;
-    }
+	public DefaultRbacAccessService(@NonNull HttpResourceService httpResourceService) {
+		this.httpResourceService = httpResourceService;
+	}
 
-    @NonNull
-    @Override
-    public boolean verify(@NonNull Object principal, @NonNull Collection<? extends GrantedAuthority> grantedAuthorities, @NonNull HttpServletRequest request) {
-        Set<HttpResource> httpResources = httpResourceService.queryByPrincipal(principal);
-        Set<HttpResource> httpResources1 = httpResourceService.queryByGrantedAuthority(grantedAuthorities);
+	@NonNull
+	@Override
+	public boolean verify(@NonNull Object principal, @NonNull Collection<? extends GrantedAuthority> grantedAuthorities,
+			@NonNull HttpServletRequest request) {
+		Set<HttpResource> httpResources = httpResourceService.queryByPrincipal(principal);
+		Set<HttpResource> httpResources1 = httpResourceService.queryByGrantedAuthority(grantedAuthorities);
 
-        return httpResources.stream().anyMatch(httpResource -> httpResource.compareTo(request))
-                || httpResources1.stream().anyMatch(httpResource -> httpResource.compareTo(request));
+		return httpResources.stream().anyMatch(httpResource -> httpResource.compareTo(request))
+				|| httpResources1.stream().anyMatch(httpResource -> httpResource.compareTo(request));
 
-    }
+	}
+
 }

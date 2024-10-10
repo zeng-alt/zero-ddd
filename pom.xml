@@ -40,6 +40,7 @@
         <guava.version>33.3.0-jre</guava.version>
         <querydsl.version>5.0.0</querydsl.version>
         <graphql.java.version>21.0</graphql.java.version>
+        <lock4j.version>2.2.7</lock4j.version>
         <spring.checkstyle.plugin>0.0.29</spring.checkstyle.plugin>
     </properties>
 
@@ -232,6 +233,13 @@
                 <version>${graphql.java.version}</version>
             </dependency>
 
+
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>lock4j-redisson-spring-boot-starter</artifactId>
+                <version>${lock4j.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>com.zjj</groupId>
                 <artifactId>zero-ddd-core-component</artifactId>
@@ -253,6 +261,12 @@
             <dependency>
                 <groupId>com.zjj</groupId>
                 <artifactId>zero-ddd-autoconfigure-component</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.zjj</groupId>
+                <artifactId>zero-ddd-l2-cache-component</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
 

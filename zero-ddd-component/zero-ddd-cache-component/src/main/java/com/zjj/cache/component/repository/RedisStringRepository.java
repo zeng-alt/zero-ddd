@@ -1,5 +1,9 @@
 package com.zjj.cache.component.repository;
 
+import org.redisson.api.RedissonClient;
+
+import java.util.List;
+
 /**
  * @author zengJiaJun
  * @version 1.0
@@ -7,7 +11,17 @@ package com.zjj.cache.component.repository;
  */
 public abstract class RedisStringRepository extends RedisCrudRepository<String, Object> {
 
+	public RedisStringRepository(RedissonClient template) {
+		super(template);
+	}
+
 	public abstract <T> T get(String key, Class<T> tClass);
+
+
+	public abstract List<Object> getAll(String key);
+
+
+	public abstract <T> List<T> getAll(String key, Class<T> tClass);
 
 	public abstract void put(String key, Object value, long expireTime);
 
@@ -19,7 +33,7 @@ public abstract class RedisStringRepository extends RedisCrudRepository<String, 
 
 	public abstract boolean tryLock(String lockName);
 
-	public abstract boolean lock(String lockName, long waitTime, long leaseTime) throws InterruptedException;
+	public abstract boolean tryLock(String lockName, long waitTime, long leaseTime) throws InterruptedException;
 
 	public abstract void unlock(String lockName);
 

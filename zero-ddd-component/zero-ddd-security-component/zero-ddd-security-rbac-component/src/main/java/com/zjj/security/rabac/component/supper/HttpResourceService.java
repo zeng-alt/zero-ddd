@@ -13,7 +13,8 @@ import java.util.Set;
  */
 public interface HttpResourceService {
 
-    public Set<HttpResource> queryByPrincipal(Object principal);
+	public Set<HttpResource> queryByPrincipal(Object principal);
 
-    public Set<HttpResource> queryByGrantedAuthority(Collection<? extends GrantedAuthority> grantedAuthorities);
+	public Set<HttpResource> queryByGrantedAuthority(Collection<? extends GrantedAuthority> grantedAuthorities);
+
 }

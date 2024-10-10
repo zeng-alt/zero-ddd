@@ -1,5 +1,7 @@
 package com.zjj.cache.component.repository;
 
+import org.redisson.api.RedissonClient;
+
 /**
  * @author zengJiaJun
  * @version 1.0
@@ -7,4 +9,7 @@ package com.zjj.cache.component.repository;
  */
 public abstract class RedisZSetRepository<V> extends RedisCrudRepository<String, V> {
 
+    public RedisZSetRepository(RedissonClient template) {
+        super(template);
+    }
 }

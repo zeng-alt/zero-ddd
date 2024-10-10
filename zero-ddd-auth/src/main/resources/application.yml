@@ -12,3 +12,8 @@ spring:
     type: caffeine
     caffeine:
       spec: "initialCapacity=100,maximumSize=500,expireAfterAccess=5m,recordStats"
+
+
+  redis:
+    redisson:
+      file: classpath:redisson.yml

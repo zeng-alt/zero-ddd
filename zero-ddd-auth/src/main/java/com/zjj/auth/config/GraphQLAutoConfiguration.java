@@ -16,16 +16,17 @@ import java.util.List;
 @Configuration
 public class GraphQLAutoConfiguration {
 
-//    @Bean
-//    public RuntimeWiringConfigurer runtimeWiringConfigurer() {
-//
-//
-//        return builder -> {
-//            builder.scalar(ExtendedScalars.Currency)
-//                    .scalar(ExtendedScalars.Date)
-//                    .scalar(ExtendedScalars.DateTime)
-//                    .scalar(ExtendedScalars.GraphQLLong)
-//                    .scalar(ExtendedScalars.GraphQLBigDecimal);
-//        };
-//    }
+	// @Bean
+	// public RuntimeWiringConfigurer runtimeWiringConfigurer() {
+	//
+	//
+	// return builder -> {
+	// builder.scalar(ExtendedScalars.Currency)
+	// .scalar(ExtendedScalars.Date)
+	// .scalar(ExtendedScalars.DateTime)
+	// .scalar(ExtendedScalars.GraphQLLong)
+	// .scalar(ExtendedScalars.GraphQLBigDecimal);
+	// };
+	// }
+
 }

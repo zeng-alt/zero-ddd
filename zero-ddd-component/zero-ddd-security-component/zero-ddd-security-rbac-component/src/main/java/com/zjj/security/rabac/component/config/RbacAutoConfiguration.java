@@ -21,25 +21,28 @@ import java.util.Set;
 @AutoConfiguration
 public class RbacAutoConfiguration {
 
-    @Bean
-    @ConditionalOnMissingBean
-    public HttpResourceService httpResourceService() {
-        return new DefaultHttpResourceService();
-    }
+	@Bean
+	@ConditionalOnMissingBean
+	public HttpResourceService httpResourceService() {
+		return new DefaultHttpResourceService();
+	}
 
-    @Bean
-    @ConditionalOnMissingBean
-    public RbacAccessService rbacAccessService(HttpResourceService httpResourceService) {
-        return new DefaultRbacAccessService(httpResourceService);
-    }
+	@Bean
+	@ConditionalOnMissingBean
+	public RbacAccessService rbacAccessService(HttpResourceService httpResourceService) {
+		return new DefaultRbacAccessService(httpResourceService);
+	}
 
-    @Bean
-    public AuthorizationManager<RequestAuthorizationContext> rbacAuthorizationManager(RbacAccessService rbacAccessService) {
-        return new RbacAccessAuthorizationManager(rbacAccessService);
-    }
+	@Bean
+	public AuthorizationManager<RequestAuthorizationContext> rbacAuthorizationManager(
+			RbacAccessService rbacAccessService) {
+		return new RbacAccessAuthorizationManager(rbacAccessService);
+	}
 
-    @Bean
-    public SecurityBuilderCustomizer rbacCustomizer(AuthorizationManager<RequestAuthorizationContext> rbacAuthorizationManager) {
-        return http -> http.authorizeHttpRequests(a -> a.anyRequest().access(rbacAuthorizationManager));
-    }
+	@Bean
+	public SecurityBuilderCustomizer rbacCustomizer(
+			AuthorizationManager<RequestAuthorizationContext> rbacAuthorizationManager) {
+		return http -> http.authorizeHttpRequests(a -> a.anyRequest().access(rbacAuthorizationManager));
+	}
+
 }

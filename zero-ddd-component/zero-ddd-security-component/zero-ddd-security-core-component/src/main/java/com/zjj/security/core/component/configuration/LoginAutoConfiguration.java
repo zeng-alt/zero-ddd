@@ -61,16 +61,13 @@ public class LoginAutoConfiguration {
 		return http -> http.formLogin(formLogin -> formLogin.loginProcessingUrl(usernameLoginProperties.getLoginPath())
 				.usernameParameter(usernameLoginProperties.getUsernameParameter())
 				.passwordParameter(usernameLoginProperties.getPasswordParameter())
-				.failureHandler(loginFailureAuthenticationHandler)
-				.successHandler(loginSuccessAuthenticationHandler));
+				.failureHandler(loginFailureAuthenticationHandler).successHandler(loginSuccessAuthenticationHandler));
 	}
 
 	@Bean
 	@ConditionalOnProperty(name = "security.username-login.enabled", havingValue = "false")
 	public SecurityBuilderCustomizer shutDownLoginCustomizer() {
-		return http -> http
-				.formLogin(AbstractHttpConfigurer::disable)
-				.logout(AbstractHttpConfigurer::disable);
+		return http -> http.formLogin(AbstractHttpConfigurer::disable).logout(AbstractHttpConfigurer::disable);
 	}
 
 }

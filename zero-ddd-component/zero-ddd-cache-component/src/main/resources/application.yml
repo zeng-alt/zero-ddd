@@ -1,4 +1,0 @@
-spring:
-  redis:
-    redisson:
-      file: classpath:redisson.yml

@@ -13,6 +13,8 @@ import java.util.Collection;
  */
 public interface RbacAccessService {
 
-    @NonNull
-    public boolean verify(@NonNull Object principal, @NonNull Collection<? extends GrantedAuthority> grantedAuthorities, @NonNull HttpServletRequest request);
+	@NonNull
+	public boolean verify(@NonNull Object principal, @NonNull Collection<? extends GrantedAuthority> grantedAuthorities,
+			@NonNull HttpServletRequest request);
+
 }

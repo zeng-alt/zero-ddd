@@ -28,10 +28,8 @@ public class JwtAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter(
-			JwtHelper jwtHelper,
-			JwtCacheManage jwtCacheManage
-	) {
+	public JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter(JwtHelper jwtHelper,
+			JwtCacheManage jwtCacheManage) {
 
 		return new DefaultJwtAuthenticationTokenFilter(jwtHelper, jwtCacheManage);
 	}

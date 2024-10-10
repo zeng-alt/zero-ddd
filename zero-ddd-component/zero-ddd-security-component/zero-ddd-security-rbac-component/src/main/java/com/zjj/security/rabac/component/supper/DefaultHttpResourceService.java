@@ -13,13 +13,14 @@ import java.util.Set;
  */
 public class DefaultHttpResourceService implements HttpResourceService {
 
-    @Override
-    public Set<HttpResource> queryByPrincipal(Object principal) {
-        return null;
-    }
+	@Override
+	public Set<HttpResource> queryByPrincipal(Object principal) {
+		return null;
+	}
 
-    @Override
-    public Set<HttpResource> queryByGrantedAuthority(Collection<? extends GrantedAuthority> grantedAuthorities) {
-        return null;
-    }
+	@Override
+	public Set<HttpResource> queryByGrantedAuthority(Collection<? extends GrantedAuthority> grantedAuthorities) {
+		return null;
+	}
+
 }

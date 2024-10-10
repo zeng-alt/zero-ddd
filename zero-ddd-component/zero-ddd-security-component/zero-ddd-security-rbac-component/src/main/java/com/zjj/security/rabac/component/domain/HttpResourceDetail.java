@@ -11,6 +11,9 @@ import lombok.Data;
 @Data
 @Builder
 public class HttpResourceDetail implements HttpResource {
-    private String uri;
-    private String method;
+
+	private String uri;
+
+	private String method;
+
 }
