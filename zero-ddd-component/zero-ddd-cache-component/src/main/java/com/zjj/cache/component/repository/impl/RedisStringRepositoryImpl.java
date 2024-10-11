@@ -8,6 +8,7 @@ import org.redisson.api.RBucket;
 import org.redisson.api.RKeys;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -38,17 +39,7 @@ public class RedisStringRepositoryImpl extends RedisStringRepository {
 	}
 
 	@Override
-	public Object get(String key) {
-		return template.getBucket(key).get();
-	}
-
-	@Override
-	public <T> T get(String key, Class<T> tClass) {
-		// 判断tclass是不是final的
-		if (Modifier.isFinal(tClass.getModifiers())) {
-			RBucket<String> bucket = template.getBucket(key);
-			return jsonHelper.parseObject(bucket.get(), tClass);
-		}
+	public <T> T get(String key) {
 		RBucket<T> bucket = template.getBucket(key);
 		return bucket.get();
 	}

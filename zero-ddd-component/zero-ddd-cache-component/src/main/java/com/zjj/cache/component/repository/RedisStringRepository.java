@@ -15,8 +15,6 @@ public abstract class RedisStringRepository extends RedisCrudRepository<String, 
 		super(template);
 	}
 
-	public abstract <T> T get(String key, Class<T> tClass);
-
 
 	public abstract List<Object> getAll(String key);
 

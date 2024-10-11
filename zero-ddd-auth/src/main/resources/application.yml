@@ -9,9 +9,14 @@ spring:
 #    graphiql:
 #      enabled: true
   cache:
+    multi:
+      l1-cache:
+        spec: "initialCapacity=100,maximumSize=500,expireAfterAccess=5m,recordStats"
+
     type: caffeine
     caffeine:
       spec: "initialCapacity=100,maximumSize=500,expireAfterAccess=5m,recordStats"
+    cache-names: user,role
 
 
   redis:

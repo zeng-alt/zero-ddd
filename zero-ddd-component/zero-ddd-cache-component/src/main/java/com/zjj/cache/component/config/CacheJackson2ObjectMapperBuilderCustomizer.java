@@ -1,4 +1,4 @@
-package com.zjj.memory.component.configuration;
+package com.zjj.cache.component.config;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.core.JsonParser;
@@ -10,13 +10,15 @@ import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilde
 import org.springframework.cache.support.NullValue;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
 /**
  * 为 jackson 添加序列化和反序列化 NullValue, CacheMessage 支持
  *
  * @author FlyInWind
  */
-@AutoConfiguration
-@ConditionalOnClass(Jackson2ObjectMapperBuilder.class)
 public class CacheJackson2ObjectMapperBuilderCustomizer implements Jackson2ObjectMapperBuilderCustomizer {
 
 	@Override
@@ -25,6 +27,9 @@ public class CacheJackson2ObjectMapperBuilderCustomizer implements Jackson2Objec
 		// 会导致 @class 信息不会添加到 json 中，序列化出来的 json 为空，最终报错
 		// 这里利用 ObjectMapper 的 mixIn 强制添加 @class 信息
 		builder.mixIn(NullValue.class, UseTypeInfo.class);
+		builder.mixIn(LocalDateTime.class, UseTypeInfo.class);
+		builder.mixIn(LocalDate.class, UseTypeInfo.class);
+		builder.mixIn(LocalTime.class, UseTypeInfo.class);
 		// 反序列化会创建新的对象，而由于 NullValue#equal 方法仅通过 == 判断是否相等，会导致 equal 结果为 false
 		// 这里新建一个 Deserializer 专门返回 NullValue.INSTANCE
 		builder.deserializers(NullValueDeserializer.INSTANCE);
@@ -42,12 +47,10 @@ public class CacheJackson2ObjectMapperBuilderCustomizer implements Jackson2Objec
 		public NullValue deserialize(JsonParser p, DeserializationContext ctx) {
 			return (NullValue) NullValue.INSTANCE;
 		}
-
 	}
 
 	@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
 	public static class UseTypeInfo {
-
 	}
 
 }

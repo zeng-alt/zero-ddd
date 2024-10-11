@@ -1,6 +1,5 @@
 package com.zjj.json.component.config;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
@@ -13,17 +12,13 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import com.zjj.autoconfigure.component.json.JsonHelper;
 import com.zjj.json.component.conver.BigNumberConverter;
-import com.zjj.json.component.conver.NullValueDeserializer;
 import com.zjj.json.component.utils.JacksonHelper;
 import io.vavr.jackson.datatype.VavrModule;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
-import org.springframework.cache.support.NullValue;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 
 import java.math.BigDecimal;
@@ -32,7 +27,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 /**
  * @author zengJiaJun
@@ -41,21 +35,6 @@ import java.util.List;
  */
 @AutoConfiguration(before = JacksonAutoConfiguration.class)
 public class JsonConfiguration {
-
-
-	@Bean
-	public Jackson2ObjectMapperBuilderCustomizer cacheJackson2ObjectMapperBuilderCustomizer(List<Module> moduleList) {
-		return builder -> {
-//            builder.modules(moduleList);
-            builder.mixIn(NullValue.class, UseTypeInfo.class);
-            builder.deserializers(NullValueDeserializer.INSTANCE);
-        };
-	}
-
-
-	@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
-	public static class UseTypeInfo {
-	}
 
 	@Bean
 	@ConditionalOnMissingBean({VavrModule.class})

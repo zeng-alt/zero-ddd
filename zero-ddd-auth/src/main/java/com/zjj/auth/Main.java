@@ -1,14 +1,12 @@
 package com.zjj.auth;
 
+//import com.zjj.l2.cache.component.config.EnableL2Cache;
+import com.zjj.l2.cache.component.config.EnableL2Cache;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ConfigurableApplicationContext;
-//import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-//import org.springframework.context.annotation.ComponentScan;
-//import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-//import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
-//import org.springframework.security.core.userdetails.User;
+
 
 /**
  * @author zengJiaJun
@@ -16,8 +14,8 @@ import org.springframework.context.ConfigurableApplicationContext;
  * @crateTime 2024年09月27日 09:20
  */
 // @EnableWebSecurity
+@EnableL2Cache
 //@EnableCaching
-// @EnableWebFluxSecurity
 @SpringBootApplication
 public class Main {
 
@@ -25,5 +23,4 @@ public class Main {
 		ConfigurableApplicationContext run = SpringApplication.run(Main.class, args);
 		System.out.println(run);
 	}
-
 }

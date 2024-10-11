@@ -1,1 +1,2 @@
 com.zjj.memory.component.configuration.MemoryAutoConfiguration
+com.zjj.memory.component.configuration.CaffeineCacheConfiguration

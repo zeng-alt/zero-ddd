@@ -5,11 +5,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zjj.auth.service.UserService;
 import com.zjj.autoconfigure.component.json.JsonHelper;
 import com.zjj.bean.componenet.ApplicationContextHelper;
+import lombok.Data;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.beans.PropertyDescriptor;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -58,7 +61,7 @@ public class MainTest {
 	}
 
 	@Test
-	public void jsonHelperTest() {
+	public void jsonHelperTest() throws JsonProcessingException {
 		SecurityProperties.User user = new SecurityProperties.User();
 		user.setName("name");
 		user.setPassword("123456");
@@ -69,6 +72,12 @@ public class MainTest {
 		map.put("time", now);
 		System.out.println(jsonHelper.toJsonString(map));
 
+		System.out.println(jsonHelper.toJsonString(LocalDateTime.now()));
+
+		String jsonString = objectMapper.writeValueAsString(LocalDateTime.now());
+		System.out.println(jsonString);
 	}
+
+
 
 }

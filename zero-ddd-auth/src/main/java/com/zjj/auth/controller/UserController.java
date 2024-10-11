@@ -1,5 +1,6 @@
 package com.zjj.auth.controller;
 
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -30,4 +32,20 @@ public class UserController {
 		return List.of("name");
 	}
 
+	@GetMapping("/time")
+	public LocalDateTime getTime() {
+		return LocalDateTime.now();
+	}
+
+
+	@GetMapping("/time2")
+	public User getTime2() {
+		return new User();
+	}
+
+	@Data
+	public static class User {
+		private String name = "jok";
+		private LocalDateTime now = LocalDateTime.now();
+	}
 }

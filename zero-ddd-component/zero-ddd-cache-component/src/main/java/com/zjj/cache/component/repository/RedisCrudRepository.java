@@ -20,7 +20,7 @@ public abstract class RedisCrudRepository<K, V> {
         this.template = template;
     }
 
-    public abstract V get(K key);
+	public abstract <T> T get(String key);
 
 	public abstract void put(K key, V value);
 
