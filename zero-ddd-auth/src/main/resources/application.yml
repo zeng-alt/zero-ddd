@@ -1,6 +1,4 @@
-security:
-  username-login:
-    enabled: true
+
 
 spring:
   application:
@@ -12,6 +10,13 @@ spring:
     multi:
       l1-cache:
         spec: "initialCapacity=100,maximumSize=500,expireAfterAccess=5m,recordStats"
+      cache-names: user
+      server-id: server-1
+      cache-prefix: multi
+      l2-cache:
+        default-expiration: 60s
+        default-null-values-expiration: 120s
+
 
     type: caffeine
     caffeine:

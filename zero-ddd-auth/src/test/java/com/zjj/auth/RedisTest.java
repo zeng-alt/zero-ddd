@@ -11,7 +11,6 @@ import lombok.EqualsAndHashCode;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.redisson.api.RedissonClient;
-import org.redisson.client.RedisException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.support.NullValue;

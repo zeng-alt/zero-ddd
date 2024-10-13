@@ -1,11 +1,11 @@
 package com.zjj.cache.component.repository.impl;
 
 import com.zjj.cache.component.repository.RedisStreamRepository;
-import org.redisson.api.RStream;
-import org.redisson.api.RedissonClient;
-import org.redisson.api.StreamMessageId;
+import org.redisson.PubSubMessageListener;
+import org.redisson.api.*;
 import org.redisson.api.stream.StreamAddArgs;
 import org.redisson.api.stream.StreamReadArgs;
+import org.redisson.api.stream.StreamReadGroupArgs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +25,12 @@ public class RedisStreamRepositoryImpl<K, V> implements RedisStreamRepository {
 	@Autowired
 	public RedisStreamRepositoryImpl(RedissonClient redissonClient) {
 		this.redissonClient = redissonClient;
+		RTopic topic = redissonClient.getTopic("test1");
+//		topic.addListener(EvictionMode.class, new PubSubMessageListener<>() {
+//
+//		})
+		RStream<Object, Object> test = redissonClient.getStream("test");
+//		Map<StreamMessageId, Map<Object, Object>> read = test.read(StreamReadArgs.greaterThan().count().timeout());
 	}
 
 	/**

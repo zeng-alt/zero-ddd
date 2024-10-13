@@ -3,6 +3,7 @@ package com.zjj.l2.cache.component.supper;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.zjj.cache.component.repository.RedisStringRepository;
 import com.zjj.l2.cache.component.config.properties.L2CacheProperties;
+import com.zjj.l2.cache.component.enums.CacheOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.Cache;
 import org.springframework.lang.NonNull;
@@ -89,25 +90,25 @@ public class RedissonCaffeineCacheManage implements L2CacheManage {
     }
 
 
-//    public void clearLocal(String cacheName, Object key) {
-//        clearLocal(cacheName, key, CacheOperation.EVICT);
-//    }
-//
-//    @SuppressWarnings("unchecked")
-//    public void clearLocal(String cacheName, Object key, CacheOperation operation) {
-//        Cache cache = cacheMap.get(cacheName);
-//        if (cache == null) {
-//            return;
-//        }
-//
-//        RedisCaffeineCache redisCaffeineCache = (RedisCaffeineCache) cache;
-//        if (CacheOperation.EVICT_BATCH.equals(operation)) {
-//            redisCaffeineCache.clearLocalBatch((Iterable<Object>) key);
-//        }
-//        else {
-//            redisCaffeineCache.clearLocal(key);
-//        }
-//    }
+    public void clearLocal(String cacheName, Object key) {
+        clearLocal(cacheName, key, CacheOperation.EVICT);
+    }
+
+    @SuppressWarnings("unchecked")
+    public void clearLocal(String cacheName, Object key, CacheOperation operation) {
+        Cache cache = cacheMap.get(cacheName);
+        if (cache == null) {
+            return;
+        }
+
+        L2Cache l2Cache = (L2Cache) cache;
+        if (CacheOperation.EVICT_BATCH.equals(operation)) {
+            l2Cache.clearLocalBatch((Iterable<Object>) key);
+        }
+        else {
+            l2Cache.clearLocal(key);
+        }
+    }
 
     protected Cache adaptCaffeineCache(String name, com.github.benmanes.caffeine.cache.Cache<Object, Object> cache) {
         return new RedissonCaffeineCache(name, cache, redisStringRepository, l2CacheProperties, l2CacheProperties.isCacheNullValues());
@@ -135,5 +136,11 @@ public class RedissonCaffeineCacheManage implements L2CacheManage {
                 entry.setValue(createCache(entry.getKey()));
             }
         }
+    }
+
+    @Override
+    public <K, V> L2Cache<K, V> getL2Cache(String cacheName) {
+        Cache cache = getCache(cacheName);
+        return (L2Cache<K, V>) cache;
     }
 }

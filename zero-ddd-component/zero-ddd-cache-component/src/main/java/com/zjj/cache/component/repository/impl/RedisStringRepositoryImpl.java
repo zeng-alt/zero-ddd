@@ -17,6 +17,7 @@ import org.springframework.util.StringUtils;
 import java.lang.reflect.Modifier;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -84,6 +85,11 @@ public class RedisStringRepositoryImpl extends RedisStringRepository {
 	}
 
 	@Override
+	public void put(String key, Object value, Duration expireTime) {
+		template.getBucket(key).set(value, expireTime.toSeconds(), TimeUnit.SECONDS);
+	}
+
+	@Override
 	public boolean putIfAbsent(String key, Object value, long expireTime) {
 		RBucket<Object> bucket = template.getBucket(key);
 		return bucket.setIfAbsent(value, Duration.ofSeconds(expireTime));
@@ -132,5 +138,19 @@ public class RedisStringRepositoryImpl extends RedisStringRepository {
 		RLock lock = template.getLock(lockName);
 		lock.unlock();
 	}
+
+	@Override
+	public void removeAll(String key) {
+		RKeys rKeys = template.getKeys();
+        for (String s : rKeys.getKeysByPattern(key + "*")) {
+            template.getBucket(s).delete();
+        }
+	}
+
+	@Override
+	public void removeAll(Collection<String> keys) {
+		keys.forEach(key -> template.getBucket(key).delete());
+	}
+
 
 }

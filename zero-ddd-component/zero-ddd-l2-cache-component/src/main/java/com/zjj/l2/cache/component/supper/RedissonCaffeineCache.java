@@ -3,20 +3,27 @@ package com.zjj.l2.cache.component.supper;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Policy;
 import com.github.benmanes.caffeine.cache.stats.CacheStats;
+import com.google.common.collect.Lists;
 import com.zjj.cache.component.repository.RedisStringRepository;
 import com.zjj.l2.cache.component.config.properties.L2CacheProperties;
+import com.zjj.l2.cache.component.enums.CacheOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.weaver.Iterators;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.checker.nullness.qual.PolyNull;
 import org.springframework.cache.support.AbstractValueAdaptingCache;
+import org.springframework.cache.support.NullValue;
+import org.springframework.lang.NonNull;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.time.Duration;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
 
 /**
@@ -38,6 +45,7 @@ public class RedissonCaffeineCache extends AbstractValueAdaptingCache implements
     private final Duration defaultNullValuesExpiration;
     private final Map<String, Duration> expires;
     private final String topic;
+    private final Map<String, ReentrantLock> keyLockMap = new ConcurrentHashMap<>();
 
     public RedissonCaffeineCache(
             String name, Cache<Object, Object> cache,
@@ -51,9 +59,8 @@ public class RedissonCaffeineCache extends AbstractValueAdaptingCache implements
         this.l2CacheProperties = l2CacheProperties;
         this.cachePrefix = l2CacheProperties.getCachePrefix();
         if (StringUtils.hasLength(cachePrefix)) {
-            this.getKeyPrefix = name + ":" + cachePrefix + ":";
-        }
-        else {
+            this.getKeyPrefix = cachePrefix + ":" + name + ":";
+        } else {
             this.getKeyPrefix = name + ":";
         }
         this.defaultExpiration = l2CacheProperties.getL2Cache().getDefaultExpiration();
@@ -65,12 +72,16 @@ public class RedissonCaffeineCache extends AbstractValueAdaptingCache implements
 
     @Override
     public @Nullable Object getIfPresent(Object key) {
-        return null;
+        ValueWrapper valueWrapper = get(key);
+        if (valueWrapper == null) {
+            return null;
+        }
+        return valueWrapper.get();
     }
 
     @Override
     public @PolyNull Object get(Object key, Function<? super Object, ?> mappingFunction) {
-        return null;
+        return get(key, () -> mappingFunction.apply(key));
     }
 
     @Override
@@ -86,27 +97,32 @@ public class RedissonCaffeineCache extends AbstractValueAdaptingCache implements
 
     @Override
     public void put(Object key, Object value) {
-
+        if (!super.isAllowNullValues() && value == null) {
+            this.evict(key);
+            return;
+        }
+        doPut(key, value);
     }
 
 
     @Override
     public void invalidate(Object key) {
-
+        evict(key);
     }
 
     @Override
     public void invalidateAll(Iterable<? extends Object> keys) {
-
+        List<?> keysColl = Lists.newArrayList(keys);
+        List<String> redisKeys = keysColl.stream().map(this::getKey).toList();
+        redisStringRepository.removeAll(redisKeys);
+        push(keysColl, CacheOperation.EVICT_BATCH);
+        caffeineCache.invalidateAll(keysColl);
     }
 
 
     @Nullable
     @Override
-    protected Object lookup(Object key) {
-        if (key == null) {
-            throw new IllegalArgumentException("key must not be null");
-        }
+    protected Object lookup(@NonNull Object key) {
         String cacheName = key.toString();
         String cacheKey = getKey(cacheName);
         Object value = getL1Value(cacheName);
@@ -115,16 +131,19 @@ public class RedissonCaffeineCache extends AbstractValueAdaptingCache implements
             return value;
         }
 
-        value = getL2Value(key.toString());
+        value = getL2Value(cacheKey);
 
         if (value != null) {
             log.debug("get cache from redis and put in caffeine, the key is : {}", cacheKey);
             setL1Value(cacheName, value);
+        } else {
+            put(key, null);
         }
         return value;
     }
 
     public void setL1Value(Object key, Object value) {
+        caffeineCache.put(key, value);
     }
 
     @Override
@@ -137,6 +156,23 @@ public class RedissonCaffeineCache extends AbstractValueAdaptingCache implements
         return caffeineCache.getIfPresent(key);
     }
 
+    @Override
+    public void clearLocalBatch(Iterable<Object> keys) {
+        log.debug("clear local cache, the keys is : {}", keys);
+        caffeineCache.invalidateAll(keys);
+    }
+
+    @Override
+    public void clearLocal(Object key) {
+        log.debug("clear local cache, the key is : {}", key);
+        if (key == null) {
+            caffeineCache.invalidateAll();
+        }
+        else {
+            caffeineCache.invalidate(key);
+        }
+    }
+
 
     protected String getKey(Object key) {
         return this.getKeyPrefix + key;
@@ -145,7 +181,31 @@ public class RedissonCaffeineCache extends AbstractValueAdaptingCache implements
 
     @Override
     public <T> T get(Object key, Callable<T> valueLoader) {
-        return null;
+        Object value = lookup(key);
+        if (Objects.nonNull(value)) {
+            return (T) value;
+        }
+
+        ReentrantLock lock = keyLockMap.computeIfAbsent(key.toString(), s -> {
+            log.trace("create lock for key : {}", s);
+            return new ReentrantLock();
+        });
+
+        lock.lock();
+        try {
+            value = lookup(key);
+            if (Objects.nonNull(value)) {
+                return (T) value;
+            }
+            value = valueLoader.call();
+            Object storeValue = toStoreValue(value);
+            put(key, storeValue);
+            return (T) value;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            lock.unlock();
+        }
     }
 
 
@@ -156,11 +216,22 @@ public class RedissonCaffeineCache extends AbstractValueAdaptingCache implements
 
     @Override
     public void evict(Object key) {
+        redisStringRepository.remove(getKey(key));
 
+        push(key, CacheOperation.EVICT_BATCH);
+
+        caffeineCache.invalidate(key);
     }
 
     @Override
     public void clear() {
+        // 先清除redis中缓存数据，然后清除caffeine中的缓存，避免短时间内如果先清除caffeine缓存后其他请求会再从redis里加载到caffeine中
+
+        redisStringRepository.removeAll(this.name);
+
+        push((Object) null, CacheOperation.EVICT_BATCH);
+
+        caffeineCache.invalidateAll();
     }
 
 
@@ -193,6 +264,44 @@ public class RedissonCaffeineCache extends AbstractValueAdaptingCache implements
     public void cleanUp() {
         caffeineCache.cleanUp();
     }
+
+    protected Duration getExpire(Object value) {
+        Duration cacheNameExpire = expires.get(this.name);
+        if (cacheNameExpire == null) {
+            cacheNameExpire = defaultExpiration;
+        }
+        if ((value == null || value == NullValue.INSTANCE) && this.defaultNullValuesExpiration != null) {
+            cacheNameExpire = this.defaultNullValuesExpiration;
+        }
+        return cacheNameExpire;
+    }
+
+
+    private void doPut(Object key, Object value) {
+        value = toStoreValue(value);
+        Duration expire = getExpire(value);
+        setL2Value(key, value, expire);
+
+        push(key, CacheOperation.EVICT_BATCH);
+
+        setL1Value(key, value);
+    }
+
+
+    protected void push(Object key, CacheOperation operation) {
+//        push(new CacheMessage(this.serverId, this.name, operation, key));
+    }
+
+    public void setL2Value(Object key, Object value, Duration expire) {
+        if (!expire.isNegative() && !expire.isZero()) {
+            redisStringRepository.put(getKey(key), value, expire);
+        }
+        else {
+            redisStringRepository.put(getKey(key), value);
+        }
+    }
+
+
 
     @Override
     public Policy<Object, Object> policy() {

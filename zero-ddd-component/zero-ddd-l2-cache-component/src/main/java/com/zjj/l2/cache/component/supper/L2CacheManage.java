@@ -8,4 +8,6 @@ import org.springframework.cache.CacheManager;
  * @crateTime 2024年10月11日 20:47
  */
 public interface L2CacheManage extends CacheManager {
+
+    public <K, V> L2Cache<K, V> getL2Cache(String cacheName);
 }

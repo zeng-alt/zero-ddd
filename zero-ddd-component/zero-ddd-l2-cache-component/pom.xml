@@ -33,6 +33,13 @@
             <artifactId>spring-boot-autoconfigure</artifactId>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
