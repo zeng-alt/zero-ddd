@@ -1,16 +1,18 @@
 package com.zjj.cache.component.repository.impl;
 
 import com.zjj.cache.component.repository.RedisStreamRepository;
-import org.redisson.PubSubMessageListener;
-import org.redisson.api.*;
+import lombok.RequiredArgsConstructor;
+import org.redisson.api.RBatch;
+import org.redisson.api.RStream;
+import org.redisson.api.RedissonClient;
+import org.redisson.api.StreamMessageId;
 import org.redisson.api.stream.StreamAddArgs;
 import org.redisson.api.stream.StreamReadArgs;
 import org.redisson.api.stream.StreamReadGroupArgs;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.time.Duration;
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * @author zengJiaJun
@@ -18,20 +20,10 @@ import java.util.Map;
  * @crateTime 2024年06月26日 16:55
  */
 @Component
-public class RedisStreamRepositoryImpl<K, V> implements RedisStreamRepository {
+@RequiredArgsConstructor
+public class RedisStreamRepositoryImpl implements RedisStreamRepository {
 
 	private final RedissonClient redissonClient;
-
-	@Autowired
-	public RedisStreamRepositoryImpl(RedissonClient redissonClient) {
-		this.redissonClient = redissonClient;
-		RTopic topic = redissonClient.getTopic("test1");
-//		topic.addListener(EvictionMode.class, new PubSubMessageListener<>() {
-//
-//		})
-		RStream<Object, Object> test = redissonClient.getStream("test");
-//		Map<StreamMessageId, Map<Object, Object>> read = test.read(StreamReadArgs.greaterThan().count().timeout());
-	}
 
 	/**
 	 * 添加事件到Stream。
@@ -39,43 +31,56 @@ public class RedisStreamRepositoryImpl<K, V> implements RedisStreamRepository {
 	 * @param event Event内容
 	 * @return 添加结果
 	 */
-	public String addEvent(String streamName, Map<K, V> event) {
-		RStream<K, V> stream = redissonClient.getStream(streamName);
-		return stream.add(StreamAddArgs.entries(event)).toString();
+	public <T> StreamMessageId addEvent(String streamName, T event) {
+		RStream<String, T> stream = redissonClient.getStream(streamName);
+		return stream.add(StreamAddArgs.entry("event", event));
 	}
 
-	/**
-	 * 读取Stream中的事件。
-	 * @param streamName Stream名称
-	 * @param count 读取的事件数量
-	 * @return 事件列表
-	 */
-	public Map<StreamMessageId, Map<K, V>> readEvents(String streamName, StreamMessageId id, int count,
-			Duration timeout) {
-		RStream<K, V> stream = redissonClient.getStream(streamName);
-		return stream.read(StreamReadArgs.greaterThan(id).count(count).timeout(timeout));
-	}
 
 	/**
-	 * 确认已处理的事件。
+	 * 添加事件到Stream。
 	 * @param streamName Stream名称
-	 * @param ids 已处理的事件ID列表
-	 * @return 确认结果
+	 * @param event Event内容
+	 * @return 添加结果
 	 */
-	// public RStreamWriteResult acknowledgeEvents(String streamName, List<String> ids) {
-	// RStream<String, Object> stream = redissonClient.getStream(streamName);
-	// return stream.ack(ids);
-	// }
+	public <K, V> StreamMessageId addEvent(String streamName, Map<K, V> event) {
+		RStream<K, V> stream = redissonClient.getStream(streamName);
+		return stream.add(StreamAddArgs.entries(event));
+	}
+
+	public long ack(String streamName, String groupName, StreamMessageId... ids) {
+		RStream stream = redissonClient.getStream(streamName);
+		return stream.ack(groupName, ids);
+	}
 
 	/**
 	 * 创建消费者组。
-	 * @param groupName 消费者组名称
 	 * @param streamName Stream名称
+	 * @param groupName 消费者组名称
 	 */
-	public void createConsumerGroup(String groupName, String streamName) {
-		RStream<String, Object> stream = redissonClient.getStream(streamName);
+	public void createGroup(String streamName, String groupName) {
+		RStream stream = redissonClient.getStream(streamName);
 		stream.createGroup(groupName);
 	}
+
+	public void createConsumer(String streamName, String groupName, String consumerName) {
+		RStream stream = redissonClient.getStream(streamName);
+		stream.createConsumer(groupName, consumerName);
+	}
+
+	public <V> void readEvent(String streamName, StreamMessageId id, Consumer<V> consumer) {
+		RStream<String, V> stream = redissonClient.getStream(streamName);
+		Map<StreamMessageId, Map<String, V>> read = stream.read(StreamReadArgs.greaterThan(id).count(10));
+		consumer.accept(read.get(id).get("event"));
+	}
+
+	public <V> void readGroupEvent(String streamName, String groupName, StreamMessageId id, String consumerName, Consumer<V> consumer) {
+		RStream<String, V> stream = redissonClient.getStream(streamName);
+		Map<StreamMessageId, Map<String, V>> read = stream.readGroup(groupName, consumerName, StreamReadGroupArgs.greaterThan(id));
+		consumer.accept(read.get(id).get("event"));
+		stream.ack(groupName, id);
+	}
+
 
 	/**
 	 * 设置消费者组的消费位置。

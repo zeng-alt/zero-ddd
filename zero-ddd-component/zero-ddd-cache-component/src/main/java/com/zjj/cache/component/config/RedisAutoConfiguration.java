@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.redisson.client.codec.StringCodec;
 import org.redisson.codec.CompositeCodec;
 import org.redisson.codec.JsonJacksonCodec;
+import org.redisson.config.ReplicatedServersConfig;
 import org.redisson.spring.starter.RedissonAutoConfigurationCustomizer;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -51,6 +52,7 @@ public class RedisAutoConfiguration {
 			// if (SpringUtils.isVirtual()) {
 			// config.setNettyExecutor(new VirtualThreadTaskExecutor("redisson-"));
 			// }
+//			ReplicatedServersConfig replicatedServersConfig = config.useReplicatedServers();
 			log.info("初始化 redis 配置");
 		};
 	}

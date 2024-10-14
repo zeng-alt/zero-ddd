@@ -1,5 +1,5 @@
 com.zjj.cache.component.config.RedisAutoConfiguration
 com.zjj.cache.component.repository.impl.RedisStringRepositoryImpl
 com.zjj.cache.component.repository.impl.RedisListRepositoryImpl
-com.zjj.cache.component.repository.impl.RedisPubSubRepositoryImpl
+com.zjj.cache.component.repository.impl.RedisTopicRepositoryImpl
 com.zjj.cache.component.repository.impl.RedisStreamRepositoryImpl
