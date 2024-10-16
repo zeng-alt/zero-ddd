@@ -1,4 +1,4 @@
-package com.zjj.l2.cache.component.enums;
+package com.zjj.autoconfigure.component.l2cache;
 
 /**
  * @author zengJiaJun

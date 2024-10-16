@@ -13,6 +13,7 @@
     <modules>
         <module>zero-ddd-component</module>
         <module>zero-ddd-auth</module>
+        <module>zero-ddd-gateway</module>
     </modules>
 
     <properties>

@@ -1,5 +1,6 @@
 package com.zjj.auth;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
@@ -11,6 +12,7 @@ import lombok.EqualsAndHashCode;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.redisson.api.RedissonClient;
+import org.redisson.client.RedisException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.support.NullValue;
@@ -125,7 +127,18 @@ public class RedisTest {
         Object instance = NullValue.INSTANCE;
         redisStringRepository.put("null", instance);
         NullValue aNull = redisStringRepository.get("null");
+        Assertions.assertEquals(aNull, NullValue.INSTANCE);
 //        Assertions.assertThrows(RedisException.class, () -> redisStringRepository.get("user1", User1.class));
+    }
+
+    @Test
+    void testLock() throws InterruptedException {
+        System.out.println(redisStringRepository.tryLock("lock:user"));
+//        System.out.println(redisStringRepository.tryLock("lock:user", 10000));
+//        redisStringRepository.tryLock("lock:user");
+//        redisStringRepository.tryLock("lock:user");
+//        redisStringRepository.tryLock("lock:user");
+//        redisStringRepository.unlock("lock:user");
     }
 
     @Autowired
@@ -154,6 +167,17 @@ public class RedisTest {
         redisStringRepository.put("vavrUser3", user3s);
         java.util.List<User3> vavrUser3 = redisStringRepository.get("vavrUser3");
         Assertions.assertEquals(user3s.toJavaList(), vavrUser3);
+    }
+
+    @Test void testRecord() {
+        redisStringRepository.put("testrecord", new RecordTest("张三", 18));
+        RecordTest recordTest = redisStringRepository.get("testrecord");
+        System.out.println(recordTest);
+    }
+
+    @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
+    public static record RecordTest(String name, Integer age) {
+
     }
 
 

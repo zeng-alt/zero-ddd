@@ -1,12 +1,16 @@
 package com.zjj.auth;
 
-import com.zjj.l2.cache.component.supper.L2CacheManage;
+import com.zjj.autoconfigure.component.l2cache.L2CacheManage;
 import com.zjj.l2.cache.component.supper.RedissonCaffeineCache;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author zengJiaJun
@@ -65,5 +69,15 @@ public class L2Test {
         User user = User.createUser();
         User s = l2Cache.get("user", User.class);
         Assertions.assertEquals(user, s);
+    }
+
+    @Test void testGetAll() {
+        List<String> users = Lists.newArrayList("user1", "user2", "user3", "user4");
+        Map<Object, Object> allPresent = l2Cache.getAll(users, s -> Map.of("user1", "张三", "user2", "李四", "user3", "王五", "user4", "赵六"));
+        String s = l2Cache.get("user1", String.class);
+        //        Map<Object, Object> allPresent = l2Cache.getAllPresent(users);
+        for (Map.Entry<Object, Object> entry : allPresent.entrySet()) {
+            System.out.println(entry.getKey() + " = " + entry.getValue());
+        }
     }
 }

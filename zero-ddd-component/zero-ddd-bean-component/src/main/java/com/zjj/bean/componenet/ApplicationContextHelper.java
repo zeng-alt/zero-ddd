@@ -1,7 +1,6 @@
 package com.zjj.bean.componenet;
 
 import com.zjj.autoconfigure.component.UtilException;
-import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
@@ -22,7 +21,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class ApplicationContextHelper implements ApplicationContextAware, BeanFactoryPostProcessor {
 
-	@Getter
 	private static ApplicationContext applicationContext;
 
 	private static ConfigurableListableBeanFactory beanFactory;
@@ -33,7 +31,6 @@ public class ApplicationContextHelper implements ApplicationContextAware, BeanFa
 	}
 
 	public static <T> T getBean(Class<T> targetClz) {
-
 		T beanInstance = null;
 		// 优先按type查
 		try {
@@ -45,7 +42,7 @@ public class ApplicationContextHelper implements ApplicationContextAware, BeanFa
 		// 按name查
 		if (beanInstance == null) {
 			String simpleName = StringUtils.uncapitalize(targetClz.getSimpleName());
-			beanInstance = (T) applicationContext.getBean(simpleName);
+			beanInstance = applicationContext.getBean(simpleName, targetClz);
 		}
 		if (beanInstance == null) {
 			throw new UtilException("Component " + targetClz + " can not be found in Spring Container");
@@ -53,8 +50,8 @@ public class ApplicationContextHelper implements ApplicationContextAware, BeanFa
 		return beanInstance;
 	}
 
-	public static Object getBean(String claz) {
-		return ApplicationContextHelper.applicationContext.getBean(claz);
+	public static Object getBean(String name) {
+		return ApplicationContextHelper.applicationContext.getBean(name);
 	}
 
 	public static <T> T getBean(String name, Class<T> requiredType) {
@@ -114,4 +111,7 @@ public class ApplicationContextHelper implements ApplicationContextAware, BeanFa
 		ApplicationContextHelper.beanFactory = beanFactory;
 	}
 
+	public static ApplicationContext getApplicationContext() {
+		return applicationContext;
+	}
 }

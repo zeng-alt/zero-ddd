@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author zengJiaJun
@@ -31,7 +32,7 @@ public class CacheProperties {
     /**
      * 每个cacheName的过期时间，优先级比defaultExpiration高
      */
-    private Map<String, Duration> expires = new HashMap<>();
+    private Map<String, Duration> expires = new ConcurrentHashMap<>();
 
     /**
      * 缓存更新时通知其他节点的topic名称

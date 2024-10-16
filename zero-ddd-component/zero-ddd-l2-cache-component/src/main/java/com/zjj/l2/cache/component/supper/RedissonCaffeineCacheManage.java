@@ -1,9 +1,13 @@
 package com.zjj.l2.cache.component.supper;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.zjj.autoconfigure.component.l2cache.EventSubPubProvider;
+import com.zjj.autoconfigure.component.l2cache.L2Cache;
+import com.zjj.autoconfigure.component.l2cache.L2CacheManage;
 import com.zjj.cache.component.repository.RedisStringRepository;
 import com.zjj.l2.cache.component.config.properties.L2CacheProperties;
-import com.zjj.l2.cache.component.enums.CacheOperation;
+import com.zjj.autoconfigure.component.l2cache.CacheOperation;
+import com.zjj.autoconfigure.component.l2cache.EvictEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.Cache;
 import org.springframework.lang.NonNull;
@@ -30,6 +34,7 @@ public class RedissonCaffeineCacheManage implements L2CacheManage {
     private final Map<String, Cache> cacheMap = new ConcurrentHashMap<>(16);
     private final L2CacheProperties l2CacheProperties;
     private final RedisStringRepository redisStringRepository;
+    private final EventSubPubProvider<EvictEvent> eventSubPubProvider;
 
 //    @Nullable
 //    private AsyncCacheLoader<Object, Object> cacheLoader;
@@ -38,8 +43,10 @@ public class RedissonCaffeineCacheManage implements L2CacheManage {
     private Object serverId;
 
     public RedissonCaffeineCacheManage(L2CacheProperties l2CacheProperties,
-                                       RedisStringRepository redisStringRepository) {
+                                       RedisStringRepository redisStringRepository,
+                                       EventSubPubProvider eventSubPubProvider) {
         super();
+        this.eventSubPubProvider = eventSubPubProvider;
         this.l2CacheProperties = l2CacheProperties;
         this.redisStringRepository = redisStringRepository;
         this.dynamic = l2CacheProperties.isDynamic();
@@ -111,7 +118,7 @@ public class RedissonCaffeineCacheManage implements L2CacheManage {
     }
 
     protected Cache adaptCaffeineCache(String name, com.github.benmanes.caffeine.cache.Cache<Object, Object> cache) {
-        return new RedissonCaffeineCache(name, cache, redisStringRepository, l2CacheProperties, l2CacheProperties.isCacheNullValues());
+        return new RedissonCaffeineCache(name, cache, redisStringRepository, l2CacheProperties, l2CacheProperties.isCacheNullValues(), eventSubPubProvider);
     }
 
     protected Cache createCache(String name) {
@@ -142,5 +149,10 @@ public class RedissonCaffeineCacheManage implements L2CacheManage {
     public <K, V> L2Cache<K, V> getL2Cache(String cacheName) {
         Cache cache = getCache(cacheName);
         return (L2Cache<K, V>) cache;
+    }
+
+    @Override
+    public Object getServerId() {
+        return serverId;
     }
 }

@@ -3,7 +3,8 @@ package com.zjj.cache.component.repository.impl;
 
 import com.zjj.cache.component.repository.RedisSubPubRepository;
 import lombok.RequiredArgsConstructor;
-import org.redisson.api.*;
+import org.redisson.api.RTopic;
+import org.redisson.api.RedissonClient;
 import org.redisson.api.listener.MessageListener;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -24,10 +25,10 @@ public class RedisTopicRepositoryImpl implements RedisSubPubRepository {
 	 * 订阅频道并接收消息。
 	 * @param channelKey 频道名
 	 */
-	public <T> int addListener(String channelKey, Class<T> clazz, Consumer<T> consumer) {
+	@Override
+	public <T> String addListener(String channelKey, Class<T> clazz, Consumer<T> consumer) {
 		RTopic topic = redissonClient.getTopic(channelKey);
-//		redissonClient.getReliableTopic().ad
-		return topic.addListener(clazz, (channel, msg) -> consumer.accept(msg));
+		return String.valueOf(topic.addListener(clazz, (channel, msg) -> consumer.accept(msg)));
 	}
 
 	/**
@@ -35,27 +36,33 @@ public class RedisTopicRepositoryImpl implements RedisSubPubRepository {
 	 * @param channelKey 频道名
 	 * @param message 消息内容
 	 */
+	@Override
 	public <T> long publish(String channelKey, T message) {
 		RTopic topic = redissonClient.getTopic(channelKey);
 		return topic.publish(message);
 	}
 
+	@Override
 	public void removeListener(String channelKey, int listenerId) {
 		redissonClient.getTopic(channelKey).removeListener(listenerId);
 	}
 
+	@Override
 	public List<String> getChannelNames(String channelKey) {
 		return redissonClient.getTopic(channelKey).getChannelNames();
 	}
 
+	@Override
 	public void removeAllListeners(String channelKey) {
 		redissonClient.getTopic(channelKey).removeAllListeners();
 	}
 
+	@Override
 	public long countSubscribers(String channelKey) {
 		return redissonClient.getTopic(channelKey).countSubscribers();
 	}
 
+	@Override
 	public int countListeners(String channelKey) {
 		return redissonClient.getTopic(channelKey).countListeners();
 	}

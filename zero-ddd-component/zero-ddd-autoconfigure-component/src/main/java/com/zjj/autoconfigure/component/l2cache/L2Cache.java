@@ -1,7 +1,5 @@
-package com.zjj.l2.cache.component.supper;
+package com.zjj.autoconfigure.component.l2cache;
 
-
-import com.github.benmanes.caffeine.cache.Cache;
 
 import java.time.Duration;
 
@@ -10,7 +8,7 @@ import java.time.Duration;
  * @version 1.0
  * @crateTime 2024年10月11日 20:10
  */
-public interface L2Cache<K, V> extends Cache<K, V> {
+public interface L2Cache<K, V> extends org.springframework.cache.Cache {
 
     public void setL1Value(K key, V value);
 

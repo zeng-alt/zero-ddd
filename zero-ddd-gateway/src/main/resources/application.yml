@@ -1,8 +1,9 @@
-
+server:
+  port: 8081
 
 spring:
   application:
-    name: graphApplication
+    name: zero-ddd-gateway
 #  graphql:
 #    graphiql:
 #      enabled: true
@@ -11,12 +12,11 @@ spring:
       l1-cache:
         spec: "initialCapacity=100,maximumSize=500,expireAfterAccess=5m,recordStats"
       cache-names: user
-      server-id: server-1
+      server-id: server-2
       cache-prefix: multi
-
-#      l2-cache:
-#        default-expiration: 60s
-#        default-null-values-expiration: 120s
+      l2-cache:
+        default-expiration: 60s
+        default-null-values-expiration: 120s
 
 
     type: caffeine

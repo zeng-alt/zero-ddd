@@ -3,30 +3,27 @@ package com.zjj.cache.component.repository.impl;
 import com.zjj.autoconfigure.component.json.JsonHelper;
 import com.zjj.cache.component.repository.RedisStringRepository;
 import com.zjj.core.component.exception.UtilException;
-import com.zjj.json.component.utils.JacksonHelper;
-import org.redisson.api.RBucket;
-import org.redisson.api.RKeys;
-import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
-import org.springframework.beans.BeanUtils;
+import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.*;
+import org.redisson.api.listener.SetObjectListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import java.lang.reflect.Modifier;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 /**
  * @author zengJiaJun
  * @version 1.0
  * @crateTime 2024年06月18日 18:56
  */
+@Slf4j
 @Component
 public class RedisStringRepositoryImpl extends RedisStringRepository {
 
@@ -48,24 +45,57 @@ public class RedisStringRepositoryImpl extends RedisStringRepository {
 
 	@Override
 	@NonNull
-	public List<Object> getAll(@NonNull String key) {
+	public List<Object> getAll(@NonNull String key) throws ExecutionException, InterruptedException, TimeoutException {
 		return getAll(key, Object.class);
 	}
 
+
 	@Override
-	public <T> List<T> getAll(String key, Class<T> tClass) {
+	@NonNull
+	public <T> List<T> getAll(@NonNull Iterable<String> keys) throws ExecutionException, InterruptedException, TimeoutException {
+		List<T> result = new ArrayList<>();
+		Queue<RFuture<T>> futures = new LinkedList<>();
+		Map<RFuture<T>, Integer> retryCounts = new HashMap<>();
+		RBatch batch = template.createBatch();
+		for (String key : keys) {
+			RBucketAsync<T> bucket = batch.getBucket(key);
+			RFuture<T> async = bucket.getAsync();
+			futures.offer(async);
+			retryCounts.put(async, 0);
+		}
+		batch.execute();
+		while (!futures.isEmpty()) {
+			RFuture<T> poll = futures.poll();
+			CompletableFuture<T> completableFuture = poll.toCompletableFuture();
+			if (completableFuture.isDone()) {
+				try {
+					result.add(completableFuture.getNow(null));
+				} catch (CompletionException | CancellationException e) {
+					throw new RuntimeException(e);
+				}
+			} else {
+				log.warn("{} 进行重试", poll);
+				int retryCount = retryCounts.get(poll);
+				if (retryCount < 3) { // 如果重试次数小于 3 次
+					retryCounts.put(poll, retryCount + 1); // 增加重试次数
+					futures.offer(poll); // 重新加入队列
+				} else {
+					// 达到最大重试次数，处理错误
+					throw new RuntimeException("Future " + poll + " failed after 3 retries");
+				}
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public <T> List<T> getAll(String key, Class<T> tClass) throws ExecutionException, InterruptedException, TimeoutException {
 		if (!StringUtils.hasLength(key)) {
 			throw new UtilException("key is not null");
 		}
 		RKeys rKeys = template.getKeys();
-		Iterator<String> iterator = rKeys.getKeysByPattern(key + "*").iterator();
-		List<T> result = new ArrayList<>();
-		RBucket<T> bucket = null;
-		while (iterator.hasNext()) {
-			bucket = template.getBucket(key);
-			result.add(bucket.get());
-		}
-		return result;
+		Iterable<String> keysByPattern = rKeys.getKeysByPattern(key + "*");
+		return getAll(keysByPattern);
 	}
 
 	@Override
@@ -87,6 +117,27 @@ public class RedisStringRepositoryImpl extends RedisStringRepository {
 	@Override
 	public void put(String key, Object value, Duration expireTime) {
 		template.getBucket(key).set(value, expireTime.toSeconds(), TimeUnit.SECONDS);
+	}
+
+	public void batchPut(@NonNull Map<String, Object> map, @NonNull UnaryOperator<String> getKey, @NonNull Function<String, Duration> getExpire, @NonNull Consumer<Map.Entry<String, Object>> callback) {
+		RBatch batch = template.createBatch();
+		for (Map.Entry<String, Object> entry : map.entrySet()) {
+			RBucketAsync<Object> bucket = batch.getBucket(getKey.apply(entry.getKey()));
+			Duration expire = getExpire.apply(entry.getKey());
+			if (expire.isZero()) {
+				bucket.setAsync(entry.getValue());
+			} else {
+				bucket.setAsync(entry.getValue(), expire.getSeconds(), TimeUnit.SECONDS);
+			}
+			bucket.addListenerAsync(new SetObjectListener() {
+				@Override
+				public void onSet(String name) {
+					System.out.println(name);
+					callback.accept(entry);
+				}
+			});
+		}
+		batch.execute();
 	}
 
 	@Override
@@ -114,6 +165,16 @@ public class RedisStringRepositoryImpl extends RedisStringRepository {
 	public boolean tryLock(String lockName) {
 		RLock lock = template.getLock(lockName);
 		return lock.tryLock();
+	}
+
+	public boolean tryLock(String lockName, long time, TimeUnit timeUnit) throws InterruptedException {
+		RLock lock = template.getLock(lockName);
+		return lock.tryLock(time, timeUnit);
+	}
+
+	public boolean tryLock(String lockName, long time) throws InterruptedException {
+
+		return tryLock(lockName, time, TimeUnit.MILLISECONDS);
 	}
 
 	/**

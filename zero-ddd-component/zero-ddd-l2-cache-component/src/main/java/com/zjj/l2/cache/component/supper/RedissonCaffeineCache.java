@@ -4,27 +4,26 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Policy;
 import com.github.benmanes.caffeine.cache.stats.CacheStats;
 import com.google.common.collect.Lists;
+import com.zjj.autoconfigure.component.l2cache.EventSubPubProvider;
+import com.zjj.autoconfigure.component.l2cache.L2Cache;
 import com.zjj.cache.component.repository.RedisStringRepository;
 import com.zjj.l2.cache.component.config.properties.L2CacheProperties;
-import com.zjj.l2.cache.component.enums.CacheOperation;
+import com.zjj.autoconfigure.component.l2cache.CacheOperation;
+import com.zjj.autoconfigure.component.l2cache.EvictEvent;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.weaver.Iterators;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.checker.nullness.qual.PolyNull;
 import org.springframework.cache.support.AbstractValueAdaptingCache;
 import org.springframework.cache.support.NullValue;
 import org.springframework.lang.NonNull;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.time.Duration;
 import java.util.*;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author zengJiaJun
@@ -32,32 +31,31 @@ import java.util.function.Function;
  * @crateTime 2024年10月11日 20:11
  */
 @Slf4j
-public class RedissonCaffeineCache extends AbstractValueAdaptingCache implements L2Cache<Object, Object> {
+public class RedissonCaffeineCache extends AbstractValueAdaptingCache implements Cache<Object, Object>, L2Cache<Object, Object> {
 
     private final String name;
     private final Cache<Object, Object> caffeineCache;
     private final RedisStringRepository redisStringRepository;
-    private final L2CacheProperties l2CacheProperties;
-    private final String cachePrefix;
     private final String getKeyPrefix;
     private final Object serverId;
     private final Duration defaultExpiration;
     private final Duration defaultNullValuesExpiration;
     private final Map<String, Duration> expires;
     private final String topic;
-    private final Map<String, ReentrantLock> keyLockMap = new ConcurrentHashMap<>();
+    private final EventSubPubProvider<EvictEvent> eventSubPubProvider;
 
     public RedissonCaffeineCache(
             String name, Cache<Object, Object> cache,
             RedisStringRepository redisStringRepository, L2CacheProperties l2CacheProperties,
-            boolean cacheNullValues
+            boolean cacheNullValues,
+            EventSubPubProvider<EvictEvent> eventSubPubProvider
     ) {
         super(cacheNullValues);
+        this.eventSubPubProvider = eventSubPubProvider;
         this.name = name;
         this.caffeineCache = cache;
         this.redisStringRepository = redisStringRepository;
-        this.l2CacheProperties = l2CacheProperties;
-        this.cachePrefix = l2CacheProperties.getCachePrefix();
+        String cachePrefix = l2CacheProperties.getCachePrefix();
         if (StringUtils.hasLength(cachePrefix)) {
             this.getKeyPrefix = cachePrefix + ":" + name + ":";
         } else {
@@ -85,18 +83,49 @@ public class RedissonCaffeineCache extends AbstractValueAdaptingCache implements
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Map<Object, Object> getAllPresent(Iterable<? extends Object> keys) {
-        return null;
+        CacheGetContext context = CacheGetContext.notSaveRedisAbsentKeys((Iterable<Object>) keys);
+        doGetAll(context);
+        Map<Object, Object> cachedKeyValues = context.cachedKeyValues;
+        Map<Object, Object> result = new HashMap<>(cachedKeyValues.size(), 1);
+        cachedKeyValues.forEach((k, v) -> result.put(k, fromStoreValue(v)));
+        return result;
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Map<Object, Object> getAll(Iterable<?> keys, Function<? super Set<?>, ? extends Map<?, ?>> mappingFunction) {
-        return null;
+        CacheGetContext context = CacheGetContext.saveRedisAbsentKeys((Iterable<Object>) keys);
+        doGetAll(context);
+        long redisAbsentCount = context.redisAbsentCount;
+        Map<Object, Object> cachedKeyValues = context.cachedKeyValues;
+        if (redisAbsentCount == 0) {
+            // 所有 key 全部命中缓存
+            Map<Object, Object> result = new HashMap<>(cachedKeyValues.size(), 1);
+            cachedKeyValues.forEach((k, v) -> result.put(k, fromStoreValue(v)));
+            return result;
+        }
+        // 从 mappingFunction 中获取值
+        Map<?, ?> mappingKeyValues = mappingFunction.apply(context.redisAbsentKeys);
+        putAll(mappingKeyValues);
+        Map<Object, Object> result = new HashMap<>(cachedKeyValues.size() + mappingKeyValues.size(), 1);
+        cachedKeyValues.forEach((k, v) -> result.put(k, fromStoreValue(v)));
+        result.putAll(mappingKeyValues);
+        return result;
+    }
+
+
+    private void doGetAll(CacheGetContext context) {
+        context.cachedKeyValues = caffeineCache.getAll(
+                context.allKeys,
+                keyIterable -> context.fetchFromRedis(redisStringRepository, this::getKey)
+        );
     }
 
 
     @Override
-    public void put(Object key, Object value) {
+    public void put(@NonNull Object key, Object value) {
         if (!super.isAllowNullValues() && value == null) {
             this.evict(key);
             return;
@@ -126,7 +155,7 @@ public class RedissonCaffeineCache extends AbstractValueAdaptingCache implements
         String cacheName = key.toString();
         String cacheKey = getKey(cacheName);
         Object value = getL1Value(cacheName);
-        if (value != null) {
+        if (!Objects.isNull(value)) {
             log.debug("get cache from caffeine, the key is : {}", cacheKey);
             return value;
         }
@@ -144,6 +173,10 @@ public class RedissonCaffeineCache extends AbstractValueAdaptingCache implements
 
     public void setL1Value(Object key, Object value) {
         caffeineCache.put(key, value);
+    }
+
+    public void setL1Value(Map.Entry<String, Object> entry) {
+        caffeineCache.put(entry.getKey(), entry.getValue());
     }
 
     @Override
@@ -186,13 +219,10 @@ public class RedissonCaffeineCache extends AbstractValueAdaptingCache implements
             return (T) value;
         }
 
-        ReentrantLock lock = keyLockMap.computeIfAbsent(key.toString(), s -> {
-            log.trace("create lock for key : {}", s);
-            return new ReentrantLock();
-        });
-
-        lock.lock();
+        String lockName = "lock:" + name;
+        boolean b = false;
         try {
+            b = redisStringRepository.tryLock(lockName, 100);
             value = lookup(key);
             if (Objects.nonNull(value)) {
                 return (T) value;
@@ -204,18 +234,26 @@ public class RedissonCaffeineCache extends AbstractValueAdaptingCache implements
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
-            lock.unlock();
+            if (b) {
+                redisStringRepository.unlock(lockName);
+            }
         }
     }
 
 
     @Override
     public void putAll(Map<? extends Object, ?> map) {
+        Map<String, Object> temp = map
+                                    .entrySet()
+                                    .stream()
+                                    .collect(Collectors.toMap(k -> k.getKey().toString(), e -> toStoreValue(e.getValue())));
 
+        redisStringRepository.batchPut(temp, this::getKey, this::getExpire, this::setL1Value);
+        push(new ArrayList<>(temp.keySet()), CacheOperation.EVICT_BATCH);
     }
 
     @Override
-    public void evict(Object key) {
+    public void evict(@NonNull Object key) {
         redisStringRepository.remove(getKey(key));
 
         push(key, CacheOperation.EVICT_BATCH);
@@ -229,7 +267,7 @@ public class RedissonCaffeineCache extends AbstractValueAdaptingCache implements
 
         redisStringRepository.removeAll(this.name);
 
-        push((Object) null, CacheOperation.EVICT_BATCH);
+        push(null, CacheOperation.EVICT_BATCH);
 
         caffeineCache.invalidateAll();
     }
@@ -255,6 +293,7 @@ public class RedissonCaffeineCache extends AbstractValueAdaptingCache implements
         return caffeineCache.asMap();
     }
 
+    @NonNull
     @Override
     public Object getNativeCache() {
         return this;
@@ -282,14 +321,17 @@ public class RedissonCaffeineCache extends AbstractValueAdaptingCache implements
         Duration expire = getExpire(value);
         setL2Value(key, value, expire);
 
-        push(key, CacheOperation.EVICT_BATCH);
+        push(key, CacheOperation.EVICT);
 
         setL1Value(key, value);
     }
 
-
     protected void push(Object key, CacheOperation operation) {
-//        push(new CacheMessage(this.serverId, this.name, operation, key));
+        push(new EvictEvent(this.serverId, this.name, operation, key));
+    }
+
+    protected void push(EvictEvent message) {
+        eventSubPubProvider.publish(topic, message);
     }
 
     public void setL2Value(Object key, Object value, Duration expire) {
@@ -301,13 +343,34 @@ public class RedissonCaffeineCache extends AbstractValueAdaptingCache implements
         }
     }
 
-
+    @Override
+    public ValueWrapper putIfAbsent(@NonNull Object key, Object value) {
+        String lockName = "lock:" + name;
+        Object prevValue;
+        boolean b = false;
+        // 考虑使用分布式锁，或者将redis的setIfAbsent改为原子性操作
+        try {
+            b = redisStringRepository.tryLock(lockName, 100);
+            prevValue = getL2Value(key.toString());
+            if (prevValue == null) {
+                doPut(key, value);
+            }
+            return toValueWrapper(prevValue);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (b) {
+                redisStringRepository.unlock(lockName);
+            }
+        }
+    }
 
     @Override
     public Policy<Object, Object> policy() {
         return caffeineCache.policy();
     }
 
+    @NonNull
     @Override
     public String getName() {
         return name;

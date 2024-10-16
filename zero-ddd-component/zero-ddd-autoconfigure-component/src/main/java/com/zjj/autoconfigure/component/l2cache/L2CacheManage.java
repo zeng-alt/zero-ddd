@@ -1,4 +1,4 @@
-package com.zjj.l2.cache.component.supper;
+package com.zjj.autoconfigure.component.l2cache;
 
 import org.springframework.cache.CacheManager;
 
@@ -10,4 +10,8 @@ import org.springframework.cache.CacheManager;
 public interface L2CacheManage extends CacheManager {
 
     public <K, V> L2Cache<K, V> getL2Cache(String cacheName);
+
+    Object getServerId();
+
+    void clearLocal(String cacheName, Object key, CacheOperation cacheOperation);
 }
