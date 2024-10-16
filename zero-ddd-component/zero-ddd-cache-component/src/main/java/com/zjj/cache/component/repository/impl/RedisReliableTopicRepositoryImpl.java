@@ -4,7 +4,6 @@ import com.zjj.cache.component.repository.RedisSubPubRepository;
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RReliableTopic;
 import org.redisson.api.RedissonClient;
-import org.redisson.api.listener.MessageListener;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -24,11 +23,6 @@ public class RedisReliableTopicRepositoryImpl implements RedisSubPubRepository {
     public <T> String addListener(String channelKey, Class<T> clazz, Consumer<T> consumer) {
         RReliableTopic topic = redissonClient.getReliableTopic(channelKey);
         return topic.addListener(clazz, (channel, msg) -> consumer.accept(msg));
-    }
-
-    @Override
-    public <M> String addListener(String channelKey, Class<M> clazz, MessageListener<M> listener) {
-        return null;
     }
 
     @Override
@@ -64,10 +58,5 @@ public class RedisReliableTopicRepositoryImpl implements RedisSubPubRepository {
     public int countListeners(String channelKey) {
         RReliableTopic topic = redissonClient.getReliableTopic(channelKey);
         return topic.countListeners();
-    }
-
-    @Override
-    public <T> void removeListener(String channelKey, String listenerId) {
-
     }
 }

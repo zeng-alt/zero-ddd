@@ -59,8 +59,9 @@ public class RedisStreamRepositoryImpl implements RedisStreamRepository {
 	 * @param groupName 消费者组名称
 	 */
 	public void createGroup(String streamName, String groupName) {
+		// TODO
 		RStream stream = redissonClient.getStream(streamName);
-		stream.createGroup(groupName);
+//		stream.createGroup(groupName);
 	}
 
 	public void createConsumer(String streamName, String groupName, String consumerName) {
