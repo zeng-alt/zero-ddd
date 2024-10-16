@@ -29,9 +29,9 @@ public class JwtProperties {
 
 	private String secret = "mysecret";
 
-	private Long expiration = (long) (60 * 60 * 2);
+	private Long expiration = (long) (20);
 
-	private TemporalUnit temporalUnit = ChronoUnit.SECONDS;
+	private TemporalUnit temporalUnit = ChronoUnit.MINUTES;
 
 	private String chaimKey = CLAIM_KEY_USERNAME;
 

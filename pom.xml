@@ -27,7 +27,7 @@
         <swagger.core.version>2.2.21</swagger.core.version>
         <springdoc.version>2.5.0</springdoc.version>
         <caffeine.version>3.1.8</caffeine.version>
-        <redisson.version>3.19.3</redisson.version>
+        <redisson.version>3.37.0</redisson.version>
         <h2.version>2.1.214</h2.version>
         <test.version>3.2.6</test.version>
         <easyexcel.version>4.0.1</easyexcel.version>

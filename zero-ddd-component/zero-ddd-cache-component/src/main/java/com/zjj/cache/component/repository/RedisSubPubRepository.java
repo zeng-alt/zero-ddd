@@ -15,7 +15,7 @@ public interface RedisSubPubRepository {
      * 订阅频道并接收消息。
      * @param channelKey 频道名
      */
-    public <T> String addListener(String channelKey, Class<T> clazz, Consumer<T> consumer);
+    public <M> String addListener(String channelKey, Class<M> clazz, MessageListener<M> listener);
 
     /**
      * 发布消息到频道。
@@ -33,4 +33,7 @@ public interface RedisSubPubRepository {
     public long countSubscribers(String channelKey);
 
     public int countListeners(String channelKey);
+
+    public <T> void removeListener(String channelKey, String listenerId);
+
 }

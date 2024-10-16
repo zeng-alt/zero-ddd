@@ -29,7 +29,7 @@ public class LoginAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	@ConditionalOnProperty(name = "security.username-login.enabled", havingValue = "true", matchIfMissing = true)
+	@ConditionalOnProperty(name = "security.username-login.enabled", havingValue = "true")
 	public UserDetailsService inMemoryUserDetailsManager(PasswordEncoder passwordEncoder) {
 
 		return new InMemoryUserDetailsManager(
@@ -38,14 +38,14 @@ public class LoginAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	@ConditionalOnProperty(name = "security.username-login.enabled", havingValue = "true", matchIfMissing = true)
+	@ConditionalOnProperty(name = "security.username-login.enabled", havingValue = "true")
 	public PasswordEncoder passwordEncoder() {
 		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
 	}
 
 	@Bean
 	@ConditionalOnMissingBean
-	@ConditionalOnProperty(name = "security.username-login.enabled", havingValue = "true", matchIfMissing = true)
+	@ConditionalOnProperty(name = "security.username-login.enabled", havingValue = "true")
 	public DaoAuthenticationProvider daoAuthenticationProvider(UserDetailsService userDetailsService) {
 		DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
 		daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
@@ -54,7 +54,7 @@ public class LoginAutoConfiguration {
 	}
 
 	@Bean
-	@ConditionalOnProperty(name = "security.username-login.enabled", havingValue = "true", matchIfMissing = true)
+	@ConditionalOnProperty(name = "security.username-login.enabled", havingValue = "true")
 	public SecurityBuilderCustomizer initiateLoginCustomizer(UsernameLoginProperties usernameLoginProperties,
 			AuthenticationSuccessHandler loginSuccessAuthenticationHandler,
 			AuthenticationFailureHandler loginFailureAuthenticationHandler) {
@@ -65,7 +65,7 @@ public class LoginAutoConfiguration {
 	}
 
 	@Bean
-	@ConditionalOnProperty(name = "security.username-login.enabled", havingValue = "false")
+	@ConditionalOnProperty(name = "security.username-login.enabled", havingValue = "false", matchIfMissing = true)
 	public SecurityBuilderCustomizer shutDownLoginCustomizer() {
 		return http -> http.formLogin(AbstractHttpConfigurer::disable).logout(AbstractHttpConfigurer::disable);
 	}

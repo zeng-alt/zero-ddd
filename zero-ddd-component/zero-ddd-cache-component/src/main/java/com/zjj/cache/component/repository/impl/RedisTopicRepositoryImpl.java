@@ -3,8 +3,9 @@ package com.zjj.cache.component.repository.impl;
 
 import com.zjj.cache.component.repository.RedisSubPubRepository;
 import lombok.RequiredArgsConstructor;
-import org.redisson.api.RTopic;
-import org.redisson.api.RedissonClient;
+import org.redisson.RedissonReliableTopic;
+import org.redisson.api.*;
+import org.redisson.api.listener.ListAddListener;
 import org.redisson.api.listener.MessageListener;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -25,10 +26,15 @@ public class RedisTopicRepositoryImpl implements RedisSubPubRepository {
 	 * 订阅频道并接收消息。
 	 * @param channelKey 频道名
 	 */
-	@Override
-	public <T> String addListener(String channelKey, Class<T> clazz, Consumer<T> consumer) {
-		RTopic topic = redissonClient.getTopic(channelKey);
-		return String.valueOf(topic.addListener(clazz, (channel, msg) -> consumer.accept(msg)));
+	public <M> String addListener(String channelKey, Class<M> clazz, MessageListener<M> listener) {
+
+		RTopic name = redissonClient.getTopic("name");
+//		name.addli
+
+		RedissonReliableTopic topic = (RedissonReliableTopic) redissonClient.getReliableTopic(channelKey);
+//		topic.
+//		topic
+		return topic.addListener(clazz, listener);
 	}
 
 	/**
@@ -36,39 +42,36 @@ public class RedisTopicRepositoryImpl implements RedisSubPubRepository {
 	 * @param channelKey 频道名
 	 * @param message 消息内容
 	 */
-	@Override
 	public <T> long publish(String channelKey, T message) {
-		RTopic topic = redissonClient.getTopic(channelKey);
+		RReliableTopic topic = redissonClient.getReliableTopic(channelKey);
 		return topic.publish(message);
 	}
 
-	@Override
 	public void removeListener(String channelKey, int listenerId) {
-		redissonClient.getTopic(channelKey).removeListener(listenerId);
+		RReliableTopic reliableTopic = redissonClient.getReliableTopic(channelKey);
+		reliableTopic.removeListener(listenerId);
 	}
 
-	@Override
 	public List<String> getChannelNames(String channelKey) {
 		return redissonClient.getTopic(channelKey).getChannelNames();
 	}
 
-	@Override
 	public void removeAllListeners(String channelKey) {
-		redissonClient.getTopic(channelKey).removeAllListeners();
+		redissonClient.getReliableTopic(channelKey).removeAllListeners();
 	}
 
-	@Override
 	public long countSubscribers(String channelKey) {
-		return redissonClient.getTopic(channelKey).countSubscribers();
+		return redissonClient.getReliableTopic(channelKey).countSubscribers();
 	}
 
-	@Override
 	public int countListeners(String channelKey) {
-		return redissonClient.getTopic(channelKey).countListeners();
+		return redissonClient.getReliableTopic(channelKey).countListeners();
 	}
 
-	public <T> void removeListener(String channelKey, MessageListener<T> listener) {
-		redissonClient.getTopic(channelKey).removeListener(listener);
+	public <T> void removeListener(String channelKey, String listenerId) {
+		RReliableTopic reliableTopic = redissonClient.getReliableTopic(channelKey);
+		redissonClient.getReliableTopic(channelKey).removeListener(listenerId);
 	}
+
 
 }
