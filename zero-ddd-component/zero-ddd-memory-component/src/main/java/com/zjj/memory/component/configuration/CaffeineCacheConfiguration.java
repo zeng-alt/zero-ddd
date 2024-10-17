@@ -25,7 +25,9 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.cache.CacheManagerCustomizer;
 import org.springframework.boot.autoconfigure.cache.CacheManagerCustomizers;
 import org.springframework.boot.autoconfigure.cache.CacheProperties;
+import org.springframework.boot.autoconfigure.cache.CacheType;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.CacheManager;
@@ -50,24 +52,23 @@ import java.util.List;
 @ConditionalOnClass({ Caffeine.class, CaffeineCacheManager.class })
 class CaffeineCacheConfiguration {
 
-
-	@Bean
-	public CacheManagerCustomizers customizers(List<? extends CacheManagerCustomizer<?>> customizers) {
-		return new CacheManagerCustomizers(customizers);
-	}
+	private static final String SPEC = "initialCapacity=100,maximumSize=500,expireAfterAccess=5m,recordStats";
 
 	@Bean
 	@Primary
-	@ConditionalOnProperty(name = "spring.cache.type", havingValue = "caffeine")
-	public CaffeineCacheManager cacheManager(CacheProperties cacheProperties, CacheManagerCustomizers customizers,
+	@ConditionalOnMissingBean(CaffeineCacheManager.class)
+	public CaffeineCacheManager caffeineCacheManager(CacheProperties cacheProperties, ObjectProvider<CacheManagerCustomizer<CaffeineCacheManager>> customizers,
                                       ObjectProvider<Caffeine<Object, Object>> caffeine, ObjectProvider<CaffeineSpec> caffeineSpec,
                                       ObjectProvider<CacheLoader<Object, Object>> cacheLoader) {
 		CaffeineCacheManager cacheManager = createCacheManager(cacheProperties, caffeine, caffeineSpec, cacheLoader);
-		List<String> cacheNames = cacheProperties.getCacheNames();
-		if (!CollectionUtils.isEmpty(cacheNames)) {
-			cacheManager.setCacheNames(cacheNames);
+		if (cacheProperties.getType().equals(CacheType.CAFFEINE)) {
+			List<String> cacheNames = cacheProperties.getCacheNames();
+			if (!CollectionUtils.isEmpty(cacheNames)) {
+				cacheManager.setCacheNames(cacheNames);
+			}
 		}
-		return customizers.customize(cacheManager);
+		customizers.forEach(customizer -> customizer.customize(cacheManager));
+		return cacheManager;
 	}
 
 	private CaffeineCacheManager createCacheManager(CacheProperties cacheProperties,
@@ -82,6 +83,8 @@ class CaffeineCacheConfiguration {
 	private void setCacheBuilder(CacheProperties cacheProperties, CaffeineSpec caffeineSpec,
 			Caffeine<Object, Object> caffeine, CaffeineCacheManager cacheManager) {
 		String specification = cacheProperties.getCaffeine().getSpec();
+		cacheManager.setCacheSpecification(SPEC);
+
 		if (StringUtils.hasText(specification)) {
 			cacheManager.setCacheSpecification(specification);
 		}

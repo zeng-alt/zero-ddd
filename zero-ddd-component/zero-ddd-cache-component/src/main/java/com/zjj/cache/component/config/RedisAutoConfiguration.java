@@ -6,12 +6,16 @@ import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RedissonClient;
 import org.redisson.client.codec.StringCodec;
 import org.redisson.codec.CompositeCodec;
 import org.redisson.codec.JsonJacksonCodec;
+import org.redisson.spring.cache.RedissonSpringCacheManager;
+import org.redisson.spring.cache.RedissonSpringCacheNativeManager;
 import org.redisson.spring.starter.RedissonAutoConfigurationCustomizer;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.cache.CacheManagerCustomizer;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
@@ -56,6 +60,14 @@ public class RedisAutoConfiguration {
 		objectMapper.activateDefaultTyping(LaissezFaireSubTypeValidator.instance, ObjectMapper.DefaultTyping.NON_FINAL);
 
 		return new JsonJacksonCodec(objectMapper);
+	}
+
+	@Bean
+	@ConditionalOnMissingBean(RedissonSpringCacheManager.class)
+	public RedissonSpringCacheNativeManager redissonSpringCacheNativeManager(RedissonClient redissonClient, ObjectProvider<CacheManagerCustomizer<RedissonSpringCacheManager>> customizers) {
+		RedissonSpringCacheNativeManager manager = new RedissonSpringCacheNativeManager(redissonClient);
+		customizers.forEach(c -> c.customize(manager));
+		return manager;
 	}
 
 	/**
