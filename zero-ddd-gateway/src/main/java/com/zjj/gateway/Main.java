@@ -1,9 +1,10 @@
 package com.zjj.gateway;
 
-import com.zjj.l2.cache.component.config.EnableL2Cache;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 
 /**
@@ -11,9 +12,7 @@ import org.springframework.context.ConfigurableApplicationContext;
  * @version 1.0
  * @crateTime 2024年09月27日 09:20
  */
-// @EnableWebSecurity
-@EnableL2Cache
-//@EnableCaching
+@EnableJpaRepositories
 @SpringBootApplication
 public class Main {
 

@@ -1,0 +1,10 @@
+type Query {
+    findCountriesById(id: ID!): Countries
+}
+
+type Countries {
+    id: ID
+    name: String
+    age: Int
+    birthday: Date
+}
