@@ -7,12 +7,12 @@ import lombok.Setter;
 /**
  * @author zengJiaJun
  * @version 1.0
- * @crateTime 2024年10月17日 17:06
+ * @crateTime 2024年10月17日 20:06
  */
 @Getter
 @Setter
 @Entity
-@Table(name="countries")
+@Table(name="users")
 public class Users {
 
     @Id

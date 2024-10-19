@@ -1,6 +1,12 @@
 package com.zjj.graphql.component.utils;
 
 
+import graphql.language.ListType;
+import graphql.language.Type;
+import graphql.language.TypeName;
+import jakarta.persistence.metamodel.Attribute;
+import org.hibernate.metamodel.model.domain.internal.SetAttributeImpl;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -18,6 +24,64 @@ import static io.vavr.Predicates.isIn;
  * @crateTime 2024年10月17日 21:39
  */
 public class TypeMatchUtils {
+
+
+    private TypeMatchUtils() {}
+
+
+    public static Type structInput(Attribute<?, ?> attribute) {
+        String prefix = "";
+        if (attribute.isAssociation()) {
+            prefix = "Input";
+        }
+
+        if (attribute.isCollection()) {
+            // 获取集合元素的 Java 类型
+            Class<?> elementType = ((SetAttributeImpl) attribute).getBindableJavaType();
+
+            // 创建 ListType
+            return ListType.newListType()
+                    .type(TypeName.newTypeName().name(prefix + matchType(elementType)).build())
+                    .build();
+        } else {
+            // 获取属性的 Java 类型
+            Class<?> javaType = attribute.getJavaType();
+            // 创建 TypeName
+            return TypeName.newTypeName()
+                    .name(prefix + matchType(javaType))
+                    .build();
+        }
+    }
+
+    public static Type structType(Attribute<?, ?> attribute) {
+        if (attribute.isCollection()) {
+            // 获取集合元素的 Java 类型
+            Class<?> elementType = ((SetAttributeImpl) attribute).getBindableJavaType();
+            // 创建 ListType
+            return ListType.newListType()
+                    .type(TypeName.newTypeName().name(matchType(elementType)).build())
+                    .build();
+        } else {
+            // 获取属性的 Java 类型
+            Class<?> javaType = attribute.getJavaType();
+            // 创建 TypeName
+            return TypeName.newTypeName()
+                    .name(matchType(javaType))
+                    .build();
+        }
+    }
+
+    public static String matchType(Attribute<?, ?> attribute) {
+        if (attribute.isCollection()) {
+            String result = "[%s]";
+            Class bindableJavaType = ((SetAttributeImpl) attribute).getBindableJavaType();
+            result = result.formatted(matchType(bindableJavaType));
+            return result;
+        }
+
+        return matchType(attribute.getJavaType());
+    }
+
 
     public static String matchType(Class clasz) {
         return Match(clasz).of(

@@ -1,17 +1,21 @@
 package com.zjj.gateway;
 
 
+import com.zjj.graphql.component.config.EnableGenEntityAll;
+import com.zjj.graphql.component.config.EnableGenEntityType;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.annotation.Order;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 
 /**
  * @author zengJiaJun
  * @version 1.0
- * @crateTime 2024年09月27日 09:20
+ * @crateTime 2024年09月27日 20:20
  */
+@EnableGenEntityAll
 @EnableJpaRepositories
 @SpringBootApplication
 public class Main {

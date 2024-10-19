@@ -17,11 +17,10 @@ import java.util.Set;
  * @crateTime 2024年10月17日 21:45
  */
 @Slf4j
-public class GraphQlTypeConfiguration implements RuntimeWiringConfigurer {
+public class GraphQlExtendedScalarsConfigurer implements RuntimeWiringConfigurer {
 
     @Override
     public void configure(RuntimeWiring.Builder builder) {
-
         Set<Field> fields = ReflectionUtils.getFields(ExtendedScalars.class);
         for (Field f : fields) {
             try {

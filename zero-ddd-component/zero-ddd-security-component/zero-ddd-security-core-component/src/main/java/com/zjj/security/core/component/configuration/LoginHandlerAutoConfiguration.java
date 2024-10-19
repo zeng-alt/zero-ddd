@@ -3,7 +3,7 @@ package com.zjj.security.core.component.configuration;
 import com.zjj.autoconfigure.component.security.LoginSuccessHandler;
 import com.zjj.autoconfigure.component.security.jwt.JwtCacheManage;
 import com.zjj.autoconfigure.component.security.jwt.JwtHelper;
-import com.zjj.autoconfigure.component.security.jwt.JwtProperties;
+import com.zjj.security.core.component.configuration.properties.LoginProperties;
 import com.zjj.security.core.component.supper.DefaultLoginFailureHandler;
 import com.zjj.security.core.component.supper.DefaultLoginSuccessHandler;
 import org.springframework.boot.autoconfigure.AutoConfiguration;

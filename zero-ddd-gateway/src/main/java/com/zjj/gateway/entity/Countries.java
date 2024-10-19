@@ -15,7 +15,7 @@ import java.util.Set;
 /**
  * @author zengJiaJun
  * @version 1.0
- * @crateTime 2024年10月17日 10:41
+ * @crateTime 2024年10月17日 20:41
  */
 @Getter
 @Setter
@@ -34,5 +34,7 @@ public class Countries {
 
     @OneToMany(mappedBy = "countries", orphanRemoval = true)
     private Set<Users> userses = new LinkedHashSet<>();
+
+    private transient Set<String> friends = new LinkedHashSet<>();
 
 }

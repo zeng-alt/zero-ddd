@@ -23,3 +23,10 @@ scalar GraphQLByte
 scalar GraphQLBigDecimal
 scalar GraphQLBigInteger
 scalar GraphQLChar
+
+input PageQuery {
+    first: Int = 10
+    after: String = ""
+    last: Int = 10
+    before: String = ""
+}
