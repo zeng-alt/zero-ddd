@@ -52,3 +52,28 @@ input PageQuery {
     last: Int = 10
     before: String = ""
 }
+
+input Conditions {
+    conditionList: [Condition]
+}
+
+input Condition {
+    property: String
+    option: Option
+}
+
+
+enum Option {
+    EQ
+    NEQ
+    GT
+    LT
+    GTE
+    LTE
+    IN
+    NOTIN
+    LIKE
+    NOT_LIKE
+    LIFT_LIKE
+    RIGHT_LIKE
+}

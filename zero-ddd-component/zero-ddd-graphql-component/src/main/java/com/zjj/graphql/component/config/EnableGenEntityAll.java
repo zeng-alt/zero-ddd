@@ -15,5 +15,6 @@ import java.lang.annotation.*;
 @EnableGenEntityQuery
 @EnableGenEntityMutation
 @EnableGenEntityFuzzyQuery
+@EnableGenEntityConditionQuery
 public @interface EnableGenEntityAll {
 }
