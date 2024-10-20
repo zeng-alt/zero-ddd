@@ -1,4 +1,4 @@
-package com.zjj.graphql.component.tree;
+package com.zjj.graphql.component.query.tree;
 
 import graphql.PublicApi;
 

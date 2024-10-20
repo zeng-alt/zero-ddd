@@ -8,6 +8,7 @@ import jakarta.persistence.metamodel.Attribute;
 import jakarta.persistence.metamodel.EntityType;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.graphql.execution.TypeDefinitionConfigurer;
 
@@ -20,6 +21,7 @@ import java.util.Set;
  * @version 1.0
  * @crateTime 2024年10月18日 20:04
  */
+@Slf4j
 @RequiredArgsConstructor
 public class EntityInputDefinitionConfigurer implements TypeDefinitionConfigurer, Ordered {
 
@@ -40,8 +42,11 @@ public class EntityInputDefinitionConfigurer implements TypeDefinitionConfigurer
 
         Set<EntityType<?>> entities = entityManager.getMetamodel().getEntities();
         for (EntityType<?> entity : entities) {
-            InputObjectTypeDefinition.Builder builder = InputObjectTypeDefinition.newInputObjectDefinition();
             String inputName = "Input" + entity.getName();
+            if (registry.getType(inputName).isPresent()) {
+                continue;
+            }
+            InputObjectTypeDefinition.Builder builder = InputObjectTypeDefinition.newInputObjectDefinition();
             builder.name(inputName);
             for (Attribute<?, ?> attribute : entity.getAttributes()) {
                 builder.inputValueDefinition(
@@ -55,7 +60,7 @@ public class EntityInputDefinitionConfigurer implements TypeDefinitionConfigurer
             InputObjectTypeDefinition build = builder.build();
             definitions.add(build);
         }
-        registry.addAll(definitions);
+        registry.addAll(definitions).ifPresent(e -> log.error(e.getMessage()));
     }
 
     @Override

@@ -17,12 +17,34 @@ scalar PositiveFloat
 scalar NegativeFloat
 scalar NonPositiveFloat
 scalar NonNegativeFloat
-scalar GraphQLLong
-scalar GraphQLShort
-scalar GraphQLByte
-scalar GraphQLBigDecimal
-scalar GraphQLBigInteger
-scalar GraphQLChar
+scalar Long
+scalar Short
+scalar Byte
+scalar BigDecimal
+scalar BigInteger
+scalar Char
+
+input Sort {
+    orders: [Order]
+}
+
+input Order {
+    property: String
+    direction: Direction
+    ignoreCase: Boolean = false
+    nullHandling: NullHandling = NATIVE
+}
+
+enum Direction {
+    ASC
+    DESC
+}
+
+enum NullHandling {
+    NATIVE
+    NULLS_FIRST
+    NULLS_LAST
+}
 
 input PageQuery {
     first: Int = 10

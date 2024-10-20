@@ -1,4 +1,5 @@
 extend type Query {
+    test(sort: Sort): Countries
     findCountriesById(id: ID!): Countries
 #    queryCountries(inputCountries: InputCountries): [Countries]
 #    findAllCountries(first: Int, after: String, last: Int, before: String): CountriesConnection

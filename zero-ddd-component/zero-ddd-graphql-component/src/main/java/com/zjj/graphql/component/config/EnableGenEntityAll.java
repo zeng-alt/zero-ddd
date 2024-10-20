@@ -10,9 +10,10 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@EnableGenEntityMutation
 @EnableGenEntityInput
-@EnableGenEntityQuery
 @EnableGenEntityType
+@EnableGenEntityQuery
+@EnableGenEntityMutation
+@EnableGenEntityFuzzyQuery
 public @interface EnableGenEntityAll {
 }
