@@ -1,11 +1,14 @@
 package com.zjj.graphql.component.config;
 
 
+import com.zjj.graphql.component.context.EntityContext;
 import com.zjj.graphql.component.supper.*;
 import com.zjj.graphql.component.supper.definition.EntityTypeDefinitionConfigurer;
 import jakarta.persistence.EntityManager;
+import org.hibernate.engine.internal.EntityEntryContext;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.graphql.GraphQlSourceBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -26,8 +29,13 @@ public class GraphQLAutoConfiguration {
     }
 
     @Bean
+    @ConditionalOnMissingBean
+    public EntityContext entityContext(EntityManager entityManager) {
+        return new EntityContext(entityManager);
+    }
+
+    @Bean
     public GraphQlSourceBuilderCustomizer autoGenGraphqlBuilderCustomizer(ObjectProvider<TypeDefinitionConfigurer> configurers) {
         return new AutoGenGraphqlCustomizer(configurers);
     }
-
 }

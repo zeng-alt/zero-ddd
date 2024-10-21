@@ -15,7 +15,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  * @version 1.0
  * @crateTime 2024年09月27日 20:20
  */
-@EnableGenEntityAll
+//@EnableGenEntityAll
+@EnableGenEntityType
 @EnableJpaRepositories
 @SpringBootApplication
 public class Main {

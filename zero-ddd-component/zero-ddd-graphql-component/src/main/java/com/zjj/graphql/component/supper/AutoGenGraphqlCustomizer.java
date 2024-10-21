@@ -8,8 +8,6 @@ import org.springframework.graphql.execution.ConnectionTypeDefinitionConfigurer;
 import org.springframework.graphql.execution.GraphQlSource;
 import org.springframework.graphql.execution.TypeDefinitionConfigurer;
 
-import java.util.List;
-
 /**
  * @author zengJiaJun
  * @version 1.0

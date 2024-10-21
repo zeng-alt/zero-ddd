@@ -1,5 +1,7 @@
 package com.zjj.graphql.component.supper.definition;
 
+import com.zjj.graphql.component.context.EntityContext;
+import com.zjj.graphql.component.context.EntityGraphqlAttribute;
 import com.zjj.graphql.component.utils.TypeMatchUtils;
 import graphql.language.*;
 import graphql.schema.idl.TypeDefinitionRegistry;
@@ -22,31 +24,30 @@ import java.util.*;
 @RequiredArgsConstructor
 public class EntityTypeDefinitionConfigurer implements TypeDefinitionConfigurer, Ordered {
 
-    private final EntityManager entityManager;
-
+    private final EntityContext entityContext;
 
     @Override
     public void configure(TypeDefinitionRegistry registry) {
         final List<SDLDefinition> definitions = new ArrayList<>();
 
-        Set<EntityType<?>> entities = entityManager.getMetamodel().getEntities();
-        for (EntityType<?> entity : entities) {
-            if (registry.getType(entity.getName()).isPresent()) {
-                continue;
-            }
-            ObjectTypeDefinition.Builder builder = ObjectTypeDefinition.newObjectTypeDefinition();
-            builder.name(entity.getName());
-            for (Attribute<?, ?> attribute : entity.getAttributes()) {
-                builder.fieldDefinition(
+        entityContext.forEachEntity(entity -> {
+            if (registry.getType(entity.getType()).isEmpty()) {
+                ObjectTypeDefinition.Builder builder = ObjectTypeDefinition.newObjectTypeDefinition();
+                builder.name(entity.getType());
+                for (EntityGraphqlAttribute attribute : entity.getAttributes()) {
+                    builder.fieldDefinition(
                         FieldDefinition
-                                .newFieldDefinition()
-                                .name(attribute.getName())
-                                .type(TypeMatchUtils.structType(attribute))
-                                .build()
-                );
+                            .newFieldDefinition()
+                            .name(attribute.getName())
+                            .type(attribute.adaptType(attribute.getEntityType()))
+                            .build()
+                    );
+                }
+                definitions.add(builder.build());
+            } else {
+                log.warn("entity Type {} already exists", entity.getType());
             }
-            definitions.add(builder.build());
-        }
+        });
 
         registry.addAll(definitions).ifPresent(e -> log.error(e.getMessage()));
     }

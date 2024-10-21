@@ -6,7 +6,6 @@ import com.querydsl.core.types.dsl.SetPath;
 import com.querydsl.core.types.dsl.StringPath;
 import com.zjj.gateway.entity.Countries;
 import com.zjj.gateway.entity.QCountries;
-import com.zjj.gateway.entity.QUsers;
 import com.zjj.gateway.entity.Users;
 import com.zjj.graphql.component.supper.BaseRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;

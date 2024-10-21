@@ -1,15 +1,15 @@
 package com.zjj.gateway.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import com.zjj.graphql.component.context.IgnoreEntity;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Comment;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -17,6 +17,7 @@ import java.util.Set;
  * @version 1.0
  * @crateTime 2024年10月17日 20:41
  */
+//@IgnoreEntity
 @Getter
 @Setter
 @Entity
@@ -24,6 +25,8 @@ import java.util.Set;
 public class Countries {
 
     @Id
+    @Comment(
+            value = "国家ID")
     private Long id;
 
     private String name;
@@ -31,6 +34,9 @@ public class Countries {
     private Integer age;
 
     private LocalDateTime birthday;
+
+    @Embedded
+    private Address address;
 
     @OneToMany(mappedBy = "countries", orphanRemoval = true)
     private Set<Users> userses = new LinkedHashSet<>();
