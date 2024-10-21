@@ -2,7 +2,6 @@ package com.zjj.graphql.component.context;
 
 import graphql.language.Type;
 import graphql.language.TypeName;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -37,10 +36,17 @@ public class EntityGraphqlAttribute implements GraphqlType {
         this.collection = collection;
         this.embedded = embedded;
         this.description = description;
-        this.inputType = TypeName.newTypeName(getInputName()).build();
-        this.connectionType = TypeName.newTypeName(getConditionTypeName()).build();
-        this.conditionType = TypeName.newTypeName(getConditionTypeName()).build();
-        this.entityType = TypeName.newTypeName(getEntityTypeName()).build();
+        if (association || embedded) {
+            this.inputType = TypeName.newTypeName(getInputTypeName()).build();
+            this.connectionType = TypeName.newTypeName(getConditionTypeName()).build();
+            this.conditionType = TypeName.newTypeName(getConditionTypeName()).build();
+            this.entityType = TypeName.newTypeName(getEntityTypeName()).build();
+        } else {
+            this.entityType = TypeName.newTypeName(type).build();
+            this.connectionType = entityType;
+            this.conditionType = entityType;
+            this.inputType = entityType;
+        }
     }
 
     public Type adaptType(Type type) {

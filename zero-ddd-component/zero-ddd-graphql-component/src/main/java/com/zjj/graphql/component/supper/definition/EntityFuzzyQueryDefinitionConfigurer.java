@@ -1,11 +1,13 @@
 package com.zjj.graphql.component.supper.definition;
 
+import com.zjj.graphql.component.context.EntityContext;
 import graphql.language.*;
 import graphql.schema.idl.TypeDefinitionRegistry;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.metamodel.EntityType;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.graphql.execution.TypeDefinitionConfigurer;
 
@@ -18,49 +20,48 @@ import java.util.Set;
  * @version 1.0
  * @crateTime 2024年10月18日 21:07
  */
+@Slf4j
 @RequiredArgsConstructor
 public class EntityFuzzyQueryDefinitionConfigurer implements TypeDefinitionConfigurer, Ordered {
 
-    private final EntityManager entityManager;
 
-    private static final String QUERY = "Query";
-    private static final String UNCAPITALIZE_INPUT = "input";
-    private static final String CAPITALIZE_INPUT = "Input";
+    private final EntityContext entityContext;
+
 
     @Override
     public void configure(@NonNull TypeDefinitionRegistry registry) {
         final List<SDLDefinition> definitions = new ArrayList<>();
-        final Set<EntityType<?>> entities = entityManager.getMetamodel().getEntities();
-        for (EntityType<?> entity : entities) {
-            ObjectTypeExtensionDefinition.Builder query = ObjectTypeExtensionDefinition.newObjectTypeExtensionDefinition().name(QUERY);
+        entityContext.forEachEntity(entity -> {
+
+            ObjectTypeExtensionDefinition.Builder query = ObjectTypeExtensionDefinition.newObjectTypeExtensionDefinition().name("Query");
             query.fieldDefinition(
                     FieldDefinition
                             .newFieldDefinition()
-                            .name("fuzzyQuery" + entity.getName())
+                            .name("fuzzyQuery" + entity.getType())
                             .inputValueDefinition(
                                     InputValueDefinition
                                             .newInputValueDefinition()
-                                            .name(UNCAPITALIZE_INPUT + entity.getName())
-                                            .type(TypeName.newTypeName(CAPITALIZE_INPUT + entity.getName()).build())
+                                            .name(entity.getInputName())
+                                            .type(entity.getInputType())
                                             .build())
-                            .type(ListType.newListType(TypeName.newTypeName(entity.getName()).build()).build())
+                            .type(entity.wrapCollectionType(entity.getEntityType(), "查询" + entity.getName() + "列表"))
                             .build()
             ).fieldDefinition(
                     FieldDefinition
                             .newFieldDefinition()
-                            .name("fuzzyFind" + entity.getName())
+                            .name("fuzzyFind" + entity.getType())
                             .inputValueDefinition(
                                     InputValueDefinition
                                             .newInputValueDefinition()
-                                            .name(UNCAPITALIZE_INPUT + entity.getName())
-                                            .type(TypeName.newTypeName(CAPITALIZE_INPUT + entity.getName()).build())
+                                            .name(entity.getInputName())
+                                            .type(entity.getInputType())
                                             .build())
-                            .type(TypeName.newTypeName(entity.getName()).build())
+                            .type(entity.getEntityType())
                             .build()
             ).fieldDefinition(
                     FieldDefinition
                             .newFieldDefinition()
-                            .name("fuzzyPage" + entity.getName())
+                            .name("fuzzyPage" + entity.getType())
                             .inputValueDefinition(
                                     InputValueDefinition
                                             .newInputValueDefinition()
@@ -78,19 +79,16 @@ public class EntityFuzzyQueryDefinitionConfigurer implements TypeDefinitionConfi
                             .inputValueDefinition(
                                     InputValueDefinition
                                             .newInputValueDefinition()
-                                            .name(UNCAPITALIZE_INPUT + entity.getName())
-                                            .type(TypeName.newTypeName(CAPITALIZE_INPUT + entity.getName()).build())
+                                            .name(entity.getInputName())
+                                            .type(entity.getInputType())
                                             .build()
                             )
-                            .type(TypeName.newTypeName(entity.getName() + "Connection").build())
+                            .type(TypeName.newTypeName(entity.getType() + "Connection").build())
                             .build()
             );
             definitions.add(query.build());
-
-
-
-        }
-        registry.addAll(definitions);
+        });
+        registry.addAll(definitions).ifPresent(e -> log.error(e.getMessage()));
     }
 
     @Override

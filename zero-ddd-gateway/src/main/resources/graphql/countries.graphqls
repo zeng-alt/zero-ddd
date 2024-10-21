@@ -1,6 +1,6 @@
 extend type Query {
-    test: String
-#    test(sort: Sort): Countries
+#    test: String
+    test(countriesInput: CountriesInput): Countries
 #    test1(conditions: CountriesCondition): String
 #    findCountriesById(id: ID!): Countries
 #    queryCountries(inputCountries: InputCountries): [Countries]

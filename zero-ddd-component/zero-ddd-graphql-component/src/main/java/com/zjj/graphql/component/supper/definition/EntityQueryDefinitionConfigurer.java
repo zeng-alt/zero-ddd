@@ -1,6 +1,7 @@
 package com.zjj.graphql.component.supper.definition;
 
 import com.querydsl.core.util.BeanUtils;
+import com.zjj.graphql.component.context.EntityContext;
 import graphql.language.*;
 import graphql.schema.idl.TypeDefinitionRegistry;
 import jakarta.persistence.EntityManager;
@@ -22,11 +23,8 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class EntityQueryDefinitionConfigurer implements TypeDefinitionConfigurer, Ordered {
 
-    private final EntityManager entityManager;
+    private final EntityContext entityContext;
 
-    private static final String QUERY = "Query";
-    private static final String UNCAPITALIZE_INPUT = "input";
-    private static final String CAPITALIZE_INPUT = "Input";
 
     private static final List<InputValueDefinition> PAGE_VALUE_DEFINITIONS = List.of(
             InputValueDefinition.newInputValueDefinition().name("first").defaultValue(IntValue.of(10)).type(TypeName.newTypeName("Int").build()).build(),
@@ -38,46 +36,44 @@ public class EntityQueryDefinitionConfigurer implements TypeDefinitionConfigurer
     @Override
     public void configure(@NonNull TypeDefinitionRegistry registry) {
         final List<SDLDefinition> definitions = new ArrayList<>();
-        final Set<EntityType<?>> entities = entityManager.getMetamodel().getEntities();
-        for (EntityType<?> entity : entities) {
-            ObjectTypeExtensionDefinition.Builder query = ObjectTypeExtensionDefinition.newObjectTypeExtensionDefinition().name(QUERY);
+
+        entityContext.forEachEntity(entity -> {
+            ObjectTypeExtensionDefinition.Builder query = ObjectTypeExtensionDefinition.newObjectTypeExtensionDefinition().name("Query");
             query.fieldDefinition(
                     FieldDefinition
                             .newFieldDefinition()
-                            .name("query" + entity.getName())
+                            .name("query" + entity.getType())
                             .inputValueDefinition(
                                     InputValueDefinition
                                             .newInputValueDefinition()
-                                            .name(UNCAPITALIZE_INPUT + entity.getName())
-                                            .type(TypeName.newTypeName(CAPITALIZE_INPUT + entity.getName()).build())
+                                            .name(entity.getInputName())
+                                            .type(entity.getInputType())
                                             .build())
-                            .type(ListType.newListType(TypeName.newTypeName(entity.getName()).build()).build())
+                            .type(entity.wrapCollectionType(entity.getEntityType(), entity.getComment()))
                             .build()
             ).fieldDefinition(
                     FieldDefinition
                             .newFieldDefinition()
-                            .name("find" + entity.getName())
+                            .name("find" + entity.getType())
                             .inputValueDefinition(
                                     InputValueDefinition
                                             .newInputValueDefinition()
-                                            .name(UNCAPITALIZE_INPUT + entity.getName())
-                                            .type(TypeName.newTypeName(CAPITALIZE_INPUT + entity.getName()).build())
+                                            .name(entity.getInputName())
+                                            .type(entity.getInputType())
                                             .build())
-                            .type(TypeName.newTypeName(entity.getName()).build())
+                            .type(entity.getEntityType())
                             .build()
             ).fieldDefinition(
                     FieldDefinition
                             .newFieldDefinition()
-                            .name("page" + entity.getName())
+                            .name("page" + entity.getType())
                             .inputValueDefinitions(PAGE_VALUE_DEFINITIONS)
-                            .type(TypeName.newTypeName(entity.getName() + "Connection").build())
+                            .type(TypeName.newTypeName(entity.getType() + "Connection").build())
                             .build()
             );
             definitions.add(query.build());
+        });
 
-
-
-        }
         registry.addAll(definitions);
     }
 

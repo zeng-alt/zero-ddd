@@ -1,5 +1,7 @@
 package com.zjj.graphql.component.supper.definition;
 
+import com.zjj.graphql.component.context.EntityContext;
+import com.zjj.graphql.component.context.EntityGraphqlAttribute;
 import com.zjj.graphql.component.utils.TypeMatchUtils;
 import graphql.language.*;
 import graphql.schema.idl.TypeDefinitionRegistry;
@@ -25,7 +27,8 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class EntityInputDefinitionConfigurer implements TypeDefinitionConfigurer, Ordered {
 
-    private final EntityManager entityManager;
+//    private final EntityManager entityManager;
+    private final EntityContext entityContext;
 
     @Override
     public void configure(@NonNull TypeDefinitionRegistry registry) {
@@ -40,26 +43,25 @@ public class EntityInputDefinitionConfigurer implements TypeDefinitionConfigurer
 
         definitions.add(pageQuery.build());
 
-        Set<EntityType<?>> entities = entityManager.getMetamodel().getEntities();
-        for (EntityType<?> entity : entities) {
-            String inputName = "Input" + entity.getName();
-            if (registry.getType(inputName).isPresent()) {
-                continue;
+
+        entityContext.forEachManagedType(entity -> {
+            if (registry.getType(entity.getInputTypeName()).isEmpty()) {
+                InputObjectTypeDefinition.Builder builder = InputObjectTypeDefinition.newInputObjectDefinition();
+                builder.name(entity.getInputTypeName());
+                for (EntityGraphqlAttribute attribute : entity.getAttributes()) {
+                    builder.inputValueDefinition(
+                            InputValueDefinition
+                                    .newInputValueDefinition()
+                                    .name(attribute.getName())
+                                    .type(attribute.adaptType(attribute.getInputType()))
+                                    .build()
+                    );
+                }
+                definitions.add(builder.build());
+            } else {
+                log.warn("entity Type {} already exists", entity.getInputTypeName());
             }
-            InputObjectTypeDefinition.Builder builder = InputObjectTypeDefinition.newInputObjectDefinition();
-            builder.name(inputName);
-            for (Attribute<?, ?> attribute : entity.getAttributes()) {
-                builder.inputValueDefinition(
-                        InputValueDefinition
-                                .newInputValueDefinition()
-                                .name(attribute.getName())
-                                .type(TypeMatchUtils.structInput(attribute))
-                                .build()
-                );
-            }
-            InputObjectTypeDefinition build = builder.build();
-            definitions.add(build);
-        }
+        });
         registry.addAll(definitions).ifPresent(e -> log.error(e.getMessage()));
     }
 

@@ -1,8 +1,7 @@
 package com.zjj.gateway;
 
 
-import com.zjj.graphql.component.config.EnableGenEntityAll;
-import com.zjj.graphql.component.config.EnableGenEntityType;
+import com.zjj.graphql.component.config.*;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -17,6 +16,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  */
 //@EnableGenEntityAll
 @EnableGenEntityType
+@EnableGenEntityInput
+@EnableGenEntityQuery
+@EnableGenEntityFuzzyQuery
+@EnableGenEntityConditionQuery
 @EnableJpaRepositories
 @SpringBootApplication
 public class Main {

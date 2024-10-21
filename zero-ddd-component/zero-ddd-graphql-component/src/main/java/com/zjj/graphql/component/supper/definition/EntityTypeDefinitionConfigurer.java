@@ -30,7 +30,7 @@ public class EntityTypeDefinitionConfigurer implements TypeDefinitionConfigurer,
     public void configure(TypeDefinitionRegistry registry) {
         final List<SDLDefinition> definitions = new ArrayList<>();
 
-        entityContext.forEachEntity(entity -> {
+        entityContext.forEachManagedType(entity -> {
             if (registry.getType(entity.getType()).isEmpty()) {
                 ObjectTypeDefinition.Builder builder = ObjectTypeDefinition.newObjectTypeDefinition();
                 builder.name(entity.getType());

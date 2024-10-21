@@ -17,16 +17,19 @@ public class EntityGraphqlType implements GraphqlType {
 
     private String name;
     private String type;
+    private String comment;
+    private boolean embedded;
     private final Type inputType;
     private final Type connectionType;
     private final Type conditionType;
     private final Type entityType;
     private Set<EntityGraphqlAttribute> attributes;
 
-    EntityGraphqlType(final String type, final Set<EntityGraphqlAttribute> attributes) {
+    EntityGraphqlType(final String type, final Set<EntityGraphqlAttribute> attributes, boolean embedded) {
         this.type = type;
         this.name = BeanUtils.uncapitalize(type);
         this.attributes = attributes;
+        this.embedded = embedded;
         entityType = TypeName.newTypeName(getType()).build();
         inputType = TypeName.newTypeName(getInputTypeName()).build();
         connectionType = TypeName.newTypeName(getConnectionTypeName()).build();
@@ -41,6 +44,7 @@ public class EntityGraphqlType implements GraphqlType {
 
     public static class Builder {
         private String type;
+        private boolean embedded;
         private Set<EntityGraphqlAttribute> attributes;
 
         Builder() {
@@ -51,17 +55,22 @@ public class EntityGraphqlType implements GraphqlType {
             return this;
         }
 
+        public Builder embedded(final boolean embedded) {
+            this.embedded = embedded;
+            return this;
+        }
+
         public Builder attributes(final Set<EntityGraphqlAttribute> attributes) {
             this.attributes = attributes;
             return this;
         }
 
         public EntityGraphqlType build() {
-            return new EntityGraphqlType(this.type, this.attributes);
+            return new EntityGraphqlType(this.type, this.attributes, this.embedded);
         }
 
         public String toString() {
-            return "EntityGraphqlType.EntityGraphqlTypeBuilder(name=" + this.type + ", attributes=" + this.attributes + ")";
+            return "EntityGraphqlType.EntityGraphqlTypeBuilder(name=" + this.type + ", attributes=" + this.attributes + ", embedded" + this.embedded +")";
         }
     }
 

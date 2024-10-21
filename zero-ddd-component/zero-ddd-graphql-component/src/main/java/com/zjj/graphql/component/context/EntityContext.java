@@ -10,11 +10,9 @@ import org.hibernate.metamodel.model.domain.internal.SetAttributeImpl;
 import org.hibernate.metamodel.model.domain.internal.SingularAttributeImpl;
 import org.springframework.core.annotation.AnnotationUtils;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /**
  * @author zengJiaJun
@@ -28,13 +26,45 @@ public class EntityContext {
     @Getter
     private final EntityManager entityManager;
 
+
+
+
     public EntityContext(EntityManager entityManager) {
         this.entityManager = entityManager;
         initEntity();
         parseEntity();
     }
 
+
+    public Collection<EntityGraphqlType> getEntity() {
+        return entityTypes.values().stream().filter(entity -> !entity.isEmbedded()).toList();
+    }
+
+    public Collection<EntityGraphqlType> getEmbeddable() {
+        return entityTypes.values().stream().filter(EntityGraphqlType::isEmbedded).toList();
+    }
+
+    public Collection<EntityGraphqlType> getManagedType() {
+        return entityTypes.values();
+    }
+
     public void forEachEntity(Consumer<EntityGraphqlType> consumer) {
+        entityTypes.values().forEach(entity -> {
+            if (!entity.isEmbedded()) {
+                consumer.accept(entity);
+            }
+        });
+    }
+
+    public void forEachEmbeddable(Consumer<EntityGraphqlType> consumer) {
+        entityTypes.values().forEach(entity -> {
+            if (entity.isEmbedded()) {
+                consumer.accept(entity);
+            }
+        });
+    }
+
+    public void forEachManagedType(Consumer<EntityGraphqlType> consumer) {
         entityTypes.values().forEach(consumer);
     }
 
@@ -43,57 +73,68 @@ public class EntityContext {
     }
 
 
+    private void parseManageType(ManagedType<?> managedType, EntityGraphqlType.Builder builder) {
+        Set<EntityGraphqlAttribute> entityGraphqlAttributes = new HashSet<>();
+        for (Attribute<?, ?> attribute : managedType.getAttributes()) {
+            boolean flag = attribute.isAssociation();
+            boolean flag2 = false;
 
-    protected void initEntity() {
-        for (ManagedType<?> managedType : entityManager.getMetamodel().getManagedTypes()) {
-            EntityGraphqlType.Builder builder = EntityGraphqlType.builder();
+            EntityGraphqlAttribute.Builder attributeBuilder = EntityGraphqlAttribute.builder();
+            attributeBuilder.name(attribute.getName());
 
-            String simpleName = managedType.getJavaType().getSimpleName();
-            builder.type(simpleName);
-            Set<EntityGraphqlAttribute> entityGraphqlAttributes = new HashSet<>();
-            for (Attribute<?, ?> attribute : managedType.getAttributes()) {
-                boolean flag = attribute.isAssociation();
-                boolean flag2 = false;
+            attributeBuilder.association(attribute.isAssociation());
 
-                EntityGraphqlAttribute.Builder attributeBuilder = EntityGraphqlAttribute.builder();
-                attributeBuilder.name(attribute.getName());
+            attributeBuilder.collection(attribute.isCollection());
+            Class<?> javaType = attribute.getJavaType();
+            Comment annotation = AnnotationUtils.findAnnotation(javaType, Comment.class);
+            if (annotation != null) {
+                attributeBuilder.description(annotation.value());
+            }
 
-                attributeBuilder.association(attribute.isAssociation());
-
-                if (attribute.isAssociation()) {
+            if (attribute.isAssociation()) {
+                if (attribute.isCollection()) {
+                    attributeBuilder.type(((SetAttributeImpl) attribute).getBindableJavaType().getSimpleName());
+                } else {
+                    attributeBuilder.type(attribute.getJavaType().getSimpleName());
+                }
+            }
+            if (attribute instanceof SingularAttributeImpl singularAttribute) {
+                if (singularAttribute.getAttributeClassification().equals(AttributeClassification.EMBEDDED)) {
+                    attributeBuilder.embedded(true);
                     if (attribute.isCollection()) {
-                        ((SetAttributeImpl) attribute).getBindableJavaType().getSimpleName();
+                        attributeBuilder.type(((SetAttributeImpl) attribute).getBindableJavaType().getSimpleName());
                     } else {
                         attributeBuilder.type(attribute.getJavaType().getSimpleName());
                     }
+                } else {
+                    attributeBuilder.embedded(false);
                 }
-
-                attributeBuilder.collection(attribute.isCollection());
-                Class<?> javaType = attribute.getJavaType();
-                Comment annotation = AnnotationUtils.findAnnotation(javaType, Comment.class);
-                if (annotation != null) {
-                    attributeBuilder.description(annotation.value());
-                }
-                if (attribute instanceof SingularAttributeImpl singularAttribute) {
-                    if (singularAttribute.getAttributeClassification().equals(AttributeClassification.EMBEDDED)) {
-                        attributeBuilder.embedded(true);
-                        if (attribute.isCollection()) {
-                            attributeBuilder.type(((SetAttributeImpl) attribute).getBindableJavaType().getSimpleName());
-                        } else {
-                            attributeBuilder.type(attribute.getJavaType().getSimpleName());
-                        }
-                    } else {
-                        attributeBuilder.embedded(false);
-                    }
-                }
-
-                if (!flag && !flag2) {
-                    attributeBuilder.type(TypeMatchUtils.matchType(attribute.getJavaType()));
-                }
-
-                entityGraphqlAttributes.add(attributeBuilder.build());
             }
-            builder.attributes(entityGraphqlAttributes);
+
+            if (!flag && !flag2) {
+                attributeBuilder.type(TypeMatchUtils.matchType(attribute.getJavaType()));
+            }
+
+            entityGraphqlAttributes.add(attributeBuilder.build());
+        }
+        builder.attributes(entityGraphqlAttributes);
+    }
+
+    protected void initEntity() {
+        for (EntityType<?> entity : entityManager.getMetamodel().getEntities()) {
+            EntityGraphqlType.Builder builder = EntityGraphqlType.builder();
+            builder.type(entity.getName());
+            builder.embedded(false);
+            parseManageType(entity, builder);
+            entityTypes.put(entity.getName(), builder.build());
+        }
+
+        for (EmbeddableType<?> embeddable : entityManager.getMetamodel().getEmbeddables()) {
+            EntityGraphqlType.Builder builder = EntityGraphqlType.builder();
+            String simpleName = embeddable.getJavaType().getSimpleName();
+            builder.type(simpleName);
+            builder.embedded(true);
+            parseManageType(embeddable, builder);
             entityTypes.put(simpleName, builder.build());
         }
     }
