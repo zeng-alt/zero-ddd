@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zjj.graphql.component.query.fuzzy;
+package com.zjj.graphql.component.query.condition;
 
 import com.querydsl.core.types.EntityPath;
 import org.springframework.data.querydsl.binding.QuerydslBindings;
@@ -25,7 +25,7 @@ import org.springframework.data.querydsl.binding.QuerydslBindings;
  * @crateTime 2024年10月19日 23:23
  * @version 1.0
  */
-public interface QuerydslFuzzyBinderCustomizer<T extends EntityPath<?>> {
+public interface QuerydslConditionBinderCustomizer<T extends EntityPath<?>> {
 
 	/**
 	 * Customize the {@link QuerydslBindings} for the given root.
@@ -33,5 +33,5 @@ public interface QuerydslFuzzyBinderCustomizer<T extends EntityPath<?>> {
 	 * @param bindings the {@link QuerydslBindings} to customize, will never be {@literal null}.
 	 * @param root the entity root, will never be {@literal null}.
 	 */
-	void customize(QuerydslFuzzyBinding bindings, T root);
+	void customize(QuerydslConditionBinding bindings, T root);
 }

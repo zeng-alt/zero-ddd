@@ -2,6 +2,7 @@ scalar DateTime
 scalar Date
 scalar Time
 scalar LocalTime
+scalar LocalDateTime
 scalar Object
 scalar JSON
 scalar Url
@@ -65,15 +66,19 @@ input Condition {
 
 enum Option {
     EQ
-    NEQ
+    NE
+    NULL
+    NOT_NULL
     GT
     LT
     GTE
     LTE
     IN
-    NOTIN
+    NOT_IN
     LIKE
     NOT_LIKE
     LIFT_LIKE
     RIGHT_LIKE
+    BETWEEN
+    NOT_BETWEEN
 }

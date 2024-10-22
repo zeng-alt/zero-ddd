@@ -26,7 +26,7 @@ public interface GraphqlType {
     default Type wrapCollectionType(Type type, String comment) {
         return ListType
                 .newListType(type)
-//                .comments(List.of(new Comment(comment, SourceLocation.EMPTY)))
+                .comments(List.of(new Comment(comment, SourceLocation.EMPTY)))
                 .build();
     }
 

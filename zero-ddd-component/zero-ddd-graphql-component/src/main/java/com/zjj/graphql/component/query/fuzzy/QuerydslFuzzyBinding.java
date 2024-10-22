@@ -19,6 +19,7 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.CollectionPathBase;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.core.types.dsl.SimpleExpression;
 import com.querydsl.core.types.dsl.StringExpression;
 import org.springframework.data.querydsl.binding.MultiValueBinding;
@@ -26,23 +27,23 @@ import org.springframework.util.Assert;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
  * Default implementation of {@link MultiValueBinding} creating {@link Predicate} based on the {@link Path}s type.
  * Binds:
  * <ul>
+ * <li><i>{@link Object}</i> as {@link NumberExpression#like(String)} ()} on simple properties.</li>
  * <li><i>{@link Object}</i> as {@link StringExpression#likeIgnoreCase(String)} ()} on simple properties.</li>
  * <li><i>{@link Object}</i> as {@link SimpleExpression#eq()} on simple properties.</li>
  * <li><i>{@link Object}</i> as {@link SimpleExpression#contains()} on collection properties.</li>
  * <li><i>{@link Collection}</i> as {@link SimpleExpression#in()} on simple properties.</li>
  * </ul>
  *
- * @author Christoph Strobl
- * @author Oliver Gierke
- * @author Colin Gao
- * @author Johannes Englmeier
- * @since 1.11
+ * @author zengJiaJun
+ * @crateTime 2024年10月19日 23:23
+ * @version 1.0
  */
 class QuerydslFuzzyBinding implements MultiValueBinding<Path<? extends Object>, Object> {
 
@@ -87,6 +88,14 @@ class QuerydslFuzzyBinding implements MultiValueBinding<Path<? extends Object>, 
 					: expression.likeIgnoreCase(object.toString()));
 		}
 
+		if (path instanceof NumberExpression<?> expression) {
+			if (value.size() == 1) {
+				Object object = value.iterator().next();
+				return Optional.of(object == null //
+						? expression.isNull() //
+						: expression.like(object.toString()));
+			}
+		}
 
 		if (path instanceof SimpleExpression expression) {
 

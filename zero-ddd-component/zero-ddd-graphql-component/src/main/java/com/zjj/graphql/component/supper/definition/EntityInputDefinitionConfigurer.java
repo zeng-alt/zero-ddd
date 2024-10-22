@@ -1,13 +1,13 @@
 package com.zjj.graphql.component.supper.definition;
 
+import com.zjj.graphql.component.context.ConditionTypeContext;
 import com.zjj.graphql.component.context.EntityContext;
 import com.zjj.graphql.component.context.EntityGraphqlAttribute;
-import com.zjj.graphql.component.utils.TypeMatchUtils;
-import graphql.language.*;
+import graphql.language.InputObjectTypeDefinition;
+import graphql.language.InputValueDefinition;
+import graphql.language.IntValue;
+import graphql.language.SDLDefinition;
 import graphql.schema.idl.TypeDefinitionRegistry;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.metamodel.Attribute;
-import jakarta.persistence.metamodel.EntityType;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,6 @@ import org.springframework.graphql.execution.TypeDefinitionConfigurer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author zengJiaJun
@@ -29,16 +28,20 @@ public class EntityInputDefinitionConfigurer implements TypeDefinitionConfigurer
 
 //    private final EntityManager entityManager;
     private final EntityContext entityContext;
+    private final ConditionTypeContext typeContext;
 
     @Override
     public void configure(@NonNull TypeDefinitionRegistry registry) {
+        registry.scalars().forEach((k, v) -> typeContext.addType(k));
+
+
         final List<SDLDefinition> definitions = new ArrayList<>();
         InputObjectTypeDefinition.Builder pageQuery = InputObjectTypeDefinition.newInputObjectDefinition().name("PageQuery");
         pageQuery.inputValueDefinitions(List.of(
-                InputValueDefinition.newInputValueDefinition().name("first").defaultValue(IntValue.of(10)).type(TypeName.newTypeName("Int").build()).build(),
-                InputValueDefinition.newInputValueDefinition().name("after").type(TypeName.newTypeName("String").build()).build(),
-                InputValueDefinition.newInputValueDefinition().name("last").defaultValue(IntValue.of(10)).type(TypeName.newTypeName("Int").build()).build(),
-                InputValueDefinition.newInputValueDefinition().name("before").type(TypeName.newTypeName("String").build()).build()
+                InputValueDefinition.newInputValueDefinition().name("first").defaultValue(IntValue.of(10)).type(typeContext.get("Int")).build(),
+                InputValueDefinition.newInputValueDefinition().name("after").type(typeContext.get("String")).build(),
+                InputValueDefinition.newInputValueDefinition().name("last").defaultValue(IntValue.of(10)).type(typeContext.get("Int")).build(),
+                InputValueDefinition.newInputValueDefinition().name("before").type(typeContext.get("String")).build()
         ));
 
         definitions.add(pageQuery.build());

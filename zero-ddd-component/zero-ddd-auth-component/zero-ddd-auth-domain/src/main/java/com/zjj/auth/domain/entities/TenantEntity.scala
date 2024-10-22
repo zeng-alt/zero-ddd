@@ -1,7 +1,6 @@
 package com.zjj.auth.domain.entities
 
-import com.zjj.component.exception.AuthException
-
+import com.zjj.core.component.exception.AuthException
 import java.time.LocalDate
 
 /**

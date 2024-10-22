@@ -98,6 +98,7 @@ public class EntityContext {
                     attributeBuilder.type(attribute.getJavaType().getSimpleName());
                 }
             }
+
             if (attribute instanceof SingularAttributeImpl singularAttribute) {
                 if (singularAttribute.getAttributeClassification().equals(AttributeClassification.EMBEDDED)) {
                     attributeBuilder.embedded(true);
@@ -112,7 +113,7 @@ public class EntityContext {
             }
 
             if (!flag && !flag2) {
-                attributeBuilder.type(TypeMatchUtils.matchType(attribute.getJavaType()));
+                attributeBuilder.type(TypeMatchUtils.matchType(attribute));
             }
 
             entityGraphqlAttributes.add(attributeBuilder.build());

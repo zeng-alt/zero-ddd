@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -26,10 +28,14 @@ public class Response<T> implements Serializable {
 	public static final Integer FAIL = 500;
 
 	private Integer code;
-
 	private String message;
-
+	private List<Object> error;
 	protected T data;
+
+	protected Response<T> setError(List<Object> error) {
+		this.error = error;
+		return this;
+	}
 
 	protected Response<T> setData(T data) {
 		this.data = data;
@@ -55,15 +61,15 @@ public class Response<T> implements Serializable {
 	}
 
 	public static <T extends Serializable> Response<T> fail() {
-		return new Response<T>().setCode(FAIL).setMessage("fail");
+		return new Response<T>().setCode(FAIL).setMessage("fail").setError(new ArrayList<>());
 	}
 
 	public static <T extends Serializable> Response<T> fail(String message) {
-		return new Response<T>().setCode(FAIL).setMessage(message).setData(null);
+		return new Response<T>().setCode(FAIL).setMessage(message).setData(null).setError(new ArrayList<>());
 	}
 
 	public static <T extends Serializable> Response<T> warn() {
-		return new Response<T>().setCode(WARN).setMessage("warn").setData(null);
+		return new Response<T>().setCode(WARN).setMessage("warn").setData(null).setError(new ArrayList<>());
 	}
 
 	public static <T extends Serializable> Response<T> warn(String message) {
@@ -72,6 +78,11 @@ public class Response<T> implements Serializable {
 
 	public static <T extends Serializable> Response<T> warn(T data) {
 		return new Response<T>().setCode(WARN).setMessage("warn").setData(data);
+	}
+
+	public Response<T> addError(Object error) {
+		this.error.add(error);
+		return this;
 	}
 
 	public Response<T> message(String message) {

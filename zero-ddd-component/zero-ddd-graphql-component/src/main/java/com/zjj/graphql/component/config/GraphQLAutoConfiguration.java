@@ -1,6 +1,7 @@
 package com.zjj.graphql.component.config;
 
 
+import com.zjj.graphql.component.context.ConditionTypeContext;
 import com.zjj.graphql.component.context.EntityContext;
 import com.zjj.graphql.component.supper.*;
 import com.zjj.graphql.component.supper.definition.EntityTypeDefinitionConfigurer;
@@ -22,6 +23,11 @@ import org.springframework.graphql.execution.TypeDefinitionConfigurer;
  */
 @AutoConfiguration(after = EntityManager.class)
 public class GraphQLAutoConfiguration {
+
+    @Bean
+    public ConditionTypeContext conditionTypeContext() {
+        return new ConditionTypeContext();
+    }
 
     @Bean
     public RuntimeWiringConfigurer graphQlTypeConfiguration() {

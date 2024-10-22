@@ -8,6 +8,7 @@ import org.hibernate.annotations.Comment;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -33,7 +34,7 @@ public class Countries {
 
     private Integer age;
 
-    private LocalDateTime birthday;
+    private LocalDate birthday;
 
     @Embedded
     private Address address;

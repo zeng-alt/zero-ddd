@@ -1,9 +1,6 @@
 package com.zjj.graphql.component.supper.definition;
 
-import com.zjj.graphql.component.context.EntityContext;
-import com.zjj.graphql.component.context.EntityGraphqlAttribute;
-import com.zjj.graphql.component.context.EntityGraphqlType;
-import com.zjj.graphql.component.context.GraphqlType;
+import com.zjj.graphql.component.context.*;
 import com.zjj.graphql.component.query.condition.Option;
 import graphql.language.*;
 import graphql.schema.idl.TypeDefinitionRegistry;
@@ -11,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.graphql.execution.TypeDefinitionConfigurer;
+import org.springframework.lang.NonNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,12 +23,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EntityConditionQueryDefinitionConfigurer implements TypeDefinitionConfigurer, Ordered {
 
-//    private final EntityManager entityManager;
     private final EntityContext entityContext;
-
-    private final InputObjectTypeDefinition.Builder condition = InputObjectTypeDefinition.newInputObjectDefinition().name(GraphqlType.CAPITALIZE_CONDITION).inputValueDefinition(
-            InputValueDefinition.newInputValueDefinition().name("option").defaultValue(EnumValue.of("EQ")).type(TypeName.newTypeName("Option").build()).build()
-    );
+    private final ConditionTypeContext typeContext;
 
     @Override
     public int getOrder() {
@@ -38,11 +32,12 @@ public class EntityConditionQueryDefinitionConfigurer implements TypeDefinitionC
     }
 
     @Override
-    public void configure(TypeDefinitionRegistry registry) {
+    public void configure(@NonNull TypeDefinitionRegistry registry) {
         final List<SDLDefinition> definitions = new ArrayList<>();
 
         genOption(definitions);
         genCondition(definitions);
+        genTypeCondition(registry);
         genEntityCondition(definitions, entityContext.getManagedType());
 
         for (EntityGraphqlType entity : entityContext.getEntity()) {
@@ -105,66 +100,19 @@ public class EntityConditionQueryDefinitionConfigurer implements TypeDefinitionC
 
         }
 
-//        for (EntityType<?> entity : entities) {
-//            ObjectTypeExtensionDefinition.Builder query = ObjectTypeExtensionDefinition.newObjectTypeExtensionDefinition().name("Query");
-//            query.fieldDefinition(
-//                    FieldDefinition
-//                            .newFieldDefinition()
-//                            .name("conditionQuery" + entity.getName())
-//                            .inputValueDefinition(
-//                                    InputValueDefinition
-//                                            .newInputValueDefinition()
-//                                            .name(UNCAPITALIZE_INPUT + entity.getName())
-//                                            .type(TypeName.newTypeName(entity.getName() + "Condition").build())
-//                                            .build())
-//                            .type(ListType.newListType(TypeName.newTypeName(entity.getName()).build()).build())
-//                            .build()
-//            ).fieldDefinition(
-//                    FieldDefinition
-//                            .newFieldDefinition()
-//                            .name("conditionFind" + entity.getName())
-//                            .inputValueDefinition(
-//                                    InputValueDefinition
-//                                            .newInputValueDefinition()
-//                                            .name(UNCAPITALIZE_INPUT + entity.getName())
-//                                            .type(TypeName.newTypeName(entity.getName() + "Condition").build())
-//                                            .build())
-//                            .type(TypeName.newTypeName(entity.getName()).build())
-//                            .build()
-//            ).fieldDefinition(
-//                    FieldDefinition
-//                            .newFieldDefinition()
-//                            .name("conditionPage" + entity.getName())
-//                            .inputValueDefinition(
-//                                    InputValueDefinition
-//                                            .newInputValueDefinition()
-//                                            .name("pageQuery")
-//                                            .type(TypeName.newTypeName("PageQuery").build())
-//                                            .build()
-//                            )
-//                            .inputValueDefinition(
-//                                    InputValueDefinition
-//                                            .newInputValueDefinition()
-//                                            .name("sort")
-//                                            .type(TypeName.newTypeName("Sort").build())
-//                                            .build()
-//                            )
-//                            .inputValueDefinition(
-//                                    InputValueDefinition
-//                                            .newInputValueDefinition()
-//                                            .name(UNCAPITALIZE_INPUT + entity.getName())
-//                                            .type(TypeName.newTypeName(entity.getName() + "Condition").build())
-//                                            .build()
-//                            )
-//                            .type(TypeName.newTypeName(entity.getName() + "Connection").build())
-//                            .build()
-//            );
-//            definitions.add(query.build());
-//
-//
-//
-//        }
         registry.addAll(definitions).ifPresent(e -> log.error(e.getMessage()));
+    }
+
+    private void genTypeCondition(TypeDefinitionRegistry registry) {
+        registry.scalars().forEach((k, v) -> {
+            final InputObjectTypeDefinition.Builder condition = InputObjectTypeDefinition.newInputObjectDefinition().name(k + GraphqlType.CAPITALIZE_CONDITION);
+            condition.inputValueDefinitions(List.of(
+                    InputValueDefinition.newInputValueDefinition().name("value").type(ListType.newListType(typeContext.get(k)).build()).build(),
+                    InputValueDefinition.newInputValueDefinition().name("option").defaultValue(EnumValue.of("EQ")).type(typeContext.get("Option")).build()
+            ));
+            typeContext.addType(k + GraphqlType.CAPITALIZE_CONDITION);
+            registry.add(condition.build()).ifPresent(e -> log.error(e.getMessage()));
+        });
     }
 
     private void genEntityCondition(List<SDLDefinition> definitions, Collection<EntityGraphqlType> entities) {
@@ -178,7 +126,7 @@ public class EntityConditionQueryDefinitionConfigurer implements TypeDefinitionC
                 if (attribute.getAssociation() || attribute.getEmbedded()) {
                     builder.type(entity.getConditionType());
                 } else {
-                    builder.type(TypeName.newTypeName(GraphqlType.CAPITALIZE_CONDITION).build());
+                    builder.type(typeContext.get(attribute.getType() + GraphqlType.CAPITALIZE_CONDITION));
                 }
 
                 input.inputValueDefinition(builder.build());
@@ -190,10 +138,10 @@ public class EntityConditionQueryDefinitionConfigurer implements TypeDefinitionC
     private void genCondition(List<SDLDefinition> definitions) {
         InputObjectTypeDefinition.Builder condition = InputObjectTypeDefinition.newInputObjectDefinition().name(GraphqlType.CAPITALIZE_CONDITION);
         condition.inputValueDefinitions(List.of(
-                InputValueDefinition.newInputValueDefinition().name("value").type(TypeName.newTypeName("String").build()).build(),
-                InputValueDefinition.newInputValueDefinition().name("option").defaultValue(EnumValue.of("EQ")).type(TypeName.newTypeName("Option").build()).build()
+                InputValueDefinition.newInputValueDefinition().name("value").type(typeContext.get("String")).build(),
+                InputValueDefinition.newInputValueDefinition().name("option").defaultValue(EnumValue.of("EQ")).type(typeContext.get("Option")).build()
         ));
-
+        typeContext.addType(GraphqlType.CAPITALIZE_CONDITION);
         definitions.add(condition.build());
     }
 
@@ -202,6 +150,7 @@ public class EntityConditionQueryDefinitionConfigurer implements TypeDefinitionC
         for (Option value : Option.values()) {
             option.enumValueDefinition(EnumValueDefinition.newEnumValueDefinition().name(value.name()).build());
         }
+        typeContext.addType("Option");
         definitions.add(option.build());
     }
 }

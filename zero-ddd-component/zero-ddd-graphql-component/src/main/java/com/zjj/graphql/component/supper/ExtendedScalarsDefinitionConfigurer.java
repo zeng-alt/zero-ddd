@@ -3,11 +3,14 @@ package com.zjj.graphql.component.supper;
 import com.querydsl.core.util.ReflectionUtils;
 import graphql.language.*;
 import graphql.scalars.ExtendedScalars;
+import graphql.schema.Coercing;
+import graphql.schema.GraphQLScalarType;
 import graphql.schema.idl.TypeDefinitionRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.graphql.execution.TypeDefinitionConfigurer;
 
 import java.lang.reflect.Field;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -20,8 +23,13 @@ import java.util.Set;
 @Slf4j
 public class ExtendedScalarsDefinitionConfigurer implements TypeDefinitionConfigurer {
 
+
+
+
     @Override
     public void configure(TypeDefinitionRegistry registry) {
+
+
         List<SDLDefinition> definitions = new ArrayList<>();
         Set<Field> fields = ReflectionUtils.getFields(ExtendedScalars.class);
         fields.stream()
@@ -37,6 +45,8 @@ public class ExtendedScalarsDefinitionConfigurer implements TypeDefinitionConfig
                 })
                 .map(n -> ScalarTypeDefinition.newScalarTypeDefinition().name(n).build())
                 .forEach(definitions::add);
+
+        definitions.add(ScalarTypeDefinition.newScalarTypeDefinition().name("LocalDateTime").build());
 
         registry.addAll(definitions);
         log.info("组装Scalars类型");

@@ -1,4 +1,4 @@
-package com.zjj.component.exception;
+package com.zjj.core.component.exception;
 
 /**
  * @author zengJiaJun

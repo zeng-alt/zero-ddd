@@ -1,6 +1,6 @@
 package com.zjj.auth.domain.valueobjects
 
-import com.zjj.component.exception.AuthException
+import com.zjj.core.component.exception.AuthException
 import org.apache.commons.lang3.StringUtils
 
 /**
