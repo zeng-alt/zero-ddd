@@ -1,7 +1,7 @@
 package com.zjj.l2.cache.component.supper;
 
 import com.zjj.autoconfigure.component.l2cache.SequenceServerIdGenerator;
-import com.zjj.cache.component.repository.RedisStringRepository;
+import com.zjj.autoconfigure.component.redis.RedisStringRepository;
 import lombok.RequiredArgsConstructor;
 
 /**

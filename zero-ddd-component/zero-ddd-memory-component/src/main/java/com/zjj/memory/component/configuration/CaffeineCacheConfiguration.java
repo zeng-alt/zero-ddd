@@ -61,7 +61,7 @@ class CaffeineCacheConfiguration {
                                       ObjectProvider<Caffeine<Object, Object>> caffeine, ObjectProvider<CaffeineSpec> caffeineSpec,
                                       ObjectProvider<CacheLoader<Object, Object>> cacheLoader) {
 		CaffeineCacheManager cacheManager = createCacheManager(cacheProperties, caffeine, caffeineSpec, cacheLoader);
-		if (cacheProperties.getType().equals(CacheType.CAFFEINE)) {
+		if (CacheType.CAFFEINE.equals(cacheProperties.getType())) {
 			List<String> cacheNames = cacheProperties.getCacheNames();
 			if (!CollectionUtils.isEmpty(cacheNames)) {
 				cacheManager.setCacheNames(cacheNames);

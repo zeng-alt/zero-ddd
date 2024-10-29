@@ -21,7 +21,6 @@ import java.util.List;
  * @crateTime 2024年10月07日 19:09
  * @version 1.0
  */
-@EnableWebSecurity
 @AutoConfiguration
 public class SecurityAutoConfiguration {
 
@@ -38,6 +37,7 @@ public class SecurityAutoConfiguration {
 	// objectMapper) {
 	// return new JacksonDeserializer<>(objectMapper);
 	// }
+
 
 	@Bean
 	@ConditionalOnMissingBean(AuthenticationEventPublisher.class)

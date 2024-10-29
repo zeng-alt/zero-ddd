@@ -44,13 +44,18 @@ public class WebSecurityAutoConfiguration {
 
 	) throws Exception {
 		// UserDetails
-		HttpSecurity httpSecurity = http.csrf(AbstractHttpConfigurer::disable)
-				.httpBasic(AbstractHttpConfigurer::disable).cors(AbstractHttpConfigurer::disable)
-				.authorizeHttpRequests(author -> author.requestMatchers(HttpMethod.POST, "/login/**").permitAll()
-						.requestMatchers("/h2-console/**").permitAll().requestMatchers("/graphiql/**").permitAll()
+		HttpSecurity httpSecurity = http
+				.csrf(AbstractHttpConfigurer::disable)
+				.httpBasic(AbstractHttpConfigurer::disable)
+				.cors(AbstractHttpConfigurer::disable)
+				.authorizeHttpRequests(author -> author
+						.requestMatchers(HttpMethod.POST, "/login/**").permitAll()
+						.requestMatchers("/h2-console/**").permitAll()
+						.requestMatchers("/graphiql/**").permitAll()
 						.requestMatchers("/graphql/**").permitAll())
 				.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
-				.exceptionHandling(e -> e.authenticationEntryPoint(authenticationEntryPoint)
+				.exceptionHandling(e -> e
+						.authenticationEntryPoint(authenticationEntryPoint)
 						.accessDeniedHandler(accessDeniedHandler))
 				.formLogin(Customizer.withDefaults());
 		// .formLogin(

@@ -1,7 +1,7 @@
 package com.zjj.cache.component.repository.impl;
 
 import com.zjj.autoconfigure.component.json.JsonHelper;
-import com.zjj.cache.component.repository.RedisStringRepository;
+import com.zjj.autoconfigure.component.redis.RedisStringRepository;
 import com.zjj.core.component.exception.UtilException;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.*;
@@ -28,12 +28,10 @@ import java.util.function.UnaryOperator;
 public class RedisStringRepositoryImpl extends RedisStringRepository {
 
 
-	private final JsonHelper jsonHelper;
 
 	@Autowired
-	public RedisStringRepositoryImpl(RedissonClient template, JsonHelper jsonHelper) {
+	public RedisStringRepositoryImpl(RedissonClient template) {
 		super(template);
-		this.jsonHelper = jsonHelper;
 	}
 
 	@Override

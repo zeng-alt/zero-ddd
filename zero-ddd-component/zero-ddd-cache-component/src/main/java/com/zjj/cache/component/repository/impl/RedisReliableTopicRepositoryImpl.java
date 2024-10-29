@@ -1,6 +1,6 @@
 package com.zjj.cache.component.repository.impl;
 
-import com.zjj.cache.component.repository.RedisSubPubRepository;
+import com.zjj.autoconfigure.component.redis.RedisSubPubRepository;
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RReliableTopic;
 import org.redisson.api.RedissonClient;

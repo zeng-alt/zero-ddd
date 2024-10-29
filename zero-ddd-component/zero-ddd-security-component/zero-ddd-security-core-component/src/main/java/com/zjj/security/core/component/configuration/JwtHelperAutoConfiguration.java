@@ -1,16 +1,24 @@
 package com.zjj.security.core.component.configuration;
 
 import com.zjj.autoconfigure.component.json.JsonHelper;
+import com.zjj.autoconfigure.component.l2cache.L2CacheManage;
+import com.zjj.autoconfigure.component.redis.RedisStringRepository;
 import com.zjj.autoconfigure.component.security.jwt.JwtCacheManage;
 import com.zjj.autoconfigure.component.security.jwt.JwtHelper;
 import com.zjj.autoconfigure.component.security.jwt.JwtProperties;
+import com.zjj.cache.component.config.RedisAutoConfiguration;
 import com.zjj.security.core.component.configuration.properties.LoginProperties;
 import com.zjj.security.core.component.supper.DefaultJwtCacheManage;
 import com.zjj.security.core.component.supper.DefaultJwtHelper;
+import com.zjj.security.core.component.supper.JwtCacheProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.DependsOn;
 
 /**
  * @author zengJiaJun
@@ -27,10 +35,21 @@ public class JwtHelperAutoConfiguration {
 		return new DefaultJwtHelper(jwtProperties, jsonHelper);
 	}
 
+
 	@Bean
-	@ConditionalOnMissingBean
-	public JwtCacheManage jwtCacheManage(JwtProperties jwtProperties) {
-		return new DefaultJwtCacheManage(jwtProperties);
+	@ConditionalOnBean(L2CacheManage.class)
+	@ConditionalOnMissingClass({"com.zjj.security.tenant.component.configuration.SecurityTenantAutoConfiguration"})
+	public JwtCacheProvider jwtCacheProvider(JwtProperties jwtProperties) {
+		return new JwtCacheProvider(jwtProperties);
+	}
+
+
+	@Bean
+	@ConditionalOnMissingBean(JwtCacheManage.class)
+	@ConditionalOnBean(RedisAutoConfiguration.class)
+	@ConditionalOnMissingClass("com.zjj.security.tenant.component.configuration.SecurityTenantAutoConfiguration")
+	public JwtCacheManage defaultJwtCacheManage(RedisStringRepository redisStringRepository, JwtProperties jwtProperties) {
+		return new DefaultJwtCacheManage(redisStringRepository, jwtProperties);
 	}
 
 }

@@ -20,7 +20,6 @@ import static org.springframework.security.config.Customizer.withDefaults;
  * @crateTime 2024年09月29日 14:04
  */
 @Configuration
-@EnableWebFluxSecurity
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
 @EnableConfigurationProperties(SecurityProperties.class)
 @ConditionalOnClass({ EnableWebFluxSecurity.class, WebFilterChainProxy.class, })

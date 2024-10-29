@@ -55,59 +55,43 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
 
-        <!--        <dependency>-->
-        <!--            <groupId>org.springframework.boot</groupId>-->
-        <!--            <artifactId>spring-boot-starter-security</artifactId>-->
-        <!--        </dependency>-->
 
         <dependency>
             <groupId>com.zjj</groupId>
             <artifactId>zero-ddd-autoconfigure-component</artifactId>
         </dependency>
 
-        <!--        <dependency>-->
-        <!--            <groupId>com.zjj</groupId>-->
-        <!--            <artifactId>zero-ddd-security-core-component</artifactId>-->
-        <!--        </dependency>-->
-
-        <!--        <dependency>-->
-        <!--            <groupId>com.zjj</groupId>-->
-        <!--            <artifactId>zero-ddd-security-rbac-component</artifactId>-->
-        <!--        </dependency>-->
-
-        <!--        <dependency>-->
-        <!--            <groupId>com.zjj</groupId>-->
-        <!--            <artifactId>zero-ddd-security-jwt-component</artifactId>-->
-        <!--        </dependency>-->
-
-        <!--        <dependency>-->
-        <!--            <groupId>com.zjj</groupId>-->
-        <!--            <artifactId>zero-ddd-security-sms-component</artifactId>-->
-        <!--        </dependency>-->
-
-        <!--        <dependency>-->
-        <!--            <groupId>com.google.guava</groupId>-->
-        <!--            <artifactId>guava</artifactId>-->
-        <!--        </dependency>-->
-
-        <!--        <dependency>-->
-        <!--            <groupId>com.zjj</groupId>-->
-        <!--            <artifactId>zero-ddd-graphql-component</artifactId>-->
-        <!--        </dependency>-->
-
-<!--        <dependency>-->
-<!--            <groupId>com.zjj</groupId>-->
-<!--            <artifactId>zero-ddd-l2-cache-component</artifactId>-->
-<!--        </dependency>-->
-
         <dependency>
             <groupId>com.zjj</groupId>
-            <artifactId>zero-ddd-cache-component</artifactId>
+            <artifactId>zero-ddd-security-core-component</artifactId>
         </dependency>
 
         <dependency>
             <groupId>com.zjj</groupId>
-            <artifactId>zero-ddd-memory-component</artifactId>
+            <artifactId>zero-ddd-security-tenant-component</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.zjj</groupId>
+            <artifactId>zero-ddd-tenant-component</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.zjj</groupId>
+            <artifactId>zero-ddd-security-jwt-component</artifactId>
+        </dependency>
+
+        <!--引入druid数据源-->
+<!--        <dependency>-->
+<!--            <groupId>com.alibaba</groupId>-->
+<!--            <artifactId>druid-spring-boot-starter</artifactId>-->
+<!--            <version>1.2.6</version>-->
+<!--        </dependency>-->
+
+
+        <dependency>
+            <groupId>com.zjj</groupId>
+            <artifactId>zero-ddd-l2-cache-component</artifactId>
         </dependency>
 
 
@@ -116,7 +100,16 @@
             <artifactId>guava</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
 
     </dependencies>
 

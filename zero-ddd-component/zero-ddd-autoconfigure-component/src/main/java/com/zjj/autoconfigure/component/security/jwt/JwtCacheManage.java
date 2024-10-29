@@ -14,6 +14,8 @@ public interface JwtCacheManage {
 	@Nullable
 	public UserDetails get(@NonNull String id);
 
+	public <T> T get(String id, Class<T> tClass);
+
 	public void put(@NonNull String id, @NonNull UserDetails userDetails);
 
 }

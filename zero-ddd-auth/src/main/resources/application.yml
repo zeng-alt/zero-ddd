@@ -1,6 +1,36 @@
 
 
 spring:
+  datasource:
+    dynamic:
+      primary: master #设置默认的数据源或者数据源组,默认值即为master
+      strict: false #严格匹配数据源,默认false. true未匹配到指定数据源时抛异常,false使用默认数据源
+      datasource:
+        master:
+          url: jdbc:h2:mem:mydb
+          username: sa
+          password:
+          driver-class-name: org.h2.Driver # 3.2.0开始支持SPI可省略此配置
+#  datasource:
+#    url: jdbc:h2:mem:mydb
+#    username: sa
+#    password:
+#    driverClassName: org.h2.Driver
+#    type: com.zaxxer.hikari.HikariDataSource
+
+  jpa:
+    show-sql: true
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true
+    database: h2
+    defer-datasource-initialization: true
+  h2:
+    console:
+      enabled: true
   application:
     name: graphApplication
 #  graphql:
@@ -28,3 +58,15 @@ spring:
   redis:
     redisson:
       file: classpath:redisson.yml
+
+
+logging:
+  level:
+    org:
+      springframework:
+        security:
+          web:
+            FilterChainProxy=DEBUG:
+security:
+  username-login:
+    enabled: true

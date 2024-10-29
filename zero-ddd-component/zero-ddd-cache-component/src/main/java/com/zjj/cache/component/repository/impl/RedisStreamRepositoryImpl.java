@@ -1,8 +1,7 @@
 package com.zjj.cache.component.repository.impl;
 
-import com.zjj.cache.component.repository.RedisStreamRepository;
+import com.zjj.autoconfigure.component.redis.RedisStreamRepository;
 import lombok.RequiredArgsConstructor;
-import org.redisson.api.RBatch;
 import org.redisson.api.RStream;
 import org.redisson.api.RedissonClient;
 import org.redisson.api.StreamMessageId;

@@ -5,7 +5,6 @@ import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.core.types.dsl.SetPath;
 import com.querydsl.core.types.dsl.StringPath;
 import com.zjj.gateway.entity.Countries;
-import com.zjj.gateway.entity.QCountries;
 import com.zjj.gateway.entity.Users;
 import com.zjj.graphql.component.supper.BaseRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
@@ -26,8 +25,8 @@ public interface CountriesRepository extends BaseRepository<Countries, Long> {
 
     default void test() {
 
-        QCountries countries = QCountries.countries;
-        DateTimePath<LocalDateTime> birthday = countries.birthday;
+//        QCountries countries = QCountries.countries;
+//        DateTimePath<LocalDateTime> birthday = countries.birthday;
 //        birthday.
 //        StringPath name = countries.name;
 //        NumberPath<Long> id = countries.id;

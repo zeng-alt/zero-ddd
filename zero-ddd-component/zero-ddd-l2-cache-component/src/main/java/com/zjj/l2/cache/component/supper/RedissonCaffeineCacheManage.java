@@ -1,13 +1,14 @@
 package com.zjj.l2.cache.component.supper;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.zjj.autoconfigure.component.l2cache.EventSubPubProvider;
+import com.zjj.autoconfigure.component.l2cache.provider.EventSubPubProvider;
 import com.zjj.autoconfigure.component.l2cache.L2Cache;
 import com.zjj.autoconfigure.component.l2cache.L2CacheManage;
-import com.zjj.cache.component.repository.RedisStringRepository;
+import com.zjj.autoconfigure.component.redis.RedisStringRepository;
 import com.zjj.l2.cache.component.config.properties.L2CacheProperties;
 import com.zjj.autoconfigure.component.l2cache.CacheOperation;
 import com.zjj.autoconfigure.component.l2cache.EvictEvent;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.Cache;
 import org.springframework.lang.NonNull;
@@ -20,6 +21,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Function;
 
 /**
  * @author zengJiaJun
@@ -27,7 +29,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @crateTime 2024年10月11日 20:49
  */
 @Slf4j
-public class RedissonCaffeineCacheManage implements L2CacheManage {
+public class RedissonCaffeineCacheManage implements L2RedissonCaffeineCacheManage {
 
     private Caffeine<Object, Object> cacheBuilder = Caffeine.newBuilder();
     private final Collection<String> customCacheNames = new CopyOnWriteArrayList<>();
@@ -35,9 +37,8 @@ public class RedissonCaffeineCacheManage implements L2CacheManage {
     private final L2CacheProperties l2CacheProperties;
     private final RedisStringRepository redisStringRepository;
     private final EventSubPubProvider<EvictEvent> eventSubPubProvider;
-
-//    @Nullable
-//    private AsyncCacheLoader<Object, Object> cacheLoader;
+    @Setter
+    private Function<String, String> cacheNamePrefix = name -> name;
 
     private boolean dynamic;
     private Object serverId;
@@ -46,6 +47,7 @@ public class RedissonCaffeineCacheManage implements L2CacheManage {
                                        RedisStringRepository redisStringRepository,
                                        EventSubPubProvider eventSubPubProvider) {
         super();
+
         this.eventSubPubProvider = eventSubPubProvider;
         this.l2CacheProperties = l2CacheProperties;
         this.redisStringRepository = redisStringRepository;
@@ -53,14 +55,13 @@ public class RedissonCaffeineCacheManage implements L2CacheManage {
         if (StringUtils.hasText(l2CacheProperties.getL1Cache().getSpec())) {
             setCacheSpecification(l2CacheProperties.getL1Cache().getSpec());
         }
-        setCacheNames(l2CacheProperties.getCacheNames());
         this.serverId = l2CacheProperties.getServerId();
     }
 
     public void setCacheNames(@Nullable Collection<String> cacheNames) {
         if (cacheNames != null) {
             for (String name : cacheNames) {
-                this.cacheMap.put(name, createCache(name));
+                this.cacheMap.put(cacheNamePrefix.apply(name), createCache(cacheNamePrefix.apply(name)));
             }
         }
     }
@@ -70,8 +71,44 @@ public class RedissonCaffeineCacheManage implements L2CacheManage {
     }
 
     public void registerCustomCache(String name, com.github.benmanes.caffeine.cache.Cache<Object, Object> cache) {
+        checkCacheName(name);
         this.customCacheNames.add(name);
         this.cacheMap.put(name, adaptCaffeineCache(name, cache));
+    }
+
+
+    public void registerCustomCache(String name, RedissonCaffeineCache.Builder builder) {
+        checkCacheName(name);
+        this.customCacheNames.add(name);
+        builder
+                .cacheNullValue(l2CacheProperties.isCacheNullValues())
+                .serverId(serverId)
+                .eventSubPubProvider(eventSubPubProvider)
+                .redisStringRepository(redisStringRepository)
+                .l2(l2 -> {
+                    if (!StringUtils.hasText(l2.topic)) {
+                        l2.topic(l2CacheProperties.getL2Cache().getTopic());
+
+                    }
+                    if (!StringUtils.hasText(l2.getKeyPrefix)) {
+                        l2.getKeyPrefix(l2CacheProperties.getCachePrefix());
+                    }
+                    if (l2.expire == null) {
+                        l2.expire(l2CacheProperties.getL2Cache().getDefaultExpiration());
+                    }
+                    if (l2.nullValueExpiration == null && l2CacheProperties.isCacheNullValues()) {
+                        l2.nullValueExpiration(l2CacheProperties.getL2Cache().getDefaultNullValuesExpiration());
+                    }
+
+                });
+        this.cacheMap.put(name, builder.build());
+    }
+
+    private void checkCacheName(String name) {
+
+        if (cacheMap.containsKey(name)) {
+            throw new IllegalArgumentException("The name '" + name + "' is already in use");
+        }
     }
 
     @Override
@@ -147,7 +184,7 @@ public class RedissonCaffeineCacheManage implements L2CacheManage {
 
     @Override
     public <K, V> L2Cache<K, V> getL2Cache(String cacheName) {
-        Cache cache = getCache(cacheName);
+        Cache cache = getCache(cacheNamePrefix.apply(cacheName));
         return (L2Cache<K, V>) cache;
     }
 

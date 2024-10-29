@@ -1,12 +1,13 @@
 package com.zjj.l2.cache.component.supper;
 
 import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Policy;
 import com.github.benmanes.caffeine.cache.stats.CacheStats;
 import com.google.common.collect.Lists;
-import com.zjj.autoconfigure.component.l2cache.EventSubPubProvider;
+import com.zjj.autoconfigure.component.l2cache.provider.EventSubPubProvider;
 import com.zjj.autoconfigure.component.l2cache.L2Cache;
-import com.zjj.cache.component.repository.RedisStringRepository;
+import com.zjj.autoconfigure.component.redis.RedisStringRepository;
 import com.zjj.l2.cache.component.config.properties.L2CacheProperties;
 import com.zjj.autoconfigure.component.l2cache.CacheOperation;
 import com.zjj.autoconfigure.component.l2cache.EvictEvent;
@@ -22,6 +23,7 @@ import org.springframework.util.StringUtils;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -38,9 +40,8 @@ public class RedissonCaffeineCache extends AbstractValueAdaptingCache implements
     private final RedisStringRepository redisStringRepository;
     private final String getKeyPrefix;
     private final Object serverId;
-    private final Duration defaultExpiration;
-    private final Duration defaultNullValuesExpiration;
-    private final Map<String, Duration> expires;
+    private final Duration expire;
+    private final Duration nullValueExpire;
     private final String topic;
     private final EventSubPubProvider<EvictEvent> eventSubPubProvider;
 
@@ -61,11 +62,36 @@ public class RedissonCaffeineCache extends AbstractValueAdaptingCache implements
         } else {
             this.getKeyPrefix = name + ":";
         }
-        this.defaultExpiration = l2CacheProperties.getL2Cache().getDefaultExpiration();
-        this.defaultNullValuesExpiration = l2CacheProperties.getL2Cache().getDefaultNullValuesExpiration();
-        this.expires = l2CacheProperties.getL2Cache().getExpires();
+
+        Duration tempExpire = l2CacheProperties.getL2Cache().getNullValueExpires().get(name);
+        if (tempExpire == null) {
+            this.nullValueExpire = l2CacheProperties.getL2Cache().getDefaultNullValuesExpiration();
+        } else {
+            this.nullValueExpire = tempExpire;
+        }
+
+        tempExpire = l2CacheProperties.getL2Cache().getExpires().get(name);
+        if (tempExpire == null) {
+            this.expire = l2CacheProperties.getL2Cache().getDefaultExpiration();
+        } else {
+            this.expire = tempExpire;
+        }
+
         this.topic = l2CacheProperties.getL2Cache().getTopic();
         this.serverId = l2CacheProperties.getServerId();
+    }
+
+    public RedissonCaffeineCache(Builder builder) {
+        super(builder.cacheNullValue);
+        this.name = builder.name;
+        this.caffeineCache = builder.cacheBuilder.build();
+        this.redisStringRepository = builder.redisStringRepository;
+        this.serverId = builder.serverId;
+        this.expire = builder.l2CacheBuilder.expire;
+        this.nullValueExpire = builder.l2CacheBuilder.nullValueExpiration;
+        this.topic = builder.l2CacheBuilder.topic;
+        this.eventSubPubProvider = builder.eventSubPubProvider;
+        this.getKeyPrefix = builder.l2CacheBuilder.getKeyPrefix;
     }
 
     @Override
@@ -305,12 +331,10 @@ public class RedissonCaffeineCache extends AbstractValueAdaptingCache implements
     }
 
     protected Duration getExpire(Object value) {
-        Duration cacheNameExpire = expires.get(this.name);
-        if (cacheNameExpire == null) {
-            cacheNameExpire = defaultExpiration;
-        }
-        if ((value == null || value == NullValue.INSTANCE) && this.defaultNullValuesExpiration != null) {
-            cacheNameExpire = this.defaultNullValuesExpiration;
+        Duration cacheNameExpire = expire;
+
+        if (value == null || value == NullValue.INSTANCE) {
+            cacheNameExpire = nullValueExpire;
         }
         return cacheNameExpire;
     }
@@ -374,5 +398,102 @@ public class RedissonCaffeineCache extends AbstractValueAdaptingCache implements
     @Override
     public String getName() {
         return name;
+    }
+
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+
+    public static class Builder {
+        private final Caffeine<Object, Object> cacheBuilder = Caffeine.newBuilder();
+        private final L2CacheBuilder l2CacheBuilder = new L2CacheBuilder();
+        private String name;
+
+        private Boolean cacheNullValue;
+        private RedisStringRepository redisStringRepository;
+
+        private Object serverId;
+
+        private EventSubPubProvider<EvictEvent> eventSubPubProvider;
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder cacheNullValue(boolean cacheNullValue) {
+            if (this.cacheNullValue == null) {
+                this.cacheNullValue = cacheNullValue;
+            }
+            return this;
+        }
+
+        public Builder redisStringRepository(RedisStringRepository redisStringRepository) {
+            this.redisStringRepository = redisStringRepository;
+            return this;
+        }
+
+        public Builder serverId(Object serverId) {
+            if (this.serverId == null) {
+                this.serverId = serverId;
+            }
+            return this;
+        }
+
+        public Builder eventSubPubProvider(EventSubPubProvider<EvictEvent> eventSubPubProvider) {
+            this.eventSubPubProvider = eventSubPubProvider;
+            return this;
+        }
+
+
+        public Builder l1(Consumer<Caffeine<Object, Object>> consumer) {
+            consumer.accept(this.cacheBuilder);
+            return this;
+        }
+
+
+        public Builder l2(Consumer<L2CacheBuilder> consumer) {
+            consumer.accept(this.l2CacheBuilder);
+            return this;
+        }
+
+
+        public RedissonCaffeineCache build() {
+            return new RedissonCaffeineCache(this);
+        }
+
+    }
+
+    public static class L2CacheBuilder {
+        String getKeyPrefix;
+        Duration nullValueExpiration;
+        Duration expire;
+        String topic;
+
+
+        public L2CacheBuilder getKeyPrefix(String getKeyPrefix) {
+            this.getKeyPrefix = getKeyPrefix;
+            return this;
+        }
+
+        public L2CacheBuilder nullValueExpiration(Duration nullValueExpiration) {
+
+            this.nullValueExpiration = nullValueExpiration;
+            return this;
+        }
+
+        public L2CacheBuilder expire(Duration expire) {
+
+            this.expire = expire;
+
+            return this;
+        }
+
+        public L2CacheBuilder topic(String topic) {
+            this.topic = topic;
+            return this;
+        }
     }
 }

@@ -2,7 +2,7 @@ package com.zjj.l2.cache.component.supper;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.zjj.cache.component.repository.RedisStringRepository;
+import com.zjj.autoconfigure.component.redis.RedisStringRepository;
 
 import java.util.*;
 import java.util.concurrent.ExecutionException;

@@ -13,6 +13,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.ResolvableType;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
@@ -40,6 +41,7 @@ public class JwtAutoConfiguration {
 		return new DefaultJwtRenewFilter(jwtCacheManage);
 	}
 
+	@Order(9)
 	@Bean
 	public SecurityBuilderCustomizer jwtCustomizer(JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter,
 			JwtRenewFilter jwtRenewFilter) {

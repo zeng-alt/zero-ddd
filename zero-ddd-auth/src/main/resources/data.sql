@@ -1,0 +1,2 @@
+INSERT INTO tenant (id, tenant_key, pool_name, username, password, url, driver_class_name, enabled) VALUES (1, 'tenant_1', 'tenant_1', 'sa', '', 'jdbc:h2:mem:tenant-1', 'org.h2.Driver', 1);
+INSERT INTO tenant (id, tenant_key, pool_name, username, password, url, driver_class_name, enabled) VALUES (2, 'tenant_2', 'tenant_1', 'sa', '', 'jdbc:h2:mem:tenant-2', 'org.h2.Driver', 1);

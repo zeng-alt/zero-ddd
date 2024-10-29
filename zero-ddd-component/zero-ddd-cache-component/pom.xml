@@ -23,13 +23,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-cache</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>com.zjj</groupId>
             <artifactId>zero-ddd-autoconfigure-component</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>

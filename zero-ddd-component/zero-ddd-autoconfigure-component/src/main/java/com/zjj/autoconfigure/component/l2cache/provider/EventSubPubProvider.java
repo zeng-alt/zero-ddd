@@ -1,4 +1,4 @@
-package com.zjj.autoconfigure.component.l2cache;
+package com.zjj.autoconfigure.component.l2cache.provider;
 
 import java.util.function.Consumer;
 

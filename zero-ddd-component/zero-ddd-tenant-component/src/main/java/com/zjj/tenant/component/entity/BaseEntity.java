@@ -1,5 +1,6 @@
-package com.zjj.core.component.entity;
+package com.zjj.tenant.component.entity;
 
+import jakarta.persistence.MappedSuperclass;
 import lombok.Data;
 
 import java.io.Serial;
@@ -12,7 +13,8 @@ import java.util.Date;
  * @crateTime 2024年06月27日 20:48
  */
 @Data
-public class BaseEntity implements Serializable {
+@MappedSuperclass
+public abstract class BaseEntity implements Serializable {
 
 	@Serial
 	private static final long serialVersionUID = 1L;

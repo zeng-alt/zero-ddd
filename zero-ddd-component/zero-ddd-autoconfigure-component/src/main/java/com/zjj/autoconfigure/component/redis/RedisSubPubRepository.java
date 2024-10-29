@@ -1,4 +1,4 @@
-package com.zjj.cache.component.repository;
+package com.zjj.autoconfigure.component.redis;
 
 import org.redisson.api.listener.MessageListener;
 

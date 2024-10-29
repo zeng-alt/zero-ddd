@@ -1,7 +1,7 @@
 package com.zjj.cache.component.provider;
 
-import com.zjj.autoconfigure.component.l2cache.EventSubPubProvider;
-import com.zjj.cache.component.repository.RedisSubPubRepository;
+import com.zjj.autoconfigure.component.l2cache.provider.EventSubPubProvider;
+import com.zjj.autoconfigure.component.redis.RedisSubPubRepository;
 import lombok.RequiredArgsConstructor;
 
 import java.util.function.Consumer;

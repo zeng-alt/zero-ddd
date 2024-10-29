@@ -35,6 +35,11 @@ public class CacheProperties {
     private Map<String, Duration> expires = new ConcurrentHashMap<>();
 
     /**
+     * 每个cacheName的设置空值过期时间，优先级比defaultNullValuesExpiration高
+     */
+    private Map<String, Duration> nullValueExpires = new ConcurrentHashMap<>();
+
+    /**
      * 缓存更新时通知其他节点的topic名称
      */
     private String topic = "cache:redis:caffeine:topic";

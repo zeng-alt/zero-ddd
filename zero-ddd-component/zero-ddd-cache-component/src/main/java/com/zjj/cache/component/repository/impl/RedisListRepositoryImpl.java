@@ -1,10 +1,9 @@
 package com.zjj.cache.component.repository.impl;
 
-import com.zjj.cache.component.repository.RedisListRepository;
+import com.zjj.autoconfigure.component.redis.RedisListRepository;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 
 /**
  * @author zengJiaJun
