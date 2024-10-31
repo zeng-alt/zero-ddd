@@ -44,16 +44,11 @@ public class SortDefinitionConfigurer implements TypeDefinitionConfigurer, Order
                 .inputValueDefinition(InputValueDefinition.newInputValueDefinition().name("nullHandling").type(TypeName.newTypeName("NullHandling").build()).defaultValue(EnumValue.of("NATIVE")).build())
                 .build();
 
-        final InputObjectTypeDefinition sortDefinition = InputObjectTypeDefinition.newInputObjectDefinition()
-                .name("Sort")
-                .inputValueDefinition(InputValueDefinition.newInputValueDefinition().name("orders").type(ListType.newListType(TypeName.newTypeName("Order").build()).build()).build())
-                .build();
 
 
         definitions.add(nullHandlingDefinition);
         definitions.add(directionDefinition);
         definitions.add(orderDefinition);
-        definitions.add(sortDefinition);
 
         registry.addAll(definitions);
     }

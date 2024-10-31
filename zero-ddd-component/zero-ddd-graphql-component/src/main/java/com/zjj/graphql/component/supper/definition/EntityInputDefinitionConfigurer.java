@@ -52,13 +52,10 @@ public class EntityInputDefinitionConfigurer implements TypeDefinitionConfigurer
                 InputObjectTypeDefinition.Builder builder = InputObjectTypeDefinition.newInputObjectDefinition();
                 builder.name(entity.getInputTypeName());
                 for (EntityGraphqlAttribute attribute : entity.getAttributes()) {
-                    builder.inputValueDefinition(
-                            InputValueDefinition
-                                    .newInputValueDefinition()
-                                    .name(attribute.getName())
-                                    .type(attribute.adaptType(attribute.getInputType()))
-                                    .build()
-                    );
+                    InputValueDefinition.Builder valueDefinition = InputValueDefinition.newInputValueDefinition();
+                    valueDefinition.name(attribute.getName());
+                    valueDefinition.type(attribute.getInputType());
+                    builder.inputValueDefinition(valueDefinition.build());
                 }
                 definitions.add(builder.build());
             } else {

@@ -5,6 +5,7 @@ import com.zjj.graphql.component.query.fuzzy.QuerydslFuzzyDataFetcher;
 import com.zjj.graphql.component.supper.BaseRepository;
 import com.zjj.graphql.component.utils.RepositoryUtils;
 import graphql.schema.idl.RuntimeWiring;
+import org.springframework.graphql.data.query.QuerydslDataFetcher;
 import org.springframework.graphql.execution.RuntimeWiringConfigurer;
 import org.springframework.util.StringUtils;
 

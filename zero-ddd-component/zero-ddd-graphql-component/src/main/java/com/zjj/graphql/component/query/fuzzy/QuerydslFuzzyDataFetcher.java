@@ -2,9 +2,12 @@ package com.zjj.graphql.component.query.fuzzy;
 
 import com.querydsl.core.types.EntityPath;
 import com.querydsl.core.types.Predicate;
+import com.zjj.graphql.component.query.sort.DefaultSortStrategy;
+import com.zjj.graphql.component.query.sort.MultipleSortStrategy;
 import com.zjj.graphql.component.registration.AutoRegistrationRuntimeWiringConfigurer;
 import com.zjj.graphql.component.registration.PropertySelection;
 import com.zjj.graphql.component.utils.RepositoryUtils;
+import graphql.com.google.common.collect.Maps;
 import graphql.schema.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -42,7 +45,7 @@ import java.util.function.Function;
  */
 public abstract class QuerydslFuzzyDataFetcher<T> {
     private static final Log logger = LogFactory.getLog(QueryByExampleDataFetcher.class);
-
+    private static final SortStrategy SORT_STRATEGY = new MultipleSortStrategy();
     private static final QuerydslPredicateBuilder BUILDER = new QuerydslPredicateBuilder(new QuerydslFuzzyBinding(),
             DefaultConversionService.getSharedInstance(), SimpleEntityPathResolver.INSTANCE);
 
@@ -109,8 +112,23 @@ public abstract class QuerydslFuzzyDataFetcher<T> {
                 }
                 String name = argument.getName();
                 Object value = arguments.get(name);
-                if (value instanceof Map<?, ?>) {
-                    return (Map<String, Object>) value;
+                if (value instanceof Map<?, ?> map) {
+                    HashMap<String, Object> result = Maps.newHashMap();
+                    Set<? extends Map.Entry<?, ?>> entries = map.entrySet();
+                    for (Map.Entry<?, ?> entry : entries) {
+                        String key = (String) entry.getKey();
+                        Object value1 = entry.getValue();
+                        if (value1 instanceof Map<?,?> valueMap) {
+                            for (Map.Entry<?, ?> entry1 : valueMap.entrySet()) {
+                                String key1 = (String) entry1.getKey();
+                                result.put(key + "." + key1, entry1.getValue());
+                            }
+                        } else {
+                            result.put(key, entry.getValue());
+                        }
+                    }
+
+                    return result;
                 }
             }
         }
@@ -414,11 +432,10 @@ public abstract class QuerydslFuzzyDataFetcher<T> {
             return this.executor.findBy(buildPredicate(env), (query) -> {
                 FluentQuery.FetchableFluentQuery<R> queryToUse = (FluentQuery.FetchableFluentQuery<R>) query;
 
-                Sort sort = RepositoryUtils.getSort(env);
-                if (sort != null && sort.isSorted()) {
+                Sort sort = SORT_STRATEGY.extract(env);
+                if (sort.isSorted()) {
                     queryToUse = queryToUse.sortBy(sort);
                 }
-
 
                 if (requiresProjection(this.resultType)) {
                     queryToUse = queryToUse.as(this.resultType);

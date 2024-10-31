@@ -22,6 +22,7 @@ import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.function.Function;
@@ -133,42 +134,5 @@ public class RepositoryUtils {
         ScrollPosition pos = (cursor != null) ? cursorStrategy.fromCursor(cursor) : null;
         return ScrollSubrange.create(pos, count, forward);
     }
-
-    public static Sort getSort(DataFetchingEnvironment env) {
-
-        Object sort = env.getArgument("sort");
-
-        if (sort instanceof LinkedHashMap<?,?> sortMap && sort != null) {
-            List orders = (List) sortMap.get("orders");
-            List<Sort.Order> list = new ArrayList<>();
-            for (Object order : orders) {
-                LinkedHashMap orderMap = (LinkedHashMap) order;
-                Sort.Order o = null;
-                if (orderMap.containsKey("property")) {
-                    o = Sort.Order.by((String) orderMap.get("property"));
-                }
-                if (o == null) {
-                    throw new IllegalArgumentException();
-                }
-                if (orderMap.containsKey("direction")) {
-                    o = o.with(Sort.Direction.valueOf((String) orderMap.get("direction")));
-                }
-                if (orderMap.containsKey("ignoreCase")) {
-                    if (Boolean.TRUE.equals(orderMap.get("ignoreCase"))) {
-                        o = o.ignoreCase();
-                    }
-                }
-                if (orderMap.containsKey("nullHandling")) {
-                    o = o.with(Sort.NullHandling.valueOf((String) orderMap.get("nullHandling")));
-                }
-                list.add(o);
-            }
-
-            return Sort.by(list);
-        }
-
-        return null;
-    }
-
 
 }

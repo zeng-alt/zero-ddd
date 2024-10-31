@@ -31,6 +31,7 @@
         <dependency>
             <groupId>com.zjj</groupId>
             <artifactId>zero-ddd-bean-component</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -39,8 +40,15 @@
         </dependency>
 
         <dependency>
+            <groupId>com.zjj</groupId>
+            <artifactId>zero-ddd-autoconfigure-component</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

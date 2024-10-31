@@ -19,6 +19,7 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.Predicate;
 import org.springframework.beans.PropertyValues;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.Property;
 import org.springframework.core.convert.TypeDescriptor;
@@ -44,6 +45,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Johannes Englmeier
  * @since 1.11
  */
+@Order(1)
 public class QuerydslPredicateBuilder {
 
 	private final ConversionService conversionService;

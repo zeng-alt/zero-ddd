@@ -3,6 +3,7 @@ package com.zjj.graphql.component.query.condition;
 import com.querydsl.core.types.EntityPath;
 import com.querydsl.core.types.Predicate;
 import com.zjj.graphql.component.query.fuzzy.ReactiveFuzzyBuilder;
+import com.zjj.graphql.component.query.sort.MultipleSortStrategy;
 import com.zjj.graphql.component.registration.AutoRegistrationRuntimeWiringConfigurer;
 import com.zjj.graphql.component.registration.PropertySelection;
 import com.zjj.graphql.component.utils.RepositoryUtils;
@@ -26,6 +27,7 @@ import org.springframework.graphql.data.pagination.CursorStrategy;
 import org.springframework.graphql.data.query.QueryByExampleDataFetcher;
 import org.springframework.graphql.data.query.QuerydslDataFetcher;
 import org.springframework.graphql.data.query.ScrollSubrange;
+import org.springframework.graphql.data.query.SortStrategy;
 import org.springframework.graphql.execution.RuntimeWiringConfigurer;
 import org.springframework.graphql.execution.SelfDescribingDataFetcher;
 import org.springframework.lang.Nullable;
@@ -45,7 +47,7 @@ import java.util.function.Function;
  */
 public abstract class QuerydslConditionDataFetcher<T> {
     private static final Log logger = LogFactory.getLog(QueryByExampleDataFetcher.class);
-
+    private static final SortStrategy SORT_STRATEGY = new MultipleSortStrategy();
     private static final QuerydslPredicateBuilder BUILDER = new QuerydslPredicateBuilder(new QuerydslConditionBinding(),
             DefaultConversionService.getSharedInstance(), SimpleEntityPathResolver.INSTANCE);
 
@@ -416,7 +418,7 @@ public abstract class QuerydslConditionDataFetcher<T> {
             return this.executor.findBy(buildPredicate(env), (query) -> {
                 FluentQuery.FetchableFluentQuery<R> queryToUse = (FluentQuery.FetchableFluentQuery<R>) query;
 
-                Sort sort = RepositoryUtils.getSort(env);
+                Sort sort = SORT_STRATEGY.extract(env);
                 if (sort != null && sort.isSorted()) {
                     queryToUse = queryToUse.sortBy(sort);
                 }

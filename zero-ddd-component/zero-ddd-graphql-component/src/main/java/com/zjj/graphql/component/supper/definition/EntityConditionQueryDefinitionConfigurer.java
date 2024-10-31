@@ -52,6 +52,13 @@ public class EntityConditionQueryDefinitionConfigurer implements TypeDefinitionC
                                             .name(entity.getConditionName())
                                             .type(entity.getConditionType())
                                             .build())
+                            .inputValueDefinition(
+                                    InputValueDefinition
+                                            .newInputValueDefinition()
+                                            .name("sort")
+                                            .type(ListType.newListType(TypeName.newTypeName("Order").build()).build())
+                                            .build()
+                            )
                             .type(entity.wrapCollectionType(entity.getEntityType(), "条件查询" + entity.getName() + "列表"))
                             .build()
             ).fieldDefinition(
@@ -81,7 +88,7 @@ public class EntityConditionQueryDefinitionConfigurer implements TypeDefinitionC
                                     InputValueDefinition
                                             .newInputValueDefinition()
                                             .name("sort")
-                                            .type(TypeName.newTypeName("Sort").build())
+                                            .type(ListType.newListType(TypeName.newTypeName("Order").build()).build())
                                             .build()
                             )
                             .inputValueDefinition(

@@ -3,7 +3,6 @@ package com.zjj.security.tenant.component.supper;
 import com.zjj.autoconfigure.component.l2cache.L2CacheManage;
 import com.zjj.autoconfigure.component.l2cache.provider.L2CacheManageProvider;
 import com.zjj.autoconfigure.component.security.jwt.JwtProperties;
-import com.zjj.bean.componenet.BeanHelper;
 import com.zjj.l2.cache.component.supper.RedissonCaffeineCache;
 import com.zjj.l2.cache.component.supper.RedissonCaffeineCacheManage;
 import com.zjj.tenant.component.spi.DynamicSourceManage;

@@ -44,6 +44,13 @@ public class EntityFuzzyQueryDefinitionConfigurer implements TypeDefinitionConfi
                                             .name(entity.getInputName())
                                             .type(entity.getInputType())
                                             .build())
+                            .inputValueDefinition(
+                                    InputValueDefinition
+                                            .newInputValueDefinition()
+                                            .name("sort")
+                                            .type(ListType.newListType(TypeName.newTypeName("Order").build()).build())
+                                            .build()
+                            )
                             .type(entity.wrapCollectionType(entity.getEntityType(), "查询" + entity.getName() + "列表"))
                             .build()
             ).fieldDefinition(
@@ -73,7 +80,7 @@ public class EntityFuzzyQueryDefinitionConfigurer implements TypeDefinitionConfi
                                     InputValueDefinition
                                             .newInputValueDefinition()
                                             .name("sort")
-                                            .type(TypeName.newTypeName("Sort").build())
+                                            .type(ListType.newListType(TypeName.newTypeName("Order").build()).build())
                                             .build()
                             )
                             .inputValueDefinition(
