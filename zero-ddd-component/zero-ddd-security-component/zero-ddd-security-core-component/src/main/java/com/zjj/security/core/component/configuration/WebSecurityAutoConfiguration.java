@@ -84,16 +84,16 @@ public class WebSecurityAutoConfiguration {
 
 							@Override
 							public AuthorizationDecision check(Supplier<Authentication> authentication, RequestAuthorizationContext object) {
-								HttpServletRequest request = object.getRequest();
-                                try {
-									ServletRequest request1 = ((SecurityContextHolderAwareRequestWrapper) object.getRequest()).getRequest();
-//									((HeaderWriterFilter.HeaderWriterRequest) request1).getRequest();
-									String string = IOUtils.toString(request.getInputStream(), UTF_8);
-//									jsonHelper.
-									System.out.println();
-                                } catch (IOException e) {
-                                    throw new RuntimeException(e);
-                                }
+//								HttpServletRequest request = object.getRequest();
+//                                try {
+//									ServletRequest request1 = ((SecurityContextHolderAwareRequestWrapper) object.getRequest()).getRequest();
+////									((HeaderWriterFilter.HeaderWriterRequest) request1).getRequest();
+//									String string = IOUtils.toString(request.getInputStream(), UTF_8);
+////									jsonHelper.
+//									System.out.println();
+//                                } catch (IOException e) {
+//                                    throw new RuntimeException(e);
+//                                }
 
                                 return new AuthorizationDecision(true);
 							}
@@ -131,7 +131,7 @@ public class WebSecurityAutoConfiguration {
 						.accessDeniedHandler(accessDeniedHandler)
 				)
 				.formLogin(Customizer.withDefaults());
-		http.addFilterAfter(new CachingContentFilter(), HeaderWriterFilter.class);
+//		http.addFilterAfter(new CachingContentFilter(), HeaderWriterFilter.class);
 
 		// .formLogin(
 		// AbstractHttpConfigurer::disable // 禁用，前后端分离项目

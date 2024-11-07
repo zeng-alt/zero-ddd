@@ -91,10 +91,10 @@
 <!--            <artifactId>zero-ddd-i18n-conmponent</artifactId>-->
 <!--        </dependency>-->
 
-        <dependency>
-            <groupId>com.zjj</groupId>
-            <artifactId>zero-ddd-security-core-component</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.zjj</groupId>-->
+<!--            <artifactId>zero-ddd-security-core-component</artifactId>-->
+<!--        </dependency>-->
 
 <!--        <dependency>-->
 <!--            <groupId>com.zjj</groupId>-->

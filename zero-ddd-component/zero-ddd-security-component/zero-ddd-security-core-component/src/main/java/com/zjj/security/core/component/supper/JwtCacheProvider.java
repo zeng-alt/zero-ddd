@@ -4,10 +4,8 @@ import com.zjj.autoconfigure.component.l2cache.L2CacheManage;
 import com.zjj.autoconfigure.component.l2cache.provider.L2CacheManageProvider;
 import com.zjj.autoconfigure.component.security.jwt.JwtProperties;
 
-import com.zjj.l2.cache.component.provider.L2BuilderProvider;
 import com.zjj.l2.cache.component.supper.RedissonCaffeineCache;
 import com.zjj.l2.cache.component.supper.RedissonCaffeineCacheManage;
-import com.zjj.memory.component.provider.Tuple;
 import lombok.RequiredArgsConstructor;
 
 import java.time.Duration;
