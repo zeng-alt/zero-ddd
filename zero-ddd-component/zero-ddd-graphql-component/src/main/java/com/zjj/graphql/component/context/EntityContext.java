@@ -6,6 +6,7 @@ import jakarta.persistence.metamodel.*;
 import lombok.Getter;
 import org.hibernate.annotations.Comment;
 import org.hibernate.metamodel.AttributeClassification;
+import org.hibernate.metamodel.model.domain.internal.AbstractPluralAttribute;
 import org.hibernate.metamodel.model.domain.internal.SetAttributeImpl;
 import org.hibernate.metamodel.model.domain.internal.SingularAttributeImpl;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -93,7 +94,7 @@ public class EntityContext {
 
             if (attribute.isAssociation()) {
                 if (attribute.isCollection()) {
-                    attributeBuilder.type(((SetAttributeImpl) attribute).getBindableJavaType().getSimpleName());
+                    attributeBuilder.type(((AbstractPluralAttribute) attribute).getBindableJavaType().getSimpleName());
                 } else {
                     attributeBuilder.type(attribute.getJavaType().getSimpleName());
                 }

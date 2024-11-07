@@ -77,14 +77,13 @@ public class WebSecurityAutoConfiguration {
 				.cors(AbstractHttpConfigurer::disable)
 				.authorizeHttpRequests(author -> author
 						.requestMatchers(HttpMethod.POST, "/login/**").permitAll()
-						.requestMatchers("/h2-console/**").permitAll()
+//						.requestMatchers("/h2-console/**").permitAll()
 						.requestMatchers("/graphiql/**").permitAll()
 //						.requestMatchers("/graphql/**").permitAll()
 						.anyRequest().access(new AuthorizationManager<RequestAuthorizationContext>() {
 
 							@Override
 							public AuthorizationDecision check(Supplier<Authentication> authentication, RequestAuthorizationContext object) {
-								System.out.println();
 								HttpServletRequest request = object.getRequest();
                                 try {
 									ServletRequest request1 = ((SecurityContextHolderAwareRequestWrapper) object.getRequest()).getRequest();

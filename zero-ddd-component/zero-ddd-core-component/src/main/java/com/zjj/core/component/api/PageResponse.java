@@ -1,5 +1,6 @@
 package com.zjj.core.component.api;
 
+import com.zjj.autoconfigure.component.core.Response;
 import lombok.Getter;
 import lombok.Setter;
 

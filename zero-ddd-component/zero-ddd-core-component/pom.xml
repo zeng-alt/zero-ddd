@@ -55,6 +55,32 @@
             <groupId>io.reactivex.rxjava3</groupId>
             <artifactId>rxjava</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.zjj</groupId>
+            <artifactId>zero-ddd-autoconfigure-component</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.zjj</groupId>
+            <artifactId>zero-ddd-i18n-conmponent</artifactId>
+        </dependency>
     </dependencies>
 
 <!--    <build>-->

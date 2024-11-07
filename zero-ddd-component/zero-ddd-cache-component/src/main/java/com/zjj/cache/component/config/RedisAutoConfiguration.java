@@ -10,6 +10,7 @@ import org.redisson.api.RedissonClient;
 import org.redisson.client.codec.StringCodec;
 import org.redisson.codec.CompositeCodec;
 import org.redisson.codec.JsonJacksonCodec;
+import org.redisson.codec.TypedJsonJacksonCodec;
 import org.redisson.spring.cache.RedissonSpringCacheManager;
 import org.redisson.spring.cache.RedissonSpringCacheNativeManager;
 import org.redisson.spring.starter.RedissonAutoConfigurationCustomizer;
@@ -59,6 +60,7 @@ public class RedisAutoConfiguration {
 //			// 指定序列化输入的类型，类必须是非final修饰的。序列化时将对象全类名一起保存下来
 		objectMapper.activateDefaultTyping(LaissezFaireSubTypeValidator.instance, ObjectMapper.DefaultTyping.NON_FINAL);
 
+//		return new TypedJsonJacksonCodec(Object.class, objectMapper);
 		return new JsonJacksonCodec(objectMapper);
 	}
 

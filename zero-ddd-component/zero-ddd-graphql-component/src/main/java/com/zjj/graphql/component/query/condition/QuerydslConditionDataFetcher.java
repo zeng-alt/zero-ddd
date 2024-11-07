@@ -7,6 +7,7 @@ import com.zjj.graphql.component.query.sort.MultipleSortStrategy;
 import com.zjj.graphql.component.registration.AutoRegistrationRuntimeWiringConfigurer;
 import com.zjj.graphql.component.registration.PropertySelection;
 import com.zjj.graphql.component.utils.RepositoryUtils;
+import graphql.com.google.common.collect.Maps;
 import graphql.schema.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -114,8 +115,23 @@ public abstract class QuerydslConditionDataFetcher<T> {
                 }
                 String name = argument.getName();
                 Object value = arguments.get(name);
-                if (value instanceof Map<?, ?>) {
-                    return (Map<String, Object>) value;
+                if (value instanceof Map<?, ?> map) {
+                    HashMap<String, Object> result = Maps.newHashMap();
+                    Set<? extends Map.Entry<?, ?>> entries = map.entrySet();
+                    for (Map.Entry<?, ?> entry : entries) {
+                        String key = (String) entry.getKey();
+                        Object value1 = entry.getValue();
+                        if (value1 instanceof Map<?,?> valueMap) {
+                            for (Map.Entry<?, ?> entry1 : valueMap.entrySet()) {
+                                String key1 = (String) entry1.getKey();
+                                result.put(key + "." + key1, entry1.getValue());
+                            }
+                        } else {
+                            result.put(key, entry.getValue());
+                        }
+                    }
+
+                    return result;
                 }
             }
         }

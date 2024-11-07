@@ -11,7 +11,7 @@ import lombok.Setter;
 /**
  * @author zengJiaJun
  * @version 1.0
- * @crateTime 2024年10月30日 15:48
+ * @crateTime 2024年10月30日 21:48
  */
 @Table(name = "tenant_data_source")
 @Getter
@@ -22,4 +22,16 @@ public class TenantDataSource extends BaseEntity<Long> {
     @Id
     @GeneratedValue
     private Long id;
+
+    private String poolName;
+    private String driverClassName;
+    private String url;
+    private String username;
+    private String password;
+    private String jndiName;
+    private Boolean seata = true;
+    private Boolean p6spy = true;
+    private Boolean lazy;
+    private String publicKey;
+    private Boolean enabled;
 }

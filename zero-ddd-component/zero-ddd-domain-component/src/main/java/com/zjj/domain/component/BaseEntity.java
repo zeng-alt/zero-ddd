@@ -92,7 +92,7 @@ public abstract class BaseEntity<PK extends Serializable> implements Auditable<S
         } else if (!this.getClass().equals(ProxyUtils.getUserClass(obj))) {
             return false;
         } else {
-            AbstractPersistable<?> that = (AbstractPersistable)obj;
+            BaseEntity<?> that = (BaseEntity)obj;
             return this.getId() == null ? false : this.getId().equals(that.getId());
         }
     }

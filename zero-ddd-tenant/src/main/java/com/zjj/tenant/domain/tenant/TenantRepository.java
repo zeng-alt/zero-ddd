@@ -18,5 +18,7 @@ public interface TenantRepository {
         return findByTenantKey(tenantKey.get());
     }
 
+    Option<ITenant> findById(Long id);
+
     ITenant save(ITenant tenant);
 }

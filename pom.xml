@@ -15,18 +15,21 @@
         <module>zero-ddd-auth</module>
         <module>zero-ddd-gateway</module>
         <module>zero-ddd-tenant</module>
+        <module>zero-ddd-exchange</module>
+        <module>zero-ddd-ai</module>
     </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring-boot.version>3.3.0</spring-boot.version>
+        <spring-boot.version>3.3.5</spring-boot.version>
         <java.version>17</java.version>
         <spring-cloud.version>2023.0.2</spring-cloud.version>
         <lombok.version>1.18.32</lombok.version>
-        <mapstruct.version>1.5.2.Final</mapstruct.version>
+        <mapstruct.version>1.5.5.Final</mapstruct.version>
+        <mapstruct-plus.version>1.4.5</mapstruct-plus.version>
         <vavr.version>0.10.3</vavr.version>
         <swagger.core.version>2.2.21</swagger.core.version>
-        <springdoc.version>2.5.0</springdoc.version>
+        <springdoc.version>2.6.0</springdoc.version>
         <caffeine.version>3.1.8</caffeine.version>
         <redisson.version>3.37.0</redisson.version>
         <h2.version>2.1.214</h2.version>
@@ -66,6 +69,13 @@
                 <artifactId>jjwt-impl</artifactId>
                 <version>${jjwt.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+                <version>${springdoc.version}</version>
+            </dependency>
+
 
             <!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-jackson -->
             <dependency>
@@ -143,6 +153,22 @@
                 <artifactId>mapstruct</artifactId>
                 <version>${mapstruct.version}</version>
             </dependency>
+
+            <!-- https://mvnrepository.com/artifact/io.github.linpeilie/mapstruct-plus-spring-boot-starter -->
+            <dependency>
+                <groupId>io.github.linpeilie</groupId>
+                <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
+                <version>${mapstruct-plus.version}</version>
+            </dependency>
+
+
+            <!-- https://mvnrepository.com/artifact/io.github.linpeilie/mapstruct-plus -->
+            <dependency>
+                <groupId>io.github.linpeilie</groupId>
+                <artifactId>mapstruct-plus</artifactId>
+                <version>${mapstruct-plus.version}</version>
+            </dependency>
+
 
             <dependency>
                 <groupId>org.mapstruct</groupId>
@@ -257,6 +283,12 @@
             <dependency>
                 <groupId>com.zjj</groupId>
                 <artifactId>zero-ddd-json-component</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.zjj</groupId>
+                <artifactId>zero-ddd-i18n-conmponent</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
 

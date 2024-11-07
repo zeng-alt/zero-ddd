@@ -1,1 +1,3 @@
-com.zjj.core.component.handler.GlobalExceptionHandler
+com.zjj.core.component.advice.GlobalExceptionAdvice
+com.zjj.core.component.advice.GlobalResultAdvice
+com.zjj.core.component.provier.CoreMessageBaseNameProvider

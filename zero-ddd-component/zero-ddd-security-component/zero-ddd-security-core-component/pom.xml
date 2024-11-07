@@ -59,6 +59,12 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>com.zjj</groupId>
+            <artifactId>zero-ddd-i18n-conmponent</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
     </dependencies>
 
 </project>

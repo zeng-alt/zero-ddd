@@ -27,7 +27,6 @@ import org.springframework.util.Assert;
 
 import java.util.Collection;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -83,17 +82,17 @@ class QuerydslFuzzyBinding implements MultiValueBinding<Path<? extends Object>, 
 				expression.in(value.stream().map(Object::toString).collect(Collectors.toSet()));
 			}
 			Object object = value.iterator().next();
-			return Optional.of(object == null //
-					? expression.isNull() //
+			return Optional.of(object == null
+					? expression.isNull()
 					: expression.likeIgnoreCase(object.toString()));
 		}
 
 		if (path instanceof NumberExpression<?> expression) {
 			if (value.size() == 1) {
 				Object object = value.iterator().next();
-				return Optional.of(object == null //
-						? expression.isNull() //
-						: expression.like(object.toString()));
+				return Optional.of(object == null
+						? expression.isNull()
+						: expression.like("%" + object + "%"));
 			}
 		}
 

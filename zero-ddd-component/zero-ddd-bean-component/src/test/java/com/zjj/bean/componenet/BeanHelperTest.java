@@ -57,15 +57,14 @@ public class BeanHelperTest {
 
         StopWatch stopWatch2 = new StopWatch();
         stopWatch2.start();
-        org.apache.commons.beanutils.BeanUtils.copyProperties(users, user1s1);
         stopWatch2.stop();
         System.out.println(stopWatch2.getTotalTimeMillis());
 
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-        BeanHelper.copyToList(users, User1.class);
+        List<User1> user1s = BeanHelper.copyToList(users, User1.class);
         stopWatch.stop();
-        System.out.println(stopWatch.getTotalTimeMillis());
+        System.out.println("beanHelper copyToList: " + stopWatch.getTotalTimeMillis());
 
         StopWatch stopWatch1 = new StopWatch();
         stopWatch1.start();
@@ -82,7 +81,7 @@ public class BeanHelperTest {
         }
 
         stopWatch4.stop();
-        System.out.println(stopWatch4.getTotalTimeMillis());
+        System.out.println("BeanUtils copyToList: " + stopWatch4.getTotalTimeMillis());
     }
 
     @Test

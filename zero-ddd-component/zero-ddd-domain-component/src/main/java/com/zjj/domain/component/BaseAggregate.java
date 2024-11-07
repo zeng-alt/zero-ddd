@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.springframework.data.domain.AfterDomainEventPublication;
 import org.springframework.data.domain.DomainEvents;
 import org.springframework.lang.NonNull;
+import org.springframework.util.Assert;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -26,8 +27,10 @@ public abstract class BaseAggregate<PK extends Serializable> extends BaseEntity<
 
     private final @Transient List<DomainEvent> domainEvents = new ArrayList<>();
 
-    protected void publishEvent(@NonNull DomainEvent event) {
+    protected DomainEvent publishEvent(@NonNull DomainEvent event) {
+        Assert.notNull(event, "Domain event must not be null");
         domainEvents.add(Objects.requireNonNull(event));
+        return event;
     }
 
     @AfterDomainEventPublication

@@ -27,8 +27,6 @@ import java.util.function.UnaryOperator;
 @Component
 public class RedisStringRepositoryImpl extends RedisStringRepository {
 
-
-
 	@Autowired
 	public RedisStringRepositoryImpl(RedissonClient template) {
 		super(template);
