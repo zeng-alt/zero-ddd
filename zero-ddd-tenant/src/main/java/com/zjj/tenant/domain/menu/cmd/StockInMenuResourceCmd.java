@@ -7,6 +7,7 @@ package com.zjj.tenant.domain.menu.cmd;
  */
 public record StockInMenuResourceCmd(
         Long parentId,
+        Long id,
         String menuName,
 
         Integer orderNum,

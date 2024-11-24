@@ -5,7 +5,6 @@ import com.zjj.graphql.component.query.fuzzy.QuerydslFuzzyDataFetcher;
 import com.zjj.graphql.component.supper.BaseRepository;
 import com.zjj.graphql.component.utils.RepositoryUtils;
 import graphql.schema.idl.RuntimeWiring;
-import org.springframework.graphql.data.query.QuerydslDataFetcher;
 import org.springframework.graphql.execution.RuntimeWiringConfigurer;
 import org.springframework.util.StringUtils;
 
@@ -16,13 +15,13 @@ import java.util.List;
  * @crateTime 2024年10月19日 21:09
  * @version 1.0
  */
-public record FuzzyDataFetcherConfigurer(List<BaseRepository> repositories) implements RuntimeWiringConfigurer {
+public record FuzzyDataFetcherConfigurer(List<BaseRepository<?, ?>> repositories) implements RuntimeWiringConfigurer {
 
 
     @Override
     public void configure(RuntimeWiring.Builder builder) {
         builder.type("Query", typeWiring -> {
-            for (BaseRepository repository : repositories) {
+            for (BaseRepository<?, ?> repository : repositories) {
                 String type = RepositoryUtils.getGraphQlTypeName(repository);
                 if (!StringUtils.hasText(type)) continue;
                 String capitalize = BeanUtils.capitalize(type);

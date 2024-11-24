@@ -2,6 +2,7 @@ package com.zjj.tenant.infrastructure.db.jpa;
 
 import com.zjj.graphql.component.supper.BaseRepository;
 import com.zjj.tenant.domain.tenant.menu.TenantMenu;
+import io.vavr.control.Option;
 import org.springframework.graphql.data.GraphQlRepository;
 
 /**
@@ -11,4 +12,10 @@ import org.springframework.graphql.data.GraphQlRepository;
  */
 @GraphQlRepository
 public interface TenantMenuDao extends BaseRepository<TenantMenu, Long> {
+
+    Option<TenantMenu> findById(Long id);
+
+    TenantMenu save(TenantMenu tenantMenu);
+
+    void saveAll(Iterable<TenantMenu> tenantMenuList);
 }

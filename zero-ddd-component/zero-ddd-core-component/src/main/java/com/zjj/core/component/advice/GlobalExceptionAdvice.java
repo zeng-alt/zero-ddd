@@ -3,6 +3,7 @@ package com.zjj.core.component.advice;
 import com.zjj.autoconfigure.component.core.BaseException;
 import com.zjj.autoconfigure.component.core.Response;
 import com.zjj.core.component.api.ExceptionResponse;
+import com.zjj.i18n.component.BaseI18nException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +30,15 @@ public class GlobalExceptionAdvice {
     public Response<Void> exception(BaseException e, HttpServletRequest request) {
         String requestURI = request.getRequestURI();
         log.error("{} 请求异常: ", requestURI, e);
-        return ExceptionResponse.of(e.getMessage(), request);
+        return ExceptionResponse.of(e.getCode(), messageSourceAccessor.getMessage(e.getMessage(), e.getMessage()), request);
+    }
+
+
+    @ExceptionHandler(BaseI18nException.class)
+    public Response<Void> exception(BaseI18nException e, HttpServletRequest request) {
+        String requestURI = request.getRequestURI();
+        log.error("{} 请求异常: ", requestURI, e);
+        return ExceptionResponse.of(e.getCode(), e.getMessage(), request);
     }
 
 }

@@ -15,16 +15,4 @@ import java.util.List;
  */
 @NoRepositoryBean
 public interface BaseRepository<T, ID> extends Repository<T, ID>, QuerydslPredicateExecutor<T>, QueryByExampleExecutor<T> {
-    T getById(ID id);
-
-    Option<T> findById(ID id);
-
-    void deleteById(ID id);
-
-    List<T> findAll();
-
-    void deleteAllById(Iterable<ID> ids);
-
-    void saveAll(Iterable<T> objects);
-//    void saveAll(List<T> objects);
 }

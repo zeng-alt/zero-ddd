@@ -1,11 +1,15 @@
 package com.zjj.tenant.domain.menu;
 
+import com.zjj.autoconfigure.component.core.BaseException;
+import com.zjj.core.component.api.Parent;
 import com.zjj.domain.component.BaseAggregate;
 import com.zjj.tenant.domain.menu.event.DisableMenuEvent;
 import com.zjj.tenant.domain.menu.event.EnableMenuEvent;
+import com.zjj.tenant.domain.menu.event.RemoveMenuEvent;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.util.CollectionUtils;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -19,7 +23,7 @@ import java.util.Set;
 @Table(name = "menu_resource")
 @Getter
 @Setter
-public class MenuResource extends BaseAggregate<Long> implements IMenuResource {
+public class MenuResource extends BaseAggregate<Long> implements IMenuResource, Parent<Long> {
 
     @Id
     @GeneratedValue
@@ -85,14 +89,14 @@ public class MenuResource extends BaseAggregate<Long> implements IMenuResource {
     /**
      * 父菜单
      */
-    @ManyToOne
+    @ManyToOne(optional = true, cascade = {CascadeType.REFRESH, CascadeType.REMOVE}, fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
     private MenuResource parentMenu;
 
     /**
      * 子菜单
      */
-    @OneToMany(mappedBy = "parentMenu", orphanRemoval = true)
+    @OneToMany(mappedBy = "parentMenu")
     private Set<MenuResource> chileMenus = new LinkedHashSet<>();
 
     @Override
@@ -116,5 +120,24 @@ public class MenuResource extends BaseAggregate<Long> implements IMenuResource {
             return this;
         }
         throw new IllegalArgumentException("parentMenu 不是 MenuResource 类型");
+    }
+
+    @Override
+    public IMenuResource remove() {
+        if (!CollectionUtils.isEmpty(chileMenus)) {
+            throw new BaseException("MenuResource.remove");
+        }
+        publishEvent(RemoveMenuEvent.apply(this, this.id));
+        return this;
+    }
+
+    @Override
+    public Long parent() {
+        return parentMenu == null ? null : parentMenu.getId();
+    }
+
+    @Override
+    public Long current() {
+        return id;
     }
 }

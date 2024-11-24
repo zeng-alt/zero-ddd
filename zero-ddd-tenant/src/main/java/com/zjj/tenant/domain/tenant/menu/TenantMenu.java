@@ -24,6 +24,8 @@ public class TenantMenu extends BaseEntity<Long> {
     @GeneratedValue
     private Long id;
 
+    private String status = "0";
+
     @ManyToOne
     @JoinColumn(name = "tenant_id")
     private Tenant tenant;
@@ -54,5 +56,15 @@ public class TenantMenu extends BaseEntity<Long> {
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37).appendSuper(super.hashCode()).append(tenant).append(menuResource).toHashCode();
+    }
+
+    public TenantMenu disable() {
+        status = "1";
+        return this;
+    }
+
+    public TenantMenu enable() {
+        status = "0";
+        return this;
     }
 }

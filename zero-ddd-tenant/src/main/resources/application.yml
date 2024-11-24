@@ -1,4 +1,6 @@
 spring:
+  messages:
+    basename: messages
   # swagger-ui custom path
 #  swagger-ui:
 #    path: swagger-ui.html

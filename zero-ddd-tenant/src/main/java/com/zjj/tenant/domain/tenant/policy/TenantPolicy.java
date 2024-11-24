@@ -2,7 +2,11 @@ package com.zjj.tenant.domain.tenant.policy;
 
 import com.zjj.autoconfigure.component.redis.RedisStringRepository;
 import com.zjj.tenant.domain.tenant.event.CreateTenantDataSourceEvent;
+import com.zjj.tenant.domain.tenant.event.DisableTenantMenuEvent;
+import com.zjj.tenant.domain.tenant.event.EnableTenantMenuEvent;
 import com.zjj.tenant.domain.tenant.event.UpdateTenantMenuEvent;
+import com.zjj.tenant.domain.tenant.menu.TenantMenu;
+import com.zjj.tenant.domain.tenant.menu.TenantMenuRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -18,6 +22,7 @@ import org.springframework.stereotype.Component;
 public class TenantPolicy {
 
     private final RedisStringRepository repository;
+    private final TenantMenuRepository tenantMenuRepository;
 
 
     @EventListener(value = UpdateTenantMenuEvent.class)
@@ -29,6 +34,29 @@ public class TenantPolicy {
     @EventListener(value = CreateTenantDataSourceEvent.class)
     public void handler(CreateTenantDataSourceEvent event) {
         System.out.println("event");
+        repository.put("event:" + event.getId(), event);
+    }
+
+
+    @EventListener(value = EnableTenantMenuEvent.class)
+    public void handler(EnableTenantMenuEvent event) {
+        System.out.println("event");
+        tenantMenuRepository
+                .findById(event.getMenuId())
+                .map(TenantMenu::enable)
+                .map(tenantMenuRepository::save)
+                .getOrElseThrow(() -> new IllegalArgumentException(event.getMenuId() + "租户菜单不存在"));
+        repository.put("event:" + event.getId(), event);
+    }
+
+    @EventListener(value = DisableTenantMenuEvent.class)
+    public void handler(DisableTenantMenuEvent event) {
+        System.out.println("event");
+        tenantMenuRepository
+                .findById(event.getMenuId())
+                .map(TenantMenu::disable)
+                .map(tenantMenuRepository::save)
+                .getOrElseThrow(() -> new IllegalArgumentException(event.getMenuId() + "租户菜单不存在"));
         repository.put("event:" + event.getId(), event);
     }
 }

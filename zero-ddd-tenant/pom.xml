@@ -20,6 +20,21 @@
     <dependencies>
 
         <dependency>
+            <groupId>org.springframework.experimental</groupId>
+            <artifactId>spring-modulith-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.zjj</groupId>
+            <artifactId>zero-ddd-graphql-component</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.zjj</groupId>
+            <artifactId>zero-ddd-domain-component</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
         </dependency>
@@ -86,30 +101,22 @@
             <artifactId>zero-ddd-json-component</artifactId>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>com.zjj</groupId>-->
-<!--            <artifactId>zero-ddd-i18n-conmponent</artifactId>-->
-<!--        </dependency>-->
-
         <dependency>
             <groupId>com.zjj</groupId>
-            <artifactId>zero-ddd-security-core-component</artifactId>
+            <artifactId>zero-ddd-i18n-conmponent</artifactId>
         </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>com.zjj</groupId>-->
+<!--            <artifactId>zero-ddd-security-core-component</artifactId>-->
+<!--        </dependency>-->
 
 <!--        <dependency>-->
 <!--            <groupId>com.zjj</groupId>-->
 <!--            <artifactId>zero-ddd-security-jwt-component</artifactId>-->
 <!--        </dependency>-->
 
-        <dependency>
-            <groupId>com.zjj</groupId>
-            <artifactId>zero-ddd-domain-component</artifactId>
-        </dependency>
 
-        <dependency>
-            <groupId>com.zjj</groupId>
-            <artifactId>zero-ddd-graphql-component</artifactId>
-        </dependency>
     </dependencies>
 
     <build>

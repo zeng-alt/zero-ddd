@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @crateTime 2024年06月26日 19:22
  */
 @Data
-public class PageQuery implements Serializable {
+public abstract class PageQuery implements Serializable {
 
 	@Serial
 	private static final long serialVersionUID = 1L;

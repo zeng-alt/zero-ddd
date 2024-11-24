@@ -10,6 +10,9 @@
     </parent>
 
     <packaging>pom</packaging>
+    <modules>
+        <module>zero-ddd-rabbitMQ-component</module>
+    </modules>
 
     <artifactId>zero-ddd-message-queue-component</artifactId>
 

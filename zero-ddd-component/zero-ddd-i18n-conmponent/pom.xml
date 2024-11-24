@@ -7,7 +7,6 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <groupId>com.zjj</groupId>
     <artifactId>zero-ddd-i18n-conmponent</artifactId>
 
     <properties>
@@ -27,6 +26,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
             <scope>provided</scope>
+
         </dependency>
         <dependency>
             <groupId>com.zjj</groupId>

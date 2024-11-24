@@ -17,4 +17,6 @@ public interface MenuResourceRepository {
     Option<IMenuResource> findById(Long id);
 
     IMenuResource save(IMenuResource iMenuResource);
+
+    void remove(IMenuResource iMenuResource);
 }

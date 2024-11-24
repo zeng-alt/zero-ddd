@@ -1,4 +1,4 @@
-package com.zjj.core.component.provier;
+package com.zjj.core.component.i18n;
 
 import com.zjj.i18n.component.config.MessageBaseNameProvider;
 

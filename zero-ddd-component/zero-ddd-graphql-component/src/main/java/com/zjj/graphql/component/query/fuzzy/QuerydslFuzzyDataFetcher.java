@@ -2,7 +2,6 @@ package com.zjj.graphql.component.query.fuzzy;
 
 import com.querydsl.core.types.EntityPath;
 import com.querydsl.core.types.Predicate;
-import com.zjj.graphql.component.query.sort.DefaultSortStrategy;
 import com.zjj.graphql.component.query.sort.MultipleSortStrategy;
 import com.zjj.graphql.component.registration.AutoRegistrationRuntimeWiringConfigurer;
 import com.zjj.graphql.component.registration.PropertySelection;

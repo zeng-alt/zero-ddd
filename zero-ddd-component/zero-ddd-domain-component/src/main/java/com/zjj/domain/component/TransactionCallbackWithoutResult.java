@@ -18,7 +18,7 @@ public interface TransactionCallbackWithoutResult extends TransactionCallback<Ob
             doInTransactionWithoutResult();
         } catch (Exception e) {
             status.setRollbackOnly();
-            throw new RuntimeException(e);
+            throw e;
         }
         return null;
     }

@@ -81,6 +81,11 @@
             <groupId>com.zjj</groupId>
             <artifactId>zero-ddd-i18n-conmponent</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>io.github.linpeilie</groupId>
+            <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
+        </dependency>
     </dependencies>
 
 <!--    <build>-->

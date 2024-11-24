@@ -16,9 +16,9 @@ public interface TransactionCallbackResult<T> extends TransactionCallback<T> {
     default T doInTransaction(TransactionStatus status) {
         try {
             return doInTransactionResult();
-        } catch (Throwable e) {
+        } catch (Exception e) {
             status.setRollbackOnly();
-            throw new RuntimeException(e);
+            throw e;
         }
     }
 

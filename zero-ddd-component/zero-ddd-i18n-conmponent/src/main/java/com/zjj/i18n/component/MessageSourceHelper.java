@@ -44,7 +44,7 @@ public class MessageSourceHelper implements ApplicationContextAware {
     }
 
     public static String getMessage(String code, @Nullable Object... args) {
-        return messageSourceAccessor.getMessage(code, args);
+        return getMessage(code, code, args);
     }
 
 

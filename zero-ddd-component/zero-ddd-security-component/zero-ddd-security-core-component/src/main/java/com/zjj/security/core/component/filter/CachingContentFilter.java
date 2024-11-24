@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -21,12 +22,15 @@ public class CachingContentFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+//        ContentCachingRequestWrapper cachingRequestWrapper = new ContentCachingRequestWrapper(request);
+//
+//        String contentAsString = cachingRequestWrapper.getContentAsString();
         String contentType = request.getContentType();
 
         if (contentType != null && contentType.contains(FORM_CONTENT_TYPE)) {
             filterChain.doFilter(request, response);
         } else {
-            filterChain.doFilter(new CachedBodyHttpServletRequest(request), response);
+            filterChain.doFilter(new ContentCachingRequestWrapper(request), response);
         }
 
     }

@@ -1,5 +1,7 @@
 package com.zjj.tenant.domain.tenant.menu;
 
+import io.vavr.control.Option;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -10,5 +12,9 @@ import java.util.List;
  */
 public interface TenantMenuRepository {
 
+    public Option<TenantMenu> findById(Long id);
+
     public Void saveAll(Collection<TenantMenu> tenantMenuList);
+
+    TenantMenu save(TenantMenu tenantMenu);
 }

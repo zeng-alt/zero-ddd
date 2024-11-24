@@ -11,5 +11,7 @@ public interface Parent<P extends Comparable<P>> {
 
     P current();
 
-    boolean isRoot();
+    default boolean isRoot() {
+        return parent() == null;
+    }
 }

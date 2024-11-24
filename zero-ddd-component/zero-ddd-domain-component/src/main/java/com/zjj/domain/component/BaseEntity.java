@@ -1,11 +1,18 @@
 package com.zjj.domain.component;
 
+import com.zjj.domain.component.config.TenantEntityListener;
+import jakarta.persistence.Column;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+import jakarta.persistence.Transient;
 import lombok.Setter;
+import org.hibernate.annotations.*;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.domain.Auditable;
-import org.springframework.data.jpa.domain.AbstractPersistable;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.data.util.ProxyUtils;
 import org.springframework.lang.Nullable;
 
@@ -21,21 +28,35 @@ import java.util.Optional;
  */
 @Setter
 @MappedSuperclass
-public abstract class BaseEntity<PK extends Serializable> implements Auditable<String, PK, LocalDateTime>, Serializable {
+@FilterDef(name = "tenantFilter", parameters = {@ParamDef(name = "tenantId", type = Long.class)})
+@Filter(name = "tenantFilter", condition = "tenant_id = :tenantId")
+@EntityListeners({AuditingEntityListener.class, TenantEntityListener.class})
+public abstract class BaseEntity<PK extends Serializable> implements Auditable<String, PK, LocalDateTime>, TenantAuditable<Long>, Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
+    @CreatedBy
     @Nullable
+    @Column(name = "created_by", updatable = false)
     private String createdBy;
-    @Temporal(TemporalType.TIMESTAMP)
+    @CreatedDate
     @Nullable
+    @Column(name = "created_date", updatable = false)
     private LocalDateTime createdDate;
     @Nullable
+    @LastModifiedBy
     private String lastModifiedBy;
-    @Temporal(TemporalType.TIMESTAMP)
+    @LastModifiedDate
     @Nullable
     private LocalDateTime lastModifiedDate;
+    @TenantId
+    private Long tenantBy;
+
+    @Override
+    public Optional<Long> getTenantBy() {
+        return Optional.ofNullable(this.tenantBy);
+    }
 
     /**
      * Returns the user who created this entity.
@@ -80,8 +101,9 @@ public abstract class BaseEntity<PK extends Serializable> implements Auditable<S
     }
 
     @Override
+    @Transient
     public boolean isNew() {
-        return getId() != null;
+        return getId() == null;
     }
 
     public boolean equals(Object obj) {

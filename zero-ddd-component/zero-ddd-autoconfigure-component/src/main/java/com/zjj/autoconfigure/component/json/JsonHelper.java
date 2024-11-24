@@ -1,7 +1,6 @@
 package com.zjj.autoconfigure.component.json;
 
 import com.zjj.autoconfigure.component.UtilException;
-import org.springframework.context.ApplicationContextAware;
 
 import java.util.List;
 

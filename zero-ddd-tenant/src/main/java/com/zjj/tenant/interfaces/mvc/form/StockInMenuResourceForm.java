@@ -11,7 +11,8 @@ import io.github.linpeilie.annotations.AutoMapper;
  */
 @AutoMapper(target = StockInMenuResourceCmd.class)
 public record StockInMenuResourceForm(
-        String parentId,
+        Long parentId,
+        Long id,
         String menuName,
 
         Integer orderNum,

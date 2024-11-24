@@ -12,4 +12,8 @@ public interface IMenuResource {
     IMenuResource enable();
 
     IMenuResource setParentMenu(IMenuResource parentMenu);
+
+    IMenuResource remove();
+
+    Long getId();
 }

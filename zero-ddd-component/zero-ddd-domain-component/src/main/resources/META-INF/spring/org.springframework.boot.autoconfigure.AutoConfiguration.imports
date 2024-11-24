@@ -1,0 +1,2 @@
+com.zjj.domain.component.config.DomainAutoConfiguration
+com.zjj.domain.component.config.TenantIdentifierResolver

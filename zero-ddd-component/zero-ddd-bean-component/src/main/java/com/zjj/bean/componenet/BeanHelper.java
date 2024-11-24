@@ -1,12 +1,17 @@
 package com.zjj.bean.componenet;
 
+import io.vavr.control.Option;
 import org.springframework.beans.BeanInstantiationException;
 import org.springframework.beans.BeanUtils;
+import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 /**
  * 要使用BeanHelper创建对象性能较差，优其是创建List对象，无法批量创建，对于copyList对象请使用MapStruct<br>
@@ -18,6 +23,55 @@ import java.util.List;
 public class BeanHelper {
 
     private BeanHelper() {}
+
+    @NonNull
+    public static <S, T> Option<T> copyToOptionObject(@NonNull Optional<S> source, Class<T> targetClz, BiConsumer<S, T> consumer) {
+        return source.map(s -> Option.of(copyToObject(s, targetClz, consumer))).orElseGet(Option::none);
+    }
+
+    @NonNull
+    public static <S, T> Option<T> copyToOptionObject(@NonNull Option<S> source, Class<T> targetClz, BiConsumer<S, T> consumer) {
+        return source.map(s -> Option.of(copyToObject(s, targetClz, consumer))).getOrElse(Option::none);
+    }
+
+    @NonNull
+    public static <S, T> Option<T> copyToOptionObject(S source, Class<T> targetClz, BiConsumer<S, T> consumer) {
+        if (source == null) return Option.none();
+        return Option.of(copyToObject(source, targetClz, consumer));
+    }
+
+    @NonNull
+    public static <S, T> Option<T> copyToOptionObject(@NonNull Optional<S> source, Class<T> targetClz, Consumer<T> consumer) {
+        return source.map(s -> Option.of(copyToObject(s, targetClz, consumer))).orElseGet(Option::none);
+    }
+
+    @NonNull
+    public static <S, T> Option<T> copyToOptionObject(@NonNull Option<S> source, Class<T> targetClz, Consumer<T> consumer) {
+        return source.map(s -> Option.of(copyToObject(s, targetClz, consumer))).getOrElse(Option::none);
+    }
+
+    @NonNull
+    public static <S, T> Option<T> copyToOptionObject(S source, Class<T> targetClz, Consumer<T> consumer) {
+        if (source == null) return Option.none();
+        return Option.of(copyToObject(source, targetClz, consumer));
+    }
+
+
+    @NonNull
+    public static <S, T> Option<T> copyToOptionObject(@NonNull Optional<S> source, Class<T> targetClz) {
+        return source.map(s -> Option.of(copyToObject(s, targetClz))).orElseGet(Option::none);
+    }
+
+    @NonNull
+    public static <S, T> Option<T> copyToOptionObject(@NonNull Option<S> source, Class<T> targetClz) {
+        return source.map(s -> Option.of(copyToObject(s, targetClz))).getOrElse(Option::none);
+    }
+
+    @NonNull
+    public static <S, T> Option<T> copyToOptionObject(S source, Class<T> targetClz) {
+        if (source == null) return Option.none();
+        return Option.of(copyToObject(source, targetClz));
+    }
 
 
     /**
@@ -41,11 +95,31 @@ public class BeanHelper {
     /**
      * targetClz不支持record类
      */
-    public static <T>  T copyToObject(Object source, Class<T> targetClz) {
+    public static <S, T>  T copyToObject(S source, Class<T> targetClz) {
         T target = BeanUtils.instantiateClass(targetClz);
         BeanUtils.copyProperties(source, target);
         return target;
     }
+
+    public static <S, T>  T copyToObject(S source, Class<T> targetClz, Consumer<T> consumer) {
+        T target = BeanUtils.instantiateClass(targetClz);
+        BeanUtils.copyProperties(source, target);
+        if (consumer != null) {
+            consumer.accept(target);
+        }
+        return target;
+    }
+
+
+    public static <S, T>  T copyToObject(S source, Class<T> targetClz, BiConsumer<S, T> consumer) {
+        T target = BeanUtils.instantiateClass(targetClz);
+        BeanUtils.copyProperties(source, target);
+        if (consumer != null) {
+            consumer.accept(source, target);
+        }
+        return target;
+    }
+
 
     private static <T> Constructor<T> findConstructor(Class<T> targetClz) {
         Assert.notNull(targetClz, "Class must not be null");
