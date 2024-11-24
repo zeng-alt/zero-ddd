@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Getter
 @RequiredArgsConstructor
-public enum ResponseEnum {
+public enum ResponseEnum implements BaseEnum {
     SUCCESS(200, "成功"),
     FAIL(500, "失败"),
     WARN(601, "警告"),

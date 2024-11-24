@@ -1,6 +1,11 @@
 package com.zjj.i18n.component;
 
+import com.zjj.autoconfigure.component.core.BaseEnum;
 import com.zjj.autoconfigure.component.core.BaseException;
+import org.springframework.lang.NonNull;
+
+import java.util.function.IntSupplier;
+import java.util.function.Supplier;
 
 /**
  * 支持带参数的异常做国际化
@@ -22,7 +27,29 @@ public class BaseI18nException extends BaseException {
         super(MessageSourceHelper.getMessage(message, message, args));
     }
 
-    public BaseI18nException(String code, String defaultMessage, Object... args) {
-        super(MessageSourceHelper.getMessage(code, defaultMessage, args));
+
+    public BaseI18nException(Integer code, String message, Object... args) {
+        super(code, MessageSourceHelper.getMessage(message, message, args));
     }
+
+    public BaseI18nException(@NonNull IntSupplier code, Supplier<String> message) {
+        this(code.getAsInt(), message.get());
+    }
+
+    public BaseI18nException(@NonNull BaseEnum baseEnum) {
+        this(baseEnum.getCode(), baseEnum.getMessage());
+    }
+
+
+    public BaseI18nException(@NonNull IntSupplier code, Supplier<String> message, Object... args) {
+        this(code.getAsInt(), message.get(), args);
+    }
+
+    public BaseI18nException(@NonNull BaseEnum baseEnum, Object... args) {
+        this(baseEnum.getCode(), baseEnum.getMessage(), args);
+    }
+
+//    public BaseI18nException(String code, String defaultMessage, Object... args) {
+//        super(MessageSourceHelper.getMessage(code, defaultMessage, args));
+//    }
 }

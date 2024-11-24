@@ -22,4 +22,8 @@ public interface ITenant {
     ITenant disable();
 
     ITenant enable();
+
+    ITenant disableMenu(Long menuId);
+
+    ITenant enableMenu(Long menuId);
 }

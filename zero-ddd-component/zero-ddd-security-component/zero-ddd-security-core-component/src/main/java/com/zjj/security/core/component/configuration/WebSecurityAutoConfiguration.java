@@ -84,7 +84,7 @@ public class WebSecurityAutoConfiguration {
 
 							@Override
 							public AuthorizationDecision check(Supplier<Authentication> authentication, RequestAuthorizationContext object) {
-//								HttpServletRequest request = object.getRequest();
+								HttpServletRequest request = object.getRequest();
 //                                try {
 //									ServletRequest request1 = ((SecurityContextHolderAwareRequestWrapper) object.getRequest()).getRequest();
 ////									((HeaderWriterFilter.HeaderWriterRequest) request1).getRequest();
@@ -131,7 +131,7 @@ public class WebSecurityAutoConfiguration {
 						.accessDeniedHandler(accessDeniedHandler)
 				)
 				.formLogin(Customizer.withDefaults());
-//		http.addFilterAfter(new CachingContentFilter(), HeaderWriterFilter.class);
+//		http.addFilterAfter(new CachingContentFilter(), DisableEncodeUrlFilter.class);
 
 		// .formLogin(
 		// AbstractHttpConfigurer::disable // 禁用，前后端分离项目

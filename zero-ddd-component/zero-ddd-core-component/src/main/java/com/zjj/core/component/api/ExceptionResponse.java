@@ -21,13 +21,17 @@ public class ExceptionResponse extends Response<Void> implements Serializable {
     private final String uri;
     private final String method;
 
-    private ExceptionResponse(String message, String uri, String method) {
-        super(FAIL, message);
+    private ExceptionResponse(int code, String message, String uri, String method) {
+        super(code, message);
         this.uri = uri;
         this.method = method;
     }
 
     public static ExceptionResponse of(String message, HttpServletRequest request) {
-        return new ExceptionResponse(message, request.getRequestURI(), request.getMethod());
+        return new ExceptionResponse(FAIL_CODE, message, request.getRequestURI(), request.getMethod());
+    }
+
+    public static ExceptionResponse of(int code, String message, HttpServletRequest request) {
+        return new ExceptionResponse(code, message, request.getRequestURI(), request.getMethod());
     }
 }

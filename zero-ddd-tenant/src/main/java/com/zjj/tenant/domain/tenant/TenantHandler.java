@@ -1,6 +1,7 @@
 package com.zjj.tenant.domain.tenant;
 
 import com.zjj.tenant.domain.tenant.cmd.*;
+import com.zjj.tenant.domain.tenant.menu.TenantMenuRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
@@ -16,10 +17,10 @@ import java.util.function.UnaryOperator;
 @Service
 @RequiredArgsConstructor
 public class TenantHandler {
+
     private final TenantRepository tenantRepository;
-
+    private final TenantMenuRepository tenantMenuRepository;
     private final TenantFactory tenantFactory;
-
 
     public void handler(StockInTenantCmd stockInTenantCmd) {
         ITenant tenant = this.tenantFactory.createTenant(stockInTenantCmd);
@@ -70,4 +71,19 @@ public class TenantHandler {
                 .getOrElseThrow(() -> new IllegalArgumentException(cmd.id() + " 租户不存在, 无法开启"));
     }
 
+    public void handler(DisableTenantMenuCmd cmd) {
+        this.tenantRepository
+                .findById(cmd.tenantId())
+                .map(t -> t.disableMenu(cmd.menuId()))
+                .map(tenantRepository::save)
+                .getOrElseThrow(() -> new IllegalArgumentException(cmd.tenantId() + " 租户不存在, 租户无法禁用"));
+    }
+
+    public void handler(EnableTenantMenuCmd cmd) {
+        this.tenantRepository
+                .findById(cmd.tenantId())
+                .map(t -> t.enableMenu(cmd.menuId()))
+                .map(tenantRepository::save)
+                .getOrElseThrow(() -> new IllegalArgumentException(cmd.tenantId() + " 租户不存在, 租户无法开启"));
+    }
 }

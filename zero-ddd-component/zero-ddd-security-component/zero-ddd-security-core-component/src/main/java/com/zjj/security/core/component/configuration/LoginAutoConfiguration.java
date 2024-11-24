@@ -37,8 +37,7 @@ public class LoginAutoConfiguration {
 	}
 
 	@Bean
-	@ConditionalOnMissingBean
-	@ConditionalOnProperty(name = "security.username-login.enabled", havingValue = "true")
+	@ConditionalOnMissingBean(PasswordEncoder.class)
 	public PasswordEncoder passwordEncoder() {
 		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
 	}

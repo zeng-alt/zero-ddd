@@ -6,10 +6,7 @@ import com.zjj.bean.componenet.BeanHelper;
 import com.zjj.domain.component.BaseAggregate;
 import com.zjj.tenant.domain.tenant.cmd.StockInTenantDataSourceCmd;
 import com.zjj.tenant.domain.tenant.cmd.StockInTenantMenuCmd;
-import com.zjj.tenant.domain.tenant.event.CreateTenantDataSourceEvent;
-import com.zjj.tenant.domain.tenant.event.DisableTenantEvent;
-import com.zjj.tenant.domain.tenant.event.EnableTenantEvent;
-import com.zjj.tenant.domain.tenant.event.UpdateTenantMenuEvent;
+import com.zjj.tenant.domain.tenant.event.*;
 import com.zjj.tenant.domain.tenant.menu.TenantMenu;
 import com.zjj.tenant.domain.tenant.source.TenantDataSource;
 import jakarta.persistence.*;
@@ -166,5 +163,27 @@ public class Tenant extends BaseAggregate<Long> implements ITenant, Serializable
         }
         this.publishEvent(EnableTenantEvent.apply(this, this.id, this.tenantDataSource));
         return this;
+    }
+
+    @Override
+    public ITenant disableMenu(Long menuId) {
+        for (TenantMenu tenantMenu : this.tenantMenus) {
+            if (tenantMenu.getMenuResource() != null && menuId.equals(tenantMenu.getMenuResource().getId())) {
+                this.publishEvent(DisableTenantMenuEvent.apply(this, tenantMenu.getId(), tenantKey));
+                return this;
+            }
+        }
+        throw new IllegalArgumentException(menuId + "没有相关的菜单资源");
+    }
+
+    @Override
+    public ITenant enableMenu(Long menuId) {
+        for (TenantMenu tenantMenu : this.tenantMenus) {
+            if (tenantMenu.getMenuResource() != null && menuId.equals(tenantMenu.getMenuResource().getId())) {
+                publishEvent(DisableTenantMenuEvent.apply(this, tenantMenu.getId(), tenantKey));
+                return this;
+            }
+        }
+        throw new IllegalArgumentException(menuId + "没有相关的菜单资源");
     }
 }

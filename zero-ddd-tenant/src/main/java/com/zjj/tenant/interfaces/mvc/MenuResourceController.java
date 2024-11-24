@@ -1,15 +1,18 @@
 package com.zjj.tenant.interfaces.mvc;
 
 import com.zjj.domain.component.AbstractTxController;
-import com.zjj.domain.component.TransactionCallbackWithoutResult;
 import com.zjj.tenant.domain.menu.MenuResourceHandler;
 import com.zjj.tenant.domain.menu.cmd.DisableMenuCmd;
 import com.zjj.tenant.domain.menu.cmd.EnableMenuCmd;
+import com.zjj.tenant.domain.menu.cmd.RemoveMenuCmd;
 import com.zjj.tenant.domain.menu.cmd.StockInMenuResourceCmd;
 import com.zjj.tenant.interfaces.mvc.form.StockInMenuResourceForm;
 import io.github.linpeilie.Converter;
+import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 
 /**
  * @author zengJiaJun
@@ -18,35 +21,35 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/menu/resource")
+@RequestMapping("/tenant/v1/menu/resource")
 public class MenuResourceController extends AbstractTxController {
 
     private final MenuResourceHandler menuResourceHandler;
     private final Converter converter;
 
-    @PostMapping
+    @Operation(summary = "新增或更新菜单资源")
+    @PutMapping
     public String createMenuResource(@RequestBody StockInMenuResourceForm stockInTenantForm) {
         this.execute(() -> menuResourceHandler.handler(converter.convert(stockInTenantForm, StockInMenuResourceCmd.class)));
-//        return "ok";
-        throw new RuntimeException("test1");
+        return "ok";
     }
 
 
     @PostMapping("/disable/{id}")
     public String disableMenuResource(@PathVariable("id") Long id) {
-        transactionTemplate.execute((TransactionCallbackWithoutResult) () ->
-                menuResourceHandler.handler(new DisableMenuCmd(id))
-        );
+        this.execute(() -> menuResourceHandler.handler(new DisableMenuCmd(id)));
         return "ok";
     }
 
     @PostMapping("/enable/{id}")
     public String enableMenuResource(@PathVariable("id") Long id) {
+        this.execute(() -> menuResourceHandler.handler(new EnableMenuCmd(id)));
+        return "ok";
+    }
 
-        transactionTemplate.execute((TransactionCallbackWithoutResult) () ->
-                menuResourceHandler.handler(new EnableMenuCmd(id))
-        );
-
+    @DeleteMapping("/{id}")
+    public String removeMenu(@PathVariable("id") Long id) {
+        this.execute(() -> menuResourceHandler.handler(new RemoveMenuCmd(id)));
         return "ok";
     }
 }

@@ -17,6 +17,7 @@
         <module>zero-ddd-tenant</module>
         <module>zero-ddd-exchange</module>
         <module>zero-ddd-ai</module>
+        <module>zero-business</module>
     </modules>
 
     <properties>
@@ -39,6 +40,7 @@
         <gson.version>2.10.1</gson.version>
         <rxjava.version>3.1.8</rxjava.version>
         <scala.version>2.13.9</scala.version>
+        <scala3.version>3.4.2</scala3.version>
         <spring-security.verison>3.3.1</spring-security.verison>
         <jjwt.version>0.12.6</jjwt.version>
         <jaxb-api.version>2.3.1</jaxb-api.version>
@@ -55,6 +57,27 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.springframework.experimental</groupId>
+                <artifactId>spring-modulith-bom</artifactId>
+                <version>0.5.1</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+
+
+            <dependency>
+                <groupId>org.scala-lang</groupId>
+                <artifactId>scala3-library_3</artifactId>
+                <version>${scala3.version}</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/org.scala-lang/scala3-compiler -->
+            <dependency>
+                <groupId>org.scala-lang</groupId>
+                <artifactId>scala3-compiler_3</artifactId>
+                <version>${scala3.version}</version>
+            </dependency>
 
             <!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-api -->
             <dependency>
@@ -288,6 +311,12 @@
 
             <dependency>
                 <groupId>com.zjj</groupId>
+                <artifactId>zero-ddd-doc-component</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.zjj</groupId>
                 <artifactId>zero-ddd-i18n-conmponent</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
@@ -374,6 +403,25 @@
     </dependencyManagement>
 
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>net.alchim31.maven</groupId>
+                    <artifactId>scala-maven-plugin</artifactId>
+<!--                    <version>4.5.2</version>-->
+                    <version>3.2.2</version>
+                </plugin>
+<!--                <plugin>-->
+<!--                    <groupId>org.apache.maven.plugins</groupId>-->
+<!--                    <artifactId>maven-compiler-plugin</artifactId>-->
+<!--                    <version>3.8.1</version>-->
+<!--                    <configuration>-->
+<!--                        <source>${java.version}</source>-->
+<!--                        <target>${java.version}</target>-->
+<!--                    </configuration>-->
+<!--                </plugin>-->
+            </plugins>
+        </pluginManagement>
         <plugins>
             <!--代码格式插件，默认使用spring 规则-->
             <plugin>

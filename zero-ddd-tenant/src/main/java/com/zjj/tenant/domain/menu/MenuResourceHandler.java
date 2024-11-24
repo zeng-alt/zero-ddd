@@ -1,14 +1,13 @@
 package com.zjj.tenant.domain.menu;
 
-import com.zjj.bean.componenet.BeanHelper;
+import com.zjj.i18n.component.BaseI18nException;
 import com.zjj.tenant.domain.menu.cmd.DisableMenuCmd;
 import com.zjj.tenant.domain.menu.cmd.EnableMenuCmd;
+import com.zjj.tenant.domain.menu.cmd.RemoveMenuCmd;
 import com.zjj.tenant.domain.menu.cmd.StockInMenuResourceCmd;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-
-import java.util.function.Consumer;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author zengJiaJun
@@ -33,7 +32,7 @@ public class MenuResourceHandler {
                 .findById(disableMenuCmd.id())
                 .map(IMenuResource::disable)
                 .map(menuResourceRepository::save)
-                .getOrElseThrow(() -> new IllegalArgumentException(disableMenuCmd.id() + " 菜单不存在"));
+                .getOrElseThrow(() -> new BaseI18nException(MenuResponseEnum.MENU_NOT_EXIST, disableMenuCmd.id()));
     }
 
     public void handler(EnableMenuCmd enableMenuCmd) {
@@ -41,7 +40,14 @@ public class MenuResourceHandler {
                 .findById(enableMenuCmd.id())
                 .map(IMenuResource::enable)
                 .map(menuResourceRepository::save)
-                .getOrElseThrow(() -> new IllegalArgumentException(enableMenuCmd.id() + " 菜单不存在"));
+                .getOrElseThrow(() -> new BaseI18nException(MenuResponseEnum.MENU_NOT_EXIST, enableMenuCmd.id()));
     }
 
+    public void handler(RemoveMenuCmd removeMenuCmd) {
+        menuResourceRepository
+                .findById(removeMenuCmd.id())
+                .map(IMenuResource::remove)
+                .peek(menuResourceRepository::remove)
+                .getOrElseThrow(() -> new BaseI18nException(MenuResponseEnum.MENU_NOT_EXIST, removeMenuCmd.id()));
+    }
 }

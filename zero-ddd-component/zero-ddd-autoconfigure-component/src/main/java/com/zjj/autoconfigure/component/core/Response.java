@@ -2,7 +2,6 @@ package com.zjj.autoconfigure.component.core;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -23,11 +22,9 @@ public class Response<T> implements Serializable {
 	@Serial
 	private static final long serialVersionUID = 1L;
 
-	public static final Integer SUCCESS = 200;
-
-	public static final Integer WARN = 601;
-
-	public static final Integer FAIL = 500;
+	public static final Integer SUCCESS_CODE = 200;
+	public static final Integer WARN_CODE = 601;
+	public static final Integer FAIL_CODE = 500;
 
 	private Integer code;
 	private String message;
@@ -36,12 +33,15 @@ public class Response<T> implements Serializable {
 	private LocalDateTime time = LocalDateTime.now();
 
 	protected Response() {
-
 	}
 
 	protected Response(Integer code, String message) {
 		this.code = code;
 		this.message = message;
+	}
+
+	public static Response<Void> apply(ResponseEnum responseEnum) {
+		return new Response<Void>().setCode(responseEnum.getCode()).setMessage(responseEnum.getMessage());
 	}
 
 	protected Response<T> setError(List<Object> error) {
@@ -64,36 +64,34 @@ public class Response<T> implements Serializable {
 		return this;
 	}
 
-	public static <T extends Serializable> Response<T> apply(ResponseEnum responseEnum) {
-		return new Response<T>().setCode(responseEnum.getCode()).setMessage(responseEnum.getMessage());
-	}
+
 
 	public static <T extends Serializable> Response<T> success() {
-		return new Response<T>().setCode(SUCCESS).setMessage("success");
+		return new Response<T>().setCode(SUCCESS_CODE).setMessage("success");
 	}
 
 	public static <T extends Serializable> Response<T> success(T data) {
-		return new Response<T>().setCode(SUCCESS).setMessage("success").setData(data);
+		return new Response<T>().setCode(SUCCESS_CODE).setMessage("success").setData(data);
 	}
 
-	public static <T> Response<T> fail() {
-		return new Response<T>().setCode(FAIL).setMessage("fail").setError(new ArrayList<>());
+	public static Response<Void> fail() {
+		return new Response<Void>().setCode(FAIL_CODE).setMessage("fail").setError(new ArrayList<>());
 	}
 
-	public static <T> Response<T> fail(String message) {
-		return new Response<T>().setCode(FAIL).setMessage(message).setData(null).setError(new ArrayList<>());
+	public static  Response<Void> fail(String message) {
+		return new Response<Void>().setCode(FAIL_CODE).setMessage(message).setData(null).setError(new ArrayList<>());
 	}
 
-	public static <T> Response<T> warn() {
-		return new Response<T>().setCode(WARN).setMessage("warn").setData(null).setError(new ArrayList<>());
+	public static <T extends Serializable> Response<T> warn() {
+		return new Response<T>().setCode(WARN_CODE).setMessage("warn").setData(null).setError(new ArrayList<>());
 	}
 
-	public static <T> Response<T> warn(String message) {
-		return new Response<T>().setCode(WARN).setMessage(message).setData(null);
+	public static <T extends Serializable> Response<T> warn(String message) {
+		return new Response<T>().setCode(WARN_CODE).setMessage(message).setData(null);
 	}
 
-	public static <T> Response<T> warn(T data) {
-		return new Response<T>().setCode(WARN).setMessage("warn").setData(data);
+	public static <T extends Serializable> Response<T> warn(T data) {
+		return new Response<T>().setCode(WARN_CODE).setMessage("warn").setData(data);
 	}
 
 	public Response<T> addError(Object error) {
@@ -114,7 +112,7 @@ public class Response<T> implements Serializable {
 	}
 
 	public boolean isSuccess() {
-		return Objects.equals(Response.SUCCESS, code);
+		return Objects.equals(Response.SUCCESS_CODE, code);
 	}
 
 }

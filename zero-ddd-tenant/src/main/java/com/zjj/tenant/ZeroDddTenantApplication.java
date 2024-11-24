@@ -1,13 +1,13 @@
 package com.zjj.tenant;
 
 
-import com.zjj.bean.componenet.BeanHelper;
+
 import com.zjj.graphql.component.config.EnableGenEntityFuzzyQuery;
 import com.zjj.graphql.component.config.EnableGenEntityInput;
 import com.zjj.graphql.component.config.EnableGenEntityQuery;
 import com.zjj.graphql.component.config.EnableGenEntityType;
-import com.zjj.tenant.domain.tenant.menu.TenantMenu;
-import lombok.Data;
+
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
