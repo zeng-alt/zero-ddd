@@ -1,8 +1,8 @@
 package com.zjj.tenant.infrastructure.repository;
 
 import com.zjj.tenant.infrastructure.db.jpa.TenantMenuDao;
-import com.zjj.tenant.domain.tenant.menu.TenantMenu;
-import com.zjj.tenant.domain.tenant.menu.TenantMenuRepository;
+import com.zjj.tenant.domain.tenant.TenantMenu;
+import com.zjj.tenant.domain.tenant.TenantMenuRepository;
 import io.vavr.control.Option;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

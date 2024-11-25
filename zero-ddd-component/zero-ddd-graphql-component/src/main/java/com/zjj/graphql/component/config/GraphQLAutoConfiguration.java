@@ -1,6 +1,7 @@
 package com.zjj.graphql.component.config;
 
 
+import com.zjj.autoconfigure.component.graphql.ExcludeTypeProvider;
 import com.zjj.graphql.component.context.ConditionTypeContext;
 import com.zjj.graphql.component.context.EntityContext;
 import com.zjj.graphql.component.supper.*;
@@ -36,8 +37,8 @@ public class GraphQLAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public EntityContext entityContext(EntityManager entityManager) {
-        return new EntityContext(entityManager);
+    public EntityContext entityContext(EntityManager entityManager, ObjectProvider<ExcludeTypeProvider> excludeTypeProviders) {
+        return new EntityContext(entityManager, excludeTypeProviders);
     }
 
     @Bean

@@ -1,9 +1,8 @@
-package com.zjj.tenant.domain.tenant.menu;
+package com.zjj.tenant.domain.tenant;
 
 import io.vavr.control.Option;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * @author zengJiaJun

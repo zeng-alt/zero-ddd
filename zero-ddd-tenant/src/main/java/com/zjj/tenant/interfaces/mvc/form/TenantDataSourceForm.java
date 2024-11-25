@@ -14,7 +14,7 @@ import java.io.Serializable;
  * @crateTime 2024年11月04日 21:26
  */
 @Data
-@AutoMapper(target = StockInTenantDataSourceCmd.class)
+@AutoMapper(target = StockInTenantDataSourceCmd.class, reverseConvertGenerate = false)
 public class TenantDataSourceForm implements Serializable {
 
     @Serial

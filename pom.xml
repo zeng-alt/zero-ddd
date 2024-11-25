@@ -48,6 +48,7 @@
         <querydsl.version>5.0.0</querydsl.version>
         <graphql.java.version>21.0</graphql.java.version>
         <lock4j.version>2.2.7</lock4j.version>
+        <bytebuddy.version>1.14.10</bytebuddy.version>
         <spring.checkstyle.plugin>0.0.29</spring.checkstyle.plugin>
     </properties>
 
@@ -63,6 +64,14 @@
                 <version>0.5.1</version>
                 <scope>import</scope>
                 <type>pom</type>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jmolecules</groupId>
+                <artifactId>jmolecules-bom</artifactId>
+                <version>2023.2.1</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
 
 
@@ -536,6 +545,15 @@
             <id>public</id>
             <name>huawei nexus</name>
             <url>https://mirrors.huaweicloud.com/repository/maven/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+
+        <repository>
+            <id>central-repos1</id>
+            <name>Central Repository 2</name>
+            <url>https://repo1.maven.org/maven2/</url>
             <releases>
                 <enabled>true</enabled>
             </releases>

@@ -4,14 +4,13 @@ import com.zjj.tenant.application.service.MenuApplication;
 import com.zjj.tenant.domain.menu.MenuResourceRepository;
 import com.zjj.tenant.domain.tenant.TenantHandler;
 import com.zjj.tenant.domain.tenant.cmd.StockInTenantMenuCmd;
-import com.zjj.tenant.domain.tenant.menu.TenantMenu;
-import com.zjj.tenant.interfaces.mvc.form.TenantMenuForm;
+import com.zjj.tenant.domain.tenant.TenantMenu;
+import com.zjj.tenant.application.form.TenantMenuForm;
 import io.vavr.control.Option;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
 
 /**
  * @author zengJiaJun

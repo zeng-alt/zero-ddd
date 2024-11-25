@@ -9,7 +9,7 @@ import io.github.linpeilie.annotations.AutoMapper;
  * @version 1.0
  * @crateTime 2024年11月05日 20:52
  */
-@AutoMapper(target = StockInMenuResourceCmd.class)
+@AutoMapper(target = StockInMenuResourceCmd.class, reverseConvertGenerate = false)
 public record StockInMenuResourceForm(
         Long parentId,
         Long id,

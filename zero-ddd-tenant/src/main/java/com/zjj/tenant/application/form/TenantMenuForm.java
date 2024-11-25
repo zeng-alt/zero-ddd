@@ -1,4 +1,4 @@
-package com.zjj.tenant.interfaces.mvc.form;
+package com.zjj.tenant.application.form;
 
 import java.util.Collection;
 

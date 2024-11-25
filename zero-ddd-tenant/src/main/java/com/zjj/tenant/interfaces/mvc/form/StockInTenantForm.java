@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
  * @version 1.0
  * @crateTime 2024年10月30日 21:26
  */
-@AutoMapper(target = StockInTenantCmd.class)
+@AutoMapper(target = StockInTenantCmd.class, reverseConvertGenerate = false)
 public record StockInTenantForm(
         String tenantKey,
         String contactUsername,

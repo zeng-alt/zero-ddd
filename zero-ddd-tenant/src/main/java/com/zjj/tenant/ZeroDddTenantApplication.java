@@ -8,10 +8,17 @@ import com.zjj.graphql.component.config.EnableGenEntityQuery;
 import com.zjj.graphql.component.config.EnableGenEntityType;
 
 
+import org.jmolecules.bytebuddy.JMoleculesSpringDataPlugin;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.actuate.autoconfigure.wavefront.WavefrontProperties;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.modulith.ApplicationModule;
+import org.springframework.modulith.Modulith;
+import org.springframework.modulith.Modulithic;
+import org.springframework.modulith.core.ApplicationModules;
+import org.springframework.modulith.docs.Documenter;
 
 
 /**
@@ -28,7 +35,13 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 public class ZeroDddTenantApplication {
 
     public static void main(String[] args) {
-        ConfigurableApplicationContext run = SpringApplication.run(ZeroDddTenantApplication.class, args);
-        System.out.println(run);
+//        ConfigurableApplicationContext run = SpringApplication.run(ZeroDddTenantApplication.class, args);
+        ApplicationModules modules = ApplicationModules.of(ZeroDddTenantApplication.class);
+        modules.forEach(System.out::println);
+        modules.verify();
+//        new Documenter(modules)
+//                .writeModulesAsPlantUml()
+//                .writeIndividualModulesAsPlantUml();
+//        System.out.println(run);
     }
 }

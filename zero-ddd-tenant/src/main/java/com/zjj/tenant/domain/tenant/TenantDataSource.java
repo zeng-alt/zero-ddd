@@ -1,4 +1,4 @@
-package com.zjj.tenant.domain.tenant.source;
+package com.zjj.tenant.domain.tenant;
 
 import com.zjj.domain.component.BaseEntity;
 import jakarta.persistence.Entity;

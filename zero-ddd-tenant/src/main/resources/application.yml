@@ -1,4 +1,6 @@
 spring:
+  modulith:
+    detection-strategy: explicitly-annotated
   messages:
     basename: messages
   # swagger-ui custom path

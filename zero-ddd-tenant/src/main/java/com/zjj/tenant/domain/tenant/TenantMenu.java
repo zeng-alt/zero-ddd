@@ -1,8 +1,7 @@
-package com.zjj.tenant.domain.tenant.menu;
+package com.zjj.tenant.domain.tenant;
 
 import com.zjj.domain.component.BaseEntity;
 import com.zjj.tenant.domain.menu.MenuResource;
-import com.zjj.tenant.domain.tenant.Tenant;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

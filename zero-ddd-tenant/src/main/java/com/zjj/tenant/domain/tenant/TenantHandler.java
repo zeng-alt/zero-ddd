@@ -1,13 +1,8 @@
 package com.zjj.tenant.domain.tenant;
 
 import com.zjj.tenant.domain.tenant.cmd.*;
-import com.zjj.tenant.domain.tenant.menu.TenantMenuRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
-
-import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
 
 /**
  * @author zengJiaJun
@@ -36,13 +31,13 @@ public class TenantHandler {
                 .getOrElseThrow(() -> new IllegalArgumentException("租户不存在"));
     }
 
-    public void handlerStockInTenantMenuCmd(@NonNull @lombok.NonNull Supplier<StockInTenantMenuCmd> stockCmd) {
-        this.handler(stockCmd.get());
-    }
-
-    public void handlerStockInTenantMenuCmd(@NonNull @lombok.NonNull UnaryOperator<StockInTenantMenuCmd.StockInTenantMenuCmdBuilder> stockCmd) {
-        this.handler(stockCmd.apply(StockInTenantMenuCmd.builder()).build());
-    }
+//    public void handlerStockInTenantMenuCmd(@NonNull @lombok.NonNull Supplier<StockInTenantMenuCmd> stockCmd) {
+//        this.handler(stockCmd.get());
+//    }
+//
+//    public void handlerStockInTenantMenuCmd(@NonNull @lombok.NonNull UnaryOperator<StockInTenantMenuCmd.StockInTenantMenuCmdBuilder> stockCmd) {
+//        this.handler(stockCmd.apply(StockInTenantMenuCmd.builder()).build());
+//    }
 
 
     public void handler(StockInTenantMenuCmd cmd) {

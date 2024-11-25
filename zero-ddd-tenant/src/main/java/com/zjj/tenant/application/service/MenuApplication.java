@@ -1,6 +1,6 @@
 package com.zjj.tenant.application.service;
 
-import com.zjj.tenant.interfaces.mvc.form.TenantMenuForm;
+import com.zjj.tenant.application.form.TenantMenuForm;
 
 /**
  * @author zengJiaJun
