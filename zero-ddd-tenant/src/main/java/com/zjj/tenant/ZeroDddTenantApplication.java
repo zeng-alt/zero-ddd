@@ -35,13 +35,13 @@ import org.springframework.modulith.docs.Documenter;
 public class ZeroDddTenantApplication {
 
     public static void main(String[] args) {
-//        ConfigurableApplicationContext run = SpringApplication.run(ZeroDddTenantApplication.class, args);
-        ApplicationModules modules = ApplicationModules.of(ZeroDddTenantApplication.class);
-        modules.forEach(System.out::println);
-        modules.verify();
+        ConfigurableApplicationContext run = SpringApplication.run(ZeroDddTenantApplication.class, args);
+//        ApplicationModules modules = ApplicationModules.of(ZeroDddTenantApplication.class);
+//        modules.forEach(System.out::println);
+//        modules.verify();
 //        new Documenter(modules)
 //                .writeModulesAsPlantUml()
 //                .writeIndividualModulesAsPlantUml();
-//        System.out.println(run);
+        System.out.println(run);
     }
 }

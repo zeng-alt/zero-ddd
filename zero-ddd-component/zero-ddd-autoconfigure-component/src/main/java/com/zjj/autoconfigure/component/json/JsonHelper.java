@@ -3,6 +3,7 @@ package com.zjj.autoconfigure.component.json;
 import com.zjj.autoconfigure.component.UtilException;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author zengJiaJun
@@ -12,6 +13,8 @@ import java.util.List;
 public interface JsonHelper {
 
 	public String toJsonString(Object object) throws UtilException;
+
+	public Map<String, Object> toMap(Object object) throws UtilException;
 
 	public <T> T parseObject(String text, Class<T> clazz) throws UtilException;
 

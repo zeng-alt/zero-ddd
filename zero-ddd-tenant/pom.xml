@@ -18,6 +18,29 @@
     </properties>
 
     <dependencies>
+        <!-- SpringCloud Alibaba Nacos -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+
+        <!-- SpringCloud Alibaba Nacos Config -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+        </dependency>
+
+        <!-- SpringCloud Alibaba Sentinel -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+        </dependency>
+
+        <!-- SpringBoot Actuator -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.experimental</groupId>
@@ -143,18 +166,18 @@
 
         <dependency>
             <groupId>com.zjj</groupId>
-            <artifactId>zero-ddd-i18n-conmponent</artifactId>
+            <artifactId>zero-ddd-i18n-component</artifactId>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>com.zjj</groupId>-->
-<!--            <artifactId>zero-ddd-security-core-component</artifactId>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>com.zjj</groupId>
+            <artifactId>zero-ddd-security-core-component</artifactId>
+        </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>com.zjj</groupId>-->
-<!--            <artifactId>zero-ddd-security-jwt-component</artifactId>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>com.zjj</groupId>
+            <artifactId>zero-ddd-security-fast-auth-component</artifactId>
+        </dependency>
 
 
     </dependencies>

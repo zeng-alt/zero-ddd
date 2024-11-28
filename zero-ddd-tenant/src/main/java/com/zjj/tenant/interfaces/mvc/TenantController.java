@@ -8,6 +8,7 @@ import com.zjj.tenant.interfaces.mvc.form.StockInTenantForm;
 import com.zjj.tenant.interfaces.mvc.transform.StockInTenantFormTransform;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.ServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +28,7 @@ public class TenantController extends AbstractTxController {
 
     @Operation(summary = "创建租户")
     @PostMapping
-    public String createTenant(@RequestBody StockInTenantForm stockInTenantForm) {
+    public String createTenant(@RequestBody StockInTenantForm stockInTenantForm, ServletRequest servletRequest) {
 
         this.execute(() ->
                 tenantHandler.handler(stockInTenantFormTransform.transform(stockInTenantForm))

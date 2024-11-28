@@ -1,1 +1,2 @@
 com.zjj.security.jwt.component.configuration.JwtAutoConfiguration
+com.zjj.security.jwt.component.configuration.JwtReactiveAutoConfiguration

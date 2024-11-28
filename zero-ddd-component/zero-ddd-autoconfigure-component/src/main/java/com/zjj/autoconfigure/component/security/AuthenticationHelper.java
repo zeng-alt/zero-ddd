@@ -3,11 +3,15 @@ package com.zjj.autoconfigure.component.security;
 import com.zjj.autoconfigure.component.UtilException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.lang.NonNull;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
@@ -76,6 +80,20 @@ public final class AuthenticationHelper {
 		catch (IOException e) {
 			throw new UtilException(e);
 		}
+	}
+
+	public static DataBuffer renderString(@NonNull ServerHttpResponse response, int status, String msg) {
+		response.setStatusCode(HttpStatus.OK);
+		response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
+		String result = """
+                {
+                    "status":   "%d",
+                    "msg":      "%s",
+                    "date":     "%s"
+                }
+                """.formatted(status, msg, LocalDateTime.now().format(DATE_TIME_FORMATTER));
+		DataBufferFactory dataBufferFactory = response.bufferFactory();
+		return dataBufferFactory.wrap(result.getBytes(Charset.defaultCharset()));
 	}
 
 }

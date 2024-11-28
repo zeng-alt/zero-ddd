@@ -31,7 +31,7 @@
         <module>zero-ddd-graphql-component</module>
         <module>zero-ddd-memory-component</module>
         <module>zero-ddd-l2-cache-component</module>
-        <module>zero-ddd-i18n-conmponent</module>
+        <module>zero-ddd-i18n-component</module>
         <module>zero-ddd-message-queue-component</module>
     </modules>
 </project>

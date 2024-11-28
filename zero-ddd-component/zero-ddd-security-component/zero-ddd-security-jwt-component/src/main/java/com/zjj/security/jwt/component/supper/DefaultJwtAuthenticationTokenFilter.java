@@ -48,7 +48,7 @@ public class DefaultJwtAuthenticationTokenFilter extends JwtAuthenticationTokenF
 			authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 			SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 			request.setAttribute(DefaultJwtRenewFilter.RENEW_KEY,
-					JwtDetail.builder().user(user).expire(expire).build());
+					JwtDetail.builder().id(username).user(user).expire(expire).build());
 		}
 
 		filterChain.doFilter(request, response);
