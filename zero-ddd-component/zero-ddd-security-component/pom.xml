@@ -20,6 +20,7 @@
         <module>zero-ddd-security-rbac-component</module>
         <module>zero-ddd-security-sms-component</module>
         <module>zero-ddd-security-tenant-component</module>
+        <module>zero-ddd-security-fast-auth-component</module>
     </modules>
 
     <properties>

@@ -1,5 +1,6 @@
 package com.zjj.graphql.component.context;
 
+import com.zjj.autoconfigure.component.graphql.ExcludeTypeProvider;
 import com.zjj.graphql.component.utils.TypeMatchUtils;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.metamodel.*;
@@ -9,6 +10,7 @@ import org.hibernate.metamodel.AttributeClassification;
 import org.hibernate.metamodel.model.domain.internal.AbstractPluralAttribute;
 import org.hibernate.metamodel.model.domain.internal.SetAttributeImpl;
 import org.hibernate.metamodel.model.domain.internal.SingularAttributeImpl;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.core.annotation.AnnotationUtils;
 
 import java.util.*;
@@ -26,12 +28,14 @@ public class EntityContext {
     private final Map<String, EntityGraphqlType> entityTypes = new HashMap<>();
     @Getter
     private final EntityManager entityManager;
+    private final List<ExcludeTypeProvider> excludeTypeProviderList;
 
 
 
 
-    public EntityContext(EntityManager entityManager) {
+    public EntityContext(EntityManager entityManager, ObjectProvider<ExcludeTypeProvider> excludeTypeProviders) {
         this.entityManager = entityManager;
+        this.excludeTypeProviderList = excludeTypeProviders.stream().toList();
         initEntity();
         parseEntity();
     }
@@ -124,6 +128,9 @@ public class EntityContext {
 
     protected void initEntity() {
         for (EntityType<?> entity : entityManager.getMetamodel().getEntities()) {
+            if (this.excludeTypeProviderList.stream().anyMatch(e -> e.exclude().contains(entity.getName()))) {
+                continue;
+            }
             EntityGraphqlType.Builder builder = EntityGraphqlType.builder();
             builder.type(entity.getName());
             builder.embedded(false);

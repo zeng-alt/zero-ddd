@@ -61,7 +61,7 @@
 
         <dependency>
             <groupId>com.zjj</groupId>
-            <artifactId>zero-ddd-i18n-conmponent</artifactId>
+            <artifactId>zero-ddd-i18n-component</artifactId>
             <scope>provided</scope>
         </dependency>
 

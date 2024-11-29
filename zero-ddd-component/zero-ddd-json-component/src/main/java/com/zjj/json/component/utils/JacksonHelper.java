@@ -1,6 +1,7 @@
 package com.zjj.json.component.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zjj.autoconfigure.component.UtilException;
 import com.zjj.autoconfigure.component.json.JsonHelper;
@@ -9,7 +10,9 @@ import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author zengJiaJun
@@ -29,6 +32,14 @@ public record JacksonHelper(ObjectMapper objectMapper) implements JsonHelper {
 		catch (JsonProcessingException e) {
 			throw new UtilException(e);
 		}
+	}
+
+	@Override
+	public Map<String, Object> toMap(Object object) throws UtilException {
+		if (ObjectUtils.isEmpty(object)) {
+			return new HashMap<>();
+		}
+		return objectMapper.convertValue(object, new TypeReference<>() {});
 	}
 
 	@Override

@@ -12,7 +12,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public abstract class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
 	protected final JwtHelper jwtHelper;
-
 	protected final JwtCacheManage jwtCacheManage;
 
 	protected JwtAuthenticationTokenFilter(JwtHelper jwtHelper, JwtCacheManage jwtCacheManage) {

@@ -1,4 +1,4 @@
 com.zjj.security.core.component.configuration.WebSecurityAutoConfiguration
-com.zjj.security.core.component.configuration.ReactiveSecurityAutoConfiguration
+com.zjj.security.core.component.configuration.reactive.ReactiveSecurityAutoConfiguration
 com.zjj.security.core.component.configuration.SecurityAutoConfiguration
 com.zjj.security.core.component.supper.SecurityCoreMessageBaseNameProvider

@@ -1,7 +1,7 @@
 package com.zjj.tenant.infrastructure.db.jpa;
 
 import com.zjj.graphql.component.supper.BaseRepository;
-import com.zjj.tenant.domain.tenant.source.TenantDataSource;
+import com.zjj.tenant.domain.tenant.TenantDataSource;
 import org.springframework.graphql.data.GraphQlRepository;
 
 /**

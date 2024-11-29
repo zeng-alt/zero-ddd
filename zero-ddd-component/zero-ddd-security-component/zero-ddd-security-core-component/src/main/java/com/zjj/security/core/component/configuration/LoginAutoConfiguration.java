@@ -4,6 +4,7 @@ import com.zjj.autoconfigure.component.security.SecurityBuilderCustomizer;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -24,6 +25,7 @@ import java.util.List;
  * @crateTime 2024年09月29日 20:01
  */
 @AutoConfiguration
+@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 @EnableConfigurationProperties(UsernameLoginProperties.class)
 public class LoginAutoConfiguration {
 

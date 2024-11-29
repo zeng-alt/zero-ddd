@@ -1,0 +1,2 @@
+com.zjj.security.fast.auth.component.configuration.FastAuthAutoConfiguration
+com.zjj.security.fast.auth.component.configuration.ReactiveFastAuthAutoConfiguration

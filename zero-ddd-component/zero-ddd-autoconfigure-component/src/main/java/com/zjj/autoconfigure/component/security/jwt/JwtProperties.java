@@ -26,6 +26,7 @@ public class JwtProperties {
 	private Boolean enabled = true;
 
 	private String tokenHeader = "Authorization";
+	private String fastToken = "User";
 
 	private String secret = "mysecret";
 

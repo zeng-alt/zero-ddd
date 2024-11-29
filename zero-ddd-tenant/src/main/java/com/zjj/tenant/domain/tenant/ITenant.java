@@ -2,11 +2,6 @@ package com.zjj.tenant.domain.tenant;
 
 import com.zjj.tenant.domain.tenant.cmd.StockInTenantDataSourceCmd;
 import com.zjj.tenant.domain.tenant.cmd.StockInTenantMenuCmd;
-import com.zjj.tenant.domain.tenant.menu.TenantMenu;
-import com.zjj.tenant.domain.tenant.source.TenantDataSource;
-
-import java.util.List;
-import java.util.Set;
 
 /**
  * @author zengJiaJun

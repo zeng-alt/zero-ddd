@@ -18,11 +18,74 @@
     </properties>
 
     <dependencies>
+        <!-- SpringCloud Alibaba Nacos -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+
+        <!-- SpringCloud Alibaba Nacos Config -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+        </dependency>
+
+        <!-- SpringCloud Alibaba Sentinel -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+        </dependency>
+
+        <!-- SpringBoot Actuator -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.experimental</groupId>
-            <artifactId>spring-modulith-api</artifactId>
+            <artifactId>spring-modulith-core</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework.experimental</groupId>
+            <artifactId>spring-modulith-starter-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.experimental</groupId>
+            <artifactId>spring-modulith-docs</artifactId>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.springframework.experimental</groupId>
+            <artifactId>spring-modulith-starter-jpa</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jmolecules.integrations</groupId>
+            <artifactId>jmolecules-starter-ddd</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jmolecules.integrations</groupId>
+            <artifactId>jmolecules-spring</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jmolecules.integrations</groupId>
+            <artifactId>jmolecules-jpa</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jmolecules.integrations</groupId>
+            <artifactId>jmolecules-bytebuddy-nodep</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+
 
         <dependency>
             <groupId>com.zjj</groupId>
@@ -103,18 +166,18 @@
 
         <dependency>
             <groupId>com.zjj</groupId>
-            <artifactId>zero-ddd-i18n-conmponent</artifactId>
+            <artifactId>zero-ddd-i18n-component</artifactId>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>com.zjj</groupId>-->
-<!--            <artifactId>zero-ddd-security-core-component</artifactId>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>com.zjj</groupId>
+            <artifactId>zero-ddd-security-core-component</artifactId>
+        </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>com.zjj</groupId>-->
-<!--            <artifactId>zero-ddd-security-jwt-component</artifactId>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>com.zjj</groupId>
+            <artifactId>zero-ddd-security-fast-auth-component</artifactId>
+        </dependency>
 
 
     </dependencies>
@@ -123,9 +186,39 @@
         <finalName>${project.artifactId}</finalName>
         <plugins>
             <plugin>
+                <groupId>net.bytebuddy</groupId>
+                <artifactId>byte-buddy-maven-plugin</artifactId>
+                <version>${bytebuddy.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>transform-extended</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <classPathDiscovery>true</classPathDiscovery>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring-boot.version}</version>
+<!--                <configuration>-->
+<!--                    <image>-->
+<!--                        <buildpacks>-->
+<!--                            <buildpack>paketobuildpacks/java</buildpack>-->
+<!--                        </buildpacks>-->
+<!--                        <builder>paketobuildpacks/builder-jammy-buildpackless-tiny</builder>-->
+<!--                        <env>-->
+<!--                            <BP_NATIVE_IMAGE>false</BP_NATIVE_IMAGE>-->
+<!--                            <BPL_JAVA_NMT_ENABLED>false</BPL_JAVA_NMT_ENABLED>-->
+<!--                            <BP_SPRING_CLOUD_BINDINGS_DISABLED>true</BP_SPRING_CLOUD_BINDINGS_DISABLED>-->
+<!--                            <BP_JVM_CDS_ENABLED>true</BP_JVM_CDS_ENABLED>-->
+<!--                            <BP_JVM_VERSION>17</BP_JVM_VERSION>-->
+<!--                        </env>-->
+<!--                    </image>-->
+<!--                </configuration>-->
                 <executions>
                     <execution>
                         <goals>

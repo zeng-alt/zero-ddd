@@ -1,6 +1,6 @@
 package com.zjj.tenant.domain.tenant.event;
 
-import com.zjj.tenant.domain.tenant.source.TenantDataSource;
+import com.zjj.tenant.domain.tenant.TenantDataSource;
 import org.springframework.beans.BeanUtils;
 
 /**

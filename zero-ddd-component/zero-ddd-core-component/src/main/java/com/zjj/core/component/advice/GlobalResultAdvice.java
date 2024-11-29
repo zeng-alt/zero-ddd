@@ -26,7 +26,7 @@ import static io.vavr.API.*;
 @ControllerAdvice
 @RequiredArgsConstructor
 @Slf4j
-public class GlobalResultAdvice implements ResponseBodyAdvice {
+public class GlobalResultAdvice implements ResponseBodyAdvice<Object> {
 
     private final JsonHelper jsonHelper;
     private final ObjectProvider<ResponseAdviceProvider> responseAdviceProvider;

@@ -7,8 +7,6 @@ import com.zjj.domain.component.BaseAggregate;
 import com.zjj.tenant.domain.tenant.cmd.StockInTenantDataSourceCmd;
 import com.zjj.tenant.domain.tenant.cmd.StockInTenantMenuCmd;
 import com.zjj.tenant.domain.tenant.event.*;
-import com.zjj.tenant.domain.tenant.menu.TenantMenu;
-import com.zjj.tenant.domain.tenant.source.TenantDataSource;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

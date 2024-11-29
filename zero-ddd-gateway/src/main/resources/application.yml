@@ -1,30 +1,24 @@
-server:
-  port: 8081
 
 spring:
   application:
     name: zero-ddd-gateway
-  graphql:
-    graphiql:
-      enabled: true
+  cloud:
+    nacos:
+      discovery:
+        # 服务注册地址
+        server-addr: 127.0.0.1:8848
+      config:
+        enabled: false
+    gateway:
+      routes:
+        - id: zero-ddd-tenant
+          uri: lb://zero-ddd-tenant
+          order: 0
+          predicates:
+            - Path=/tenant/**
+
+  redis:
+    redisson:
+      file: classpath:redisson.yml
 
 
-
-  datasource:
-    url: jdbc:h2:mem:mydb
-    username: sa
-    password:
-    driverClassName: org.h2.Driver
-  jpa:
-    show-sql: true
-    database-platform: org.hibernate.dialect.H2Dialect
-    hibernate:
-      ddl-auto: create-drop
-    properties:
-      hibernate:
-        format_sql: true
-    database: h2
-    defer-datasource-initialization: true
-  h2:
-    console:
-      enabled: true

@@ -1,24 +1,18 @@
 package com.zjj.security.tenant.component.configuration;
 
-import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
-import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties;
 import com.zjj.autoconfigure.component.l2cache.L2CacheManage;
 import com.zjj.autoconfigure.component.redis.RedisStringRepository;
 import com.zjj.autoconfigure.component.security.SecurityBuilderCustomizer;
 import com.zjj.autoconfigure.component.security.jwt.JwtCacheManage;
 import com.zjj.autoconfigure.component.security.jwt.JwtProperties;
 import com.zjj.autoconfigure.component.tenant.TenantProperties;
-import com.zjj.cache.component.config.RedisAutoConfiguration;
 import com.zjj.l2.cache.component.config.L2CacheConfiguration;
 import com.zjj.security.jwt.component.configuration.JwtAutoConfiguration;
 import com.zjj.security.tenant.component.enums.CacheType;
 import com.zjj.security.tenant.component.supper.*;
 import com.zjj.tenant.component.spi.DynamicSourceManage;
 import com.zjj.tenant.component.spi.TenantContextHolder;
-import com.zjj.tenant.component.supper.DefaultDynamicSourceManage;
-import com.zjj.tenant.component.supper.DefaultTenantContextHolder;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -28,7 +22,6 @@ import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
 
 import java.util.Map;
 

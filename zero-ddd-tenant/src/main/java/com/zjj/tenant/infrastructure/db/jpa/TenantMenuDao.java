@@ -1,7 +1,7 @@
 package com.zjj.tenant.infrastructure.db.jpa;
 
 import com.zjj.graphql.component.supper.BaseRepository;
-import com.zjj.tenant.domain.tenant.menu.TenantMenu;
+import com.zjj.tenant.domain.tenant.TenantMenu;
 import io.vavr.control.Option;
 import org.springframework.graphql.data.GraphQlRepository;
 

@@ -1,15 +1,11 @@
 package com.zjj.security.core.component.configuration;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zjj.autoconfigure.component.json.JsonHelper;
 import com.zjj.autoconfigure.component.security.AbstractLoginConfigurer;
 import com.zjj.autoconfigure.component.security.SecurityBuilderCustomizer;
-import com.zjj.security.core.component.filter.CachingContentFilter;
-import io.micrometer.core.instrument.util.IOUtils;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.http.HttpServletRequest;
+import com.zjj.security.core.component.spi.WhiteListService;
+import com.zjj.security.core.component.supper.CompositeAuthorizationManager;
+import com.zjj.security.core.component.supper.WhiteListAuthorizationManager;
 import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -19,30 +15,20 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authorization.AuthenticatedAuthorizationManager;
-import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.AuthorizationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.intercept.RequestAuthorizationContext;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.header.HeaderWriterFilter;
-import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
-import org.springframework.security.web.session.DisableEncodeUrlFilter;
-import org.springframework.web.util.ContentCachingRequestWrapper;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.function.Supplier;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author zengJiaJun
@@ -50,19 +36,15 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  * @crateTime 2024年09月29日 21:04
  */
 @AutoConfiguration
-@Import({ LoginAutoConfiguration.class, JwtHelperAutoConfiguration.class, LoginHandlerAutoConfiguration.class,
-		AccessFailedAutoConfiguration.class })
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
+@Import({ LoginAutoConfiguration.class, LoginHandlerAutoConfiguration.class,
+		AccessFailedAutoConfiguration.class })
 public class WebSecurityAutoConfiguration {
-
-	@Autowired
-	private JsonHelper jsonHelper;
-	@Autowired
-	private ObjectMapper objectMapper;
 
 	@Bean
 	@ConditionalOnMissingBean(SecurityFilterChain.class)
 	public SecurityFilterChain filterChain(HttpSecurity http, ObjectProvider<SecurityBuilderCustomizer> customizers,
+			CompositeAuthorizationManager compositeAuthorizationManager,
 			ObjectProvider<AbstractLoginConfigurer> configurers,
 			AuthenticationSuccessHandler loginSuccessAuthenticationHandler,
 			AuthenticationFailureHandler loginFailureAuthenticationHandler, AuthenticationManager authenticationManager,
@@ -77,53 +59,10 @@ public class WebSecurityAutoConfiguration {
 				.cors(AbstractHttpConfigurer::disable)
 				.authorizeHttpRequests(author -> author
 						.requestMatchers(HttpMethod.POST, "/login/**").permitAll()
-//						.requestMatchers("/h2-console/**").permitAll()
-						.requestMatchers("/graphiql/**").permitAll()
-//						.requestMatchers("/graphql/**").permitAll()
-						.anyRequest().access(new AuthorizationManager<RequestAuthorizationContext>() {
-
-							@Override
-							public AuthorizationDecision check(Supplier<Authentication> authentication, RequestAuthorizationContext object) {
-								HttpServletRequest request = object.getRequest();
-//                                try {
-//									ServletRequest request1 = ((SecurityContextHolderAwareRequestWrapper) object.getRequest()).getRequest();
-////									((HeaderWriterFilter.HeaderWriterRequest) request1).getRequest();
-//									String string = IOUtils.toString(request.getInputStream(), UTF_8);
-////									jsonHelper.
-//									System.out.println();
-//                                } catch (IOException e) {
-//                                    throw new RuntimeException(e);
-//                                }
-
-                                return new AuthorizationDecision(true);
-							}
-
-							public byte[] getRequestPostBytes(HttpServletRequest request)
-									throws IOException {
-
-								ContentCachingRequestWrapper request1 = (ContentCachingRequestWrapper) request;
-								return request1.getContentAsByteArray();
-							}
-
-							/**
-							 * 描述:获取 post 请求内容
-							 * <pre>
-							 * 举例：
-							 * </pre>
-							 * @param request
-							 * @return
-							 * @throws IOException
-							 */
-							public String getRequestPostStr(HttpServletRequest request)
-									throws IOException {
-								byte buffer[] = getRequestPostBytes(request);
-								String charEncoding = request.getCharacterEncoding();
-								if (charEncoding == null) {
-									charEncoding = "UTF-8";
-								}
-								return new String(buffer, charEncoding);
-							}
-						})
+						.requestMatchers("/tenant/h2-console/**").permitAll()
+						.requestMatchers("/tenant/graphiql/**").permitAll()
+						.requestMatchers("/tenant/graphql/**").permitAll()
+						.anyRequest().access(compositeAuthorizationManager)
 				)
 				.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
 				.exceptionHandling(e -> e
@@ -166,6 +105,16 @@ public class WebSecurityAutoConfiguration {
 		});
 
 		return http.build();
+	}
+
+	@Bean
+	@ConditionalOnMissingBean
+	public CompositeAuthorizationManager compositeAuthorizationManager(List<AuthorizationManager<RequestAuthorizationContext>> authorizationManagers, WhiteListService whiteListService) {
+		List<AuthorizationManager<RequestAuthorizationContext>> list = new ArrayList<>();
+		list.add(WhiteListAuthorizationManager.authenticated(whiteListService));
+		list.addAll(authorizationManagers);
+		list.add(AuthenticatedAuthorizationManager.authenticated());
+		return new CompositeAuthorizationManager(list);
 	}
 
 }

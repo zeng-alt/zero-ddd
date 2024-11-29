@@ -22,6 +22,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <!-- SpringWeb模块 -->
@@ -79,7 +80,7 @@
 
         <dependency>
             <groupId>com.zjj</groupId>
-            <artifactId>zero-ddd-i18n-conmponent</artifactId>
+            <artifactId>zero-ddd-i18n-component</artifactId>
         </dependency>
 
         <dependency>
