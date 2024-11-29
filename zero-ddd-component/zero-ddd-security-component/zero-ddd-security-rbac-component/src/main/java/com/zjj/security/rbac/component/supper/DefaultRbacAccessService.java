@@ -1,6 +1,6 @@
-package com.zjj.security.rabac.component.supper;
+package com.zjj.security.rbac.component.supper;
 
-import com.zjj.security.rabac.component.domain.HttpResource;
+import com.zjj.security.rbac.component.domain.HttpResource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.lang.NonNull;
 import org.springframework.security.core.GrantedAuthority;

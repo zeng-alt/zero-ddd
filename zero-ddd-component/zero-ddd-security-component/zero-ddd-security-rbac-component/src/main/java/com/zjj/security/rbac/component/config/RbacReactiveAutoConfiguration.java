@@ -1,6 +1,6 @@
-package com.zjj.security.rabac.component.config;
+package com.zjj.security.rbac.component.config;
 
-import com.zjj.security.rabac.component.supper.reactive.ReactiveRbacAccessAuthorizationManager;
+import com.zjj.security.rbac.component.supper.reactive.ReactiveRbacAccessAuthorizationManager;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;

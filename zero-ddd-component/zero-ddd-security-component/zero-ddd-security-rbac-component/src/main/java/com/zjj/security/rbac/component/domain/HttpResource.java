@@ -1,4 +1,4 @@
-package com.zjj.security.rabac.component.domain;
+package com.zjj.security.rbac.component.domain;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpMethod;

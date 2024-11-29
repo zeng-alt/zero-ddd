@@ -26,6 +26,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.intercept.RequestAuthorizationContext;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -113,7 +114,9 @@ public class WebSecurityAutoConfiguration {
 		List<AuthorizationManager<RequestAuthorizationContext>> list = new ArrayList<>();
 		list.add(WhiteListAuthorizationManager.authenticated(whiteListService));
 		list.addAll(authorizationManagers);
-		list.add(AuthenticatedAuthorizationManager.authenticated());
+		if (CollectionUtils.isEmpty(authorizationManagers)) {
+			list.add(AuthenticatedAuthorizationManager.authenticated());
+		}
 		return new CompositeAuthorizationManager(list);
 	}
 

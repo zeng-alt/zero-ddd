@@ -1,7 +1,10 @@
-package com.zjj.security.rabac.component.supper.reactive;
+package com.zjj.security.rbac.component.supper.reactive;
 
+import graphql.language.Document;
+import graphql.parser.Parser;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.ReactiveAuthorizationManager;
 import org.springframework.security.core.Authentication;
@@ -31,18 +34,19 @@ public final class ReactiveRbacAccessAuthorizationManager implements ReactiveAut
      */
     @Override
     public Mono<AuthorizationDecision> check(Mono<Authentication> authentication, AuthorizationContext object) {
-//        return authentication
-//                .map(auth -> new AuthorizationDecision(true))
-//                .or(Mono.just(new AuthorizationDecision(false)));
-//        ServerHttpRequest request = object.getExchange().getRequest();
-//        return authentication
-//                .map(auth -> rbacAccessService.verify(auth.getPrincipal(), auth.getAuthorities(), null))
-//                .map(AuthorizationDecision::new);
+
+//        ExecutionInput executionInput = ExecutionInput.newExecutionInput().variables(variable).query("query userQuery($iidd:[Int],$dogId:Int){user(id:$iidd){id,age,dogs(dogId:$dogId){id,dogName}}}").build();
+////DataFetcher
+//        List<Integer> id = environment.getArgument("id");
+
+        ServerHttpRequest request = object.getExchange().getRequest();
         Flux<DataBuffer> body = object.getExchange().getRequest().getBody();
         DataBufferUtils.join(body).flatMap(buff -> {
             byte[] bytes = new byte[buff.readableByteCount()];
             buff.read(bytes);
             DataBufferUtils.release(buff);
+
+            String s = new String(bytes, StandardCharsets.UTF_8);
             return Mono.just(new String(bytes, StandardCharsets.UTF_8));
         }).doOnSuccess(s -> System.out.println(s)).subscribe();
         return Mono.just(new AuthorizationDecision(true));
