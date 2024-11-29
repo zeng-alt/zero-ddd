@@ -1,3 +1,3 @@
-com.zjj.security.rabac.component.config.RbacWebAutoConfiguration
-com.zjj.security.rabac.component.config.RbacAutoConfiguration
-com.zjj.security.rabac.component.config.RbacReactiveAutoConfiguration
+com.zjj.security.rbac.component.config.RbacWebAutoConfiguration
+com.zjj.security.rbac.component.config.RbacAutoConfiguration
+com.zjj.security.rbac.component.config.RbacReactiveAutoConfiguration

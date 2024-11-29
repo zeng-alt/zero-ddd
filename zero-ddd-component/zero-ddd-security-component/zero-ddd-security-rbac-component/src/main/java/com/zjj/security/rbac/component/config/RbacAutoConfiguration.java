@@ -1,9 +1,7 @@
-package com.zjj.security.rabac.component.config;
+package com.zjj.security.rbac.component.config;
 
-import com.zjj.security.rabac.component.supper.DefaultHttpResourceService;
-import com.zjj.security.rabac.component.supper.DefaultRbacAccessService;
-import com.zjj.security.rabac.component.supper.HttpResourceService;
-import com.zjj.security.rabac.component.supper.RbacAccessService;
+import com.zjj.security.rbac.component.supper.DefaultHttpResourceService;
+import com.zjj.security.rbac.component.supper.HttpResourceService;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;

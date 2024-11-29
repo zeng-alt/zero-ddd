@@ -16,6 +16,7 @@
     <description>通用模块</description>
 
     <modules>
+        <module>zero-ddd-component-bom</module>
         <module>zero-ddd-auth-component</module>
         <module>zero-ddd-core-component</module>
         <module>zero-ddd-domain-component</module>

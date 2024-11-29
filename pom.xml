@@ -46,7 +46,8 @@
         <jjwt.version>0.12.6</jjwt.version>
         <jaxb-api.version>2.3.1</jaxb-api.version>
         <guava.version>33.3.0-jre</guava.version>
-        <querydsl.version>5.0.0</querydsl.version>
+        <querydsl.version>5.1.0</querydsl.version>
+        <openfeign-querydsl.version>6.9</openfeign-querydsl.version>
         <graphql.java.version>21.0</graphql.java.version>
         <lock4j.version>2.2.7</lock4j.version>
         <bytebuddy.version>1.14.10</bytebuddy.version>
@@ -294,6 +295,23 @@
                 <artifactId>querydsl-jpa</artifactId>
                 <classifier>jakarta</classifier>
                 <version>${querydsl.version}</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/io.github.openfeign.querydsl/querydsl-jpa -->
+            <dependency>
+                <groupId>io.github.openfeign.querydsl</groupId>
+                <artifactId>querydsl-apt</artifactId>
+                <version>${openfeign-querydsl.version}</version>
+                <optional>true</optional>
+                <classifier>jakarta</classifier>
+            </dependency>
+
+            <dependency>
+                <groupId>io.github.openfeign.querydsl</groupId>
+                <artifactId>querydsl-jpa</artifactId>
+                <version>${openfeign-querydsl.version}</version>
+                <optional>true</optional>
+                <classifier>jakarta</classifier>
             </dependency>
 
             <dependency>

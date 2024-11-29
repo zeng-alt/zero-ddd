@@ -1,4 +1,4 @@
-package com.zjj.security.rabac.component.supper;
+package com.zjj.security.rbac.component.supper;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.lang.NonNull;

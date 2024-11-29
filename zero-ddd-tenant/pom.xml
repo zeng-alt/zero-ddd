@@ -137,6 +137,18 @@
             <classifier>jakarta</classifier>
         </dependency>
 
+<!--        <dependency>-->
+<!--            <groupId>io.github.openfeign.querydsl</groupId>-->
+<!--            <artifactId>querydsl-apt</artifactId>-->
+<!--            <optional>true</optional>-->
+<!--        </dependency>-->
+
+<!--        <dependency>-->
+<!--            <groupId>io.github.openfeign.querydsl</groupId>-->
+<!--            <artifactId>querydsl-jpa</artifactId>-->
+<!--            <optional>true</optional>-->
+<!--        </dependency>-->
+
 
         <dependency>
             <groupId>io.github.linpeilie</groupId>

@@ -5,19 +5,16 @@ import com.zjj.security.core.component.configuration.UsernameLoginProperties;
 import com.zjj.security.core.component.spi.WhiteListService;
 import com.zjj.security.core.component.supper.CompositeReactiveAuthorizationManager;
 import com.zjj.security.core.component.supper.ReactiveWhiteListAuthorizationManager;
-import com.zjj.security.core.component.supper.WhiteListAuthorizationManager;
 import com.zjj.security.core.component.supper.reactive.DefaultReactiveAccessDeniedHandler;
 import com.zjj.security.core.component.supper.reactive.DefaultReactiveAuthenticationEntryPoint;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authorization.AuthenticatedReactiveAuthorizationManager;
 import org.springframework.security.authorization.ReactiveAuthorizationManager;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
@@ -28,6 +25,7 @@ import org.springframework.security.web.server.WebFilterChainProxy;
 import org.springframework.security.web.server.authorization.AuthorizationContext;
 import org.springframework.security.web.server.authorization.ServerAccessDeniedHandler;
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatcher;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
@@ -70,7 +68,9 @@ public class ReactiveSecurityAutoConfiguration {
 		List<ReactiveAuthorizationManager<AuthorizationContext>> list = new ArrayList<>();
 		list.add(ReactiveWhiteListAuthorizationManager.authenticated(whiteListService));
 		list.addAll(reactiveAuthorizationManagers);
-		list.add(AuthenticatedReactiveAuthorizationManager.authenticated());
+		if (CollectionUtils.isEmpty(reactiveAuthorizationManagers)) {
+			list.add(AuthenticatedReactiveAuthorizationManager.authenticated());
+		}
 		return new CompositeReactiveAuthorizationManager(list);
 	}
 
