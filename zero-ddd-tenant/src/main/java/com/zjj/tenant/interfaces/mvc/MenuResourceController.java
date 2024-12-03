@@ -9,10 +9,8 @@ import com.zjj.tenant.domain.menu.cmd.StockInMenuResourceCmd;
 import com.zjj.tenant.interfaces.mvc.form.StockInMenuResourceForm;
 import io.github.linpeilie.Converter;
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.ContentCachingRequestWrapper;
 
 /**
  * @author zengJiaJun
@@ -33,7 +31,6 @@ public class MenuResourceController extends AbstractTxController {
         this.execute(() -> menuResourceHandler.handler(converter.convert(stockInTenantForm, StockInMenuResourceCmd.class)));
         return "ok";
     }
-
 
     @PostMapping("/disable/{id}")
     public String disableMenuResource(@PathVariable("id") Long id) {

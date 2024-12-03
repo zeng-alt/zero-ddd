@@ -28,7 +28,7 @@ public class QBaseEntity extends EntityPathBase<BaseEntity<? extends java.io.Ser
 
     public final SimplePath<java.util.Optional<java.time.LocalDateTime>> lastModifiedDate = createSimple("lastModifiedDate", java.util.Optional.class);
 
-    public final SimplePath<java.util.Optional<Long>> tenantBy = createSimple("tenantBy", java.util.Optional.class);
+    public final SimplePath<java.util.Optional<String>> tenantBy = createSimple("tenantBy", java.util.Optional.class);
 
     @SuppressWarnings({"all", "rawtypes", "unchecked"})
     public QBaseEntity(String variable) {

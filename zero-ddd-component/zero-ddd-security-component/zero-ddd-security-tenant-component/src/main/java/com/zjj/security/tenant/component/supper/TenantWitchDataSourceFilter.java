@@ -1,7 +1,6 @@
 package com.zjj.security.tenant.component.supper;
 
 import com.zjj.autoconfigure.component.security.jwt.JwtProperties;
-import com.zjj.security.jwt.component.JwtDetail;
 import com.zjj.security.jwt.component.supper.DefaultJwtRenewFilter;
 import com.zjj.security.tenant.component.spi.TenantDetail;
 import com.zjj.tenant.component.spi.DynamicSourceManage;
@@ -16,7 +15,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
@@ -50,6 +48,7 @@ public class TenantWitchDataSourceFilter extends OncePerRequestFilter {
         }
 
         if (attribute instanceof TenantDetail tenantDetail) {
+//            TenantContextHolder.setTenantId(tenantDetail.getTenantName());
             dynamicSourceManage.switchDataSource(tenantDetail.getTenantName());
             tenantContextHolder.setCurrentTenant(tenantDetail.getTenantName());
         } else {

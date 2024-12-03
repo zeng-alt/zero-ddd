@@ -441,6 +441,12 @@
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.zjj</groupId>
+                <artifactId>zero-ddd-tenant-column-component</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 

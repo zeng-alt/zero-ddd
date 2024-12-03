@@ -17,10 +17,10 @@ public class DomainAutoConfiguration {
 //    private RedisReliableTopicRepositoryImpl repository;
 
 
-    @Bean
-    public CurrentTenantProvider currentTenantProvider() {
-        return new CurrentTenantProvider();
-    }
+//    @Bean
+//    public CurrentTenantProvider currentTenantProvider() {
+//        return new CurrentTenantProvider();
+//    }
 
     @Bean
     public CurrentAuditorProvider currentAuditorProvider() {

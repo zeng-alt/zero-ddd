@@ -1,6 +1,6 @@
 package com.zjj.domain.component;
 
-import com.zjj.domain.component.config.TenantEntityListener;
+//import com.zjj.domain.component.config.TenantEntityListener;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
@@ -28,10 +28,11 @@ import java.util.Optional;
  */
 @Setter
 @MappedSuperclass
-@FilterDef(name = "tenantFilter", parameters = {@ParamDef(name = "tenantId", type = Long.class)})
-@Filter(name = "tenantFilter", condition = "tenant_id = :tenantId")
-@EntityListeners({AuditingEntityListener.class, TenantEntityListener.class})
-public abstract class BaseEntity<PK extends Serializable> implements Auditable<String, PK, LocalDateTime>, TenantAuditable<Long>, Serializable {
+//@FilterDef(name = "tenantFilter", parameters = {@ParamDef(name = "tenantId", type = Long.class)})
+//@Filter(name = "tenantFilter", condition = "tenant_id = :tenantId")
+//@EntityListeners({AuditingEntityListener.class, TenantEntityListener.class})
+@EntityListeners({AuditingEntityListener.class})
+public abstract class BaseEntity<PK extends Serializable> implements Auditable<String, PK, LocalDateTime>, TenantAuditable<String>, Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -51,10 +52,10 @@ public abstract class BaseEntity<PK extends Serializable> implements Auditable<S
     @Nullable
     private LocalDateTime lastModifiedDate;
     @TenantId
-    private Long tenantBy;
+    private String tenantBy;
 
     @Override
-    public Optional<Long> getTenantBy() {
+    public Optional<String> getTenantBy() {
         return Optional.ofNullable(this.tenantBy);
     }
 

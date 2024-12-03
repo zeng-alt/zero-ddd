@@ -1,2 +1,0 @@
-com.zjj.tenant.component.repository.TenantRepositoryImpl
-com.zjj.tenant.component.config.ContextRefreshedEventListener
