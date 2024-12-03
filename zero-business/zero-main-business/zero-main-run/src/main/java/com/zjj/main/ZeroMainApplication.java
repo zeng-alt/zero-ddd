@@ -14,6 +14,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  * @version 1.0
  * @crateTime 2024年11月14日 21:08
  */
+
 @EnableJpaRepositories(basePackages = "com.zjj")
 @SpringBootApplication
 @EnableGenEntityType

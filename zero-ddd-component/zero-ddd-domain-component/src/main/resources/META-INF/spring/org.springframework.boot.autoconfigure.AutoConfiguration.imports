@@ -1,3 +1,2 @@
 com.zjj.domain.component.config.DomainAutoConfiguration
-com.zjj.domain.component.config.TenantIdentifierResolver
 com.zjj.domain.component.ExcludeEventPublicationProvider
