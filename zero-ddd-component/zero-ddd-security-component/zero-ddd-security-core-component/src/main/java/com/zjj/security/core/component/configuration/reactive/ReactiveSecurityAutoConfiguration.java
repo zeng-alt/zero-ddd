@@ -17,8 +17,13 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authorization.AuthenticatedReactiveAuthorizationManager;
 import org.springframework.security.authorization.ReactiveAuthorizationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
+import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.ServerAuthenticationEntryPoint;
 import org.springframework.security.web.server.WebFilterChainProxy;
@@ -55,6 +60,8 @@ public class ReactiveSecurityAutoConfiguration {
 		http.httpBasic(ServerHttpSecurity.HttpBasicSpec::disable);
 		http.csrf(ServerHttpSecurity.CsrfSpec::disable);
 		http.formLogin(ServerHttpSecurity.FormLoginSpec::disable);
+//		http.formLogin(Customizer.withDefaults());
+		http.logout(ServerHttpSecurity.LogoutSpec::disable);
 		http.exceptionHandling(ex -> ex.authenticationEntryPoint(serverAuthenticationEntryPoint).accessDeniedHandler(serverAccessDeniedHandler));
 		http.authorizeExchange(authorizeExchangeSpec -> authorizeExchangeSpec.anyExchange().access(compositeReactiveAuthorizationManager));
 		customizers.orderedStream().forEach(customizer -> customizer.customizer(http));

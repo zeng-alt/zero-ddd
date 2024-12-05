@@ -181,10 +181,10 @@
             <artifactId>zero-ddd-i18n-component</artifactId>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>com.zjj</groupId>-->
-<!--            <artifactId>zero-ddd-security-core-component</artifactId>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>com.zjj</groupId>
+            <artifactId>zero-ddd-security-core-component</artifactId>
+        </dependency>
 
 <!--        <dependency>-->
 <!--            <groupId>com.zjj</groupId>-->
@@ -194,6 +194,13 @@
         <dependency>
             <groupId>com.zjj</groupId>
             <artifactId>zero-ddd-tenant-column-component</artifactId>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
         </dependency>
 
 

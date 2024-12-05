@@ -9,6 +9,8 @@ import com.zjj.tenant.domain.menu.event.RemoveMenuEvent;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.TenantId;
+import org.springframework.lang.Nullable;
 import org.springframework.util.CollectionUtils;
 
 import java.util.LinkedHashSet;
@@ -28,6 +30,10 @@ public class MenuResource extends BaseAggregate<Long> implements IMenuResource, 
     @Id
     @GeneratedValue
     private Long id;
+
+    @TenantId
+    @Nullable
+    private String tenantBy;
 
 
     /**

@@ -29,27 +29,13 @@ import java.util.List;
 @EnableConfigurationProperties(UsernameLoginProperties.class)
 public class LoginAutoConfiguration {
 
-	@Bean
-	@ConditionalOnMissingBean
-	@ConditionalOnProperty(name = "security.username-login.enabled", havingValue = "true")
-	public UserDetailsService inMemoryUserDetailsManager(PasswordEncoder passwordEncoder) {
-
-		return new InMemoryUserDetailsManager(
-				List.of(User.withUsername("root").password(passwordEncoder.encode("123456")).roles("ADMIN").build()));
-	}
-
-	@Bean
-	@ConditionalOnMissingBean(PasswordEncoder.class)
-	public PasswordEncoder passwordEncoder() {
-		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-	}
 
 	@Bean
 	@ConditionalOnMissingBean
 	@ConditionalOnProperty(name = "security.username-login.enabled", havingValue = "true")
-	public DaoAuthenticationProvider daoAuthenticationProvider(UserDetailsService userDetailsService) {
+	public DaoAuthenticationProvider daoAuthenticationProvider(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
 		DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-		daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+		daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
 		daoAuthenticationProvider.setUserDetailsService(userDetailsService);
 		return daoAuthenticationProvider;
 	}

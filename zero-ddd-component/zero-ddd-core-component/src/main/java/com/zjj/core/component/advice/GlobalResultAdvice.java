@@ -40,7 +40,7 @@ public class GlobalResultAdvice implements ResponseBodyAdvice<Object> {
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, Class selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
 
         if (body instanceof String rest) {
-            ((ServletServerHttpResponse) response).getServletResponse().setContentType(MediaType.APPLICATION_JSON.getType());
+            ((ServletServerHttpResponse) response).getServletResponse().setContentType(MediaType.APPLICATION_JSON_VALUE);
             String[] split = rest.split(":");
             String message = split.length > 1 ? split[1] : split[0];
             Response serializableResponse = Match(rest).of(

@@ -32,7 +32,7 @@ import java.util.Optional;
 //@Filter(name = "tenantFilter", condition = "tenant_id = :tenantId")
 //@EntityListeners({AuditingEntityListener.class, TenantEntityListener.class})
 @EntityListeners({AuditingEntityListener.class})
-public abstract class BaseEntity<PK extends Serializable> implements Auditable<String, PK, LocalDateTime>, TenantAuditable<String>, Serializable {
+public abstract class BaseEntity<PK extends Serializable> implements Auditable<String, PK, LocalDateTime>, Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -51,13 +51,13 @@ public abstract class BaseEntity<PK extends Serializable> implements Auditable<S
     @LastModifiedDate
     @Nullable
     private LocalDateTime lastModifiedDate;
-    @TenantId
-    private String tenantBy;
+//    @TenantId
+//    @Nullable
+//    private String tenantBy;
 
-    @Override
-    public Optional<String> getTenantBy() {
-        return Optional.ofNullable(this.tenantBy);
-    }
+//    public String getTenantBy() {
+//        return this.tenantBy;
+//    }
 
     /**
      * Returns the user who created this entity.

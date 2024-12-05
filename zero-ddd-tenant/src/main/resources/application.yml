@@ -33,6 +33,8 @@ spring:
       ddl-auto: create-drop
     properties:
       hibernate:
+        multiTenancy: true
+        tenant_identifier_resolver: com.zjj.tenant.column.component.TenantIdentifierResolver
         format_sql: true
     database: h2
     defer-datasource-initialization: true

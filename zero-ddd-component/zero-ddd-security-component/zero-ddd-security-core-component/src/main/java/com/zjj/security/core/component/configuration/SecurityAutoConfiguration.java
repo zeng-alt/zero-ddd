@@ -3,7 +3,9 @@ package com.zjj.security.core.component.configuration;
 import com.zjj.autoconfigure.component.security.WhiteListProperties;
 import com.zjj.security.core.component.spi.WhiteListService;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationEventPublisher;
@@ -11,6 +13,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.authentication.*;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.core.userdetails.*;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.server.WebFilterChainProxy;
 
 import java.util.List;
 
@@ -21,6 +30,7 @@ import java.util.List;
  */
 @AutoConfiguration
 @Import(JwtHelperAutoConfiguration.class)
+@ConditionalOnClass({ EnableWebSecurity.class, WebFilterChainProxy.class, })
 @EnableConfigurationProperties({ WhiteListProperties.class })
 public class SecurityAutoConfiguration {
 
@@ -37,6 +47,30 @@ public class SecurityAutoConfiguration {
 	// objectMapper) {
 	// return new JacksonDeserializer<>(objectMapper);
 	// }
+
+	@Bean
+	@ConditionalOnMissingBean(PasswordEncoder.class)
+	public PasswordEncoder passwordEncoder() {
+		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+	}
+
+	@Bean
+	@ConditionalOnMissingBean
+	public ReactiveUserDetailsService reactiveUserDetailsService(PasswordEncoder passwordEncoder) {
+		UserDetails user = User
+				.withUsername("root")
+				.password(passwordEncoder.encode("123456"))
+				.roles("ADMIN")
+				.build();
+		return new MapReactiveUserDetailsService(user);
+	}
+
+	@Bean
+	@ConditionalOnMissingBean
+	public UserDetailsService inMemoryUserDetailsManager(PasswordEncoder passwordEncoder) {
+		return new InMemoryUserDetailsManager(
+				List.of(User.withUsername("root").password(passwordEncoder.encode("123456")).roles("ADMIN").build()));
+	}
 
 	@Bean
 	@ConditionalOnMissingBean

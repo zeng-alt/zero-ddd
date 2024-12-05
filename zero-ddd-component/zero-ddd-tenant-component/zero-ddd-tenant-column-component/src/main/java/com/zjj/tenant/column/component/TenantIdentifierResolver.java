@@ -1,6 +1,7 @@
 package com.zjj.tenant.column.component;
 
 import com.zjj.autoconfigure.component.tenant.TenantContextHolder;
+import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.cfg.MultiTenancySettings;
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernatePropertiesCustomizer;
@@ -30,6 +31,6 @@ public class TenantIdentifierResolver implements CurrentTenantIdentifierResolver
 
     @Override
     public  void  customize (Map<String, Object> hibernateProperties) {
-        hibernateProperties.put(MultiTenancySettings.MULTI_TENANT_IDENTIFIER_RESOLVER, this );
+        hibernateProperties.put(AvailableSettings.MULTI_TENANT_IDENTIFIER_RESOLVER, this );
     }
 }

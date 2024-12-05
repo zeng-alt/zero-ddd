@@ -5,6 +5,7 @@ import com.zjj.tenant.domain.menu.IMenuResource;
 import com.zjj.tenant.domain.menu.MenuResource;
 import io.vavr.collection.List;
 import io.vavr.control.Option;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -22,7 +23,7 @@ public interface MenuResourceDao extends BaseRepository<MenuResource, Long> {
 
     List<MenuResource> findAllByIdIn(Collection<Long> ids);
 
-    Option<IMenuResource> findById(Long id);
+    Option<MenuResource> findById(Long id);
 
     MenuResource save(MenuResource menuResource);
 

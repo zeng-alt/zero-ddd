@@ -20,11 +20,12 @@ public record MenuResourceRepositoryImpl(MenuResourceDao menuResourceDao) implem
 
 
     public List<MenuResource> findAllById(Collection<Long> ids) {
+//        return List.ofAll(menuResourceDao.findAllById(ids));
         return menuResourceDao.findAllByIdIn(ids);
     }
 
     public Option<IMenuResource> findById(Long id) {
-        return menuResourceDao.findById(id);
+        return menuResourceDao.findById(id).map(m->m);
     }
 
     @Override
@@ -42,6 +43,7 @@ public record MenuResourceRepositoryImpl(MenuResourceDao menuResourceDao) implem
 
         if (iMenuResource instanceof MenuResource menuResource) {
             menuResourceDao.delete(menuResource);
+//            menuResourceDao.deleteById(menuResource.getId());
             return;
         }
         throw new IllegalArgumentException("iMenuResource is not instance of MenuResource");
