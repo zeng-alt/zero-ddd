@@ -86,18 +86,4 @@ public class SecurityAutoConfiguration {
 		return new DefaultAuthenticationEventPublisher(applicationEventPublisher);
 	}
 
-	@Bean
-	@ConditionalOnMissingBean(AuthenticationManager.class)
-	@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
-	public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration,
-			List<AuthenticationProvider> authenticationProviders,
-			AuthenticationEventPublisher authenticationEventPublisher
-
-	) throws Exception {
-		AuthenticationManager authenticationManager = configuration.getAuthenticationManager();
-		ProviderManager providerManager = new ProviderManager(authenticationProviders, authenticationManager);
-		providerManager.setAuthenticationEventPublisher(authenticationEventPublisher);
-		return providerManager;
-	}
-
 }

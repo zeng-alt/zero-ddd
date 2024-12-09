@@ -1,4 +1,4 @@
-package com.zjj.security.rbac.component.domain;
+package com.zjj.autoconfigure.component.security.rbac;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpMethod;
@@ -18,14 +18,14 @@ public interface Resource {
 
 	public String getUri();
 
-	public String getMethod();
+	public HttpMethod getMethod();
 
 	default boolean compareTo(HttpServletRequest request) {
-		return AntPathRequestMatcher.antMatcher(HttpMethod.valueOf(getMethod()), getUri()).matcher(request).isMatch();
+		return AntPathRequestMatcher.antMatcher(getMethod(), getUri()).matcher(request).isMatch();
 	}
 
 	default Mono<ServerWebExchangeMatcher.MatchResult> compareTo(ServerWebExchange request) {
-		return new PathPatternParserServerWebExchangeMatcher(getUri(), HttpMethod.valueOf(getMethod())).matches(request);
+		return new PathPatternParserServerWebExchangeMatcher(getUri(), getMethod()).matches(request);
 	}
 
 }

@@ -1,6 +1,5 @@
-package com.zjj.security.rbac.component.domain;
+package com.zjj.autoconfigure.component.security.rbac;
 
-import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -10,7 +9,4 @@ import lombok.Data;
  */
 @Data
 public class HttpResource extends AbstractResource {
-
-
-
 }

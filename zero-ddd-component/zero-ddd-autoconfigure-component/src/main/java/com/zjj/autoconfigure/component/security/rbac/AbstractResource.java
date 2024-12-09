@@ -1,7 +1,7 @@
-package com.zjj.security.rbac.component.domain;
+package com.zjj.autoconfigure.component.security.rbac;
 
-import lombok.Builder;
 import lombok.Setter;
+import org.springframework.http.HttpMethod;
 
 /**
  * @author zengJiaJun
@@ -12,15 +12,15 @@ import lombok.Setter;
 public class AbstractResource implements Resource {
 
     private String uri;
-    private String method;
+    private HttpMethod method;
 
     @Override
     public String getUri() {
-        return null;
+        return uri;
     }
 
     @Override
-    public String getMethod() {
-        return null;
+    public HttpMethod getMethod() {
+        return method;
     }
 }

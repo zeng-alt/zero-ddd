@@ -2,6 +2,7 @@ package com.zjj.gateway.config;
 
 import com.zjj.autoconfigure.component.security.ServerHttpSecurityBuilderCustomizer;
 import com.zjj.gateway.filter.CacheRequestFilter;
+import com.zjj.gateway.filter.I18nGlobalFilter;
 import com.zjj.security.jwt.component.JwtReactiveAuthenticationTokenFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

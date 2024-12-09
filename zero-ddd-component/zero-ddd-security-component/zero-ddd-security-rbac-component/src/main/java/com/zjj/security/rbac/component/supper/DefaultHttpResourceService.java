@@ -1,6 +1,6 @@
 package com.zjj.security.rbac.component.supper;
 
-import com.zjj.security.rbac.component.domain.HttpResource;
+import com.zjj.autoconfigure.component.security.rbac.HttpResource;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;

@@ -1,5 +1,7 @@
 
 spring:
+  messages:
+    basename: messages
   application:
     name: zero-ddd-gateway
   cloud:

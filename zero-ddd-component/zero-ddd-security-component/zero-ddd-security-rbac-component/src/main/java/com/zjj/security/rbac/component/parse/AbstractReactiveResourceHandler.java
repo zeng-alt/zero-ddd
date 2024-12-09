@@ -7,5 +7,9 @@ package com.zjj.security.rbac.component.parse;
  */
 public abstract class AbstractReactiveResourceHandler implements ReactiveResourceHandler {
 
-    public ReactiveResourceQueryManager reactiveResourceQueryManager;
+    public final ReactiveResourceQueryManager reactiveResourceQueryManager;
+
+    protected AbstractReactiveResourceHandler(ReactiveResourceQueryManager reactiveResourceQueryManager) {
+        this.reactiveResourceQueryManager = reactiveResourceQueryManager;
+    }
 }

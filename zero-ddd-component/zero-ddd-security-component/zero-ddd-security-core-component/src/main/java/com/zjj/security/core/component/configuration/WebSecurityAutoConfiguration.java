@@ -13,10 +13,14 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationEventPublisher;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authorization.AuthenticatedAuthorizationManager;
 import org.springframework.security.authorization.AuthorizationManager;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
@@ -118,6 +122,19 @@ public class WebSecurityAutoConfiguration {
 			list.add(AuthenticatedAuthorizationManager.authenticated());
 		}
 		return new CompositeAuthorizationManager(list);
+	}
+
+	@Bean
+	@ConditionalOnMissingBean(AuthenticationManager.class)
+	public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration,
+													   List<AuthenticationProvider> authenticationProviders,
+													   AuthenticationEventPublisher authenticationEventPublisher
+
+	) throws Exception {
+		AuthenticationManager authenticationManager = configuration.getAuthenticationManager();
+		ProviderManager providerManager = new ProviderManager(authenticationProviders, authenticationManager);
+		providerManager.setAuthenticationEventPublisher(authenticationEventPublisher);
+		return providerManager;
 	}
 
 }

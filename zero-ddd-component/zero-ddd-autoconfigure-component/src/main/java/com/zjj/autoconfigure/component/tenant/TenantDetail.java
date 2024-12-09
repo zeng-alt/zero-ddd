@@ -1,4 +1,4 @@
-package com.zjj.security.tenant.component.spi;
+package com.zjj.autoconfigure.component.tenant;
 
 import org.springframework.security.core.userdetails.UserDetails;
 

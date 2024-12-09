@@ -2,7 +2,7 @@ package com.zjj.security.tenant.component.supper;
 
 import com.zjj.autoconfigure.component.security.jwt.JwtProperties;
 import com.zjj.security.jwt.component.supper.DefaultJwtRenewFilter;
-import com.zjj.security.tenant.component.spi.TenantDetail;
+import com.zjj.autoconfigure.component.tenant.TenantDetail;
 import com.zjj.tenant.component.spi.DynamicSourceManage;
 import com.zjj.tenant.component.spi.TenantContextHolder;
 import jakarta.servlet.FilterChain;
