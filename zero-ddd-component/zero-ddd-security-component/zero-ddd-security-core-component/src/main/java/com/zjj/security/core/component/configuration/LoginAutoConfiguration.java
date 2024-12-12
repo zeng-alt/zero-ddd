@@ -9,15 +9,10 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-
-import java.util.List;
 
 /**
  * @author zengJiaJun
@@ -39,6 +34,17 @@ public class LoginAutoConfiguration {
 		daoAuthenticationProvider.setUserDetailsService(userDetailsService);
 		return daoAuthenticationProvider;
 	}
+
+//	@Bean
+//	public Jackson2ObjectMapperBuilderCustomizer userDeserializerCustomizer() {
+//		return new UserDeserializerCustomizer();
+//	}
+
+//	@Bean
+//	public Module userModule() {
+//		return new SimpleModule().addDeserializer(User.class, UserDeserializerCustomizer.UserDeserializer.INSTANCE);
+//	}
+
 
 	@Bean
 	@ConditionalOnProperty(name = "security.username-login.enabled", havingValue = "true")

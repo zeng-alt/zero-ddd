@@ -61,10 +61,10 @@ public class DefaultJwtReactiveAuthenticationTokenFilter extends JwtReactiveAuth
                     .request(modifiedRequest)
                     .build();
 
-            return Mono.fromCallable(() -> new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities()))
+
+            return Mono.fromCallable(() -> UsernamePasswordAuthenticationToken.authenticated(user, null, user.getAuthorities()))
                     .subscribeOn(Schedulers.boundedElastic())
-                    .flatMap(authentication -> chain.filter(modifiedExchange)
-                    .contextWrite(ReactiveSecurityContextHolder.withAuthentication(authentication)));
+                    .flatMap(authentication -> chain.filter(modifiedExchange).contextWrite(ReactiveSecurityContextHolder.withAuthentication(authentication)));
         }
         return chain.filter(exchange);
     }

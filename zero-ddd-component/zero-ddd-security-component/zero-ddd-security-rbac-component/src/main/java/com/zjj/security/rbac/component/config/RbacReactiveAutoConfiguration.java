@@ -1,8 +1,16 @@
 package com.zjj.security.rbac.component.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zjj.autoconfigure.component.security.rbac.RbacCacheManage;
-import com.zjj.security.rbac.component.parse.*;
-import com.zjj.security.rbac.component.supper.reactive.ReactiveRbacAccessAuthorizationManager;
+import com.zjj.security.rbac.component.handler.ReactiveGraphqlResourceHandler;
+import com.zjj.security.rbac.component.handler.ReactiveHttpResourceHandler;
+import com.zjj.security.rbac.component.handler.ReactiveResourceHandler;
+import com.zjj.security.rbac.component.locator.ReactiveGraphqlResourceLocator;
+import com.zjj.security.rbac.component.locator.ReactiveHttpResourceLocator;
+import com.zjj.security.rbac.component.locator.ReactiveResourceLocator;
+import com.zjj.security.rbac.component.manager.ReactiveParseManager;
+import com.zjj.security.rbac.component.manager.ReactiveResourceQueryManager;
+import com.zjj.security.rbac.component.manager.ReactiveRbacAccessAuthorizationManager;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -24,20 +32,20 @@ public class RbacReactiveAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(ReactiveHttpResourceLocator.class)
-    public ReactiveHttpResourceLocator reactiveHttpResourceLocator(RbacCacheManage rbacCacheManage) {
-        return new ReactiveHttpResourceLocator(rbacCacheManage);
+    public ReactiveHttpResourceLocator reactiveHttpResourceLocator(ObjectProvider<RbacCacheManage> rbacCacheManage) {
+        return new ReactiveHttpResourceLocator(rbacCacheManage.getIfAvailable());
     }
 
     @Bean
     @ConditionalOnMissingBean(ReactiveGraphqlResourceLocator.class)
-    public ReactiveGraphqlResourceLocator reactiveGraphqlResourceLocator() {
-        return new ReactiveGraphqlResourceLocator();
+    public ReactiveGraphqlResourceLocator reactiveGraphqlResourceLocator(ObjectProvider<RbacCacheManage> rbacCacheManage) {
+        return new ReactiveGraphqlResourceLocator(rbacCacheManage.getIfAvailable());
     }
 
     @Bean
     @ConditionalOnMissingBean(ReactiveGraphqlResourceHandler.class)
-    public ReactiveGraphqlResourceHandler reactiveGraphqlResourceHandler(ReactiveResourceQueryManager reactiveResourceQueryManager) {
-        return new ReactiveGraphqlResourceHandler(reactiveResourceQueryManager);
+    public ReactiveGraphqlResourceHandler reactiveGraphqlResourceHandler(ReactiveResourceQueryManager reactiveResourceQueryManager, ObjectMapper objectMapper) {
+        return new ReactiveGraphqlResourceHandler(reactiveResourceQueryManager, objectMapper);
     }
 
     @Bean
@@ -49,7 +57,6 @@ public class RbacReactiveAutoConfiguration {
     @Bean
     public ReactiveParseManager reactiveParseManager(ObjectProvider<ReactiveResourceHandler> reactiveResourceHandlers, ReactiveResourceQueryManager reactiveResourceQueryManager) {
         List<ReactiveResourceHandler> list = new ArrayList<>(reactiveResourceHandlers.orderedStream().toList());
-        list.add(new ReactiveHttpResourceHandler(reactiveResourceQueryManager));
         return new ReactiveParseManager(list, new ReactiveHttpResourceHandler(reactiveResourceQueryManager));
     }
 

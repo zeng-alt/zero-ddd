@@ -28,7 +28,7 @@ public class JwtProperties {
 	private String tokenHeader = "Authorization";
 	private String fastToken = "User";
 
-	private String secret = "mysecret";
+	private String secret = "mysecretMushgsehsdhwershfdfrdagjeohjgadpjheofjhd";
 
 	private Long expiration = (long) (20);
 

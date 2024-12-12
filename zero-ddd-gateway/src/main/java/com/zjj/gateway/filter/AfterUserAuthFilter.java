@@ -2,6 +2,7 @@ package com.zjj.gateway.filter;
 
 import com.zjj.autoconfigure.component.security.jwt.JwtProperties;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -16,6 +17,7 @@ import reactor.core.publisher.Mono;
  * @version 1.0
  * @crateTime 2024年11月28日 21:38
  */
+@Slf4j
 @Component
 public class AfterUserAuthFilter implements GlobalFilter, Ordered {
 
@@ -26,20 +28,32 @@ public class AfterUserAuthFilter implements GlobalFilter, Ordered {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 
         return ReactiveSecurityContextHolder.getContext()
-                .map(securityContext -> securityContext.getAuthentication().getName())
-                .flatMap(username -> {
+                .map(securityContext -> {
+                    if (securityContext == null || securityContext.getAuthentication() == null) {
+                        // Log the issue and continue with the original exchange
+                        log.warn("Security context or authentication is null");
+                        return exchange;
+                    }
+
+                    String username = securityContext.getAuthentication().getName();
+                    if (username == null) {
+                        // Log the issue and continue with the original exchange
+                        log.warn("Username is null");
+                        return exchange;
+                    }
+
                     // Modify the request to include the username header
                     ServerHttpRequest modifiedRequest = exchange.getRequest().mutate()
                             .header(jwtProperties.getFastToken(), username)
                             .build();
                     // Create a new exchange with the modified request
-                    ServerWebExchange modifiedExchange = exchange.mutate()
+                    return exchange.mutate()
                             .request(modifiedRequest)
                             .build();
                     // Continue processing the request chain with the modified exchange
-                    return chain.filter(modifiedExchange);
                 })
-                .switchIfEmpty(chain.filter(exchange));
+                .switchIfEmpty(Mono.just(exchange))
+                .flatMap(chain::filter);
     }
 
     @Override

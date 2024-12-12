@@ -18,14 +18,15 @@ public interface Resource {
 
 	public String getUri();
 
-	public HttpMethod getMethod();
+	public HttpMethod getHttpMethod();
+	String getMethod();
 
 	default boolean compareTo(HttpServletRequest request) {
-		return AntPathRequestMatcher.antMatcher(getMethod(), getUri()).matcher(request).isMatch();
+		return AntPathRequestMatcher.antMatcher(getHttpMethod(), getUri()).matcher(request).isMatch();
 	}
 
 	default Mono<ServerWebExchangeMatcher.MatchResult> compareTo(ServerWebExchange request) {
-		return new PathPatternParserServerWebExchangeMatcher(getUri(), getMethod()).matches(request);
+		return new PathPatternParserServerWebExchangeMatcher(getUri(), getHttpMethod()).matches(request);
 	}
 
 }

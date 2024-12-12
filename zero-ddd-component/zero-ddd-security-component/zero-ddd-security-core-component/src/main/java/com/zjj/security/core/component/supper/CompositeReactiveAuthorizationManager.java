@@ -20,6 +20,8 @@ public class CompositeReactiveAuthorizationManager implements ReactiveAuthorizat
     public CompositeReactiveAuthorizationManager(List<ReactiveAuthorizationManager<AuthorizationContext>> managers) {
         this.managers = managers;
     }
+
+
     @Override
     public Mono<AuthorizationDecision> check(Mono<Authentication> authentication, AuthorizationContext context) {
         return Flux.fromIterable(managers)

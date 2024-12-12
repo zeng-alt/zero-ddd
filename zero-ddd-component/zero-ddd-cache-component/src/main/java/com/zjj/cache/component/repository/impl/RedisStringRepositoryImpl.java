@@ -47,7 +47,7 @@ public class RedisStringRepositoryImpl extends RedisStringRepository {
 
 	@Override
 	@NonNull
-	public <T> List<T> getAll(@NonNull Iterable<String> keys) throws ExecutionException, InterruptedException, TimeoutException {
+	public <T> List<T> getAll(@NonNull Iterable<String> keys) {
 		List<T> result = new ArrayList<>();
 		Queue<RFuture<T>> futures = new LinkedList<>();
 		Map<RFuture<T>, Integer> retryCounts = new HashMap<>();
@@ -58,7 +58,7 @@ public class RedisStringRepositoryImpl extends RedisStringRepository {
 			futures.offer(async);
 			retryCounts.put(async, 0);
 		}
-		batch.execute();
+		BatchResult<?> execute = batch.execute();
 		while (!futures.isEmpty()) {
 			RFuture<T> poll = futures.poll();
 			CompletableFuture<T> completableFuture = poll.toCompletableFuture();
@@ -112,6 +112,15 @@ public class RedisStringRepositoryImpl extends RedisStringRepository {
 	@Override
 	public void put(String key, Object value, Duration expireTime) {
 		template.getBucket(key).set(value, expireTime.toSeconds(), TimeUnit.SECONDS);
+	}
+
+	public <T> void batchPut(String preKey, @NonNull Map<String, T> map) {
+		RBatch batch = template.createBatch();
+		for (Map.Entry<String, T> entry : map.entrySet()) {
+			RBucketAsync<T> bucket = batch.getBucket(preKey + entry.getKey());
+			bucket.setAsync(entry.getValue());
+		}
+		batch.execute();
 	}
 
 	public void batchPut(@NonNull Map<String, Object> map, @NonNull UnaryOperator<String> getKey, @NonNull Function<String, Duration> getExpire, @NonNull Consumer<Map.Entry<String, Object>> callback) {

@@ -22,5 +22,9 @@ spring:
   redis:
     redisson:
       file: classpath:redisson.yml
+security:
+  filter:
+    ignore-url:
+      - /tenant/login/username
 
 

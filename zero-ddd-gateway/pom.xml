@@ -46,9 +46,14 @@
             <artifactId>zero-ddd-autoconfigure-component</artifactId>
         </dependency>
 
+<!--        <dependency>-->
+<!--            <groupId>com.zjj</groupId>-->
+<!--            <artifactId>zero-ddd-l2-cache-component</artifactId>-->
+<!--        </dependency>-->
+
         <dependency>
             <groupId>com.zjj</groupId>
-            <artifactId>zero-ddd-l2-cache-component</artifactId>
+            <artifactId>zero-ddd-cache-component</artifactId>
         </dependency>
 
         <dependency>

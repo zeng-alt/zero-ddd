@@ -6,6 +6,8 @@ import com.zjj.autoconfigure.component.security.jwt.JwtHelper;
 import com.zjj.autoconfigure.component.security.jwt.JwtProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -27,11 +29,12 @@ public final class DefaultJwtHelper implements JwtHelper {
 
 	private final JsonHelper jsonHelper;
 
-	private final SecretKey key = Jwts.SIG.HS256.key().build();
+	private final SecretKey key;
 
 	public DefaultJwtHelper(JwtProperties jwtProperties, JsonHelper jsonHelper) {
 		this.jwtProperties = jwtProperties;
 		this.jsonHelper = jsonHelper;
+		this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtProperties.getSecret()));
 	}
 
 	@NonNull
@@ -50,17 +53,22 @@ public final class DefaultJwtHelper implements JwtHelper {
 		hashMap.put("expire", jsonHelper.toJsonString(plus));
 		return Jwts.builder()
 				// .json(jacksonSerializer)
-				.issuedAt(new Date()).claims(hashMap).signWith(key).compact();
+				.claims(hashMap)
+				.issuedAt(new Date())
+				.signWith(key)
+				.compact();
 	}
 
 	public Claims getClaimsFromToken(String token) throws BadCredentialsException {
 		try {
 			return Jwts.parser()
-					// .json(jacksonDeserializer)
-					.verifyWith(key).build().parseSignedClaims(token).getPayload();
+					.verifyWith(key)
+					.build()
+					.parseSignedClaims(token)
+					.getPayload();
 		}
-		catch (Exception var5) {
-			throw new BadCredentialsException("jwt校验失败");
+		catch (Exception e) {
+			throw new BadCredentialsException("jwt校验失败: " + e.getMessage());
 		}
 	}
 
@@ -80,7 +88,18 @@ public final class DefaultJwtHelper implements JwtHelper {
 
 	@Override
 	public LocalDateTime getExpire(Map<String, Object> map) {
-		return jsonHelper.parseObject(map.get("expire").toString(), LocalDateTime.class);
+		Object expireObj = map.get("expire");
+		if (expireObj == null) {
+			// 处理 null 值的情况，可以根据业务需求返回默认值或抛出异常
+			throw  new IllegalArgumentException("expire is null");
+		}
+
+		if (!(expireObj instanceof String)) {
+			// 处理非字符串类型的情况，可以根据业务需求返回默认值或抛出异常
+			throw new IllegalArgumentException("expire must be a string");
+		}
+
+		return jsonHelper.parseObject(((String) expireObj).replace("\"", ""), LocalDateTime.class);
 	}
 
 	@Override

@@ -90,7 +90,7 @@ public class CacheGetContext {
     private List<Object> fetchRedisValues(RedisStringRepository redisStringRepository, List<String> redisKeys) {
         try {
             return redisStringRepository.getAll(redisKeys);
-        } catch (ExecutionException | InterruptedException | TimeoutException e) {
+        } catch (Exception e) {
             throw new RuntimeException("Failed to fetch values from Redis", e);
         }
     }

@@ -36,7 +36,7 @@ public class FastAuthenticationFilter extends OncePerRequestFilter {
             if (user == null) {
                 throw new BadCredentialsException("用户登录时间过期，重新登录");
             }
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user,
+            UsernamePasswordAuthenticationToken authenticationToken = UsernamePasswordAuthenticationToken.authenticated(user,
                     null, user.getAuthorities());
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);

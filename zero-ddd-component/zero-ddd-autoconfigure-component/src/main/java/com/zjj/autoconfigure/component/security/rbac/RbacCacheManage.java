@@ -1,6 +1,8 @@
 package com.zjj.autoconfigure.component.security.rbac;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author zengJiaJun
@@ -9,7 +11,38 @@ import java.util.List;
  */
 public interface RbacCacheManage {
 
+    String PRE_KEY = "rbac:";
+    String ROLE_KEY = PRE_KEY + "role:";
+    String HTTP_RESOURCE_KEY = PRE_KEY + "http:";
+    String GRAPHQL_RESOURCE_KEY = PRE_KEY + "graphql:";
+
     public List<Resource> findAllHttpResource(String username, String tenant, List<String> authority);
     public List<Resource> findAllGraphqlResource(String username, String tenant, List<String> authority);
+
+    public List<Resource> findAllResource(String key, String tenant, List<String> authority);
+
+    public void putRole(String roleName, Set<String> permission, String tenant);
+
+    public void putRole(Map<String, Set<String>> map, String tenant);
+
+    public void putHttpResource(Map<String, HttpResource> map, String tenant);
+
+    public void putGraphqlResource(Map<String, GraphqlResource> map, String tenant);
+
+    default void putRole(String roleName, Set<String> permission) {
+        putRole(Map.of(roleName, permission), null);
+    }
+
+    default void putRole(Map<String, Set<String>> map) {
+        putRole(map, null);
+    }
+
+    default void putHttpResource(Map<String, HttpResource> map) {
+        putHttpResource(map, null);
+    }
+
+    default void putGraphqlResource(Map<String, GraphqlResource> map) {
+        putGraphqlResource(map, null);
+    }
 
 }

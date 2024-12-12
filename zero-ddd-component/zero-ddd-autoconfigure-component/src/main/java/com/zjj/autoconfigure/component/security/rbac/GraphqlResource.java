@@ -1,15 +1,9 @@
 package com.zjj.autoconfigure.component.security.rbac;
 
-import com.zjj.bean.componenet.ApplicationContextHelper;
-import graphql.language.Definition;
-import graphql.language.Field;
-import graphql.language.OperationDefinition;
-import graphql.language.Selection;
-import graphql.parser.Parser;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
+import java.util.Objects;
 
 /**
  * @author zengJiaJun
@@ -20,5 +14,19 @@ import java.util.List;
 @Setter
 public class GraphqlResource extends AbstractResource {
     private String type;
-    private List<String> functionNames;
+    private String functionName;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        GraphqlResource that = (GraphqlResource) o;
+        return Objects.equals(type, that.type) && Objects.equals(functionName, that.functionName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), type, functionName);
+    }
 }

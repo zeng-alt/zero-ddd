@@ -7,7 +7,7 @@ import org.redisson.api.RedissonClient;
  * @version 1.0
  * @crateTime 2024年06月18日 18:56
  */
-public abstract class RedisHashRepository<V> extends RedisCrudRepository<String, V> {
+public abstract class RedisHashRepository extends RedisCrudRepository<String, Object> {
 
     public RedisHashRepository(RedissonClient template) {
         super(template);

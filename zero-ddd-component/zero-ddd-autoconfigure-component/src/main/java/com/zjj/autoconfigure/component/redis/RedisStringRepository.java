@@ -28,11 +28,14 @@ public abstract class RedisStringRepository extends RedisCrudRepository<String, 
 
 	public abstract void put(String key, Object value, Duration expireTime);
 
+
+	public abstract <T> void batchPut(String preKey, @NonNull Map<String, T> map);
+
 	public abstract void batchPut(@NonNull Map<String, Object> map, @NonNull UnaryOperator<String> getKey, @NonNull Function<String, Duration> getExpire, @NonNull Consumer<Map.Entry<String, Object>> callback);
 
 	public abstract List<Object> getAll(String key) throws ExecutionException, InterruptedException, TimeoutException;
 
-	public abstract <T> List<T> getAll(@NonNull Iterable<String> keys) throws ExecutionException, InterruptedException, TimeoutException;
+	public abstract <T> List<T> getAll(@NonNull Iterable<String> keys);
 
 	public abstract <T> List<T> getAll(String key, Class<T> tClass) throws ExecutionException, InterruptedException, TimeoutException;
 

@@ -52,6 +52,7 @@ spring:
       file: classpath:redisson.yml
 
 
+
 logging:
   level:
     org:
@@ -59,3 +60,7 @@ logging:
         security:
           web:
             FilterChainProxy=DEBUG:
+security:
+  username-login:
+    enabled: true
+    login-path: /tenant/login/username

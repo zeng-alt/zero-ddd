@@ -15,6 +15,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authorization.AuthenticatedReactiveAuthorizationManager;
 import org.springframework.security.authorization.ReactiveAuthorizationManager;
 import org.springframework.security.config.Customizer;
@@ -55,15 +56,18 @@ public class ReactiveSecurityAutoConfiguration {
 			ServerAccessDeniedHandler serverAccessDeniedHandler,
 			ServerAuthenticationEntryPoint serverAuthenticationEntryPoint
 	) {
-//		http.authorizeExchange(exchanges -> exchanges.anyExchange().permitAll());
-				// .httpBasic(withDefaults())
+
 		http.httpBasic(ServerHttpSecurity.HttpBasicSpec::disable);
 		http.csrf(ServerHttpSecurity.CsrfSpec::disable);
 		http.formLogin(ServerHttpSecurity.FormLoginSpec::disable);
 //		http.formLogin(Customizer.withDefaults());
 		http.logout(ServerHttpSecurity.LogoutSpec::disable);
 		http.exceptionHandling(ex -> ex.authenticationEntryPoint(serverAuthenticationEntryPoint).accessDeniedHandler(serverAccessDeniedHandler));
-		http.authorizeExchange(authorizeExchangeSpec -> authorizeExchangeSpec.anyExchange().access(compositeReactiveAuthorizationManager));
+		http.authorizeExchange(authorizeExchangeSpec -> authorizeExchangeSpec
+				.pathMatchers(HttpMethod.POST, "/login/**").permitAll()
+				.anyExchange().access(compositeReactiveAuthorizationManager)
+//				.anyExchange().authenticated()
+		);
 		customizers.orderedStream().forEach(customizer -> customizer.customizer(http));
 		return http.build();
 	}
