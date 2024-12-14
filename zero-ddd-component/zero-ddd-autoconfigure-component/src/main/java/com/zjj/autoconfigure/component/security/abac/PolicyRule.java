@@ -1,4 +1,4 @@
-package com.zjj.security.abac.component.domain;
+package com.zjj.autoconfigure.component.security.abac;
 
 import lombok.Getter;
 import lombok.Setter;

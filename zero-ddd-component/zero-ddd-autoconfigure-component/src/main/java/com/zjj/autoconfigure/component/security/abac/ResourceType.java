@@ -1,4 +1,4 @@
-package com.zjj.security.abac.component.type;
+package com.zjj.autoconfigure.component.security.abac;
 
 /**
  * @author zengJiaJun
@@ -6,6 +6,4 @@ package com.zjj.security.abac.component.type;
  * @crateTime 2024年12月12日 21:15
  */
 public interface ResourceType {
-
-
 }

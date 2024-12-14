@@ -17,4 +17,6 @@ public @interface AbacPostAuthorize {
      * @return 权限的key
      */
     String value();
+
+    String resourceType() default "http";
 }

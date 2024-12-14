@@ -2,8 +2,11 @@ package com.zjj.security.abac.component.configuration;
 
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.zjj.autoconfigure.component.security.abac.AbacCacheManage;
 import com.zjj.security.abac.component.annotation.AbacPreAuthorize;
+import com.zjj.security.abac.component.supper.AbacMethodSecurityExpressionHandler;
 import com.zjj.security.abac.component.supper.AbacPreAuthorizationManager;
+import com.zjj.security.abac.component.supper.AbacPreAuthorizeExpressionAttributeRegistry;
 import com.zjj.security.abac.component.supper.SpelDeserializer;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.Pointcut;
@@ -12,6 +15,7 @@ import org.springframework.aop.support.Pointcuts;
 import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Role;
 import org.springframework.expression.Expression;
@@ -36,9 +40,25 @@ public class AbacAutoConfiguration {
     }
 
     @Bean
+    @ConditionalOnMissingBean(AbacMethodSecurityExpressionHandler.class)
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-    public AbacPreAuthorizationManager abacPreMyAuthorizationManager() {
-        return new AbacPreAuthorizationManager();
+    public AbacMethodSecurityExpressionHandler abacMethodSecurityExpressionHandler() {
+        return new AbacMethodSecurityExpressionHandler();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    public AbacPreAuthorizeExpressionAttributeRegistry abacPreAuthorizeExpressionAttributeRegistry(AbacMethodSecurityExpressionHandler abacMethodSecurityExpressionHandler, AbacCacheManage abacCacheManage) {
+        return new AbacPreAuthorizeExpressionAttributeRegistry(abacMethodSecurityExpressionHandler, abacCacheManage);
+    }
+
+    // TODO
+    @Bean
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    public AbacPreAuthorizationManager abacPreMyAuthorizationManager(AbacPreAuthorizeExpressionAttributeRegistry abacPreAuthorizeExpressionAttributeRegistry) {
+//        return new AbacPreAuthorizationManager(abacPreAuthorizeExpressionAttributeRegistry);
+        return null;
     }
 
     @Bean

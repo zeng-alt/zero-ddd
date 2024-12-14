@@ -1,39 +1,40 @@
 package com.zjj.security.abac.component.supper;
 
+import com.zjj.autoconfigure.component.security.abac.PolicyRule;
+import com.zjj.security.abac.component.spi.EnvironmentAttribute;
+import com.zjj.security.abac.component.spi.ObjectAttribute;
+import com.zjj.security.abac.component.spi.SubjectAttribute;
+import lombok.RequiredArgsConstructor;
 import org.aopalliance.intercept.MethodInvocation;
+import org.springframework.expression.EvaluationContext;
 import org.springframework.security.authorization.AuthorizationDecision;
-import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.security.authorization.AuthorizationManager;
 import org.springframework.security.authorization.AuthorizationResult;
+import org.springframework.security.authorization.ExpressionAuthorizationDecision;
 import org.springframework.security.authorization.method.MethodAuthorizationDeniedHandler;
 import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
-@Component
+@RequiredArgsConstructor
 public class AbacPreAuthorizationManager implements AuthorizationManager<MethodInvocation>, MethodAuthorizationDeniedHandler {
 
-
+    private final AbacPreAuthorizeExpressionAttributeRegistry registry;
 
     public AuthorizationDecision check(Supplier<Authentication> authentication, MethodInvocation mi) {
-        // ... authorization logic
-//        mi.get
+        PolicyRule policyRule = this.registry.getPolicyRule(mi);
+        if (policyRule == null) {
+            return null;
+        }
 
-        return new AuthorizationDecision(true);
+        EvaluationContext context = this.registry.getExpressionHandler().createEvaluationContext(authentication, mi);
+        return new ExpressionAuthorizationDecision(policyRule.getTarget().getValue(context, Boolean.class), policyRule.getTarget());
     }
 
-    /**
-     * Handle denied method invocations, implementations might either throw an
-     * {@link AuthorizationDeniedException} or
-     * a replacement result instead of invoking the method, e.g. a masked value.
-     *
-     * @param methodInvocation    the {@link MethodInvocation} related to the authorization
-     *                            denied
-     * @param authorizationResult the authorization denied result
-     * @return a replacement result for the denied method invocation, or null, or a
-     * {@link reactor.core.publisher.Mono} for reactive applications
-     */
+
     @Override
     public Object handleDeniedInvocation(MethodInvocation methodInvocation, AuthorizationResult authorizationResult) {
         return null;
