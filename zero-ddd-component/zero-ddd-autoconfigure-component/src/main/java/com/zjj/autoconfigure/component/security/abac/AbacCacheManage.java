@@ -1,5 +1,9 @@
 package com.zjj.autoconfigure.component.security.abac;
 
+import org.springframework.security.core.Authentication;
+
+import java.util.function.Supplier;
+
 /**
  * @author zengJiaJun
  * @version 1.0
@@ -8,7 +12,7 @@ package com.zjj.autoconfigure.component.security.abac;
 public interface AbacCacheManage {
 
 
-    PolicyRule getRule(String key, String typeClass);
+    PolicyRule getRule(String tenant, String key, String typeClass);
 
 
     void putRule(String key, String typeClass, PolicyRule rule);

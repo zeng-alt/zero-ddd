@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.zjj.autoconfigure.component.tenant.TenantDetail;
 import com.zjj.security.core.component.supper.CustomAuthorityDeserializer;
 import lombok.Getter;
 import org.apache.commons.logging.Log;
@@ -30,7 +31,7 @@ import java.util.stream.Collectors;
  * @crateTime 2024年12月10日 21:17
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SecurityUser implements UserDetails, CredentialsContainer {
+public class SecurityUser implements UserDetails, TenantDetail, CredentialsContainer {
 
     private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
 
@@ -39,6 +40,8 @@ public class SecurityUser implements UserDetails, CredentialsContainer {
     private String password;
 
     private final String username;
+
+    private final String tenant;
 
     @JsonIgnore
     private final Set<GrantedAuthority> authorities;
@@ -59,7 +62,7 @@ public class SecurityUser implements UserDetails, CredentialsContainer {
      * Calls the more complex constructor with all boolean arguments set to {@code true}.
      */
     public SecurityUser(String username, String password, Set<String> roles) {
-        this(username, password, true, true, true, true, roles);
+        this(username, password, null, true, true, true, true, roles);
     }
 
     /**
@@ -80,13 +83,14 @@ public class SecurityUser implements UserDetails, CredentialsContainer {
      * a parameter or as an element in the <code>GrantedAuthority</code> collection
      */
     @JsonCreator
-    public SecurityUser(@JsonProperty("username") String username, @JsonProperty("password") String password, @JsonProperty("enabled") boolean enabled, @JsonProperty("accountNonExpired") boolean accountNonExpired,
+    public SecurityUser(@JsonProperty("username") String username, @JsonProperty("password") String password, @JsonProperty("tenant") String tenant, @JsonProperty("enabled") boolean enabled, @JsonProperty("accountNonExpired") boolean accountNonExpired,
                         @JsonProperty("credentialsNonExpired") boolean credentialsNonExpired, @JsonProperty("accountNonLocked") boolean accountNonLocked,
                         @JsonProperty("roles") Set<String> roles) {
         Assert.isTrue(username != null && !"".equals(username),
                 "Cannot pass null or empty values to constructor");
         this.username = username;
         this.password = password;
+        this.tenant = tenant;
         this.enabled = enabled;
         this.accountNonExpired = accountNonExpired;
         this.credentialsNonExpired = credentialsNonExpired;
@@ -278,6 +282,11 @@ public class SecurityUser implements UserDetails, CredentialsContainer {
         // @formatter:on
     }
 
+    @Override
+    public String getTenantName() {
+        return tenant;
+    }
+
     private static class AuthorityComparator implements Comparator<GrantedAuthority>, Serializable {
 
         private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
@@ -318,6 +327,8 @@ public class SecurityUser implements UserDetails, CredentialsContainer {
 
         private boolean disabled;
 
+        private String tenant;
+
         private Function<String, String> passwordEncoder = (password) -> password;
 
         /**
@@ -347,6 +358,11 @@ public class SecurityUser implements UserDetails, CredentialsContainer {
         public SecurityUser.UserBuilder password(String password) {
             Assert.notNull(password, "password cannot be null");
             this.password = password;
+            return this;
+        }
+
+        public SecurityUser.UserBuilder tenant(String tenant) {
+            this.tenant = tenant;
             return this;
         }
 
@@ -464,7 +480,7 @@ public class SecurityUser implements UserDetails, CredentialsContainer {
 
         public UserDetails build() {
             String encodedPassword = this.passwordEncoder.apply(this.password);
-            return new SecurityUser(this.username, encodedPassword, !this.disabled, !this.accountExpired,
+            return new SecurityUser(this.username, encodedPassword, tenant, !this.disabled, !this.accountExpired,
                     !this.credentialsExpired, !this.accountLocked, new HashSet<>(this.roles));
         }
 

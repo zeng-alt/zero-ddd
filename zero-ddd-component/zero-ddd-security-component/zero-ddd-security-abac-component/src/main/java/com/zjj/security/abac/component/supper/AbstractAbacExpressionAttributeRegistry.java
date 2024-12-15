@@ -8,11 +8,13 @@ import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.core.MethodClassKey;
 import org.springframework.lang.NonNull;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
+import org.springframework.security.core.Authentication;
 import org.springframework.util.Assert;
 
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 
 /**
  * @author zengJiaJun
@@ -31,20 +33,20 @@ public abstract class AbstractAbacExpressionAttributeRegistry<T extends PolicyRu
         this.expressionHandler = expressionHandler;
     }
 
-    public final T getPolicyRule(MethodInvocation mi) {
+    public final T getPolicyRule(Supplier<Authentication> authentication, MethodInvocation mi) {
         Method method = mi.getMethod();
         Object target = mi.getThis();
         Class<?> targetClass = (target != null) ? target.getClass() : null;
-        return getPolicyRule(method, targetClass);
+        return getPolicyRule(authentication, method, targetClass);
     }
 
-    private final T getPolicyRule(Method method, Class<?> targetClass) {
+    private final T getPolicyRule(Supplier<Authentication> authentication, Method method, Class<?> targetClass) {
         MethodClassKey cacheKey = new MethodClassKey(method, targetClass);
         Tuple2<String, String> tuple = this.cachedRoleKeys.computeIfAbsent(cacheKey, k -> resolvePolicyKey(method, targetClass));
-        return resolvePolicyRule(tuple._1, tuple._2);
+        return resolvePolicyRule(authentication, tuple._1, tuple._2);
     }
 
-    protected abstract T resolvePolicyRule(String policyKey, String resourceType);
+    protected abstract T resolvePolicyRule(Supplier<Authentication> authentication, String policyKey, String resourceType);
 
     @NonNull
     protected abstract Tuple2<String, String> resolvePolicyKey(Method method, Class<?> targetClass);

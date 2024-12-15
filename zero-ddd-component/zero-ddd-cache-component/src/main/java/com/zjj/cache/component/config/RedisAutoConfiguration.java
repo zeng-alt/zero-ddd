@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
+import com.zjj.autoconfigure.component.redis.RedisStringRepository;
+import com.zjj.cache.component.supper.RedisAbacCacheManage;
+import com.zjj.cache.component.supper.RedisRbacCacheManage;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RedissonClient;
 import org.redisson.client.codec.StringCodec;
@@ -33,6 +36,18 @@ import java.util.List;
 @Slf4j
 @AutoConfiguration(after = JacksonAutoConfiguration.class)
 public class RedisAutoConfiguration {
+
+	@Bean
+	@ConditionalOnMissingBean
+	public RedisAbacCacheManage redisAbacCacheManage() {
+		return new RedisAbacCacheManage();
+	}
+
+	@Bean
+	@ConditionalOnMissingBean
+	public RedisRbacCacheManage rbacCacheManage(RedisStringRepository redisStringRepository) {
+		return new RedisRbacCacheManage(redisStringRepository);
+	}
 
 	@Bean
 	public RedissonAutoConfigurationCustomizer redissonCustomizer(JsonJacksonCodec jsonCodec) {

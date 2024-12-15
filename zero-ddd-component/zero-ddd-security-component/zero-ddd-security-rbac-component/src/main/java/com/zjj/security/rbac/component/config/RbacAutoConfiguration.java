@@ -1,10 +1,6 @@
 package com.zjj.security.rbac.component.config;
 
-import com.zjj.security.rbac.component.supper.DefaultHttpResourceService;
-import com.zjj.security.rbac.component.supper.HttpResourceService;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.context.annotation.Bean;
 
 /**
  * @author zengJiaJun
@@ -14,9 +10,4 @@ import org.springframework.context.annotation.Bean;
 @AutoConfiguration
 public class RbacAutoConfiguration {
 
-    @Bean
-    @ConditionalOnMissingBean
-    public HttpResourceService httpResourceService() {
-        return new DefaultHttpResourceService();
-    }
 }

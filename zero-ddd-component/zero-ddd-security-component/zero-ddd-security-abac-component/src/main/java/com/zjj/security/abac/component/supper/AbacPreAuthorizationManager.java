@@ -25,7 +25,7 @@ public class AbacPreAuthorizationManager implements AuthorizationManager<MethodI
     private final AbacPreAuthorizeExpressionAttributeRegistry registry;
 
     public AuthorizationDecision check(Supplier<Authentication> authentication, MethodInvocation mi) {
-        PolicyRule policyRule = this.registry.getPolicyRule(mi);
+        PolicyRule policyRule = this.registry.getPolicyRule(authentication, mi);
         if (policyRule == null) {
             return null;
         }

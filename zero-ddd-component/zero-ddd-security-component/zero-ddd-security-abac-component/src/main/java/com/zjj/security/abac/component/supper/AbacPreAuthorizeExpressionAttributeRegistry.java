@@ -2,16 +2,19 @@ package com.zjj.security.abac.component.supper;
 
 import com.zjj.autoconfigure.component.security.abac.AbacCacheManage;
 import com.zjj.autoconfigure.component.security.abac.PolicyRule;
+import com.zjj.autoconfigure.component.tenant.TenantDetail;
 import com.zjj.security.abac.component.annotation.AbacPreAuthorize;
 import io.vavr.Tuple2;
 import org.springframework.lang.NonNull;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.authorization.method.MethodAuthorizationDeniedHandler;
 import org.springframework.security.authorization.method.ThrowingMethodAuthorizationDeniedHandler;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.SecurityAnnotationScanner;
 import org.springframework.security.core.annotation.SecurityAnnotationScanners;
 
 import java.lang.reflect.Method;
+import java.util.function.Supplier;
 
 /**
  * @author zengJiaJun
@@ -33,8 +36,17 @@ public class AbacPreAuthorizeExpressionAttributeRegistry extends AbstractAbacExp
 
 
     @Override
-    protected PolicyRule resolvePolicyRule(String policyKey, String resourceType) {
-        return abacCacheManage.getRule(policyKey, resourceType);
+    protected PolicyRule resolvePolicyRule(Supplier<Authentication> authentication, String policyKey, String resourceType) {
+        String tenant = null;
+        if (authentication.get() != null) {
+            Authentication auth = authentication.get();
+            Object principal = auth.getPrincipal();
+            if (principal instanceof TenantDetail tenantDetail) {
+                tenant = tenantDetail.getTenantName();
+            }
+        }
+
+        return abacCacheManage.getRule(tenant, policyKey, resourceType);
     }
 
     @NonNull

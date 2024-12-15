@@ -1,8 +1,5 @@
 package com.zjj.security.abac.component.annotation;
 
-import com.zjj.autoconfigure.component.security.abac.HttpResourceType;
-import com.zjj.autoconfigure.component.security.abac.ResourceType;
-import com.zjj.autoconfigure.component.security.abac.ResourceType1;
 
 import java.lang.annotation.*;
 

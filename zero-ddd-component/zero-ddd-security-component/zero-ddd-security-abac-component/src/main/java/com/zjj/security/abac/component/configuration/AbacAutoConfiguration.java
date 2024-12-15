@@ -3,6 +3,7 @@ package com.zjj.security.abac.component.configuration;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.zjj.autoconfigure.component.security.abac.AbacCacheManage;
+import com.zjj.autoconfigure.component.security.abac.PolicyRule;
 import com.zjj.security.abac.component.annotation.AbacPreAuthorize;
 import com.zjj.security.abac.component.supper.AbacMethodSecurityExpressionHandler;
 import com.zjj.security.abac.component.supper.AbacPreAuthorizationManager;
@@ -57,8 +58,8 @@ public class AbacAutoConfiguration {
     @Bean
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     public AbacPreAuthorizationManager abacPreMyAuthorizationManager(AbacPreAuthorizeExpressionAttributeRegistry abacPreAuthorizeExpressionAttributeRegistry) {
-//        return new AbacPreAuthorizationManager(abacPreAuthorizeExpressionAttributeRegistry);
-        return null;
+        return new AbacPreAuthorizationManager(abacPreAuthorizeExpressionAttributeRegistry);
+//        return null;
     }
 
     @Bean
