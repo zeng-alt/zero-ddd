@@ -46,7 +46,7 @@ public class MenuResourceController extends AbstractTxController {
     }
 
     @DeleteMapping("/{id}")
-    @AbacPreAuthorize("delete:menu:Resource")
+    @AbacPreAuthorize("delete:menu:resource")
     public String removeMenu(@PathVariable("id") Long id) {
         this.execute(() -> menuResourceHandler.handler(new RemoveMenuCmd(id)));
         return "ok";

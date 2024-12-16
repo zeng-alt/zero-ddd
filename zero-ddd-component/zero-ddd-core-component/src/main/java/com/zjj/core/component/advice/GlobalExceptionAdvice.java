@@ -18,14 +18,6 @@ public class GlobalExceptionAdvice {
 
     private final MessageSourceAccessor messageSourceAccessor;
 
-
-    @ExceptionHandler(Exception.class)
-    public Response<Void> exception(Exception e, HttpServletRequest request) {
-        String requestURI = request.getRequestURI();
-        log.error("{}: {} 请求未知异常:", request.getMethod(), requestURI, e);
-        return ExceptionResponse.of(messageSourceAccessor.getMessage("GlobalExceptionAdvice.exception.error", e.getMessage()), request);
-    }
-
     @ExceptionHandler(BaseException.class)
     public Response<Void> exception(BaseException e, HttpServletRequest request) {
         String requestURI = request.getRequestURI();
@@ -39,6 +31,20 @@ public class GlobalExceptionAdvice {
         String requestURI = request.getRequestURI();
         log.error("{} 请求异常: ", requestURI, e);
         return ExceptionResponse.of(e.getCode(), e.getMessage(), request);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public Response<Void> exception(Exception e, HttpServletRequest request) {
+        String requestURI = request.getRequestURI();
+        log.error("{}: {} 请求未知异常:", request.getMethod(), requestURI, e);
+        return ExceptionResponse.of(messageSourceAccessor.getMessage("GlobalExceptionAdvice.exception.error", e.getMessage()), request);
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public Response<Void> exception(RuntimeException e, HttpServletRequest request) {
+        String requestURI = request.getRequestURI();
+        log.error("{}: {} 请求未知运行是异常:", request.getMethod(), requestURI, e);
+        return ExceptionResponse.of(messageSourceAccessor.getMessage("GlobalExceptionAdvice.exception.error", e.getMessage()), request);
     }
 
 }

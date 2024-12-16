@@ -82,7 +82,7 @@ public class ZeroDddTenantApplication implements CommandLineRunner {
 
         httpResource.setUri("/tenant/v1/menu/resource/**");
         httpResource.setMethod(HttpMethod.DELETE.name());
-        rbacCacheManage.putHttpResource(Map.of("delete:menu:Resource", httpResource));
+        rbacCacheManage.putHttpResource(Map.of("delete:menu:resource", httpResource));
 
         GraphqlResource graphqlResource = new GraphqlResource();
         graphqlResource.setMethod(HttpMethod.POST.name());
@@ -97,7 +97,7 @@ public class ZeroDddTenantApplication implements CommandLineRunner {
         graphqlResource2.setType("query");
 
         rbacCacheManage.putGraphqlResource(Map.of("query:run", graphqlResource2, "query:findTenant", graphqlResource));
-        rbacCacheManage.putRole(Map.of("admin", Sets.newHashSet("delete:menu:Resource", "query:run", "query:findTenant")));
+        rbacCacheManage.putRole(Map.of("admin", Sets.newHashSet("delete:menu:resource", "query:run", "query:findTenant")));
         rbacCacheManage.putRole(Map.of("user", Sets.newHashSet("query:run")));
 
     }

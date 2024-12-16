@@ -40,6 +40,7 @@
         <h2.version>2.2.224</h2.version>
         <test.version>3.2.6</test.version>
         <easyexcel.version>4.0.1</easyexcel.version>
+        <fastexcel.version>1.0.0</fastexcel.version>
         <compress.version>1.26.2</compress.version>
         <gson.version>2.10.1</gson.version>
         <rxjava.version>3.1.8</rxjava.version>
@@ -250,6 +251,12 @@
                 <groupId>com.alibaba</groupId>
                 <artifactId>easyexcel</artifactId>
                 <version>${easyexcel.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.idev.excel</groupId>
+                <artifactId>fastexcel</artifactId>
+                <version>${fastexcel.version}</version>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->

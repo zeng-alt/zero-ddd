@@ -25,6 +25,11 @@
         </dependency>
 
         <dependency>
+            <groupId>cn.idev.excel</groupId>
+            <artifactId>fastexcel</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.zjj</groupId>
             <artifactId>zero-ddd-core-component</artifactId>
         </dependency>

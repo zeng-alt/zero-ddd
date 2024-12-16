@@ -1,0 +1,47 @@
+[
+  {
+    "name": "delete:menu:resource",
+    "description": "Admin can do all.",
+    "condition": "context[year] == 2024"
+  },
+  {
+    "name": "PM view his project",
+    "description": "PM read the details of his project only.",
+    "condition": "subject.role.name() == 'PM' && action == 'PROJECTS_VIEW'"
+  },
+  {
+    "name": "PM view his project's issues",
+    "description": "PM can view the issues of his project only.",
+    "condition": "subject.role.name() == 'PM' && action == 'ISSUES_LIST'"
+  },
+  {
+    "name": "PM manages project's users",
+    "description": "PM can manage users of his project only.",
+    "condition": "subject.role.name() == 'PM' && {'PROJECTS_USERS_ADD','PROJECTS_USERS_LIST','PROJECTS_USERS_REMOVE'}.contains(action)"
+  },
+  {
+    "name": "PM manages project's issues ",
+    "description": "PM can manage issues of his project only.",
+    "condition": "subject.role.name() == 'PM' && {'ISSUES_CREATE', 'ISSUES_UPDATE', 'ISSUES_DELTE', 'ISSUES_ASSIGN', 'ISSUES_STATUS_CLOSE'}.contains(action)"
+  },
+  {
+    "name": "PM creates an issue",
+    "description": "PM can add new issues to his project only.",
+    "condition": "subject.role.name() == 'PM' && action == 'ISSUES_CREATE'"
+  },
+  {
+    "name": "PM assigns issues",
+    "description": "PM can assign an issue (in his project only) to a user.",
+    "condition": "subject.role.name() == 'PM' && action == 'ISSUES_ASSIGN'"
+  },
+  {
+    "name": "Tester creates a bug",
+    "description": "Tester can add bugs (and only bugs) to his project",
+    "condition": "subject.role.name() == 'TESTER' && action == 'ISSUES_CREATE'"
+  },
+  {
+    "name": "User completes an issue",
+    "description": "Users can compelete issues assigned to them.",
+    "condition": "action == 'ISSUES_STATUS_CLOSE'"
+  }
+]

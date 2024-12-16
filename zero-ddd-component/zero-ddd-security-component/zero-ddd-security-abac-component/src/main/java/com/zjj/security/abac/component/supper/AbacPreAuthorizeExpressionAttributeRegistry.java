@@ -1,10 +1,14 @@
 package com.zjj.security.abac.component.supper;
 
 import com.zjj.autoconfigure.component.security.abac.AbacCacheManage;
+import com.zjj.autoconfigure.component.security.abac.PolicyDefinition;
 import com.zjj.autoconfigure.component.security.abac.PolicyRule;
 import com.zjj.autoconfigure.component.tenant.TenantDetail;
 import com.zjj.security.abac.component.annotation.AbacPreAuthorize;
+import com.zjj.security.abac.component.spi.ObjectAttribute;
 import io.vavr.Tuple2;
+import lombok.Getter;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.lang.NonNull;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.authorization.method.MethodAuthorizationDeniedHandler;
@@ -23,15 +27,16 @@ import java.util.function.Supplier;
  */
 public class AbacPreAuthorizeExpressionAttributeRegistry extends AbstractAbacExpressionAttributeRegistry<PolicyRule> {
 
-    private final MethodAuthorizationDeniedHandler defaultHandler = new ThrowingMethodAuthorizationDeniedHandler();
-    private final AbacCacheManage abacCacheManage;
+//    @Getter
+//    private final MethodAuthorizationDeniedHandler handler;
+    private final PolicyDefinition policyDefinition;
 
     private SecurityAnnotationScanner<AbacPreAuthorize> preAuthorizeScanner = SecurityAnnotationScanners
             .requireUnique(AbacPreAuthorize.class);
 
-    public AbacPreAuthorizeExpressionAttributeRegistry(MethodSecurityExpressionHandler expressionHandler, AbacCacheManage abacCacheManage) {
-        super(expressionHandler);
-        this.abacCacheManage = abacCacheManage;
+    public AbacPreAuthorizeExpressionAttributeRegistry(MethodSecurityExpressionHandler expressionHandler, PolicyDefinition policyDefinition, ObjectProvider<ObjectAttribute> objectAttributes) {
+        super(expressionHandler, objectAttributes);
+        this.policyDefinition = policyDefinition;
     }
 
 
@@ -46,7 +51,7 @@ public class AbacPreAuthorizeExpressionAttributeRegistry extends AbstractAbacExp
             }
         }
 
-        return abacCacheManage.getRule(tenant, policyKey, resourceType);
+        return policyDefinition.getPolicyRule(tenant, policyKey, resourceType);
     }
 
     @NonNull
