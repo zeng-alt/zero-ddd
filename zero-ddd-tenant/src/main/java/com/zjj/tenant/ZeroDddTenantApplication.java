@@ -99,7 +99,7 @@ public class ZeroDddTenantApplication implements CommandLineRunner {
 
         rbacCacheManage.putGraphqlResource(Map.of("query:run", graphqlResource2, "query:findTenant", graphqlResource));
         rbacCacheManage.putRole(Map.of("admin", Sets.newHashSet("delete:menu:resource", "query:run", "query:findTenant")));
-        rbacCacheManage.putRole(Map.of("user", Sets.newHashSet("query:run")));
+        rbacCacheManage.putRole(Map.of("user", Sets.newHashSet("query:run", "delete:menu:resource")));
 
     }
 }
