@@ -1,5 +1,7 @@
 package com.zjj.security.abac.component.supper;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -24,9 +26,13 @@ public abstract class AbstractAbacSecurityExpressionHandler<T>
         implements SecurityExpressionHandler<T>, ApplicationContextAware {
 
     private ExpressionParser expressionParser = new SpelExpressionParser();
+    @Setter
     private PermissionEvaluator permissionEvaluator = new DenyAllPermissionEvaluator();
     private RoleHierarchy roleHierarchy;
+
+    @Setter
     private MethodResolver rootMethodResolver;
+    private static final MethodResolver DEFAULT_METHOD_RESOLVER = new RootMethodResolver();
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -62,6 +68,9 @@ public abstract class AbstractAbacSecurityExpressionHandler<T>
         this.roleHierarchy = roleHierarchy;
     }
 
+    public MethodResolver getRootMethodResolver() {
+        return rootMethodResolver == null ? DEFAULT_METHOD_RESOLVER : rootMethodResolver;
+    }
 
     protected PermissionEvaluator getPermissionEvaluator() {
         return this.permissionEvaluator;
@@ -70,9 +79,7 @@ public abstract class AbstractAbacSecurityExpressionHandler<T>
     protected abstract SecurityExpressionOperations createSecurityExpressionRoot(Authentication authentication,
                                                                                  T invocation);
 
-    // TODO
     protected SimpleEvaluationContext createEvaluationContextInternal(Authentication authentication, T invocation, SecurityExpressionOperations root) {
-//        return SimpleEvaluationContext.forReadOnlyDataBinding().withRootObject(root).withMethodResolvers(rootMethodResolver).build();
-        return SimpleEvaluationContext.forReadOnlyDataBinding().withRootObject(root).build();
+        return SimpleEvaluationContext.forReadOnlyDataBinding().withRootObject(root).withMethodResolvers(getRootMethodResolver()).build();
     }
 }

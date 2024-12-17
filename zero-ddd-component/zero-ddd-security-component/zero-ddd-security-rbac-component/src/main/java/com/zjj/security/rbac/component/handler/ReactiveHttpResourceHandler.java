@@ -1,6 +1,7 @@
 package com.zjj.security.rbac.component.handler;
 
 import com.zjj.autoconfigure.component.security.rbac.HttpResource;
+import com.zjj.autoconfigure.component.security.rbac.Resource;
 import com.zjj.security.rbac.component.manager.ReactiveResourceQueryManager;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.core.Authentication;
@@ -8,6 +9,8 @@ import org.springframework.security.web.server.authorization.AuthorizationContex
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatcher;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 /**
  * @author zengJiaJun
@@ -27,6 +30,12 @@ public class ReactiveHttpResourceHandler extends AbstractReactiveResourceHandler
 
     @Override
     public Mono<Boolean> handler(Mono<Authentication> authentication, AuthorizationContext object) {
+        Mono<List<Resource>> query = reactiveResourceQueryManager.query(new HttpResource(), authentication);
+//        query.flatMap(resources -> {
+//            for (Resource resource : resources) {
+//                if (resource.c)
+//            }
+//        })
         return reactiveResourceQueryManager.authorize(create(object.getExchange()), authentication);
     }
 

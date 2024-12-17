@@ -26,8 +26,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public class JsonFilePolicyDefinition implements PolicyDefinition {
-    private static String DEFAULT_POLICY_FILE_NAME = "default-policy.json";
-
+    private static final String DEFAULT_POLICY_FILE_NAME = "default-policy.json";
 
     private Map<String, PolicyRule> rules;
 
@@ -61,7 +60,7 @@ public class JsonFilePolicyDefinition implements PolicyDefinition {
     }
 
     @Override
-    public PolicyRule getPolicyRule(String tenant, String key, String typeClass) {
+    public PolicyRule getPolicyRule(String tenant, String key, String typeClass, boolean isPreAuth) {
         return rules.getOrDefault(key, null);
     }
 

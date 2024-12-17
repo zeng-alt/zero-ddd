@@ -13,7 +13,7 @@ import java.util.List;
 public interface PolicyDefinition {
     public List<PolicyRule> getAllPolicyRules();
 
-    PolicyRule getPolicyRule(String tenant, String key, String typeClass);
+    PolicyRule getPolicyRule(String tenant, String key, String typeClass, boolean isPreAuth);
 
     PolicyRule getPolicyRule(String policyKey);
 }

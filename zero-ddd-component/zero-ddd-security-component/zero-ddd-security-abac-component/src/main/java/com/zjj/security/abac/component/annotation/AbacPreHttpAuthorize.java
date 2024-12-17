@@ -1,23 +1,21 @@
 package com.zjj.security.abac.component.annotation;
 
+import org.springframework.core.annotation.AliasFor;
 
 import java.lang.annotation.*;
 
 /**
  * @author zengJiaJun
  * @version 1.0
- * @crateTime 2024年12月12日 21:05
+ * @crateTime 2024年12月17日 21:55
  */
 @Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-public @interface AbacPreAuthorize {
+@AbacPreAuthorize
+public @interface AbacPreHttpAuthorize {
 
-    /**
-     * @return 权限的key
-     */
-    String value() default "";
-
-    String resourceType() default "http";
+    @AliasFor(annotation = AbacPreAuthorize.class)
+    String value();
 }

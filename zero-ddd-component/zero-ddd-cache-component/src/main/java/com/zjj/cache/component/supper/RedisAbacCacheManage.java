@@ -12,7 +12,7 @@ import java.util.function.Supplier;
  * @version 1.0
  */
 public class RedisAbacCacheManage implements AbacCacheManage {
-    public PolicyRule getPolicyRule(String tenant, String key, String typeClass) {
+    public PolicyRule getPolicyRule(String tenant, String key, String typeClass, boolean isPreAuth) {
         return null;
     }
 
@@ -30,4 +30,5 @@ public class RedisAbacCacheManage implements AbacCacheManage {
     public PolicyRule getPolicyRule(String policyKey) {
         return null;
     }
+
 }

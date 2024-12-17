@@ -1,7 +1,5 @@
-package com.zjj.security.abac.component.spi;
+package com.zjj.autoconfigure.component.security.abac;
 
-import io.vavr.Tuple2;
-import reactor.core.publisher.Mono;
 
 /**
  * @author zengJiaJun

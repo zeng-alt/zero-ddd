@@ -1,10 +1,11 @@
 package com.zjj.security.abac.component.supper;
 
-import com.zjj.security.abac.component.spi.EnvironmentAttribute;
-import com.zjj.security.abac.component.spi.ObjectAttribute;
-import com.zjj.security.abac.component.spi.SubjectAttribute;
+import com.zjj.autoconfigure.component.security.abac.EnvironmentAttribute;
+import com.zjj.autoconfigure.component.security.abac.SubjectAttribute;
+import com.zjj.autoconfigure.component.tenant.TenantDetail;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
@@ -14,17 +15,13 @@ import org.springframework.security.access.expression.method.MethodSecurityExpre
 import org.springframework.security.authentication.AuthenticationTrustResolver;
 import org.springframework.security.authentication.AuthenticationTrustResolverImpl;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.Assert;
+import org.springframework.util.function.SupplierUtils;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.FluxSink;
 import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
-import java.util.function.Function;
+import java.util.*;
 import java.util.function.Supplier;
 
 /**
@@ -32,26 +29,17 @@ import java.util.function.Supplier;
  * @version 1.0
  * @crateTime 2024年12月12日 21:34
  */
+@Slf4j
 @Getter
 @Setter
 public class AbacMethodSecurityExpressionHandler extends AbstractAbacSecurityExpressionHandler<MethodInvocation>
-        implements MethodSecurityExpressionHandler {
+                    implements MethodSecurityExpressionHandler {
 
     private SubjectAttribute subjectAttribute;
     private List<EnvironmentAttribute> environmentAttributes = new ArrayList<>();
     private AuthenticationTrustResolver trustResolver = new AuthenticationTrustResolverImpl();
     private String defaultRolePrefix = "";
 
-
-    @Override
-    public Object filter(Object filterTarget, Expression filterExpression, EvaluationContext ctx) {
-        return null;
-    }
-
-    @Override
-    public void setReturnObject(Object returnObject, EvaluationContext ctx) {
-
-    }
 
     @Override
     protected SecurityExpressionOperations createSecurityExpressionRoot(Authentication authentication, MethodInvocation invocation) {
@@ -61,12 +49,29 @@ public class AbacMethodSecurityExpressionHandler extends AbstractAbacSecurityExp
     private MethodSecurityExpressionOperations createSecurityExpressionRoot(Supplier<Authentication> authentication,
                                                                             MethodInvocation invocation) {
         AbacSecurityExpressionRoot root = new AbacSecurityExpressionRoot(authentication);
-        root.setThis(invocation.getThis());
+        root.setTarget(Arrays.stream(invocation.getArguments()).toList());
         root.setPermissionEvaluator(getPermissionEvaluator());
         root.setTrustResolver(getTrustResolver());
         root.setRoleHierarchy(getRoleHierarchy());
         root.setDefaultRolePrefix(getDefaultRolePrefix());
-        Mono<Object> subject = subjectAttribute == null ? Mono.empty() : Mono.create(sink -> sink.success(subjectAttribute.getSubject(authentication.get())));
+
+        Authentication resolve = SupplierUtils.resolve(authentication);
+        Object principal = resolve.getPrincipal();
+        String username = Optional.ofNullable(principal)
+                .filter(UserDetails.class::isInstance)
+                .map(UserDetails.class::cast)
+                .map(UserDetails::getUsername)
+                .orElse(null);
+        String tenant = Optional.ofNullable(principal)
+                .filter(TenantDetail.class::isInstance)
+                .map(TenantDetail.class::cast)
+                .map(TenantDetail::getTenantName)
+                .orElse(null);
+
+        Mono<Object> subject = Optional.ofNullable(subjectAttribute)
+                .map(attr -> Mono.create(sink -> sink.success(attr.getSubject(username, tenant))))
+                .orElse(Mono.empty());
+
         Flux<Map<String, Object>> mapFlux = Flux.create(fluxSink -> {
             for (EnvironmentAttribute environmentAttribute : environmentAttributes) {
                 fluxSink.next(environmentAttribute.getEnvironment(authentication.get()));
@@ -96,11 +101,25 @@ public class AbacMethodSecurityExpressionHandler extends AbstractAbacSecurityExp
         Assert.notNull(trustResolver, "trustResolver cannot be null");
         this.trustResolver = trustResolver;
     }
+    
+    
 
     /**
      * @return The current {@link AuthenticationTrustResolver}
      */
     protected AuthenticationTrustResolver getTrustResolver() {
         return this.trustResolver;
+    }
+
+
+    @Override
+    public Object filter(Object filterTarget, Expression filterExpression, EvaluationContext ctx) {
+        return null;
+    }
+
+
+    @Override
+    public void setReturnObject(Object returnObject, EvaluationContext ctx) {
+        ((MethodSecurityExpressionOperations) ctx.getRootObject().getValue()).setReturnObject(returnObject);
     }
 }

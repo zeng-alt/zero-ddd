@@ -1,0 +1,7 @@
+[
+  {
+    "name": "delete:menu:resource",
+    "description": "Admin can do all.",
+    "condition": "returnObject == 'ok'"
+  }
+]

@@ -9,6 +9,7 @@ import com.zjj.graphql.component.config.EnableGenEntityFuzzyQuery;
 import com.zjj.graphql.component.config.EnableGenEntityInput;
 import com.zjj.graphql.component.config.EnableGenEntityQuery;
 import com.zjj.graphql.component.config.EnableGenEntityType;
+import com.zjj.security.abac.component.annotation.EnableAbac;
 import com.zjj.security.core.component.domain.SecurityUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -35,7 +36,7 @@ import java.util.Set;
  * @version 1.0
  * @crateTime 2024年10月29日 21:34
  */
-@EnableMethodSecurity(prePostEnabled = false)
+@EnableAbac
 @EnableJpaRepositories(basePackages = "com.zjj")
 @SpringBootApplication
 @EnableGenEntityType
@@ -49,7 +50,7 @@ public class ZeroDddTenantApplication implements CommandLineRunner {
 
         Map<String, UserDetails> map = Map.of(
                 "root", SecurityUser.withUsername("root").password(passwordEncoder.encode("123456")).roles("admin").build(),
-                "user", SecurityUser.withUsername("user").password(passwordEncoder.encode("123456")).roles("admin").build()
+                "user", SecurityUser.withUsername("user").password(passwordEncoder.encode("123456")).roles("user").build()
         );
 
         return new UserDetailsService() {
@@ -80,7 +81,7 @@ public class ZeroDddTenantApplication implements CommandLineRunner {
     public void run(String... args) throws Exception {
         HttpResource httpResource = new HttpResource();
 
-        httpResource.setUri("/tenant/v1/menu/resource/**");
+        httpResource.setUri("/tenant/v1/menu/resource/{id}");
         httpResource.setMethod(HttpMethod.DELETE.name());
         rbacCacheManage.putHttpResource(Map.of("delete:menu:resource", httpResource));
 

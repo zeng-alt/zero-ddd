@@ -19,6 +19,7 @@ public class ReactiveResourceQueryManager {
 
     private final List<ReactiveResourceLocator> resourceLocators;
 
+    @Deprecated
     public Mono<Boolean> authorize(Resource resource, Mono<Authentication> authentication) {
         return Flux
                 .fromIterable(this.resourceLocators)

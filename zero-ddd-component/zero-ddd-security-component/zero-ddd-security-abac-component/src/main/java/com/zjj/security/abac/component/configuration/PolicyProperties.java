@@ -14,5 +14,7 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "security.filter")
 public class PolicyProperties {
 
-    private String filePath = "default-policy.json";
+    private String preFilePath = "default-pre-policy.json";
+
+    private String postFilePath = "default-post-policy.json";
 }

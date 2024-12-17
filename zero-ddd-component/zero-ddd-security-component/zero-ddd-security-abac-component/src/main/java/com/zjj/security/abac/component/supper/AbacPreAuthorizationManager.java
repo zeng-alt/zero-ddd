@@ -1,14 +1,13 @@
 package com.zjj.security.abac.component.supper;
 
 import com.zjj.autoconfigure.component.security.abac.PolicyRule;
+import com.zjj.security.abac.component.ExpressionUtils;
 import io.vavr.Tuple2;
 import lombok.RequiredArgsConstructor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.AuthorizationManager;
-import org.springframework.security.authorization.AuthorizationResult;
-import org.springframework.security.authorization.method.MethodAuthorizationDeniedHandler;
 import org.springframework.security.core.Authentication;
 import reactor.core.publisher.Flux;
 
@@ -16,7 +15,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
-@RequiredArgsConstructor  // , MethodAuthorizationDeniedHandler
+@RequiredArgsConstructor  //TODO MethodAuthorizationDeniedHandler
 public class AbacPreAuthorizationManager implements AuthorizationManager<MethodInvocation> {
 
     private final AbacPreAuthorizeExpressionAttributeRegistry registry;
@@ -36,7 +35,7 @@ public class AbacPreAuthorizationManager implements AuthorizationManager<MethodI
             return m;
         }).subscribe(m -> context.setVariable("object", m));
 
-        return new AuthorizationDecision(policyRule.getCondition().getValue(context, Boolean.class));
+        return (AuthorizationDecision) ExpressionUtils.evaluate(policyRule.getCondition(), context);
     }
 
 

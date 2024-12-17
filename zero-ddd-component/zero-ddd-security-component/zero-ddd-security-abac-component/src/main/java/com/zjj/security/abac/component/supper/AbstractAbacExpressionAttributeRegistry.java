@@ -1,10 +1,9 @@
 package com.zjj.security.abac.component.supper;
 
 import com.zjj.autoconfigure.component.security.abac.PolicyRule;
-import com.zjj.security.abac.component.spi.ObjectAttribute;
+import com.zjj.autoconfigure.component.security.abac.ObjectAttribute;
 import io.vavr.Tuple2;
 import lombok.Getter;
-import lombok.Setter;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.core.MethodClassKey;
@@ -13,14 +12,11 @@ import org.springframework.security.access.expression.method.MethodSecurityExpre
 import org.springframework.security.core.Authentication;
 import org.springframework.util.Assert;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.FluxSink;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
@@ -33,7 +29,6 @@ public abstract class AbstractAbacExpressionAttributeRegistry<T extends PolicyRu
     @Getter
     private final MethodSecurityExpressionHandler expressionHandler;
     private final Map<MethodClassKey, Tuple2<String, String>> cachedRoleKeys = new ConcurrentHashMap<>();
-
     private final Map<String, List<ObjectAttribute>> objectAttributeMap = new ConcurrentHashMap<>();
 
 

@@ -16,8 +16,8 @@ public class AbacPolicyDefinition {
 
     private final PolicyDefinition policyDefinition;
 
-    public PolicyRule getPolicyRule(String tenant, String key, String typeClass) {
-        return policyDefinition.getPolicyRule(tenant, key, typeClass);
+    public PolicyRule getPolicyRule(String tenant, String key, String typeClass, boolean isPreAuth) {
+        return policyDefinition.getPolicyRule(tenant, key, typeClass, isPreAuth);
     }
 
     public List<PolicyRule> getAllPolicyRules() {

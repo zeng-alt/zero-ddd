@@ -52,7 +52,10 @@ public abstract class AbstractReactiveResourceLocator implements ReactiveResourc
                 .filter(this::isNotAnonymous)
                 .map(this::getAuthorizationPrincipal)
                 .flatMapMany((Function<Object, Publisher<Resource>>) o -> Flux.fromIterable(list(o)))
-                .filter(r ->  r.equals(resource))
+                .filter(r ->  {
+                    System.out.println(r);
+                    return r.equals(resource);
+                })
                 .flatMap(r -> Mono.just(true))
                 .next()
                 .switchIfEmpty(Mono.just(false))

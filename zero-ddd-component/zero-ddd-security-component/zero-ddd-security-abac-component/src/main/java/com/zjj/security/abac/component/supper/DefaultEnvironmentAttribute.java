@@ -1,12 +1,13 @@
 package com.zjj.security.abac.component.supper;
 
-import com.zjj.security.abac.component.spi.EnvironmentAttribute;
+import com.zjj.autoconfigure.component.security.abac.EnvironmentAttribute;
 import io.vavr.control.Option;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -35,6 +36,7 @@ public class DefaultEnvironmentAttribute implements EnvironmentAttribute {
         result.put("month", now.getMonthValue());
         result.put("day", now.getDayOfMonth());
         result.put("hour", now.getHour());
+        result.put("list", List.of("uu", "uu", "uu1"));
 
         return result;
     }

@@ -2,12 +2,12 @@
   {
     "name": "delete:menu:resource",
     "description": "Admin can do all.",
-    "condition": "context[year] == 2024"
+    "condition": "allMatch(context[list], 'uu')"
   },
   {
-    "name": "PM view his project",
+    "name": "get:menu:false",
     "description": "PM read the details of his project only.",
-    "condition": "subject.role.name() == 'PM' && action == 'PROJECTS_VIEW'"
+    "condition": "hasPermission('get:menu:set', 'r')"
   },
   {
     "name": "PM view his project's issues",
