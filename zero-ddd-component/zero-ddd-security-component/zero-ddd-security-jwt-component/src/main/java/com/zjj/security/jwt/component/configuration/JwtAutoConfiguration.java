@@ -3,6 +3,7 @@ package com.zjj.security.jwt.component.configuration;
 import com.zjj.autoconfigure.component.security.SecurityBuilderCustomizer;
 import com.zjj.autoconfigure.component.security.jwt.JwtCacheManage;
 import com.zjj.autoconfigure.component.security.jwt.JwtHelper;
+import com.zjj.autoconfigure.component.security.jwt.JwtProperties;
 import com.zjj.security.jwt.component.JwtAuthenticationTokenFilter;
 import com.zjj.security.jwt.component.JwtRenewFilter;
 import com.zjj.security.jwt.component.supper.*;
@@ -30,9 +31,9 @@ public class JwtAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean
 	public JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter(JwtHelper jwtHelper,
-			JwtCacheManage jwtCacheManage) {
+																	 JwtCacheManage jwtCacheManage, JwtProperties jwtProperties) {
 
-		return new DefaultJwtAuthenticationTokenFilter(jwtHelper, jwtCacheManage);
+		return new DefaultJwtAuthenticationTokenFilter(jwtHelper, jwtCacheManage, jwtProperties);
 	}
 
 	@Bean

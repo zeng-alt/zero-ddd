@@ -1,39 +1,34 @@
 package com.zjj.security.abac.component.annotation;
 
-import com.zjj.security.abac.component.configuration.AbacAutoConfiguration;
 import org.springframework.context.annotation.AdviceMode;
-import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.AliasFor;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 
 import java.lang.annotation.*;
 
 /**
  * @author zengJiaJun
  * @version 1.0
- * @crateTime 2024年12月17日 09:58
+ * @crateTime 2024年12月18日 21:49
  */
 @Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-@EnableMethodSecurity
-@Import(AbacAutoConfiguration.class)
-public @interface EnableAbac {
+@EnableReactiveMethodSecurity
+public @interface EnableReactiveAbac {
 
-    @AliasFor(annotation = EnableMethodSecurity.class)
-    boolean prePostEnabled() default true;
+    @AliasFor(annotation = EnableReactiveMethodSecurity.class)
+    boolean prePostEnabled() default false;
 
-    @AliasFor(annotation = EnableMethodSecurity.class)
+    @AliasFor(annotation = EnableReactiveMethodSecurity.class)
     boolean securedEnabled() default false;
 
     /**
      * Determines if JSR-250 annotations should be enabled. Default is false.
      * @return true if JSR-250 should be enabled false otherwise
      */
-    @AliasFor(annotation = EnableMethodSecurity.class)
+    @AliasFor(annotation = EnableReactiveMethodSecurity.class)
     boolean jsr250Enabled() default false;
 
     /**
@@ -49,7 +44,7 @@ public @interface EnableAbac {
      * expecting one type of proxy vs another, e.g. in tests.
      * @return true if subclass-based (CGLIB) proxies are to be created
      */
-    @AliasFor(annotation = EnableMethodSecurity.class)
+    @AliasFor(annotation = EnableReactiveMethodSecurity.class)
     boolean proxyTargetClass() default false;
 
     /**
@@ -58,7 +53,7 @@ public @interface EnableAbac {
      * @see AdviceMode
      * @return the {@link AdviceMode} to use
      */
-    @AliasFor(annotation = EnableMethodSecurity.class)
+    @AliasFor(annotation = EnableReactiveMethodSecurity.class)
     AdviceMode mode() default AdviceMode.PROXY;
 
     /**
@@ -69,6 +64,6 @@ public @interface EnableAbac {
      * @return the offset in the order the security advisor should be applied
      * @since 6.3
      */
-    @AliasFor(annotation = EnableMethodSecurity.class)
+    @AliasFor(annotation = EnableReactiveMethodSecurity.class)
     int offset() default 0;
 }

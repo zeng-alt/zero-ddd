@@ -1,9 +1,6 @@
 package com.zjj.tenant.interfaces.mvc;
 
 import com.zjj.domain.component.AbstractTxController;
-import com.zjj.security.abac.component.annotation.AbacPostAuthorize;
-import com.zjj.security.abac.component.annotation.AbacPreAuthorize;
-import com.zjj.security.abac.component.annotation.AbacPreHttpAuthorize;
 import com.zjj.tenant.domain.menu.MenuResourceHandler;
 import com.zjj.tenant.domain.menu.cmd.DisableMenuCmd;
 import com.zjj.tenant.domain.menu.cmd.EnableMenuCmd;
@@ -13,6 +10,7 @@ import com.zjj.tenant.interfaces.mvc.form.StockInMenuResourceForm;
 import io.github.linpeilie.Converter;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -48,8 +46,9 @@ public class MenuResourceController extends AbstractTxController {
     }
 
     @DeleteMapping("/{id}")
-    @AbacPreHttpAuthorize("get:menu:false")
-    @AbacPostAuthorize("delete:menu:resource")
+    @PreAuthorize("hasPermission('delete:menu:resource', 'r')")
+//    @AbacPreHttpAuthorize("get:menu:false")
+//    @AbacPostAuthorize("delete:menu:resource")
     public String removeMenu(@PathVariable("id") Long id) {
         this.execute(() -> menuResourceHandler.handler(new RemoveMenuCmd(id)));
         return "ok";

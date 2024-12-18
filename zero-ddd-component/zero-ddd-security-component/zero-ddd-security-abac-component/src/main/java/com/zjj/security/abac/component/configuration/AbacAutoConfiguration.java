@@ -2,12 +2,12 @@ package com.zjj.security.abac.component.configuration;
 
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.zjj.autoconfigure.component.security.abac.EnvironmentAttribute;
+import com.zjj.autoconfigure.component.security.abac.ObjectAttribute;
 import com.zjj.autoconfigure.component.security.abac.PolicyDefinition;
 import com.zjj.security.abac.component.advice.AbacExceptionAdvice;
 import com.zjj.security.abac.component.annotation.AbacPostAuthorize;
 import com.zjj.security.abac.component.annotation.AbacPreAuthorize;
-import com.zjj.autoconfigure.component.security.abac.EnvironmentAttribute;
-import com.zjj.autoconfigure.component.security.abac.ObjectAttribute;
 import com.zjj.security.abac.component.supper.*;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.Pointcut;
@@ -16,7 +16,6 @@ import org.springframework.aop.support.Pointcuts;
 import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -35,7 +34,6 @@ import java.lang.annotation.Annotation;
  * @version 1.0
  * @crateTime 2024年12月12日 21:29
  */
-@AutoConfiguration
 @EnableConfigurationProperties(PolicyProperties.class)
 public class AbacAutoConfiguration {
 
@@ -119,6 +117,46 @@ public class AbacAutoConfiguration {
     public DefaultEnvironmentAttribute defaultEnvironmentAttribute() {
         return new DefaultEnvironmentAttribute();
     }
+
+
+//    @RouterOperations({
+//            @RouterOperation(
+//                    path = "/model/building/{entId}/stations",
+//                    beanClass = AbacModelHandler.class,
+//                    beanMethod = "getStations",
+//                    method = RequestMethod.GET,
+//                    operation = @Operation(
+//                            operationId = "getStations",
+//                            parameters = @Parameter(
+//                                    name = "entId",
+//                                    in = ParameterIn.PATH,
+//                                    required = true,
+//                                    description = "企业ID"
+//                            )
+//                    )
+//            ),
+//            @RouterOperation(
+//                    path = "/model/building/devices/points/real-time-data",
+//                    beanClass = AbacModelHandler.class,
+//                    beanMethod = "getRealTimeData",
+//                    operation = @Operation(
+//                            operationId = "getRealTimeData",
+//                            requestBody = @RequestBody(
+//                                    required = true,
+//                                    description = "请求体",
+//                                    content = @Content(
+//                                            schema = @Schema(implementation = RealTimeDataQueryVO.class)
+//                                    )
+//                            )
+//                    )
+//            )
+//    })
+//    @Bean
+//    public RouterFunction<ServerResponse> abacRouterFunction(AbacModelHandler abacModelHandler) {
+//        return RouterFunctions.nest(path("/abac"),
+//                    RouterFunctions.route(GET("/{routkey}"), abacModelHandler::getStations)
+//                );
+//    }
 
     private static Pointcut classOrMethod(Class<? extends Annotation> annotation) {
         return Pointcuts.union(new AnnotationMatchingPointcut(null, annotation, true),

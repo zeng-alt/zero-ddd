@@ -11,8 +11,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
+import java.util.UUID;
 
 /**
  * @author zengJiaJun
@@ -26,7 +28,6 @@ public class DefaultLoginSuccessHandler extends LoginSuccessHandler {
 	}
 
 	/**
-	 * 只支持用户在一个机器上登录，多个登录会退出前面的登录
 	 * @param request request
 	 * @param response response
 	 * @param authentication 登录成功的用户
@@ -37,8 +38,9 @@ public class DefaultLoginSuccessHandler extends LoginSuccessHandler {
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException {
 		UserDetails principal = (UserDetails) authentication.getPrincipal();
-		String jwt = jwtHelper.generateJWT(principal.getUsername());
-		jwtCacheManage.put(principal.getUsername(), principal);
+		String soleId = principal.getUsername() + ":" + UUID.randomUUID();
+		String jwt = jwtHelper.generateJWT(soleId);
+		jwtCacheManage.put(soleId, principal);
 		AuthenticationHelper.renderString(response, HttpStatus.OK.value(), "登录成功", jwt);
 	}
 

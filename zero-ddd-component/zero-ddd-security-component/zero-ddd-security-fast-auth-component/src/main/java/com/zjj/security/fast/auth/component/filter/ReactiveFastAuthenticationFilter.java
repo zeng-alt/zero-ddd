@@ -35,9 +35,9 @@ public class ReactiveFastAuthenticationFilter implements WebFilter {
         if (CollectionUtils.isEmpty(list)) {
             return chain.filter(exchange);
         }
-        String username = list.get(0);
-        if (StringUtils.hasText(username)) {
-            UserDetails user = jwtCacheManage.get(username);
+        String soleId = list.get(0);
+        if (StringUtils.hasText(soleId)) {
+            UserDetails user = jwtCacheManage.get(soleId);
             if (user == null) {
                 throw new BadCredentialsException("用户登录时间过期，重新登录");
             }

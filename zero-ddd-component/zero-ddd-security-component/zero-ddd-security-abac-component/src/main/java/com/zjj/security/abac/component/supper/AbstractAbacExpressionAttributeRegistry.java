@@ -57,7 +57,7 @@ public abstract class AbstractAbacExpressionAttributeRegistry<T extends PolicyRu
         return Flux.create(sink -> {
             List<ObjectAttribute> objectAttributes = objectAttributeMap.get(tuple._1);
             for (ObjectAttribute objectAttribute : objectAttributes) {
-                sink.next(new Tuple2<>(objectAttribute.getObjectName(), objectAttribute.getObject()));
+                sink.next(new Tuple2<>(objectAttribute.getPolicyKey(), objectAttribute.getObject()));
             }
             sink.complete();
         });

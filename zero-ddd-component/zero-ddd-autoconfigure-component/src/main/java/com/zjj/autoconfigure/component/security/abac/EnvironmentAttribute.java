@@ -11,4 +11,6 @@ import java.util.Map;
  */
 public interface EnvironmentAttribute {
     Map<String, Object> getEnvironment(Authentication authentication);
+
+    Map<String, Class<?>> getEnvironmentType();
 }

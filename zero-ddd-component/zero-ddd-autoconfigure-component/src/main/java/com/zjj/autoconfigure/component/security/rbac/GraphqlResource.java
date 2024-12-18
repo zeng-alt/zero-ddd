@@ -2,6 +2,7 @@ package com.zjj.autoconfigure.component.security.rbac;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.Objects;
 
@@ -12,6 +13,7 @@ import java.util.Objects;
  */
 @Getter
 @Setter
+@ToString(callSuper = true)
 public class GraphqlResource extends AbstractResource {
     private String type;
     private String functionName;

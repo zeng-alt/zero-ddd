@@ -6,9 +6,9 @@ package com.zjj.autoconfigure.component.security.abac;
  * @version 1.0
  * @crateTime 2024年12月13日 21:14
  */
-public interface ObjectAttribute {
+public interface ObjectAttribute<T> {
 
-    Object getObject();
+    T getObject();
 
-    String getObjectName();
+    String getPolicyKey();
 }

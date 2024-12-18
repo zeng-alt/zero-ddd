@@ -28,8 +28,12 @@ public class HttpResourceHandler extends AbstractResourceHandler {
     @Override
     public Boolean handler(Authentication authentication, RequestAuthorizationContext object) {
         List<Resource> resources = resourceQueryManager.query(new HttpResource(), authentication);
-        HttpResource targetResource = create(object);
-        return new HashSet<>(resources).contains(targetResource);
+        for (Resource resource : resources) {
+            if (resource.compareTo(object.getRequest())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public HttpResource create(RequestAuthorizationContext object) {

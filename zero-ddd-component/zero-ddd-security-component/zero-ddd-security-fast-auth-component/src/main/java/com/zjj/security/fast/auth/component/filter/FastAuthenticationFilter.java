@@ -1,5 +1,6 @@
 package com.zjj.security.fast.auth.component.filter;
 
+import com.zjj.autoconfigure.component.security.AuthenticationHelper;
 import com.zjj.autoconfigure.component.security.jwt.JwtCacheManage;
 import com.zjj.autoconfigure.component.security.jwt.JwtProperties;
 import jakarta.servlet.FilterChain;
@@ -30,18 +31,17 @@ public class FastAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String username = request.getHeader(jwtProperties.getFastToken());
-        if (StringUtils.hasText(username)) {
-            UserDetails user = jwtCacheManage.get(username);
+        String soleId = request.getHeader(jwtProperties.getFastToken());
+        if (StringUtils.hasText(soleId)) {
+            UserDetails user = jwtCacheManage.get(soleId);
             if (user == null) {
-                throw new BadCredentialsException("用户登录时间过期，重新登录");
+                AuthenticationHelper.setErrorMsg(request, new BadCredentialsException("fastAuth验证失败, 检查jwt校验！！！"));
             }
             UsernamePasswordAuthenticationToken authenticationToken = UsernamePasswordAuthenticationToken.authenticated(user,
                     null, user.getAuthorities());
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         }
-
         filterChain.doFilter(request, response);
     }
 }

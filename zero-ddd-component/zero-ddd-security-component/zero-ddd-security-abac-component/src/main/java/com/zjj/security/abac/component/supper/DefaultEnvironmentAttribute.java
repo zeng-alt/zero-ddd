@@ -40,4 +40,24 @@ public class DefaultEnvironmentAttribute implements EnvironmentAttribute {
 
         return result;
     }
+
+    @Override
+    public Map<String, Class<?>> getEnvironmentType() {
+//        return Map.of(
+//                "now", LocalDateTime.class,
+//                "year", Integer.class,
+//                "month", Integer.class,
+//                "day", Integer.class,
+//                "hour", Integer.class,
+//                "list", List<String>.class
+//        );
+
+        return Map.of(
+            "now", LocalDateTime.class,
+            "year", Integer.class,
+            "month", Integer.class,
+            "day", Integer.class,
+            "hour", Integer.class
+        );
+    }
 }

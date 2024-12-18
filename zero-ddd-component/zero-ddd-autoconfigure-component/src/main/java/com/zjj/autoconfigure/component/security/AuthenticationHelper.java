@@ -30,8 +30,9 @@ public final class AuthenticationHelper {
 	private AuthenticationHelper() {
 	}
 
-	public static void setErrorMsg(@NonNull HttpServletRequest request, @NonNull Exception e) {
+	public static void setErrorMsg(@NonNull HttpServletRequest request, @NonNull RuntimeException e) throws RuntimeException {
 		request.setAttribute(ERROR_KEY, e.getMessage());
+		throw e;
 	}
 
 	@NonNull
@@ -50,12 +51,13 @@ public final class AuthenticationHelper {
 			response.setCharacterEncoding("utf-8");
 			String result = """
 					{
-					    "status":   "%d",
-					    "msg":      "%s",
+					    "code":   "%d",
+					    "message":      "%s",
 					    "data":     "%s",
-					    "date":     "%s"
+					    "time":     "%s",
+					    "success": "%s"
 					}
-					""".formatted(status, msg, data, LocalDateTime.now().format(DATE_TIME_FORMATTER));
+					""".formatted(status, msg, data, LocalDateTime.now().format(DATE_TIME_FORMATTER), status == 200);
 			response.getWriter().print(result);
 		}
 		catch (IOException e) {
@@ -70,11 +72,12 @@ public final class AuthenticationHelper {
 			response.setCharacterEncoding("utf-8");
 			String result = """
 					{
-					    "status":   "%d",
-					    "msg":      "%s",
-					    "date":     "%s"
+					    "code":   "%d",
+					    "message":      "%s",
+					    "time":     "%s",
+					    "success": "%s"
 					}
-					""".formatted(status, msg, LocalDateTime.now().format(DATE_TIME_FORMATTER));
+					""".formatted(status, msg, LocalDateTime.now().format(DATE_TIME_FORMATTER), status == 200);
 			response.getWriter().print(result);
 		}
 		catch (IOException e) {
@@ -86,12 +89,13 @@ public final class AuthenticationHelper {
 		response.setStatusCode(HttpStatus.OK);
 		response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
 		String result = """
-                {
-                    "status":   "%d",
-                    "msg":      "%s",
-                    "date":     "%s"
-                }
-                """.formatted(status, msg, LocalDateTime.now().format(DATE_TIME_FORMATTER));
+					{
+					    "code":   "%d",
+					    "message":      "%s",
+					    "time":     "%s",
+					    "success": "%s"
+					}
+					""".formatted(status, msg, LocalDateTime.now().format(DATE_TIME_FORMATTER), status == 200);
 		DataBufferFactory dataBufferFactory = response.bufferFactory();
 		return dataBufferFactory.wrap(result.getBytes(Charset.defaultCharset()));
 	}

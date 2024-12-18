@@ -1,5 +1,6 @@
 package com.zjj.security.jwt.component.supper;
 
+import com.zjj.autoconfigure.component.security.jwt.JwtProperties;
 import com.zjj.security.jwt.component.JwtAuthenticationTokenFilter;
 import com.zjj.autoconfigure.component.security.jwt.JwtCacheManage;
 import com.zjj.security.jwt.component.JwtDetail;
@@ -7,6 +8,7 @@ import com.zjj.autoconfigure.component.security.jwt.JwtHelper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,7 +19,7 @@ import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author zengJiaJun
@@ -26,8 +28,8 @@ import java.util.Map;
  */
 public class DefaultJwtAuthenticationTokenFilter extends JwtAuthenticationTokenFilter {
 
-	public DefaultJwtAuthenticationTokenFilter(JwtHelper jwtHelper, JwtCacheManage jwtCacheManage) {
-		super(jwtHelper, jwtCacheManage);
+	public DefaultJwtAuthenticationTokenFilter(JwtHelper jwtHelper, JwtCacheManage jwtCacheManage, JwtProperties jwtProperties) {
+		super(jwtHelper, jwtCacheManage, jwtProperties);
 	}
 
 	@Override
@@ -36,9 +38,9 @@ public class DefaultJwtAuthenticationTokenFilter extends JwtAuthenticationTokenF
 		String token = request.getHeader(jwtHelper.tokenHeader());
 		if (StringUtils.hasText(token)) {
 			Map<String, Object> claims = jwtHelper.getClaimsFromToken(token);
-			String username = (String) jwtHelper.getClaim(claims);
+			String soleId = (String) jwtHelper.getClaim(claims);
 			LocalDateTime expire = jwtHelper.getExpire(claims);
-			UserDetails user = jwtCacheManage.get(username);
+			UserDetails user = jwtCacheManage.get(soleId);
 			if (user == null) {
 				throw new BadCredentialsException("用户登录时间过期，重新登录");
 			}
@@ -48,10 +50,52 @@ public class DefaultJwtAuthenticationTokenFilter extends JwtAuthenticationTokenF
 			authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 			SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 			request.setAttribute(DefaultJwtRenewFilter.RENEW_KEY,
-					JwtDetail.builder().id(username).user(user).expire(expire).build());
+					JwtDetail.builder().id(soleId).user(user).expire(expire).build());
+
+			CustomHeadRequestWrapper requestWrapper = new CustomHeadRequestWrapper(request);
+			requestWrapper.addHeader(jwtProperties.getFastToken(), soleId);
+			request = requestWrapper;
 		}
 
 		filterChain.doFilter(request, response);
+	}
+
+	public static class CustomHeadRequestWrapper extends HttpServletRequestWrapper {
+
+		private Map<String, String> headerMap = new HashMap<>();
+
+		public CustomHeadRequestWrapper(HttpServletRequest request) {
+			super(request);
+		}
+
+		public void addHeader(String name, String value) {
+			headerMap.put(name, value);
+		}
+
+		@Override
+		public String getHeader(String name) {
+			String headerValue = super.getHeader(name);
+			if (headerMap.containsKey(name)) {
+				headerValue = headerMap.get(name);
+			}
+			return headerValue;
+		}
+
+		@Override
+		public Enumeration<String> getHeaderNames() {
+			List<String> names = Collections.list(super.getHeaderNames());
+            names.addAll(headerMap.keySet());
+			return Collections.enumeration(names);
+		}
+
+		@Override
+		public Enumeration<String> getHeaders(String name) {
+			List<String> values = Collections.list(super.getHeaders(name));
+			if (headerMap.containsKey(name)) {
+				values.add(headerMap.get(name));
+			}
+			return Collections.enumeration(values);
+		}
 	}
 
 }

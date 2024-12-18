@@ -3,6 +3,7 @@ package com.zjj.autoconfigure.component.security.rbac;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.http.HttpMethod;
 
 import java.util.Objects;
@@ -14,6 +15,7 @@ import java.util.Objects;
  */
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
+@ToString
 public class AbstractResource implements Resource {
 
     protected String uri;

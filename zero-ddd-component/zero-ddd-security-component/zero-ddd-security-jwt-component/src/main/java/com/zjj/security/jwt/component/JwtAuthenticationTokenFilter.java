@@ -2,6 +2,7 @@ package com.zjj.security.jwt.component;
 
 import com.zjj.autoconfigure.component.security.jwt.JwtCacheManage;
 import com.zjj.autoconfigure.component.security.jwt.JwtHelper;
+import com.zjj.autoconfigure.component.security.jwt.JwtProperties;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 /**
@@ -13,10 +14,12 @@ public abstract class JwtAuthenticationTokenFilter extends OncePerRequestFilter 
 
 	protected final JwtHelper jwtHelper;
 	protected final JwtCacheManage jwtCacheManage;
+	protected final JwtProperties jwtProperties;
 
-	protected JwtAuthenticationTokenFilter(JwtHelper jwtHelper, JwtCacheManage jwtCacheManage) {
+	protected JwtAuthenticationTokenFilter(JwtHelper jwtHelper, JwtCacheManage jwtCacheManage, JwtProperties jwtProperties) {
 		this.jwtHelper = jwtHelper;
 		this.jwtCacheManage = jwtCacheManage;
+		this.jwtProperties = jwtProperties;
 	}
 
 }
