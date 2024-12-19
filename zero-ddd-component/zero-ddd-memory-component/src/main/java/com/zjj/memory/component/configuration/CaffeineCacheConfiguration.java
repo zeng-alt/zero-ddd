@@ -19,6 +19,8 @@ package com.zjj.memory.component.configuration;
 import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.CaffeineSpec;
+import com.zjj.autoconfigure.component.security.rbac.RbacCacheManage;
+import com.zjj.memory.component.supper.CaffeineRbacCacheManage;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -28,6 +30,7 @@ import org.springframework.boot.autoconfigure.cache.CacheProperties;
 import org.springframework.boot.autoconfigure.cache.CacheType;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.CacheManager;
@@ -69,6 +72,23 @@ class CaffeineCacheConfiguration {
 		}
 		customizers.forEach(customizer -> customizer.customize(cacheManager));
 		return cacheManager;
+	}
+
+	@Bean
+	@ConditionalOnMissingClass("com.zjj.rbac.component.supper.RbacCacheManage")
+	public CacheManagerCustomizer<CaffeineCacheManager> rbacCacheMangerCustomizer() {
+		return cacheManager -> {
+            cacheManager.registerCustomCache(RbacCacheManage.HTTP_RESOURCE_KEY, Caffeine.newBuilder().build());
+            cacheManager.registerCustomCache(RbacCacheManage.GRAPHQL_RESOURCE_KEY, Caffeine.newBuilder().build());
+            cacheManager.registerCustomCache(RbacCacheManage.ROLE_KEY, Caffeine.newBuilder().build());
+        };
+	}
+
+	@Bean
+	@ConditionalOnMissingBean(RbacCacheManage.class)
+	@ConditionalOnMissingClass("com.zjj.rbac.component.supper.RbacCacheManage")
+	public CaffeineRbacCacheManage caffeineRbacCacheManage(CaffeineCacheManager cacheManager) {
+		return new CaffeineRbacCacheManage(cacheManager);
 	}
 
 	private CaffeineCacheManager createCacheManager(CacheProperties cacheProperties,

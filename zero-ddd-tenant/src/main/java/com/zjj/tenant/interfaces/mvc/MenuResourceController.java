@@ -1,6 +1,7 @@
 package com.zjj.tenant.interfaces.mvc;
 
 import com.zjj.domain.component.AbstractTxController;
+import com.zjj.security.abac.component.annotation.AbacPostAuthorize;
 import com.zjj.tenant.domain.menu.MenuResourceHandler;
 import com.zjj.tenant.domain.menu.cmd.DisableMenuCmd;
 import com.zjj.tenant.domain.menu.cmd.EnableMenuCmd;
@@ -48,7 +49,7 @@ public class MenuResourceController extends AbstractTxController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasPermission('delete:menu:resource', 'r')")
 //    @AbacPreHttpAuthorize("get:menu:false")
-//    @AbacPostAuthorize("delete:menu:resource")
+    @AbacPostAuthorize("delete:menu:resource")
     public String removeMenu(@PathVariable("id") Long id) {
         this.execute(() -> menuResourceHandler.handler(new RemoveMenuCmd(id)));
         return "ok";

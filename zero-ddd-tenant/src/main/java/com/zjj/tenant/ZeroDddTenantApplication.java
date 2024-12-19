@@ -4,28 +4,38 @@ import com.google.common.collect.Sets;
 import com.zjj.autoconfigure.component.security.rbac.GraphqlResource;
 import com.zjj.autoconfigure.component.security.rbac.HttpResource;
 import com.zjj.autoconfigure.component.security.rbac.RbacCacheManage;
-import com.zjj.bean.componenet.BeanHelper;
 import com.zjj.graphql.component.config.EnableGenEntityFuzzyQuery;
 import com.zjj.graphql.component.config.EnableGenEntityInput;
 import com.zjj.graphql.component.config.EnableGenEntityQuery;
 import com.zjj.graphql.component.config.EnableGenEntityType;
+import com.zjj.security.abac.component.annotation.AbacPostAuthorize;
+import com.zjj.security.abac.component.annotation.AbacPreAuthorize;
 import com.zjj.security.abac.component.annotation.EnableAbac;
-import com.zjj.security.core.component.domain.SecurityUser;
+import com.zjj.autoconfigure.component.security.SecurityUser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
+import org.springframework.context.annotation.ScannedGenericBeanDefinition;
+import org.springframework.core.annotation.AnnotatedElementUtils;
+import org.springframework.core.annotation.MergedAnnotations;
+import org.springframework.core.type.MethodMetadata;
+import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.stereotype.Component;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -66,15 +76,67 @@ public class ZeroDddTenantApplication implements CommandLineRunner {
     @Autowired
     private RbacCacheManage rbacCacheManage;
 
-    public static void main(String[] args) {
-        ConfigurableApplicationContext run = SpringApplication.run(ZeroDddTenantApplication.class, args);
-//        ApplicationModules modules = ApplicationModules.of(ZeroDddTenantApplication.class);
+    public static void main(String[] args) throws ClassNotFoundException {
+        ConfigurableApplicationContext application = SpringApplication.run(ZeroDddTenantApplication.class, args);
+
+//        new SpringApplicationBuilder(ZeroDddTenantApplication.class)
+//                .applicationStartup(new BufferingApplicationStartup(2048))
+//                .run(args);
+
+        List<? extends Class<?>> list = application.getBeansWithAnnotation(Component.class).values().stream().map(Object::getClass).filter(a -> a.getName().startsWith("com.zjj")).toList();
+        for (Class<?> aClass : list) {
+            Method[] methods = aClass.getDeclaredMethods();
+            for (Method method : methods) {
+                Set<Annotation> allMergedAnnotations = AnnotatedElementUtils.findAllMergedAnnotations(method, Set.of(AbacPostAuthorize.class, AbacPreAuthorize.class));
+                if (!allMergedAnnotations.isEmpty()) {
+                    System.out.println(aClass.getName());
+                    // 拿到参数和返回值
+                    String[] parameterTypes = Arrays.stream(method.getParameterTypes()).map(Class::getName).toArray(String[]::new);
+                }
+            }
+        }
+
+        ClassPathScanningCandidateComponentProvider scanner = new ClassPathScanningCandidateComponentProvider(false);
+        scanner.addIncludeFilter(new AnnotationTypeFilter(Component.class));
+        Set<BeanDefinition> beanDefinitions = scanner.findCandidateComponents("com.zjj");
+        for (BeanDefinition beanDefinition : beanDefinitions) {
+            Class<?> aClass = Class.forName(beanDefinition.getBeanClassName());
+            Method[] methods = aClass.getDeclaredMethods();
+            for (Method method : methods) {
+                Set<Annotation> allMergedAnnotations = AnnotatedElementUtils.findAllMergedAnnotations(method, Set.of(AbacPostAuthorize.class, AbacPreAuthorize.class));
+                if (!allMergedAnnotations.isEmpty()) {
+                    System.out.println(beanDefinition.getBeanClassName());
+                    // 拿到参数和返回值
+                    String[] parameterTypes = Arrays.stream(method.getParameterTypes()).map(Class::getName).toArray(String[]::new);
+                    String returnType = method.getReturnType().getName();
+                    System.out.println(parameterTypes);
+                    System.out.println(returnType);
+                }
+            }
+            Set<MethodMetadata> declaredMethods = ((ScannedGenericBeanDefinition) beanDefinition).getMetadata().getDeclaredMethods();
+            for (MethodMetadata methodMetadata : declaredMethods) {
+                MergedAnnotations annotations = methodMetadata.getAnnotations();
+                if (annotations.isPresent(AbacPreAuthorize.class) || annotations.isPresent(AbacPostAuthorize.class)) {
+                    System.out.println(beanDefinition.getBeanClassName());
+                    // 拿到参数和返回值
+//                    String[] parameterTypes = methodMetadata.getParameterTypes().stream().map(Class::getName).toArray(String[]::new);
+                }
+            }
+
+
+        }
+        System.out.println();
+
+
+        //        ApplicationModules modules = ApplicationModules.of(ZeroDddTenantApplication.class);
 //        modules.forEach(System.out::println);
 //        modules.verify();
 //        new Documenter(modules)
 //                .writeModulesAsPlantUml()
 //                .writeIndividualModulesAsPlantUml();
-        System.out.println(run);
+//        System.out.println(application);
+
+
     }
 
     @Override

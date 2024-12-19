@@ -2,6 +2,7 @@ package com.zjj.autoconfigure.component.l2cache;
 
 
 import java.time.Duration;
+import java.util.Set;
 
 /**
  * @author zengJiaJun
@@ -21,4 +22,6 @@ public interface L2Cache<K, V> extends org.springframework.cache.Cache {
     void clearLocalBatch(Iterable<Object> key);
 
     void clearLocal(Object key);
+
+    Set<K> getKeys();
 }

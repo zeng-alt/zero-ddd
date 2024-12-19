@@ -1,5 +1,6 @@
 package com.zjj.security.jwt.component.supper;
 
+import com.zjj.autoconfigure.component.security.SecurityUser;
 import com.zjj.autoconfigure.component.security.jwt.JwtProperties;
 import com.zjj.security.jwt.component.JwtAuthenticationTokenFilter;
 import com.zjj.autoconfigure.component.security.jwt.JwtCacheManage;
@@ -39,7 +40,7 @@ public class DefaultJwtAuthenticationTokenFilter extends JwtAuthenticationTokenF
 		if (StringUtils.hasText(token)) {
 			Map<String, Object> claims = jwtHelper.getClaimsFromToken(token);
 			String soleId = (String) jwtHelper.getClaim(claims);
-			LocalDateTime expire = jwtHelper.getExpire(claims);
+
 			UserDetails user = jwtCacheManage.get(soleId);
 			if (user == null) {
 				throw new BadCredentialsException("用户登录时间过期，重新登录");
@@ -49,6 +50,12 @@ public class DefaultJwtAuthenticationTokenFilter extends JwtAuthenticationTokenF
 					null, user.getAuthorities());
 			authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 			SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
+			LocalDateTime expire = LocalDateTime.now();
+			if (user instanceof SecurityUser securityUser) {
+				expire = securityUser.getExpire();
+			}
+
 			request.setAttribute(DefaultJwtRenewFilter.RENEW_KEY,
 					JwtDetail.builder().id(soleId).user(user).expire(expire).build());
 

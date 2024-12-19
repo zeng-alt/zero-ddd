@@ -1,11 +1,14 @@
 package com.zjj.security.tenant.component.supper;
 
+import com.zjj.autoconfigure.component.l2cache.L2Cache;
 import com.zjj.autoconfigure.component.l2cache.L2CacheManage;
 import com.zjj.autoconfigure.component.security.jwt.JwtCacheManage;
 import com.zjj.tenant.component.spi.TenantContextHolder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.util.StringUtils;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author zengJiaJun
@@ -34,5 +37,14 @@ public class TenantJwtL2CacheManage implements JwtCacheManage {
     public void put(String id, UserDetails userDetails) {
         String tenant = tenantContextHolder.getCurrentTenant();
         l2CacheManage.getL2Cache(tenant + ":jwt").put(id, userDetails);
+    }
+
+    @Override
+    public void remove(String username) {
+        String tenant = tenantContextHolder.getCurrentTenant();
+        L2Cache<Object, Object> l2Cache = l2CacheManage.getL2Cache(tenant + ":jwt");
+        Set<Object> keys = l2Cache.getKeys();
+        List<Object> list = keys.stream().filter(key -> key.toString().startsWith(username)).toList();
+        l2Cache.clearLocalBatch(list);
     }
 }

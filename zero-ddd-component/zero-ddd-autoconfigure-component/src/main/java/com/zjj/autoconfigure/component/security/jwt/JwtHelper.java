@@ -24,8 +24,6 @@ public interface JwtHelper {
 
 	public Object getClaim(Map<String, Object> map);
 
-	public LocalDateTime getExpire(Map<String, Object> map);
-
 	public String tokenHeader();
 
 }

@@ -1,7 +1,6 @@
 package com.zjj.security.core.component.supper;
 
 import com.google.common.collect.Maps;
-import com.zjj.autoconfigure.component.json.JsonHelper;
 import com.zjj.autoconfigure.component.security.jwt.JwtHelper;
 import com.zjj.autoconfigure.component.security.jwt.JwtProperties;
 import io.jsonwebtoken.Claims;
@@ -13,8 +12,6 @@ import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.BadCredentialsException;
 
 import javax.crypto.SecretKey;
-import java.time.LocalDateTime;
-import java.time.temporal.TemporalUnit;
 import java.util.Date;
 import java.util.Map;
 
@@ -27,13 +24,10 @@ public final class DefaultJwtHelper implements JwtHelper {
 
 	private final JwtProperties jwtProperties;
 
-	private final JsonHelper jsonHelper;
-
 	private final SecretKey key;
 
-	public DefaultJwtHelper(JwtProperties jwtProperties, JsonHelper jsonHelper) {
+	public DefaultJwtHelper(JwtProperties jwtProperties) {
 		this.jwtProperties = jwtProperties;
-		this.jsonHelper = jsonHelper;
 		this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtProperties.getSecret()));
 	}
 
@@ -45,12 +39,7 @@ public final class DefaultJwtHelper implements JwtHelper {
 	public String generateJWT(Map<String, Object> map) {
 		Map<@Nullable String, @Nullable Object> hashMap = Maps.newHashMap();
 		hashMap.putAll(map);
-		LocalDateTime now = LocalDateTime.now();
-		Long expiration = jwtProperties.getExpiration();
-		TemporalUnit temporalUnit = jwtProperties.getTemporalUnit();
-		LocalDateTime plus = now.plus(expiration, temporalUnit);
-		// 当前时间加上过期时间
-		hashMap.put("expire", jsonHelper.toJsonString(plus));
+
 		return Jwts.builder()
 				// .json(jacksonSerializer)
 				.claims(hashMap)
@@ -84,22 +73,6 @@ public final class DefaultJwtHelper implements JwtHelper {
 	@Override
 	public Object getClaim(Map<String, Object> map) {
 		return map.get(jwtProperties.getChaimKey());
-	}
-
-	@Override
-	public LocalDateTime getExpire(Map<String, Object> map) {
-		Object expireObj = map.get("expire");
-		if (expireObj == null) {
-			// 处理 null 值的情况，可以根据业务需求返回默认值或抛出异常
-			throw  new IllegalArgumentException("expire is null");
-		}
-
-		if (!(expireObj instanceof String)) {
-			// 处理非字符串类型的情况，可以根据业务需求返回默认值或抛出异常
-			throw new IllegalArgumentException("expire must be a string");
-		}
-
-		return jsonHelper.parseObject(((String) expireObj).replace("\"", ""), LocalDateTime.class);
 	}
 
 	@Override

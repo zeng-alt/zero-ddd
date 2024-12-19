@@ -8,6 +8,7 @@ import com.zjj.autoconfigure.component.security.rbac.Resource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ClassUtils;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
@@ -18,7 +19,6 @@ import java.util.stream.Collectors;
  * @version 1.0
  * @crateTime 2024年12月10日 21:03
  */
-@Component
 @RequiredArgsConstructor
 public class RedisRbacCacheManage implements RbacCacheManage, Ordered {
 

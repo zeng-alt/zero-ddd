@@ -1,9 +1,11 @@
 package com.zjj.security.core.component.supper;
 
 import com.zjj.autoconfigure.component.security.AuthenticationHelper;
+import com.zjj.autoconfigure.component.security.SecurityUser;
 import com.zjj.autoconfigure.component.security.jwt.JwtCacheManage;
 import com.zjj.autoconfigure.component.security.jwt.JwtHelper;
 import com.zjj.autoconfigure.component.security.LoginSuccessHandler;
+import com.zjj.autoconfigure.component.security.jwt.JwtProperties;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -14,6 +16,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.temporal.TemporalUnit;
 import java.util.UUID;
 
 /**
@@ -23,8 +27,8 @@ import java.util.UUID;
  */
 public class DefaultLoginSuccessHandler extends LoginSuccessHandler {
 
-	public DefaultLoginSuccessHandler(JwtCacheManage jwtCacheManage, JwtHelper jwtHelper) {
-		super(jwtCacheManage, jwtHelper);
+	public DefaultLoginSuccessHandler(JwtCacheManage jwtCacheManage, JwtHelper jwtHelper, JwtProperties jwtProperties) {
+		super(jwtCacheManage, jwtHelper, jwtProperties);
 	}
 
 	/**
@@ -40,6 +44,12 @@ public class DefaultLoginSuccessHandler extends LoginSuccessHandler {
 		UserDetails principal = (UserDetails) authentication.getPrincipal();
 		String soleId = principal.getUsername() + ":" + UUID.randomUUID();
 		String jwt = jwtHelper.generateJWT(soleId);
+		if (principal instanceof SecurityUser securityUser) {
+			LocalDateTime now = LocalDateTime.now();
+			Long expiration = jwtProperties.getExpiration();
+			TemporalUnit temporalUnit = jwtProperties.getTemporalUnit();
+			securityUser.setExpire(now.plus(expiration, temporalUnit));
+		}
 		jwtCacheManage.put(soleId, principal);
 		AuthenticationHelper.renderString(response, HttpStatus.OK.value(), "登录成功", jwt);
 	}

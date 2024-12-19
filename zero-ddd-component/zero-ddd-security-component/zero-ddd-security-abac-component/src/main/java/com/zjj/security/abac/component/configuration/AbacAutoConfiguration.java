@@ -114,6 +114,7 @@ public class AbacAutoConfiguration {
     }
 
     @Bean
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     public DefaultEnvironmentAttribute defaultEnvironmentAttribute() {
         return new DefaultEnvironmentAttribute();
     }

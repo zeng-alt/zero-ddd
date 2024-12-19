@@ -3,6 +3,7 @@ package com.zjj.security.core.component.configuration;
 import com.zjj.autoconfigure.component.security.LoginSuccessHandler;
 import com.zjj.autoconfigure.component.security.jwt.JwtCacheManage;
 import com.zjj.autoconfigure.component.security.jwt.JwtHelper;
+import com.zjj.autoconfigure.component.security.jwt.JwtProperties;
 import com.zjj.security.core.component.configuration.properties.LoginProperties;
 import com.zjj.security.core.component.supper.DefaultLoginFailureHandler;
 import com.zjj.security.core.component.supper.DefaultLoginSuccessHandler;
@@ -27,8 +28,8 @@ public class LoginHandlerAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public LoginSuccessHandler loginSuccessAuthenticationHandler(JwtCacheManage jwtCacheManage, JwtHelper jwtHelper) {
-		return new DefaultLoginSuccessHandler(jwtCacheManage, jwtHelper);
+	public LoginSuccessHandler loginSuccessAuthenticationHandler(JwtCacheManage jwtCacheManage, JwtHelper jwtHelper, JwtProperties jwtProperties) {
+		return new DefaultLoginSuccessHandler(jwtCacheManage, jwtHelper, jwtProperties);
 	}
 
 	@Bean

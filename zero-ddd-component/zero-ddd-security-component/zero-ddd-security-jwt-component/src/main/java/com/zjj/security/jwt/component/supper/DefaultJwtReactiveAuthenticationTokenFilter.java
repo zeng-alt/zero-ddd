@@ -1,8 +1,10 @@
 package com.zjj.security.jwt.component.supper;
 
+import com.zjj.autoconfigure.component.security.SecurityUser;
 import com.zjj.autoconfigure.component.security.jwt.JwtCacheManage;
 import com.zjj.autoconfigure.component.security.jwt.JwtHelper;
 import com.zjj.autoconfigure.component.security.jwt.JwtProperties;
+import com.zjj.security.jwt.component.JwtDetail;
 import com.zjj.security.jwt.component.JwtReactiveAuthenticationTokenFilter;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.lang.NonNull;
@@ -36,27 +38,29 @@ public class DefaultJwtReactiveAuthenticationTokenFilter extends JwtReactiveAuth
         if (StringUtils.hasText(token)) {
             Map<String, Object> claims = jwtHelper.getClaimsFromToken(token);
             String soleId = (String) jwtHelper.getClaim(claims);
-            LocalDateTime expire = jwtHelper.getExpire(claims);
+
             UserDetails user = jwtCacheManage.get(soleId);
 
             if (user == null) {
                 throw new BadCredentialsException("用户登录时间过期，重新登录");
             }
 
-            LocalDateTime now = LocalDateTime.now();
-            // 如果过期时间小当前时间的前15分钟，不进行刷新
-            if (expire.isBefore(now.plusMinutes(15))) {
-                jwtCacheManage.put(soleId, user);
-            }
-
             ServerHttpRequest modifiedRequest = exchange.getRequest().mutate()
                     .header(jwtProperties.getFastToken(), soleId)
                     .build();
+
+
             // Create a new exchange with the modified request
             ServerWebExchange modifiedExchange = exchange.mutate()
                     .request(modifiedRequest)
                     .build();
 
+            LocalDateTime expire = LocalDateTime.now();
+            if (user instanceof SecurityUser securityUser) {
+                expire = securityUser.getExpire();
+            }
+            modifiedExchange.getAttributes().put(DefaultJwtRenewFilter.RENEW_KEY,
+                    JwtDetail.builder().id(soleId).user(user).expire(expire).build());
 
             return Mono.fromCallable(() -> UsernamePasswordAuthenticationToken.authenticated(user, null, user.getAuthorities()))
                     .subscribeOn(Schedulers.boundedElastic())

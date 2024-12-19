@@ -18,4 +18,7 @@ public interface JwtCacheManage {
 
 	public void put(@NonNull String id, @NonNull UserDetails userDetails);
 
+    default void remove(String username) {
+
+	}
 }

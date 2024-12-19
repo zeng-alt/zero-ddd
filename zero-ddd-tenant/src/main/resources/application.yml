@@ -51,6 +51,11 @@ spring:
     redisson:
       file: classpath:redisson.yml
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: startup
 
 
 logging:
@@ -64,3 +69,4 @@ security:
   username-login:
     enabled: true
     login-path: /tenant/login/username
+  logout-path: /tenant/logout

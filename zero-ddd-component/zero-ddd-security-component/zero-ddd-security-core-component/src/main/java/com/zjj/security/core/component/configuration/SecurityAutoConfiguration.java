@@ -1,7 +1,7 @@
 package com.zjj.security.core.component.configuration;
 
 import com.zjj.autoconfigure.component.security.WhiteListProperties;
-import com.zjj.security.core.component.domain.SecurityUser;
+import com.zjj.autoconfigure.component.security.SecurityUser;
 import com.zjj.security.core.component.spi.WhiteListService;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;

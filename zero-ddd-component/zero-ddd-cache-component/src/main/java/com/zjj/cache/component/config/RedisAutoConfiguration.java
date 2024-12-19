@@ -20,6 +20,7 @@ import org.redisson.spring.starter.RedissonAutoConfigurationCustomizer;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.cache.CacheManagerCustomizer;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
@@ -44,7 +45,7 @@ public class RedisAutoConfiguration {
 	}
 
 	@Bean
-	@ConditionalOnMissingBean
+	@ConditionalOnMissingBean(RedisRbacCacheManage.class)
 	public RedisRbacCacheManage rbacCacheManage(RedisStringRepository redisStringRepository) {
 		return new RedisRbacCacheManage(redisStringRepository);
 	}

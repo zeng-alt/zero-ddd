@@ -5,7 +5,9 @@ import com.zjj.autoconfigure.component.security.jwt.JwtCacheManage;
 import com.zjj.autoconfigure.component.security.jwt.JwtHelper;
 import com.zjj.autoconfigure.component.security.jwt.JwtProperties;
 import com.zjj.security.jwt.component.JwtReactiveAuthenticationTokenFilter;
+import com.zjj.security.jwt.component.JwtReactiveRenewFilter;
 import com.zjj.security.jwt.component.supper.DefaultJwtReactiveAuthenticationTokenFilter;
+import com.zjj.security.jwt.component.supper.DefaultJwtReactiveRenewFilter;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -34,10 +36,17 @@ public class JwtReactiveAutoConfiguration {
         return new DefaultJwtReactiveAuthenticationTokenFilter(jwtHelper, jwtCacheManage, jwtProperties);
     }
 
+    @Bean
+    @ConditionalOnMissingBean
+    public JwtReactiveRenewFilter jwtReactiveRenewFilter(JwtCacheManage jwtCacheManage) {
+        return new DefaultJwtReactiveRenewFilter(jwtCacheManage);
+    }
+
     @Order(9)
     @Bean
-    public ServerHttpSecurityBuilderCustomizer jwtCustomizer(JwtReactiveAuthenticationTokenFilter jwtReactiveAuthenticationTokenFilter) {
+    public ServerHttpSecurityBuilderCustomizer jwtCustomizer(JwtReactiveAuthenticationTokenFilter jwtReactiveAuthenticationTokenFilter, JwtReactiveRenewFilter jwtReactiveRenewFilter) {
         return http -> http
-                .addFilterAt(jwtReactiveAuthenticationTokenFilter, SecurityWebFiltersOrder.HTTP_BASIC);
+                .addFilterAt(jwtReactiveAuthenticationTokenFilter, SecurityWebFiltersOrder.HTTP_BASIC)
+                .addFilterAfter(jwtReactiveRenewFilter, SecurityWebFiltersOrder.HTTP_BASIC);
     }
 }

@@ -31,8 +31,8 @@ public class JwtHelperAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public JwtHelper jwtHelper(JwtProperties jwtProperties, JsonHelper jsonHelper) {
-		return new DefaultJwtHelper(jwtProperties, jsonHelper);
+	public JwtHelper jwtHelper(JwtProperties jwtProperties) {
+		return new DefaultJwtHelper(jwtProperties);
 	}
 
 

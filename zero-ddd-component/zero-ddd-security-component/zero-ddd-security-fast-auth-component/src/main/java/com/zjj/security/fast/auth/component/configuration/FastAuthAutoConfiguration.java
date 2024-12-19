@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 
 /**
  * @author zengJiaJun
@@ -26,6 +27,6 @@ public class FastAuthAutoConfiguration {
 
     @Bean
     public SecurityBuilderCustomizer fastAuthCustomizer(FastAuthenticationFilter fastAuthenticationFilter) {
-        return http -> http.addFilterBefore(fastAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        return http -> http.addFilterBefore(fastAuthenticationFilter, LogoutFilter.class);
     }
 }

@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.ResolvableType;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 
 /**
  * @author zengJiaJun
@@ -48,7 +49,7 @@ public class JwtAutoConfiguration {
 			JwtRenewFilter jwtRenewFilter) {
 		return http -> {
 			Class type = ResolvableType.forType(jwtAuthenticationTokenFilter.getClass()).getRawClass();
-			http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
+			http.addFilterBefore(jwtAuthenticationTokenFilter, LogoutFilter.class);
 			http.addFilterAfter(jwtRenewFilter, type);
 		};
 	}

@@ -6,6 +6,9 @@ import com.zjj.autoconfigure.component.security.jwt.JwtCacheManage;
 import com.zjj.autoconfigure.component.security.jwt.JwtProperties;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.List;
+import java.util.Set;
+
 /**
  * @author zengJiaJun
  * @version 1.0
@@ -33,6 +36,14 @@ public class DefaultJwtL2CacheManage implements JwtCacheManage {
 
     @Override
     public void put(String id, UserDetails userDetails) {
+
         jwtCache.put(id, userDetails);
+    }
+
+    @Override
+    public void remove(String username) {
+        Set<Object> keys = jwtCache.getKeys();
+        List<Object> list = keys.stream().filter(key -> key.toString().startsWith(username)).toList();
+        jwtCache.clearLocalBatch(list);
     }
 }

@@ -47,4 +47,10 @@ public class GlobalExceptionAdvice {
         return ExceptionResponse.of(messageSourceAccessor.getMessage("GlobalExceptionAdvice.exception.error", e.getMessage()), request);
     }
 
+//    @ExceptionHandler(NoResourceFoundException.class)
+//    public Response<Void> exception(NoResourceFoundException e, HttpServletRequest request) {
+//        log.error("", e);
+//        return ExceptionResponse.of(404, messageSourceAccessor.getMessage(e.getMessage(), e.getMessage()), request);
+//    }
+
 }

@@ -26,5 +26,6 @@ security:
   filter:
     ignore-url:
       - /tenant/login/username
+      - /tenant/logout
 
 

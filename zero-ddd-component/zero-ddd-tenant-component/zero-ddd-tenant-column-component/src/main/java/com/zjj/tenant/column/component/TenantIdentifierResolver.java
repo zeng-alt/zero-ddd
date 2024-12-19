@@ -2,7 +2,6 @@ package com.zjj.tenant.column.component;
 
 import com.zjj.autoconfigure.component.tenant.TenantContextHolder;
 import org.hibernate.cfg.AvailableSettings;
-import org.hibernate.cfg.MultiTenancySettings;
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernatePropertiesCustomizer;
 import org.springframework.stereotype.Component;

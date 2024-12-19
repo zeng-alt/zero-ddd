@@ -170,7 +170,7 @@ public class RedissonCaffeineCache extends AbstractValueAdaptingCache implements
         List<?> keysColl = Lists.newArrayList(keys);
         List<String> redisKeys = keysColl.stream().map(this::getKey).toList();
         redisStringRepository.removeAll(redisKeys);
-        push(keysColl, CacheOperation.EVICT_BATCH);
+        this.push(keysColl, CacheOperation.EVICT_BATCH);
         caffeineCache.invalidateAll(keysColl);
     }
 
@@ -230,6 +230,11 @@ public class RedissonCaffeineCache extends AbstractValueAdaptingCache implements
         else {
             caffeineCache.invalidate(key);
         }
+    }
+
+    @Override
+    public Set<Object> getKeys() {
+        return caffeineCache.asMap().keySet();
     }
 
 

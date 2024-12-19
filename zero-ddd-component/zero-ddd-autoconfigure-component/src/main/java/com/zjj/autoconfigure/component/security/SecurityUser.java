@@ -1,19 +1,17 @@
-package com.zjj.security.core.component.domain;
+package com.zjj.autoconfigure.component.security;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.zjj.autoconfigure.component.tenant.TenantDetail;
-import com.zjj.security.core.component.supper.CustomAuthorityDeserializer;
 import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityCoreVersion;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -21,9 +19,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.Assert;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * @author zengJiaJun
@@ -57,12 +55,15 @@ public class SecurityUser implements UserDetails, TenantDetail, CredentialsConta
     private final boolean credentialsNonExpired;
 
     private final boolean enabled;
+    @Getter
+    @Setter
+    private LocalDateTime expire;
 
     /**
      * Calls the more complex constructor with all boolean arguments set to {@code true}.
      */
     public SecurityUser(String username, String password, Set<String> roles) {
-        this(username, password, null, true, true, true, true, roles);
+        this(username, password, null, true, true, true, true, roles, null);
     }
 
     /**
@@ -85,7 +86,7 @@ public class SecurityUser implements UserDetails, TenantDetail, CredentialsConta
     @JsonCreator
     public SecurityUser(@JsonProperty("username") String username, @JsonProperty("password") String password, @JsonProperty("tenant") String tenant, @JsonProperty("enabled") boolean enabled, @JsonProperty("accountNonExpired") boolean accountNonExpired,
                         @JsonProperty("credentialsNonExpired") boolean credentialsNonExpired, @JsonProperty("accountNonLocked") boolean accountNonLocked,
-                        @JsonProperty("roles") Set<String> roles) {
+                        @JsonProperty("roles") Set<String> roles, @JsonProperty("expire") LocalDateTime expire) {
         Assert.isTrue(username != null && !"".equals(username),
                 "Cannot pass null or empty values to constructor");
         this.username = username;
@@ -97,6 +98,7 @@ public class SecurityUser implements UserDetails, TenantDetail, CredentialsConta
         this.accountNonLocked = accountNonLocked;
         this.roles = roles;
         this.authorities = Collections.unmodifiableSet(sortAuthorities(roles.stream().map(SimpleGrantedAuthority::new).toList()));
+        this.expire = expire;
     }
 
     @Override
@@ -331,6 +333,8 @@ public class SecurityUser implements UserDetails, TenantDetail, CredentialsConta
 
         private Function<String, String> passwordEncoder = (password) -> password;
 
+        private LocalDateTime expire;
+
         /**
          * Creates a new instance
          */
@@ -478,10 +482,15 @@ public class SecurityUser implements UserDetails, TenantDetail, CredentialsConta
             return this;
         }
 
+        public SecurityUser.UserBuilder expire(LocalDateTime expire) {
+            this.expire = expire;
+            return this;
+        }
+
         public UserDetails build() {
             String encodedPassword = this.passwordEncoder.apply(this.password);
             return new SecurityUser(this.username, encodedPassword, tenant, !this.disabled, !this.accountExpired,
-                    !this.credentialsExpired, !this.accountLocked, new HashSet<>(this.roles));
+                    !this.credentialsExpired, !this.accountLocked, new HashSet<>(this.roles), expire);
         }
 
     }

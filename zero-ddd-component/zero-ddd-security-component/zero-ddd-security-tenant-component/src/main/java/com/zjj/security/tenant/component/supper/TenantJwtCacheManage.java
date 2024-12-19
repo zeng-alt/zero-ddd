@@ -40,4 +40,9 @@ public class TenantJwtCacheManage implements JwtCacheManage {
     public void put(String id, UserDetails userDetails) {
         redisStringRepository.put(tenantContextHolder.getCurrentTenant() + ":jwt:" + id, userDetails, expireTime);
     }
+
+    @Override
+    public void remove(String username) {
+        redisStringRepository.removeAll(tenantContextHolder.getCurrentTenant() + ":jwt:" + username);
+    }
 }

@@ -38,5 +38,8 @@ public class DefaultJwtCacheManage implements JwtCacheManage {
 	public void put(String id, UserDetails userDetails) {
 		redisStringRepository.put(id, userDetails, expireTime);
 	}
-
+	@Override
+	public void remove(String username) {
+		redisStringRepository.removeAll(username);
+	}
 }

@@ -2,6 +2,7 @@ package com.zjj.autoconfigure.component.security;
 
 import com.zjj.autoconfigure.component.security.jwt.JwtCacheManage;
 import com.zjj.autoconfigure.component.security.jwt.JwtHelper;
+import com.zjj.autoconfigure.component.security.jwt.JwtProperties;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,10 +21,12 @@ public abstract class LoginSuccessHandler implements AuthenticationSuccessHandle
 	protected final JwtCacheManage jwtCacheManage;
 
 	protected final JwtHelper jwtHelper;
+	protected final JwtProperties jwtProperties;
 
-	protected LoginSuccessHandler(JwtCacheManage jwtCacheManage, JwtHelper jwtHelper) {
+	protected LoginSuccessHandler(JwtCacheManage jwtCacheManage, JwtHelper jwtHelper, JwtProperties jwtProperties) {
 		this.jwtCacheManage = jwtCacheManage;
 		this.jwtHelper = jwtHelper;
+		this.jwtProperties = jwtProperties;
 	}
 
 }
