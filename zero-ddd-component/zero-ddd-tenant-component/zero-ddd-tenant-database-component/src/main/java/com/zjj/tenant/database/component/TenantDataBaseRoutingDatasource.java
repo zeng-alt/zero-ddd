@@ -18,7 +18,7 @@ public class TenantDataBaseRoutingDatasource extends AbstractRoutingDataSource {
     public TenantDataBaseRoutingDatasource(CurrentTenantIdentifierResolver tenantIdentifierResolver, DataSource dataSource) {
         this.tenantIdentifierResolver = tenantIdentifierResolver;
         this.setDefaultTargetDataSource(dataSource);
-        this.setTargetDataSources();
+//        this.setTargetDataSources();
 
     }
 
