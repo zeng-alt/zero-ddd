@@ -1,6 +1,7 @@
 package com.zjj.tenant;
 
 import com.google.common.collect.Sets;
+import com.zaxxer.hikari.HikariDataSource;
 import com.zjj.autoconfigure.component.security.rbac.GraphqlResource;
 import com.zjj.autoconfigure.component.security.rbac.HttpResource;
 import com.zjj.autoconfigure.component.security.rbac.RbacCacheManage;
@@ -17,9 +18,11 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.ScannedGenericBeanDefinition;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.MergedAnnotations;
@@ -27,18 +30,20 @@ import org.springframework.core.type.MethodMetadata;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.HttpMethod;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
+import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import javax.sql.DataSource;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 
 /**
@@ -54,6 +59,46 @@ import java.util.Set;
 @EnableGenEntityQuery
 @EnableGenEntityFuzzyQuery
 public class ZeroDddTenantApplication implements CommandLineRunner {
+
+
+    @Bean
+    @Primary
+    public AbstractRoutingDataSource abstractRoutingDataSource(DataSource mydb) {
+//        EmbeddedDatabase aDefault = createEmbeddedDatabase("default");
+        AbstractRoutingDataSource abstractRoutingDataSource = new AbstractRoutingDataSource() {
+
+            @Override
+            protected Object determineCurrentLookupKey() {
+                return null;
+            }
+        };
+
+        abstractRoutingDataSource.setDefaultTargetDataSource(mydb);
+        HashMap<Object, Object> targetDataSources = new HashMap<>();
+        targetDataSources.put("VMWARE", createEmbeddedDatabase("VMWARE"));
+        targetDataSources.put("PIVOTAL", createEmbeddedDatabase("PIVOTAL"));
+        abstractRoutingDataSource.setTargetDataSources(targetDataSources);
+        return abstractRoutingDataSource;
+    }
+
+    private EmbeddedDatabase createEmbeddedDatabase(String name) {
+
+        return new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2).setName(name)
+                .build();
+    }
+
+    @Autowired
+    DataSourceProperties dataSourceProperties;
+
+    @Bean
+    public DataSource mydb() {
+        HikariDataSource dataSource = dataSourceProperties
+                .initializeDataSourceBuilder()
+                .type(HikariDataSource.class)
+                .build();
+        dataSource.setPoolName("masterDataSource");
+        return dataSource;
+    }
 
     @Bean
     public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {

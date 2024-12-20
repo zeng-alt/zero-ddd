@@ -64,7 +64,7 @@ public class WebSecurityAutoConfiguration {
 				.cors(AbstractHttpConfigurer::disable)
 				.authorizeHttpRequests(author -> author
 						.requestMatchers(HttpMethod.POST, "/login/**").permitAll()
-						.requestMatchers("/tenant/h2-console/**").permitAll()
+						.requestMatchers("/h2-console/**").permitAll()
 						.requestMatchers("/tenant/graphiql/**").permitAll()
 						.requestMatchers("/tenant/graphql/**").permitAll()
 						.requestMatchers(HttpMethod.POST,"/actuator/startup").permitAll()
