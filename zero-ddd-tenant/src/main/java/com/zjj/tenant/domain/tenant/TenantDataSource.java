@@ -24,14 +24,10 @@ public class TenantDataSource extends BaseEntity<Long> {
     private Long id;
 
     private String poolName;
-    private String driverClassName;
     private String url;
     private String username;
     private String password;
-    private String jndiName;
-    private Boolean seata = true;
-    private Boolean p6spy = true;
-    private Boolean lazy;
-    private String publicKey;
+
+    private String schema;
     private Boolean enabled;
 }

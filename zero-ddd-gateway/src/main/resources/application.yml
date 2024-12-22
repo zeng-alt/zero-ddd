@@ -18,6 +18,11 @@ spring:
           order: 0
           predicates:
             - Path=/tenant/**
+        - id: zero-ddd-main
+          uri: lb://zero-ddd-main
+          order: 0
+          predicates:
+            - Path=/main/**
 
   redis:
     redisson:

@@ -18,6 +18,7 @@
         <module>zero-ddd-exchange</module>
         <module>zero-ddd-ai</module>
         <module>zero-business</module>
+        <module>zero-ddd-exchange/zero-ddd-exchange-tenant</module>
     </modules>
 
     <properties>
@@ -466,6 +467,24 @@
             <dependency>
                 <groupId>com.zjj</groupId>
                 <artifactId>zero-ddd-tenant-column-component</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.zjj</groupId>
+                <artifactId>zero-ddd-tenant-database-component</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.zjj</groupId>
+                <artifactId>zero-ddd-tenant-management-component</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.zjj</groupId>
+                <artifactId>zero-ddd-exchange-tenant</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
 

@@ -5,9 +5,12 @@ import com.zjj.autoconfigure.component.tenant.TenantDetail;
 import com.zjj.autoconfigure.component.security.rbac.HttpResource;
 import com.zjj.autoconfigure.component.security.rbac.Resource;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.Assert;
+import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;

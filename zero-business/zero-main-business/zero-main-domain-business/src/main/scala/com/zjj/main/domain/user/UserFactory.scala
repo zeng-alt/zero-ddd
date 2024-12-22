@@ -14,7 +14,7 @@ import java.util.function.Consumer
  * @version 1.0
  */
 @Component
-class UserFactory(userRepository: UserRepository, passwordEncoder: PasswordEncoder) {
+class UserFactory(userRepository: UserRepository) {
   def create(cmd: StockInUserCmd): Option[UserAgg] = {
 
     if (cmd.id != null) {
@@ -28,12 +28,12 @@ class UserFactory(userRepository: UserRepository, passwordEncoder: PasswordEncod
 
     userRepository
       .findByUserName(cmd.username)
-      .map(user => user.setPassword(passwordEncoder.encode(cmd.password)))
+//      .map(user => user.setPassword(passwordEncoder.encode(cmd.password)))
       .peek(_ => throw new BaseI18nException("user.name.exists", cmd.username))
 
     val result = BeanHelper.copyToObject(cmd, classOf[UserAgg], new Consumer[UserAgg] {
       override def accept(t: UserAgg): Unit = {
-        t.setPassword(passwordEncoder.encode(cmd.password))
+//        t.setPassword(passwordEncoder.encode(cmd.password))
       }
     })
     Option.apply(result)

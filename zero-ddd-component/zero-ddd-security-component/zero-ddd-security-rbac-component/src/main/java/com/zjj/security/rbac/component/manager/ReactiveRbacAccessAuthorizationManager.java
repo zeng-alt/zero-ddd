@@ -17,7 +17,6 @@ public final class ReactiveRbacAccessAuthorizationManager implements ReactiveAut
 
     private final ReactiveParseManager reactiveParseManager;
 
-
     /**
      * Determines if access is granted for a specific authentication and object.
      *

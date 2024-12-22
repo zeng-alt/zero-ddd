@@ -9,16 +9,17 @@ import com.zjj.graphql.component.config.EnableGenEntityFuzzyQuery;
 import com.zjj.graphql.component.config.EnableGenEntityInput;
 import com.zjj.graphql.component.config.EnableGenEntityQuery;
 import com.zjj.graphql.component.config.EnableGenEntityType;
-import com.zjj.security.abac.component.annotation.AbacPostAuthorize;
-import com.zjj.security.abac.component.annotation.AbacPreAuthorize;
-import com.zjj.security.abac.component.annotation.EnableAbac;
-import com.zjj.autoconfigure.component.security.SecurityUser;
+//import com.zjj.security.abac.component.annotation.AbacPostAuthorize;
+//import com.zjj.security.abac.component.annotation.AbacPreAuthorize;
+//import com.zjj.security.abac.component.annotation.EnableAbac;
+//import com.zjj.autoconfigure.component.security.SecurityUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
@@ -30,14 +31,7 @@ import org.springframework.core.type.MethodMetadata;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.HttpMethod;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
-import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
+
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
@@ -51,7 +45,8 @@ import java.util.*;
  * @version 1.0
  * @crateTime 2024年10月29日 21:34
  */
-@EnableAbac
+//@EnableAbac
+@EnableFeignClients(basePackages = "com.zjj")
 @EnableJpaRepositories(basePackages = "com.zjj")
 @SpringBootApplication
 @EnableGenEntityType
@@ -61,62 +56,62 @@ import java.util.*;
 public class ZeroDddTenantApplication implements CommandLineRunner {
 
 
-    @Bean
-    @Primary
-    public AbstractRoutingDataSource abstractRoutingDataSource(DataSource mydb) {
-//        EmbeddedDatabase aDefault = createEmbeddedDatabase("default");
-        AbstractRoutingDataSource abstractRoutingDataSource = new AbstractRoutingDataSource() {
-
-            @Override
-            protected Object determineCurrentLookupKey() {
-                return null;
-            }
-        };
-
-        abstractRoutingDataSource.setDefaultTargetDataSource(mydb);
-        HashMap<Object, Object> targetDataSources = new HashMap<>();
-        targetDataSources.put("VMWARE", createEmbeddedDatabase("VMWARE"));
-        targetDataSources.put("PIVOTAL", createEmbeddedDatabase("PIVOTAL"));
-        abstractRoutingDataSource.setTargetDataSources(targetDataSources);
-        return abstractRoutingDataSource;
-    }
-
-    private EmbeddedDatabase createEmbeddedDatabase(String name) {
-
-        return new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2).setName(name)
-                .build();
-    }
-
-    @Autowired
-    DataSourceProperties dataSourceProperties;
-
-    @Bean
-    public DataSource mydb() {
-        HikariDataSource dataSource = dataSourceProperties
-                .initializeDataSourceBuilder()
-                .type(HikariDataSource.class)
-                .build();
-        dataSource.setPoolName("masterDataSource");
-        return dataSource;
-    }
-
-    @Bean
-    public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
-
-        Map<String, UserDetails> map = Map.of(
-                "root", SecurityUser.withUsername("root").password(passwordEncoder.encode("123456")).roles("admin").build(),
-                "user", SecurityUser.withUsername("user").password(passwordEncoder.encode("123456")).roles("user").build()
-        );
-
-        return new UserDetailsService() {
-            @Override
-            public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-                UserDetails userDetails = map.get(username);
-                if (userDetails == null) return userDetails;
-                return SecurityUser.withUserDetails(userDetails).build();
-            }
-        };
-    }
+//    @Bean
+//    @Primary
+//    public AbstractRoutingDataSource abstractRoutingDataSource(DataSource mydb) {
+////        EmbeddedDatabase aDefault = createEmbeddedDatabase("default");
+//        AbstractRoutingDataSource abstractRoutingDataSource = new AbstractRoutingDataSource() {
+//
+//            @Override
+//            protected Object determineCurrentLookupKey() {
+//                return null;
+//            }
+//        };
+//
+//        abstractRoutingDataSource.setDefaultTargetDataSource(mydb);
+//        HashMap<Object, Object> targetDataSources = new HashMap<>();
+//        targetDataSources.put("VMWARE", createEmbeddedDatabase("VMWARE"));
+//        targetDataSources.put("PIVOTAL", createEmbeddedDatabase("PIVOTAL"));
+//        abstractRoutingDataSource.setTargetDataSources(targetDataSources);
+//        return abstractRoutingDataSource;
+//    }
+//
+//    private EmbeddedDatabase createEmbeddedDatabase(String name) {
+//
+//        return new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2).setName(name)
+//                .build();
+//    }
+//
+//    @Autowired
+//    DataSourceProperties dataSourceProperties;
+//
+//    @Bean
+//    public DataSource mydb() {
+//        HikariDataSource dataSource = dataSourceProperties
+//                .initializeDataSourceBuilder()
+//                .type(HikariDataSource.class)
+//                .build();
+//        dataSource.setPoolName("masterDataSource");
+//        return dataSource;
+//    }
+//
+//    @Bean
+//    public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
+//
+//        Map<String, UserDetails> map = Map.of(
+//                "root", SecurityUser.withUsername("root").password(passwordEncoder.encode("123456")).roles("admin").build(),
+//                "user", SecurityUser.withUsername("user").password(passwordEncoder.encode("123456")).roles("user").build()
+//        );
+//
+//        return new UserDetailsService() {
+//            @Override
+//            public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//                UserDetails userDetails = map.get(username);
+//                if (userDetails == null) return userDetails;
+//                return SecurityUser.withUserDetails(userDetails).build();
+//            }
+//        };
+//    }
 
     @Autowired
     private RbacCacheManage rbacCacheManage;
@@ -128,48 +123,48 @@ public class ZeroDddTenantApplication implements CommandLineRunner {
 //                .applicationStartup(new BufferingApplicationStartup(2048))
 //                .run(args);
 
-        List<? extends Class<?>> list = application.getBeansWithAnnotation(Component.class).values().stream().map(Object::getClass).filter(a -> a.getName().startsWith("com.zjj")).toList();
-        for (Class<?> aClass : list) {
-            Method[] methods = aClass.getDeclaredMethods();
-            for (Method method : methods) {
-                Set<Annotation> allMergedAnnotations = AnnotatedElementUtils.findAllMergedAnnotations(method, Set.of(AbacPostAuthorize.class, AbacPreAuthorize.class));
-                if (!allMergedAnnotations.isEmpty()) {
-                    System.out.println(aClass.getName());
-                    // 拿到参数和返回值
-                    String[] parameterTypes = Arrays.stream(method.getParameterTypes()).map(Class::getName).toArray(String[]::new);
-                }
-            }
-        }
+//        List<? extends Class<?>> list = application.getBeansWithAnnotation(Component.class).values().stream().map(Object::getClass).filter(a -> a.getName().startsWith("com.zjj")).toList();
+//        for (Class<?> aClass : list) {
+//            Method[] methods = aClass.getDeclaredMethods();
+//            for (Method method : methods) {
+//                Set<Annotation> allMergedAnnotations = AnnotatedElementUtils.findAllMergedAnnotations(method, Set.of(AbacPostAuthorize.class, AbacPreAuthorize.class));
+//                if (!allMergedAnnotations.isEmpty()) {
+//                    System.out.println(aClass.getName());
+//                    // 拿到参数和返回值
+//                    String[] parameterTypes = Arrays.stream(method.getParameterTypes()).map(Class::getName).toArray(String[]::new);
+//                }
+//            }
+//        }
 
-        ClassPathScanningCandidateComponentProvider scanner = new ClassPathScanningCandidateComponentProvider(false);
-        scanner.addIncludeFilter(new AnnotationTypeFilter(Component.class));
-        Set<BeanDefinition> beanDefinitions = scanner.findCandidateComponents("com.zjj");
-        for (BeanDefinition beanDefinition : beanDefinitions) {
-            Class<?> aClass = Class.forName(beanDefinition.getBeanClassName());
-            Method[] methods = aClass.getDeclaredMethods();
-            for (Method method : methods) {
-                Set<Annotation> allMergedAnnotations = AnnotatedElementUtils.findAllMergedAnnotations(method, Set.of(AbacPostAuthorize.class, AbacPreAuthorize.class));
-                if (!allMergedAnnotations.isEmpty()) {
-                    System.out.println(beanDefinition.getBeanClassName());
-                    // 拿到参数和返回值
-                    String[] parameterTypes = Arrays.stream(method.getParameterTypes()).map(Class::getName).toArray(String[]::new);
-                    String returnType = method.getReturnType().getName();
-                    System.out.println(parameterTypes);
-                    System.out.println(returnType);
-                }
-            }
-            Set<MethodMetadata> declaredMethods = ((ScannedGenericBeanDefinition) beanDefinition).getMetadata().getDeclaredMethods();
-            for (MethodMetadata methodMetadata : declaredMethods) {
-                MergedAnnotations annotations = methodMetadata.getAnnotations();
-                if (annotations.isPresent(AbacPreAuthorize.class) || annotations.isPresent(AbacPostAuthorize.class)) {
-                    System.out.println(beanDefinition.getBeanClassName());
-                    // 拿到参数和返回值
-//                    String[] parameterTypes = methodMetadata.getParameterTypes().stream().map(Class::getName).toArray(String[]::new);
-                }
-            }
-
-
-        }
+//        ClassPathScanningCandidateComponentProvider scanner = new ClassPathScanningCandidateComponentProvider(false);
+//        scanner.addIncludeFilter(new AnnotationTypeFilter(Component.class));
+//        Set<BeanDefinition> beanDefinitions = scanner.findCandidateComponents("com.zjj");
+//        for (BeanDefinition beanDefinition : beanDefinitions) {
+//            Class<?> aClass = Class.forName(beanDefinition.getBeanClassName());
+//            Method[] methods = aClass.getDeclaredMethods();
+//            for (Method method : methods) {
+//                Set<Annotation> allMergedAnnotations = AnnotatedElementUtils.findAllMergedAnnotations(method, Set.of(AbacPostAuthorize.class, AbacPreAuthorize.class));
+//                if (!allMergedAnnotations.isEmpty()) {
+//                    System.out.println(beanDefinition.getBeanClassName());
+//                    // 拿到参数和返回值
+//                    String[] parameterTypes = Arrays.stream(method.getParameterTypes()).map(Class::getName).toArray(String[]::new);
+//                    String returnType = method.getReturnType().getName();
+//                    System.out.println(parameterTypes);
+//                    System.out.println(returnType);
+//                }
+//            }
+//            Set<MethodMetadata> declaredMethods = ((ScannedGenericBeanDefinition) beanDefinition).getMetadata().getDeclaredMethods();
+//            for (MethodMetadata methodMetadata : declaredMethods) {
+//                MergedAnnotations annotations = methodMetadata.getAnnotations();
+//                if (annotations.isPresent(AbacPreAuthorize.class) || annotations.isPresent(AbacPostAuthorize.class)) {
+//                    System.out.println(beanDefinition.getBeanClassName());
+//                    // 拿到参数和返回值
+////                    String[] parameterTypes = methodMetadata.getParameterTypes().stream().map(Class::getName).toArray(String[]::new);
+//                }
+//            }
+//
+//
+//        }
         System.out.println();
 
 

@@ -1,0 +1,4 @@
+#com.zjj.tenant.database.component.config.tenant.hibernate.CurrentTenantIdentifierResolverImpl
+#com.zjj.tenant.database.component.config.tenant.hibernate.DynamicDataSourceBasedMultiTenantConnectionProvider
+#com.zjj.tenant.database.component.TenantDataBaseRoutingDatasource
+com.zjj.tenant.database.component.config.TenantAutoConfig

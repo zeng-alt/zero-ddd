@@ -4,6 +4,7 @@ import lombok.Data;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.stereotype.Component;
 
 /**
@@ -17,9 +18,13 @@ import org.springframework.stereotype.Component;
 public class MultiTenancyProperties {
 
     private DataSourceCache dataSourceCache = new DataSourceCache();
-    private TenantDataSource master = new TenantDataSource();
-    private TenantDataSource tenant = new TenantDataSource();
-    private Encryption encryption = new Encryption();
+    private String urlPrefix;
+    private Database database;
+    private String secret;
+    private String salt;
+//    private TenantDataSource master = new TenantDataSource();
+//    private TenantDataSource tenant = new TenantDataSource();
+//    private Encryption encryption = new Encryption();
     @Data
     public static class DataSourceCache {
         private Integer maximumSize = 100;

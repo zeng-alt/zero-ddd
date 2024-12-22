@@ -41,29 +41,4 @@ public abstract class AbstractReactiveResourceLocator implements ReactiveResourc
                 .switchIfEmpty(Mono.empty());
     }
 
-    @Deprecated(since = "2.0", forRemoval = true)
-    @Override
-    public Mono<Boolean> load(Resource resource, Mono<Authentication> authentication) throws AuthenticationException {
-        if (authentication == null) {
-            return Mono.just(false);
-        }
-        verifyInstance(resource);
-        return authentication
-                .filter(this::isNotAnonymous)
-                .map(this::getAuthorizationPrincipal)
-                .flatMapMany((Function<Object, Publisher<Resource>>) o -> Flux.fromIterable(list(o)))
-                .filter(r ->  {
-                    System.out.println(r);
-                    return r.equals(resource);
-                })
-                .flatMap(r -> Mono.just(true))
-                .next()
-                .switchIfEmpty(Mono.just(false))
-                .onErrorResume(e -> {
-                    // 记录异常日志
-                    log.error("Error occurred: ", e);
-                    return Mono.just(false);
-                });
-    }
-
 }

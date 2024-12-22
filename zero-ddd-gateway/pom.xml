@@ -66,20 +66,20 @@
             <artifactId>zero-ddd-json-component</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.zjj</groupId>
-            <artifactId>zero-ddd-security-core-component</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.zjj</groupId>-->
+<!--            <artifactId>zero-ddd-security-core-component</artifactId>-->
+<!--        </dependency>-->
 
-        <dependency>
-            <groupId>com.zjj</groupId>
-            <artifactId>zero-ddd-security-jwt-component</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.zjj</groupId>-->
+<!--            <artifactId>zero-ddd-security-jwt-component</artifactId>-->
+<!--        </dependency>-->
 
-        <dependency>
-            <groupId>com.zjj</groupId>
-            <artifactId>zero-ddd-security-rbac-component</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.zjj</groupId>-->
+<!--            <artifactId>zero-ddd-security-rbac-component</artifactId>-->
+<!--        </dependency>-->
 
 <!--         SpringCloud Gateway -->
         <dependency>

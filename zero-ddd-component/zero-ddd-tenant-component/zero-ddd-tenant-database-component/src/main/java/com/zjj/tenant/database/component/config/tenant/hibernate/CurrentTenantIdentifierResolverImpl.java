@@ -10,7 +10,7 @@ import org.springframework.util.ObjectUtils;
 import java.util.Map;
 
 @Component("currentTenantIdentifierResolver")
-public class CurrentTenantIdentifierResolverImpl implements CurrentTenantIdentifierResolver<String>, HibernatePropertiesCustomizer {
+public class CurrentTenantIdentifierResolverImpl implements CurrentTenantIdentifierResolver<String> {
 
     @Override
     public String resolveCurrentTenantIdentifier() {
@@ -28,13 +28,5 @@ public class CurrentTenantIdentifierResolverImpl implements CurrentTenantIdentif
         return true;
     }
 
-    /**
-     * Customize the specified JPA vendor properties.
-     *
-     * @param hibernateProperties the JPA vendor properties to customize
-     */
-    @Override
-    public void customize(Map<String, Object> hibernateProperties) {
-        hibernateProperties.put(AvailableSettings.MULTI_TENANT_IDENTIFIER_RESOLVER, this);
-    }
+
 }

@@ -19,16 +19,6 @@ public class ReactiveResourceQueryManager {
 
     private final List<ReactiveResourceLocator> resourceLocators;
 
-    @Deprecated
-    public Mono<Boolean> authorize(Resource resource, Mono<Authentication> authentication) {
-        return Flux
-                .fromIterable(this.resourceLocators)
-                .filter(locator -> locator.supports(resource.getClass()))
-                .flatMap(locator -> locator.load(resource, authentication))
-                .next()
-                .switchIfEmpty(Mono.just(false));
-    }
-
     public Mono<List<Resource>> query(Resource resource, Mono<Authentication> authentication) {
         return Flux
                 .fromIterable(this.resourceLocators)

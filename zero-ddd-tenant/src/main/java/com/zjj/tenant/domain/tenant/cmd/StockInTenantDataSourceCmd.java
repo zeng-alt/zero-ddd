@@ -8,15 +8,10 @@ package com.zjj.tenant.domain.tenant.cmd;
 public record StockInTenantDataSourceCmd(
         Long tenantId,
         String poolName,
-        String driverClassName,
         String url,
         String username,
         String password,
-        String jndiName,
-        Boolean seata,
-        Boolean p6spy,
-        Boolean lazy,
-        String publicKey,
+        String schema,
         Boolean enabled
 ) {
 }

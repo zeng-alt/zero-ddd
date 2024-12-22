@@ -15,7 +15,6 @@ import java.util.List;
  */
 public interface ReactiveResourceLocator {
 
-    Mono<Boolean> load(Resource resource, Mono<Authentication> authentication) throws AuthenticationException;
 
     Mono<List<Resource>> load(Mono<Authentication> authentication) throws AuthenticationException;
 

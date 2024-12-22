@@ -6,6 +6,8 @@ import com.zjj.tenant.domain.tenant.Tenant;
 import io.vavr.control.Option;
 import org.springframework.graphql.data.GraphQlRepository;
 
+import java.util.List;
+
 /**
  * @author zengJiaJun
  * @version 1.0
@@ -19,4 +21,6 @@ public interface TenantDao extends BaseRepository<Tenant, Long> {
     Tenant save(Tenant tenant);
 
     Option<Tenant> findByTenantKey(String tenantKey);
+
+    List<Tenant> findAll();
 }

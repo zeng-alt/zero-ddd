@@ -1,6 +1,7 @@
 package com.zjj.tenant.database.component.config.tenant.hibernate;
 
 
+import com.zjj.tenant.database.component.TenantDataBaseRoutingDatasource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.initialization.qual.Initialized;
@@ -11,7 +12,7 @@ import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernatePropertiesCustomizer;
 import org.springframework.stereotype.Component;
 
-import javax.sql.DataSource;
+
 import java.io.Serial;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -21,12 +22,12 @@ import java.util.Map;
 @Slf4j
 @Component
 public class DynamicDataSourceBasedMultiTenantConnectionProvider
-        implements MultiTenantConnectionProvider, HibernatePropertiesCustomizer {
+        implements MultiTenantConnectionProvider<String> {
 
     @Serial
     private static final long serialVersionUID = -460277105706399638L;
 
-    private final DataSource dataSource;
+    private final TenantDataBaseRoutingDatasource dataSource;
 
 
 
@@ -43,13 +44,13 @@ public class DynamicDataSourceBasedMultiTenantConnectionProvider
 
 
     @Override
-    public Connection getConnection(Object tenantIdentifier) throws SQLException {
-        return dataSource.getConnection();
+    public Connection getConnection(String tenantIdentifier) throws SQLException {
+        return dataSource.getConnection(tenantIdentifier);
     }
 
 
     @Override
-    public void releaseConnection(Object tenantIdentifier, Connection connection) throws SQLException {
+    public void releaseConnection(String tenantIdentifier, Connection connection) throws SQLException {
         connection.close();
     }
 
@@ -70,8 +71,4 @@ public class DynamicDataSourceBasedMultiTenantConnectionProvider
         throw new UnsupportedOperationException("Can't unwrap this.");
     }
 
-    @Override
-    public void customize(Map<String, Object> hibernateProperties) {
-        hibernateProperties.put(AvailableSettings.MULTI_TENANT_CONNECTION_PROVIDER, this);
-    }
 }

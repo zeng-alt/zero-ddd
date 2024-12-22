@@ -18,6 +18,7 @@ import com.zjj.l2.cache.component.supper.RedissonCaffeineCacheManage;
 import com.zjj.l2.cache.component.supper.RedissonSequenceServerIdGenerator;
 import com.zjj.memory.component.provider.Tuple;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
