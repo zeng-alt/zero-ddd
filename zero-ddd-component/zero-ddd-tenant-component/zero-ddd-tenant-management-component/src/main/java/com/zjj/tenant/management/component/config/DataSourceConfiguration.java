@@ -1,10 +1,11 @@
 package com.zjj.tenant.management.component.config;
 
 import com.zaxxer.hikari.HikariDataSource;
-import com.zjj.autoconfigure.component.redis.RedisSubPubRepository;
+import com.zjj.autoconfigure.component.tenant.MultiTenancyProperties;
 import com.zjj.cache.component.repository.impl.RedisTopicRepositoryImpl;
 import com.zjj.exchange.tenant.domain.Tenant;
-import com.zjj.tenant.management.component.service.TenantDatabaseService;
+import com.zjj.tenant.management.component.service.TenantDataSourceService;
+import com.zjj.tenant.management.component.service.TenantInitDataSourceService;
 import com.zjj.tenant.management.component.service.TenantManagementService;
 import com.zjj.tenant.management.component.service.TenantManagementServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseDataSource;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -28,7 +28,6 @@ import java.util.function.Consumer;
  */
 @RequiredArgsConstructor
 @AutoConfiguration
-@EnableConfigurationProperties(MultiTenancyProperties.class)
 public class DataSourceConfiguration {
 
     private final DataSourceProperties dataSourceProperties;
@@ -47,19 +46,22 @@ public class DataSourceConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public TenantManagementService tenantManagementService(
-            MultiTenancyProperties multiTenancyProperties,
-            JdbcTemplate jdbcTemplate,
+
             LiquibaseProperties liquibaseProperties,
             ResourceLoader resourceLoader,
-            TenantDatabaseService tenantDatabaseService,
+            TenantDataSourceService tenantDataSourceService,
             RedisTopicRepositoryImpl repository,
-            DataSourceProperties dataSourceProperties
+            TenantInitDataSourceService tenantInitDataSourceService
     ) {
-        TenantManagementServiceImpl tenantManagementService = new TenantManagementServiceImpl(multiTenancyProperties, jdbcTemplate, liquibaseProperties, resourceLoader, tenantDatabaseService, dataSourceProperties);
+        TenantManagementServiceImpl tenantManagementService = new TenantManagementServiceImpl(
+                                                                    liquibaseProperties,
+                                                                    resourceLoader,
+                                                                    tenantDataSourceService,
+                                                                    tenantInitDataSourceService);
         repository.addListener("tenant-channel", Tenant.class, new Consumer<Tenant>() {
             @Override
             public void accept(Tenant tenant) {
-                tenantManagementService.createTenant(tenant.getTenantId(), tenant.getDb(), tenant.getPassword());
+                tenantManagementService.createTenant(tenant);
             }
         });
 

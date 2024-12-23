@@ -26,7 +26,12 @@
 
         <dependency>
             <groupId>com.zjj</groupId>
-            <artifactId>zero-ddd-tenant-database-component</artifactId>
+            <artifactId>zero-ddd-security-core-component</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.zjj</groupId>
+            <artifactId>zero-ddd-tenant-datasource-component</artifactId>
         </dependency>
 
         <!-- SpringCloud Alibaba Nacos -->

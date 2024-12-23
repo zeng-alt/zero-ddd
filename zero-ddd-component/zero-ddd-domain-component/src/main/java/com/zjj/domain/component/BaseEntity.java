@@ -51,13 +51,17 @@ public abstract class BaseEntity<PK extends Serializable> implements Auditable<S
     @LastModifiedDate
     @Nullable
     private LocalDateTime lastModifiedDate;
-//    @TenantId
-//    @Nullable
-//    private String tenantBy;
+    @TenantId
+    @Nullable
+    private String tenantBy;
 
-//    public String getTenantBy() {
-//        return this.tenantBy;
-//    }
+    public String getTenantBy() {
+        return this.tenantBy;
+    }
+
+    public void setTenantBy(String tenantBy) {
+        this.tenantBy = tenantBy;
+    }
 
     /**
      * Returns the user who created this entity.

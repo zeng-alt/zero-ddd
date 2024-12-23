@@ -19,6 +19,10 @@ public class BaseI18nException extends BaseException {
         super(MessageSourceHelper.getMessage(message, message));
     }
 
+    public BaseI18nException(String messageKey, String message) {
+        super(MessageSourceHelper.getMessage(messageKey, message));
+    }
+
     public BaseI18nException(Throwable cause) {
         super(cause);
     }

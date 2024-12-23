@@ -34,11 +34,6 @@
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>com.zjj</groupId>-->
-<!--            <artifactId>zero-ddd-security-core-component</artifactId>-->
-<!--        </dependency>-->
-
         <dependency>
             <groupId>com.zjj</groupId>
             <artifactId>zero-ddd-cache-component</artifactId>

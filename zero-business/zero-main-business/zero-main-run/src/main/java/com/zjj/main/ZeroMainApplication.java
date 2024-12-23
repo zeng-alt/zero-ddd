@@ -4,6 +4,8 @@ import com.zjj.graphql.component.config.EnableGenEntityFuzzyQuery;
 import com.zjj.graphql.component.config.EnableGenEntityInput;
 import com.zjj.graphql.component.config.EnableGenEntityQuery;
 import com.zjj.graphql.component.config.EnableGenEntityType;
+import com.zjj.tenant.datasource.component.EnableMultiTenancy;
+import com.zjj.tenant.datasource.component.TenantMode;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
@@ -15,7 +17,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  * @version 1.0
  * @crateTime 2024年11月14日 21:08
  */
-
+@EnableMultiTenancy(mode = TenantMode.DATABASE)
 @EnableJpaRepositories(basePackages = "com.zjj")
 @SpringBootApplication
 @EnableFeignClients(basePackages = "com.zjj")

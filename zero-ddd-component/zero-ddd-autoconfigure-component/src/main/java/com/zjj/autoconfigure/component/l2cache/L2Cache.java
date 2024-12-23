@@ -19,9 +19,9 @@ public interface L2Cache<K, V> extends org.springframework.cache.Cache {
 
     V getL1Value(K key);
 
-    void clearLocalBatch(Iterable<Object> key);
+    void clearLocalBatch(Iterable<K> key);
 
-    void clearLocal(Object key);
+    void clearLocal(K key);
 
     Set<K> getKeys();
 }

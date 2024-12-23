@@ -91,18 +91,20 @@ create table main_expression (
                                  resource_id bigint,
                                  created_by varchar(255),
                                  last_modified_by varchar(255),
+                                 tenant_by varchar(255) not null,
                                  primary key (id)
 );
-
+    
 create table main_permission (
                                  created_date timestamp(6),
                                  id bigint not null,
                                  last_modified_date timestamp(6),
                                  created_by varchar(255),
                                  last_modified_by varchar(255),
+                                 tenant_by varchar(255) not null,
                                  primary key (id)
 );
-
+    
 create table main_resource (
                                created_date timestamp(6),
                                id bigint not null,
@@ -111,9 +113,10 @@ create table main_resource (
                                permission_id bigint unique,
                                created_by varchar(255),
                                last_modified_by varchar(255),
+                               tenant_by varchar(255) not null,
                                primary key (id)
 );
-
+    
 create table main_role (
                            deleted integer,
                            role_sort integer,
@@ -125,9 +128,10 @@ create table main_role (
                            role_key varchar(255),
                            role_name varchar(255),
                            status varchar(255),
+                           tenant_by varchar(255) not null,
                            primary key (id)
 );
-
+    
 create table main_role_permission (
                                       created_date timestamp(6),
                                       id bigint not null,
@@ -136,9 +140,10 @@ create table main_role_permission (
                                       role_id bigint,
                                       created_by varchar(255),
                                       last_modified_by varchar(255),
+                                      tenant_by varchar(255) not null,
                                       primary key (id)
 );
-
+    
 create table main_role_precondition (
                                         created_date timestamp(6),
                                         id bigint not null,
@@ -146,9 +151,10 @@ create table main_role_precondition (
                                         role_id bigint,
                                         created_by varchar(255),
                                         last_modified_by varchar(255),
+                                        tenant_by varchar(255) not null,
                                         primary key (id)
 );
-
+    
 create table main_user (
                            deleted integer,
                            created_date timestamp(6),
@@ -163,10 +169,11 @@ create table main_user (
                            password varchar(255),
                            phone_number varchar(255),
                            status varchar(255),
+                           tenant_by varchar(255) not null,
                            username varchar(255),
                            primary key (id)
 );
-
+    
 create table main_user_expression (
                                       created_date timestamp(6),
                                       id bigint not null,
@@ -174,18 +181,20 @@ create table main_user_expression (
                                       user_resource_id bigint,
                                       created_by varchar(255),
                                       last_modified_by varchar(255),
+                                      tenant_by varchar(255) not null,
                                       primary key (id)
 );
-
+    
 create table main_user_group (
                                  created_date timestamp(6),
                                  id bigint not null,
                                  last_modified_date timestamp(6),
                                  created_by varchar(255),
                                  last_modified_by varchar(255),
+                                 tenant_by varchar(255) not null,
                                  primary key (id)
 );
-
+    
 create table main_user_group_role (
                                       created_date timestamp(6),
                                       id bigint not null,
@@ -194,9 +203,10 @@ create table main_user_group_role (
                                       user_group_id bigint,
                                       created_by varchar(255),
                                       last_modified_by varchar(255),
+                                      tenant_by varchar(255) not null,
                                       primary key (id)
 );
-
+    
 create table main_user_group_user (
                                       created_date timestamp(6),
                                       id bigint not null,
@@ -205,9 +215,10 @@ create table main_user_group_user (
                                       user_id bigint,
                                       created_by varchar(255),
                                       last_modified_by varchar(255),
+                                      tenant_by varchar(255) not null,
                                       primary key (id)
 );
-
+    
 create table main_user_resource (
                                     created_date timestamp(6),
                                     id bigint not null,
@@ -216,9 +227,10 @@ create table main_user_resource (
                                     user_id bigint,
                                     created_by varchar(255),
                                     last_modified_by varchar(255),
+                                    tenant_by varchar(255) not null,
                                     primary key (id)
 );
-
+    
 create table main_user_role (
                                 created_date timestamp(6),
                                 id bigint not null,
@@ -227,15 +239,17 @@ create table main_user_role (
                                 user_id bigint,
                                 created_by varchar(255),
                                 last_modified_by varchar(255),
+                                tenant_by varchar(255) not null,
                                 primary key (id)
 );
-
+    
 create table main_user_session (
                                    created_date timestamp(6),
                                    id bigint not null,
                                    last_modified_date timestamp(6),
                                    created_by varchar(255),
                                    last_modified_by varchar(255),
+                                   tenant_by varchar(255) not null,
                                    primary key (id)
 );
 

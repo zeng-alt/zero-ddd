@@ -68,7 +68,8 @@ public class WebSecurityAutoConfiguration {
 						.requestMatchers("/tenant/graphiql/**").permitAll()
 						.requestMatchers("/tenant/graphql/**").permitAll()
 						.requestMatchers(HttpMethod.POST,"/actuator/startup").permitAll()
-						.anyRequest().access(compositeAuthorizationManager)
+//						.anyRequest().access(compositeAuthorizationManager)
+						.anyRequest().permitAll()
 				)
 				.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
 				.exceptionHandling(e -> e

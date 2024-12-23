@@ -4,6 +4,7 @@ import com.querydsl.core.types.Path;
 import com.querydsl.core.types.PathMetadata;
 import com.querydsl.core.types.dsl.EntityPathBase;
 import com.querydsl.core.types.dsl.SimplePath;
+import com.querydsl.core.types.dsl.StringPath;
 
 import javax.annotation.processing.Generated;
 
@@ -28,7 +29,7 @@ public class QBaseEntity extends EntityPathBase<BaseEntity<? extends java.io.Ser
 
     public final SimplePath<java.util.Optional<java.time.LocalDateTime>> lastModifiedDate = createSimple("lastModifiedDate", java.util.Optional.class);
 
-    public final SimplePath<java.util.Optional<String>> tenantBy = createSimple("tenantBy", java.util.Optional.class);
+    public final StringPath tenantBy = createString("tenantBy");
 
     @SuppressWarnings({"all", "rawtypes", "unchecked"})
     public QBaseEntity(String variable) {

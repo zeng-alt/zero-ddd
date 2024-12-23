@@ -26,4 +26,12 @@ public final class TenantContextHolder {
     public static void clear(){
         currentTenant.remove();
     }
+
+    public static void switchPrimaryTenant() {
+        currentTenant.set("master");
+    }
+
+    public static void switchTenant(String tenant) {
+        setTenantId(tenant);
+    }
 }

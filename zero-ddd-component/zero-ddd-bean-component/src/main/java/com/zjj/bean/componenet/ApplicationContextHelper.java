@@ -3,6 +3,7 @@ package com.zjj.bean.componenet;
 import com.zjj.autoconfigure.component.UtilException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.DefaultSingletonBeanRegistry;
@@ -48,6 +49,10 @@ public class ApplicationContextHelper implements ApplicationContextAware, BeanFa
 			throw new UtilException("Component " + targetClz + " can not be found in Spring Container");
 		}
 		return beanInstance;
+	}
+
+	public static <T> ObjectProvider<T> getBeanProvider(Class<T> clazz) {
+		return applicationContext.getBeanProvider(clazz);
 	}
 
 	public static Object getBean(String name) {

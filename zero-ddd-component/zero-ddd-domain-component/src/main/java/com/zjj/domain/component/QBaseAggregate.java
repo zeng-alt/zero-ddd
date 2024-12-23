@@ -4,8 +4,11 @@ import com.querydsl.core.types.Path;
 import com.querydsl.core.types.PathMetadata;
 import com.querydsl.core.types.dsl.EntityPathBase;
 import com.querydsl.core.types.dsl.SimplePath;
+import com.querydsl.core.types.dsl.StringPath;
 
 import javax.annotation.processing.Generated;
+
+import java.util.Optional;
 
 import static com.querydsl.core.types.PathMetadataFactory.forVariable;
 
@@ -35,7 +38,7 @@ public class QBaseAggregate extends EntityPathBase<BaseAggregate<? extends java.
     public final SimplePath<java.util.Optional<java.time.LocalDateTime>> lastModifiedDate = _super.lastModifiedDate;
 
     //inherited
-    public final SimplePath<java.util.Optional<String>> tenantBy = _super.tenantBy;
+    public final StringPath tenantBy = _super.tenantBy;
 
     @SuppressWarnings({"all", "rawtypes", "unchecked"})
     public QBaseAggregate(String variable) {

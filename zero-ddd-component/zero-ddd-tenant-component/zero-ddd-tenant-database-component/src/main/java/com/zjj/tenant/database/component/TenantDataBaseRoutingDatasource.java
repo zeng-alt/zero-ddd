@@ -4,19 +4,28 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.github.benmanes.caffeine.cache.RemovalListener;
 import com.zaxxer.hikari.HikariDataSource;
+import com.zjj.autoconfigure.component.tenant.MultiTenancyProperties;
 import com.zjj.exchange.tenant.client.RemoteTenantClient;
 import com.zjj.exchange.tenant.domain.Tenant;
-import com.zjj.tenant.management.component.config.MultiTenancyProperties;
-import com.zjj.tenant.management.component.service.TenantDatabaseService;
+import com.zjj.tenant.management.component.service.TenantCreationException;
+import com.zjj.tenant.management.component.service.TenantDataSourceService;
+import com.zjj.tenant.management.component.utils.SpringLiquibaseUtils;
 import jakarta.annotation.PostConstruct;
+import liquibase.exception.LiquibaseException;
 import liquibase.integration.spring.SpringLiquibase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
+import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.StatementCallback;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 import org.springframework.lang.NonNull;
+import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -32,10 +41,11 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 @RequiredArgsConstructor
-public class TenantDataBaseRoutingDatasource extends AbstractRoutingDataSource implements TenantDatabaseService {
-
-    private LoadingCache<String, DataSource> tenantDataSources;
+public class TenantDataBaseRoutingDatasource extends AbstractRoutingDataSource implements TenantDataSourceService {
     private static final String TENANT_POOL_NAME_SUFFIX = "DataSource";
+    private static final String VALID_DATABASE_NAME_REGEXP = "\\w*";
+    private LoadingCache<String, DataSource> tenantDataSources;
+
     private final DataSourceProperties dataSourceProperties;
     private final RemoteTenantClient remoteTenantClient;
     private final CurrentTenantIdentifierResolver<String> currentTenantIdentifierResolver;
@@ -84,7 +94,7 @@ public class TenantDataBaseRoutingDatasource extends AbstractRoutingDataSource i
         }
 
         if (dataSource == null) {
-            throw new IllegalStateException("Cannot determine target DataSource for lookup key [" + tenantIdentifier + "]");
+            throw new TenantDataSourceException("tenant.datasource.not.exist", (Object) tenantIdentifier);
         } else {
             return dataSource;
         }
@@ -97,7 +107,7 @@ public class TenantDataBaseRoutingDatasource extends AbstractRoutingDataSource i
 
         ds.setUsername(tenant.getDb());
         ds.setPassword(tenant.getPassword());
-        ds.setJdbcUrl(multiTenancyProperties.getUrlPrefix() + tenant.getDb());
+        ds.setJdbcUrl(multiTenancyProperties.getDatabasePattern().getUrlPrefix() + tenant.getDb());
 
         ds.setPoolName(tenant.getTenantId() + TENANT_POOL_NAME_SUFFIX);
 
@@ -112,14 +122,45 @@ public class TenantDataBaseRoutingDatasource extends AbstractRoutingDataSource i
     }
 
     @Override
-    public void addTenantDatabase(String tenant, DataSource dataSource) {
+    public void verify(Tenant tenant) {
+        if (!tenant.getDb().matches(VALID_DATABASE_NAME_REGEXP)) {
+            throw new TenantCreationException("Invalid db name: " + tenant.getDb());
+        }
+    }
+
+    @Override
+    public DataSource createDatasource(Tenant tenant) {
+
+        HikariDataSource ds = dataSourceProperties.initializeDataSourceBuilder().type(HikariDataSource.class).build();
+
+
+        if (StringUtils.hasText(tenant.getUsername())) {
+            ds.setUsername(tenant.getUsername());
+        }
+        ds.setPassword(tenant.getPassword());
+        ds.setJdbcUrl(multiTenancyProperties.getDatabasePattern().getUrlPrefix() + tenant.getDb());
+
+        ds.setPoolName(tenant.getTenantId());
+
+        log.info("Configured datasource: {}", ds.getPoolName());
+        return ds;
+    }
+
+    @Override
+    public void addTenantDataSource(Tenant tenant, DataSource dataSource) {
         ConcurrentMap<String, DataSource> map = tenantDataSources.asMap();
-        if (map.containsKey(tenant)) {
-            DataSource dataSource1 = tenantDataSources.get(tenant);
+        if (map.containsKey(tenant.getTenantId())) {
+            DataSource dataSource1 = tenantDataSources.get(tenant.getTenantId());
             if (dataSource1 instanceof HikariDataSource hikariDataSource) {
                 hikariDataSource.close();
             }
         }
-        tenantDataSources.put(tenant, dataSource);
+        tenantDataSources.put(tenant.getTenantId(), dataSource);
+    }
+
+    @Override
+    public void runLiquibase(Tenant tenant, DataSource dataSource, LiquibaseProperties liquibaseProperties, ResourceLoader resourceLoader) throws LiquibaseException {
+        SpringLiquibase liquibase = SpringLiquibaseUtils.create(dataSource, liquibaseProperties, resourceLoader);
+        liquibase.afterPropertiesSet();
     }
 }

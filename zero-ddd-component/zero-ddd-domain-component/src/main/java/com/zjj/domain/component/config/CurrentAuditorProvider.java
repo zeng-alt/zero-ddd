@@ -1,7 +1,9 @@
 package com.zjj.domain.component.config;
 
+import com.zjj.autoconfigure.component.security.UserContextHolder;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -20,7 +22,7 @@ public class CurrentAuditorProvider implements AuditorAware<String> {
      * @return the current auditor.
      */
     @Override
-    public Optional<String> getCurrentAuditor() {
-        return Optional.of("张三");
+    public @NonNull Optional<String> getCurrentAuditor() {
+        return Optional.ofNullable(UserContextHolder.getUsername());
     }
 }

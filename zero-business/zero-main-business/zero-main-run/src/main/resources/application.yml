@@ -48,7 +48,8 @@ spring:
 
 multi-tenancy:
   database: h2
-  url-prefix: "jdbc:h2:mem:"
+  database-pattern:
+    url-prefix: "jdbc:h2:mem:"
 
 
 

@@ -21,7 +21,6 @@ public class JwtCacheProvider implements L2CacheManageProvider {
 
     private final JwtProperties jwtProperties;
 
-
     @Override
     public void consumer(L2CacheManage l2CacheManage) {
         RedissonCaffeineCache.Builder builder = RedissonCaffeineCache.builder();

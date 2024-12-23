@@ -15,6 +15,7 @@ public class Tenant {
      * db模式
      * ********************************/
     private String db;
+    private String username;
     private String password;
 
     /***********************************
@@ -24,11 +25,12 @@ public class Tenant {
 
     public Tenant() {}
 
-    Tenant(String tenantId, String db, String password, String schema) {
+    Tenant(String tenantId, String db, String password, String username, String schema) {
         this.tenantId = tenantId;
         this.db = db;
         this.password = password;
         this.schema = schema;
+        this.username = username;
     }
 
     public static TenantDbBuilder dbBuilder() {
@@ -60,7 +62,7 @@ public class Tenant {
         }
 
         public Tenant build() {
-            return new Tenant(this.tenantId, null, null, schema);
+            return new Tenant(this.tenantId, null, null, null, schema);
         }
 
         public String toString() {
@@ -74,6 +76,7 @@ public class Tenant {
         private String tenantId;
         private String db;
         private String password;
+        private String username;
 
         TenantDbBuilder() {
         }
@@ -93,12 +96,17 @@ public class Tenant {
             return this;
         }
 
+        public TenantDbBuilder username(String password) {
+            this.username = username;
+            return this;
+        }
+
         public Tenant build() {
-            return new Tenant(this.tenantId, this.db, this.password, null);
+            return new Tenant(this.tenantId, this.db, this.password, username, null);
         }
 
         public String toString() {
-            return "Tenant.TenantBuilder(tenantId=" + this.tenantId + ", db=" + this.db + ", password=" + this.password+ ")";
+            return "Tenant.TenantBuilder(tenantId=" + this.tenantId + ", db=" + this.db + ", username=" + this.username + ", password=" + this.password+ ")";
         }
     }
 
@@ -107,6 +115,7 @@ public class Tenant {
         private String db;
         private String password;
         private String schema;
+        private String username;
 
         TenantBuilder() {
         }
@@ -131,12 +140,17 @@ public class Tenant {
             return this;
         }
 
+        public TenantBuilder username(String username) {
+            this.username = username;
+            return this;
+        }
+
         public Tenant build() {
-            return new Tenant(this.tenantId, this.db, this.password, this.schema);
+            return new Tenant(this.tenantId, this.db, this.password, this.username, this.schema);
         }
 
         public String toString() {
-            return "Tenant.TenantBuilder(tenantId=" + this.tenantId + ", db=" + this.db + ", password=" + this.password + ", schema=" + this.schema + ")";
+            return "Tenant.TenantBuilder(tenantId=" + this.tenantId + ", db=" + this.db + ", username=" + this.username + ", password=" + this.password + ", schema=" + this.schema + ")";
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.zjj.tenant.management.component.service;
 
+import com.zjj.exchange.tenant.domain.Tenant;
 import org.springframework.orm.jpa.vendor.Database;
 
 /**
@@ -10,5 +11,5 @@ import org.springframework.orm.jpa.vendor.Database;
 public interface TenantManagementService {
 
 
-    public void createTenant(String tenantId, String db, String password);
+    public void createTenant(Tenant tenant);
 }

@@ -38,7 +38,6 @@ public class JwtHelperAutoConfiguration {
 
 	@Bean
 	@ConditionalOnBean(L2CacheManage.class)
-	@ConditionalOnMissingClass({"com.zjj.security.tenant.component.configuration.SecurityTenantAutoConfiguration"})
 	public JwtCacheProvider jwtCacheProvider(JwtProperties jwtProperties) {
 		return new JwtCacheProvider(jwtProperties);
 	}

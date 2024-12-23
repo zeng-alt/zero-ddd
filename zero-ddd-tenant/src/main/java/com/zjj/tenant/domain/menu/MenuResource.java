@@ -31,9 +31,9 @@ public class MenuResource extends BaseAggregate<Long> implements IMenuResource, 
     @GeneratedValue
     private Long id;
 
-    @TenantId
-    @Nullable
-    private String tenantBy;
+//    @TenantId
+//    @Nullable
+//    private String tenantBy;
 
 
     /**
