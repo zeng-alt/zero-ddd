@@ -17,14 +17,14 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  * @version 1.0
  * @crateTime 2024年11月14日 21:08
  */
-@EnableMultiTenancy(mode = TenantMode.DATABASE)
+@EnableMultiTenancy(mode = TenantMode.COLUMN)
 @EnableJpaRepositories(basePackages = "com.zjj")
 @SpringBootApplication
 @EnableFeignClients(basePackages = "com.zjj")
 @EnableGenEntityType
 @EnableGenEntityInput
 @EnableGenEntityQuery
-@EnableGenEntityFuzzyQuery
+//@EnableGenEntityFuzzyQuery
 public class ZeroMainApplication {
 
     public static void main(String[] args) {

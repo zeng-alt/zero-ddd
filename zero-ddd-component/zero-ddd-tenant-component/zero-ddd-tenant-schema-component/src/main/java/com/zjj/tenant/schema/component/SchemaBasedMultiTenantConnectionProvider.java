@@ -5,23 +5,25 @@ import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.zjj.autoconfigure.component.tenant.MultiTenancyProperties;
 import com.zjj.exchange.tenant.client.RemoteTenantClient;
 import com.zjj.exchange.tenant.domain.Tenant;
+import com.zjj.tenant.management.component.SpringLiquibase;
 import com.zjj.tenant.management.component.service.TenantCreationException;
 import com.zjj.tenant.management.component.service.TenantDataSourceService;
 import com.zjj.tenant.management.component.utils.SpringLiquibaseUtils;
 import jakarta.annotation.PostConstruct;
 import liquibase.exception.LiquibaseException;
-import liquibase.integration.spring.SpringLiquibase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
 import org.hibernate.service.UnknownUnwrapTypeException;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collections;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -31,14 +33,28 @@ import java.util.concurrent.TimeUnit;
  */
 @RequiredArgsConstructor
 @Slf4j
+@Component
 public class SchemaBasedMultiTenantConnectionProvider implements MultiTenantConnectionProvider<String>, TenantDataSourceService {
 
     private static final String VALID_SCHEMA_NAME_REGEXP = "[A-Za-z0-9_]*";
     private final DataSource datasource;
-    private final MultiTenancyProperties tenancyProperties;
     private final RemoteTenantClient remoteTenantClient;
+    private final String master;
+    private final MultiTenancyProperties tenancyProperties;
 
     private LoadingCache<String, String> tenantSchemas;
+
+
+    public SchemaBasedMultiTenantConnectionProvider(DataSource datasource, MultiTenancyProperties tenancyProperties, RemoteTenantClient remoteTenantClient) {
+        this.datasource = datasource;
+        this.remoteTenantClient = remoteTenantClient;
+        this.tenancyProperties = tenancyProperties;
+        try(Connection connection = datasource.getConnection()) {
+            this.master = connection.getSchema();
+        } catch (SQLException e) {
+            throw new TenantCreationException("在Schema模式下,获取主数据源的schema失败：" + e);
+        }
+    }
 
     @PostConstruct
     private void createCache() {
@@ -66,16 +82,21 @@ public class SchemaBasedMultiTenantConnectionProvider implements MultiTenantConn
     @Override
     public Connection getConnection(String tenantIdentifier) throws SQLException {
         log.info("Get connection for tenant {}", tenantIdentifier);
-        String tenantSchema = tenantSchemas.get(tenantIdentifier);
+        String tenantSchema = null;
+        if ("master".equals(tenantIdentifier)) {
+            tenantSchema = master;
+        } else {
+            tenantSchema = tenantSchemas.get(tenantIdentifier);
+        }
         final Connection connection = getAnyConnection();
-        connection.setSchema(tenantSchema);
+        connection.setSchema(tenantSchema.toUpperCase(Locale.ROOT));
         return connection;
     }
 
     @Override
     public void releaseConnection(String tenantIdentifier, Connection connection) throws SQLException {
         log.info("Release connection for tenant {}", tenantIdentifier);
-        connection.setSchema(tenancyProperties.getSchemaPattern().getSchema());
+        connection.setSchema(master);
         releaseAnyConnection(connection);
     }
 
@@ -112,18 +133,22 @@ public class SchemaBasedMultiTenantConnectionProvider implements MultiTenantConn
 
     @Override
     public void addTenantDataSource(Tenant tenant, DataSource dataSource) {
-        tenantSchemas.put(tenant.getTenantId(), tenant.getSchema());
+        tenantSchemas.put(tenant.getTenantId(), tenant.getSchema().toUpperCase());
     }
 
     @Override
     public void runLiquibase(Tenant tenant, DataSource dataSource, LiquibaseProperties liquibaseProperties, ResourceLoader resourceLoader) throws LiquibaseException {
+        String schema = tenant.getSchema().toUpperCase();
         SpringLiquibase liquibase = SpringLiquibaseUtils.create(dataSource, liquibaseProperties, resourceLoader);
         if (liquibaseProperties.getParameters() != null) {
-            liquibaseProperties.getParameters().put("schema", tenant.getSchema());
+            liquibaseProperties.getParameters().put("schema", schema);
             liquibase.setChangeLogParameters(liquibaseProperties.getParameters());
         } else {
-            liquibase.setChangeLogParameters(Collections.singletonMap("schema", tenant.getSchema()));
+            liquibase.setChangeLogParameters(Collections.singletonMap("schema", schema));
         }
+        liquibase.setLiquibaseSchema(schema);
+        liquibase.setDefaultSchema(schema);
         liquibase.afterPropertiesSet();
     }
+
 }

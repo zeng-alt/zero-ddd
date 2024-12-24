@@ -22,14 +22,9 @@ public class TenantDataSourceForm implements Serializable {
 
     private Long tenantId;
     private String poolName;
-    private String driverClassName;
     private String url;
     private String username;
     private String password;
-    private String jndiName;
-    private Boolean seata;
-    private Boolean p6spy;
-    private Boolean lazy;
-    private String publicKey;
-    private Boolean enable;
+    private String schema;
+    private Boolean enabled;
 }

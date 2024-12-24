@@ -1,22 +1,17 @@
 package com.zjj.tenant.database.component;
 
 
-import com.zjj.tenant.database.component.TenantDataBaseRoutingDatasource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.initialization.qual.Initialized;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.UnknownKeyFor;
-import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
-import org.springframework.boot.autoconfigure.orm.jpa.HibernatePropertiesCustomizer;
 import org.springframework.stereotype.Component;
-
 
 import java.io.Serial;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Map;
 
 @RequiredArgsConstructor
 @Slf4j

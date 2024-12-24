@@ -1,22 +1,20 @@
-
+server:
+  port: 8083
 
 spring:
+  cloud:
+    nacos:
+      discovery:
+        # 服务注册地址
+        server-addr: 127.0.0.1:8848
+      config:
+        enabled: false
   datasource:
-    dynamic:
-      primary: master #设置默认的数据源或者数据源组,默认值即为master
-      strict: false #严格匹配数据源,默认false. true未匹配到指定数据源时抛异常,false使用默认数据源
-      datasource:
-        master:
-          url: jdbc:h2:mem:mydb
-          username: sa
-          password:
-          driver-class-name: org.h2.Driver # 3.2.0开始支持SPI可省略此配置
-#  datasource:
-#    url: jdbc:h2:mem:mydb
-#    username: sa
-#    password:
-#    driverClassName: org.h2.Driver
-#    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:h2:mem:mydb
+    username: sa
+    password:
+    driverClassName: org.h2.Driver
+    type: com.zaxxer.hikari.HikariDataSource
 
   jpa:
     show-sql: true

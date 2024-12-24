@@ -21,7 +21,6 @@
         <dependency>
             <groupId>com.zjj</groupId>
             <artifactId>zero-ddd-tenant-management-component</artifactId>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>

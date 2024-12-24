@@ -33,12 +33,12 @@ public class TenantHeaderFilter extends OncePerRequestFilter {
 
         String tenant = request.getHeader(multiTenancyProperties.getTenantToken());
         try {
-            if (tenant == null) {
-                TenantContextHolder.switchPrimaryTenant();
-                log.debug("切换到主数据源");
-                filterChain.doFilter(request, response);
-                return;
-            }
+//            if (tenant == null) {
+//                TenantContextHolder.switchPrimaryTenant();
+//                log.debug("切换到主数据源");
+//                filterChain.doFilter(request, response);
+//                return;
+//            }
 
             boolean hasAccess = isUserAllowed(tenant);
             if (!hasAccess) {

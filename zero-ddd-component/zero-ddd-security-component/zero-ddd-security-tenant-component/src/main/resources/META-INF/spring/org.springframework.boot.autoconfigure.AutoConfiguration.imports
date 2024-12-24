@@ -1,0 +1,2 @@
+com.zjj.security.tenant.component.configuration.SecurityTenantAutoConfiguration
+com.zjj.security.tenant.component.configuration.SecurityReactiveTenantAutoConfiguration

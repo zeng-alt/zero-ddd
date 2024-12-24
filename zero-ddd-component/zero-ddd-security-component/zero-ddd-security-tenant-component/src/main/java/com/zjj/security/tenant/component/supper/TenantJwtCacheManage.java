@@ -24,23 +24,27 @@ public class TenantJwtCacheManage implements JwtCacheManage {
         this.expireTime = Duration.of(jwtProperties.getExpiration(), jwtProperties.getTemporalUnit());
     }
 
+    private String getKey(String id) {
+        return "jwt" + TenantContextHolder.getTenantId() + ":" + id;
+    }
+
     @Override
     public UserDetails get(String id) {
-        return redisStringRepository.get(TenantContextHolder.getTenantId() + ":jwt:" + id);
+        return redisStringRepository.get(getKey(id));
     }
 
     @Override
     public <T> T get(String id, Class<T> tClass) {
-        return redisStringRepository.get(TenantContextHolder.getTenantId() + ":jwt:" + id);
+        return redisStringRepository.get(getKey(id));
     }
 
     @Override
     public void put(String id, UserDetails userDetails) {
-        redisStringRepository.put(TenantContextHolder.getTenantId() + ":jwt:" + id, userDetails, expireTime);
+        redisStringRepository.put(getKey(id), userDetails, expireTime);
     }
 
     @Override
     public void remove(String username) {
-        redisStringRepository.removeAll(TenantContextHolder.getTenantId() + ":jwt:" + username);
+        redisStringRepository.removeAll(getKey(username));
     }
 }

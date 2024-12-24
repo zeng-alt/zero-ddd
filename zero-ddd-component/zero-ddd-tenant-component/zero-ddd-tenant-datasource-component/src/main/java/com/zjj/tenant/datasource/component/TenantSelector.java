@@ -8,6 +8,8 @@ import com.zjj.security.tenant.component.supper.TenantJwtCacheManage;
 import com.zjj.security.tenant.component.supper.TenantJwtL2CacheManage;
 import com.zjj.tenant.column.component.TenantColumnAutoConfiguration;
 import com.zjj.tenant.database.component.TenantDatabaseAutoConfiguration;
+import com.zjj.tenant.management.component.config.DataSourceConfiguration;
+import com.zjj.tenant.management.component.config.LiquibaseConfiguration;
 import com.zjj.tenant.management.component.config.TenantManagementAutoConfiguration;
 import com.zjj.tenant.schema.component.TenantSchemaAutoConfiguration;
 import lombok.extern.slf4j.Slf4j;
@@ -50,16 +52,19 @@ final class TenantSelector implements ImportSelector {
 
 
         imports.add(TenantColumnAutoConfiguration.class.getName());
-        imports.addAll(getTenantFilterImports(annotation.type()));
 
         if (annotation.mode() == TenantMode.DATABASE) {
-            imports.add(TenantManagementAutoConfiguration.class.getName());
+            imports.add(DataSourceConfiguration.class.getName());
+            imports.add(LiquibaseConfiguration.class.getName());
             imports.add(TenantDatabaseAutoConfiguration.class.getName());
+            imports.add(TenantManagementAutoConfiguration.class.getName());
             log.info("Enable database multi-tenancy mode!!!");
         }
         if ((annotation.mode() == TenantMode.SCHEMA)) {
-            imports.add(TenantManagementAutoConfiguration.class.getName());
+            imports.add(DataSourceConfiguration.class.getName());
             imports.add(TenantSchemaAutoConfiguration.class.getName());
+            imports.add(LiquibaseConfiguration.class.getName());
+            imports.add(TenantManagementAutoConfiguration.class.getName());
             log.info("Enable schema multi-tenancy mode!!!");
         }
         if (annotation.mode() == TenantMode.COLUMN) {
@@ -67,20 +72,6 @@ final class TenantSelector implements ImportSelector {
         }
 
         return imports.toArray(new String[0]);
-    }
-
-
-    private List<String> getTenantFilterImports(ConditionalOnWebApplication.Type type) {
-        List<String> imports = new ArrayList<>();
-        if (type == ConditionalOnWebApplication.Type.REACTIVE) {
-            imports.add(SecurityReactiveTenantAutoConfiguration.class.getName());
-        }
-
-        if (type == ConditionalOnWebApplication.Type.SERVLET) {
-            imports.add(SecurityTenantAutoConfiguration.class.getName());
-        }
-
-        return imports;
     }
 
 

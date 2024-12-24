@@ -3,6 +3,7 @@ package com.zjj.tenant.management.component.config;
 import com.zaxxer.hikari.HikariDataSource;
 import com.zjj.autoconfigure.component.tenant.MultiTenancyProperties;
 import com.zjj.cache.component.repository.impl.RedisTopicRepositoryImpl;
+import com.zjj.exchange.tenant.client.RemoteTenantClient;
 import com.zjj.exchange.tenant.domain.Tenant;
 import com.zjj.tenant.management.component.service.TenantDataSourceService;
 import com.zjj.tenant.management.component.service.TenantInitDataSourceService;
@@ -32,9 +33,14 @@ public class DataSourceConfiguration {
 
     private final DataSourceProperties dataSourceProperties;
 
+    /**
+     *
+     * @param remoteTenantClient 这个参数不能删除，防止多租户模式下，remoteTenantClient在EntityManagerFactory之后才加载
+     * @return
+     */
     @Bean
     @LiquibaseDataSource
-    public DataSource masterDataSource() {
+    public DataSource masterDataSource(RemoteTenantClient remoteTenantClient) {
         HikariDataSource dataSource = dataSourceProperties
                 .initializeDataSourceBuilder()
                 .type(HikariDataSource.class)
@@ -42,31 +48,4 @@ public class DataSourceConfiguration {
         dataSource.setPoolName("masterDataSource");
         return dataSource;
     }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public TenantManagementService tenantManagementService(
-
-            LiquibaseProperties liquibaseProperties,
-            ResourceLoader resourceLoader,
-            TenantDataSourceService tenantDataSourceService,
-            RedisTopicRepositoryImpl repository,
-            TenantInitDataSourceService tenantInitDataSourceService
-    ) {
-        TenantManagementServiceImpl tenantManagementService = new TenantManagementServiceImpl(
-                                                                    liquibaseProperties,
-                                                                    resourceLoader,
-                                                                    tenantDataSourceService,
-                                                                    tenantInitDataSourceService);
-        repository.addListener("tenant-channel", Tenant.class, new Consumer<Tenant>() {
-            @Override
-            public void accept(Tenant tenant) {
-                tenantManagementService.createTenant(tenant);
-            }
-        });
-
-        return tenantManagementService;
-    }
-
-
 }

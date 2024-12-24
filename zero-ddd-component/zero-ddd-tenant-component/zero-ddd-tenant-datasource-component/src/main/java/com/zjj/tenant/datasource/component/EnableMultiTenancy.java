@@ -24,5 +24,5 @@ public @interface EnableMultiTenancy {
 
     CacheType cache() default CacheType.REDIS;
 
-    ConditionalOnWebApplication.Type type() default ConditionalOnWebApplication.Type.SERVLET;
+//    ConditionalOnWebApplication.Type type() default ConditionalOnWebApplication.Type.SERVLET;
 }

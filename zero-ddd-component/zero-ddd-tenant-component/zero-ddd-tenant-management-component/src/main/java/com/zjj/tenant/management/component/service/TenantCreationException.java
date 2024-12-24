@@ -1,6 +1,8 @@
 package com.zjj.tenant.management.component.service;
 
-public class TenantCreationException extends RuntimeException {
+import com.zjj.i18n.component.BaseI18nException;
+
+public class TenantCreationException extends BaseI18nException {
 
     public TenantCreationException(String message) {
         super(message);

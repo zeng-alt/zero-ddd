@@ -19,13 +19,12 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 @EnableWebSecurity(debug = true)
 @EnableL2Cache
 @EnableCaching
-@EntityScan(basePackages = "com.zjj")
 @EnableJpaRepositories(basePackages = "com.zjj")
 @SpringBootApplication
-public class Main {
+public class ZeroDddAuthApplication {
 
 	public static void main(String[] args) {
-		ConfigurableApplicationContext run = SpringApplication.run(Main.class, args);
+		ConfigurableApplicationContext run = SpringApplication.run(ZeroDddAuthApplication.class, args);
 
 		System.out.println(run);
 	}

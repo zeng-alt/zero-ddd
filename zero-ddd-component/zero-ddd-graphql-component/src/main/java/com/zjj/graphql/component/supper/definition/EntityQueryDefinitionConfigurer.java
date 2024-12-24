@@ -38,6 +38,7 @@ public class EntityQueryDefinitionConfigurer implements TypeDefinitionConfigurer
         final List<SDLDefinition> definitions = new ArrayList<>();
 
         entityContext.forEachEntity(entity -> {
+
             ObjectTypeExtensionDefinition.Builder query = ObjectTypeExtensionDefinition.newObjectTypeExtensionDefinition().name("Query");
             query.fieldDefinition(
                     FieldDefinition
@@ -73,6 +74,7 @@ public class EntityQueryDefinitionConfigurer implements TypeDefinitionConfigurer
             );
             definitions.add(query.build());
         });
+
 
         registry.addAll(definitions);
     }

@@ -1,6 +1,7 @@
 package com.zjj.tenant.management.component.utils;
 
-import liquibase.integration.spring.SpringLiquibase;
+
+import com.zjj.tenant.management.component.SpringLiquibase;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.CollectionUtils;
@@ -20,6 +21,7 @@ public class SpringLiquibaseUtils {
         liquibase.setDataSource(dataSource);
         liquibase.setChangeLog(liquibaseProperties.getChangeLog());
         liquibase.setContexts(CollectionUtils.isEmpty(liquibaseProperties.getContexts()) ? null : liquibaseProperties.getContexts().get(0));
+        liquibase.setDefaultSchema(liquibaseProperties.getDefaultSchema());
         liquibase.setLiquibaseSchema(liquibaseProperties.getLiquibaseSchema());
         liquibase.setLiquibaseTablespace(liquibaseProperties.getLiquibaseTablespace());
         liquibase.setDatabaseChangeLogTable(liquibaseProperties.getDatabaseChangeLogTable());
