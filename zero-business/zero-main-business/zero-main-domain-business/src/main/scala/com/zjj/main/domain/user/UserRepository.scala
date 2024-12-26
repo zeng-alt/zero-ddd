@@ -10,5 +10,5 @@ trait UserRepository {
   def findById(id: Long): io.vavr.control.Option[UserAgg]
   def findByUserName(username: String): io.vavr.control.Option[UserAgg]
   def save(user: UserAgg): Unit
-  def existsByRoles(roleIds: java.util.List[java.lang.Long]): Boolean
+  def existsByRoles(roleIds: java.util.List[String]): Boolean
 }

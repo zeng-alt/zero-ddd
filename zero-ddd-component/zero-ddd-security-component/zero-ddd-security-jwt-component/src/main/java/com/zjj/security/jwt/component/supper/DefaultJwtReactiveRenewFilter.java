@@ -1,8 +1,11 @@
 package com.zjj.security.jwt.component.supper;
 
+import com.zjj.autoconfigure.component.security.SecurityUser;
 import com.zjj.autoconfigure.component.security.jwt.JwtCacheManage;
+import com.zjj.autoconfigure.component.security.jwt.ReactiveJwtCacheManage;
 import com.zjj.security.jwt.component.JwtDetail;
 import com.zjj.security.jwt.component.JwtReactiveRenewFilter;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
@@ -17,7 +20,7 @@ import java.util.Objects;
  */
 public class DefaultJwtReactiveRenewFilter extends JwtReactiveRenewFilter {
 
-    public DefaultJwtReactiveRenewFilter(JwtCacheManage jwtCacheManage) {
+    public DefaultJwtReactiveRenewFilter(ReactiveJwtCacheManage jwtCacheManage) {
         super(jwtCacheManage);
     }
 
@@ -31,7 +34,11 @@ public class DefaultJwtReactiveRenewFilter extends JwtReactiveRenewFilter {
             LocalDateTime expire = jwtDetail.getExpire();
             // 如果过期时间小当前时间的前15分钟，不进行刷新
             if (expire.isBefore(now.plusMinutes(15))) {
-                jwtCacheManage.put(jwtDetail.getId(), jwtDetail.getUser());
+                UserDetails user = jwtDetail.getUser();
+//                if (user instanceof SecurityUser securityUser) {
+//                    securityUser.setExpire(now.plusMinutes(jwtProperties.getExpire()));
+//                }
+                jwtCacheManage.put(jwtDetail.getId(), user);
             }
         }
 

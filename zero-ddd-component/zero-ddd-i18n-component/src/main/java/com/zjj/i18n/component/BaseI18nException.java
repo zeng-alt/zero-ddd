@@ -4,6 +4,7 @@ import com.zjj.autoconfigure.component.core.BaseEnum;
 import com.zjj.autoconfigure.component.core.BaseException;
 import org.springframework.lang.NonNull;
 
+import java.util.List;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 
@@ -27,8 +28,8 @@ public class BaseI18nException extends BaseException {
         super(cause);
     }
 
-    public BaseI18nException(String message, Object... args) {
-        super(MessageSourceHelper.getMessage(message, message, args));
+    public BaseI18nException(String messageKey, String message, Object... args) {
+        super(MessageSourceHelper.getMessage(messageKey, message, args));
     }
 
 

@@ -1,9 +1,12 @@
 package com.zjj.main.infrastructure.db.jpa.entity;
 
 import com.zjj.domain.component.BaseEntity;
+import com.zjj.domain.component.TenantAuditable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.TenantId;
+import org.springframework.lang.Nullable;
 
 /**
  * @author zengJiaJun
@@ -14,7 +17,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "main_expression")
-public class Expression extends BaseEntity<Long> {
+public class Expression extends BaseEntity<Long> implements TenantAuditable<String> {
     @Id
     @GeneratedValue
     private Long id;
@@ -23,4 +26,7 @@ public class Expression extends BaseEntity<Long> {
     @JoinColumn(name = "resource_id")
     private MenuResource resource;
 
+    @TenantId
+    @Nullable
+    private String tenantBy;
 }

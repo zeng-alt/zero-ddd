@@ -15,6 +15,6 @@ public class TenantDataSourceException extends BaseI18nException {
     }
 
     public TenantDataSourceException(String message, Object... args) {
-        super(message, args);
+        super(message, message, args);
     }
 }

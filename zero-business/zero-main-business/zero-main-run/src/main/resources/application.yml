@@ -55,6 +55,9 @@ multi-tenancy:
   schema-pattern:
     schema: "PUBLIC"
 
+security:
+  context:
+    enabled-access: false
 
 
 logging:

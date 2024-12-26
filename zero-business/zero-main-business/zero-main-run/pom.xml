@@ -20,6 +20,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid-spring-boot-starter</artifactId>
+            <version>1.1.10</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.zjj</groupId>
             <artifactId>zero-main-infrastructure-business</artifactId>
         </dependency>

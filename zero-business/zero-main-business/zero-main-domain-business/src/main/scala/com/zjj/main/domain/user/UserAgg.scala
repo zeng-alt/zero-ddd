@@ -60,21 +60,23 @@ class UserAgg extends Aggregate[Long] with Serializable {
    */
   @BeanProperty var deleted: Integer = 0
 
-  private var roleIds: Set[java.lang.Long] = _
+  @BeanProperty var tenantBy: String = _
+
+  private var roleIds: Set[String] = _
 
 
-  def setRoleIds(roleIds: java.util.Set[java.lang.Long]): Unit = {
+  def setRoleIds(roleIds: java.util.Set[String]): Unit = {
     import scala.jdk.CollectionConverters._
     this.roleIds = roleIds.asScala.toSet
   }
 
 
-  def getRoleIds(): java.util.Set[java.lang.Long] = {
+  def getRoleIds(): java.util.Set[String] = {
     import scala.jdk.CollectionConverters._
     roleIds.asJava
   }
 
-  def assignRoles(roleIds: List[java.lang.Long]): UserAgg = {
+  def assignRoles(roleIds: List[String]): UserAgg = {
     this.roleIds = this.roleIds ++ roleIds
     publishEvent(null)
     this

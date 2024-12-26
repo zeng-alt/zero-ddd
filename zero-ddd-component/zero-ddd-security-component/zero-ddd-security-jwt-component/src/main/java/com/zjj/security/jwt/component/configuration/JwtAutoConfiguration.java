@@ -29,28 +29,31 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
 @ConditionalOnProperty(name = "security.jwt.enabled", havingValue = "true", matchIfMissing = true)
 public class JwtAutoConfiguration {
 
-	@Bean
-	@ConditionalOnMissingBean
-	public JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter(JwtHelper jwtHelper,
-																	 JwtCacheManage jwtCacheManage, JwtProperties jwtProperties) {
-
-		return new DefaultJwtAuthenticationTokenFilter(jwtHelper, jwtCacheManage, jwtProperties);
-	}
-
-	@Bean
-	@ConditionalOnMissingBean
-	public JwtRenewFilter jwtRenewFilter(JwtCacheManage jwtCacheManage) {
-		return new DefaultJwtRenewFilter(jwtCacheManage);
-	}
+//	@Bean
+//	@ConditionalOnMissingBean
+//	public JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter(JwtHelper jwtHelper,
+//																	 JwtCacheManage jwtCacheManage, JwtProperties jwtProperties) {
+//
+//		return new DefaultJwtAuthenticationTokenFilter(jwtHelper, jwtCacheManage, jwtProperties);
+//	}
+//
+//	@Bean
+//	@ConditionalOnMissingBean
+//	public JwtRenewFilter jwtRenewFilter(JwtCacheManage jwtCacheManage) {
+//		return new DefaultJwtRenewFilter(jwtCacheManage);
+//	}
 
 	@Order(9)
 	@Bean
-	public SecurityBuilderCustomizer jwtCustomizer(JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter,
-			JwtRenewFilter jwtRenewFilter) {
+	public SecurityBuilderCustomizer jwtCustomizer(JwtHelper jwtHelper,
+												   JwtCacheManage jwtCacheManage, JwtProperties jwtProperties) {
+
+		DefaultJwtAuthenticationTokenFilter jwtAuthenticationTokenFilter = new DefaultJwtAuthenticationTokenFilter(jwtHelper, jwtCacheManage, jwtProperties);
+		DefaultJwtRenewFilter jwtRenewFilter = new DefaultJwtRenewFilter(jwtCacheManage);
 		return http -> {
-			Class type = ResolvableType.forType(jwtAuthenticationTokenFilter.getClass()).getRawClass();
+
 			http.addFilterBefore(jwtAuthenticationTokenFilter, LogoutFilter.class);
-			http.addFilterAfter(jwtRenewFilter, type);
+			http.addFilterAfter(jwtRenewFilter, jwtAuthenticationTokenFilter.getClass());
 		};
 	}
 

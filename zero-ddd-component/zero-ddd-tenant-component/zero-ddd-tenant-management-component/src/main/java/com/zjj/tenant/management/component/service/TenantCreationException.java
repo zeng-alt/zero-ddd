@@ -9,7 +9,7 @@ public class TenantCreationException extends BaseI18nException {
     }
 
     public TenantCreationException(String message, Throwable cause) {
-        super(message, cause);
+        super(message, cause.getMessage());
     }
 
     public TenantCreationException(Throwable cause) {

@@ -3,6 +3,7 @@ package com.zjj.security.jwt.component;
 import com.zjj.autoconfigure.component.security.jwt.JwtCacheManage;
 import com.zjj.autoconfigure.component.security.jwt.JwtHelper;
 import com.zjj.autoconfigure.component.security.jwt.JwtProperties;
+import com.zjj.autoconfigure.component.security.jwt.ReactiveJwtCacheManage;
 import org.springframework.web.server.WebFilter;
 
 /**
@@ -14,10 +15,10 @@ import org.springframework.web.server.WebFilter;
 public abstract class JwtReactiveAuthenticationTokenFilter implements WebFilter {
 
     protected final JwtHelper jwtHelper;
-    protected final JwtCacheManage jwtCacheManage;
+    protected final ReactiveJwtCacheManage jwtCacheManage;
     protected final JwtProperties jwtProperties;
 
-    protected JwtReactiveAuthenticationTokenFilter(JwtHelper jwtHelper, JwtCacheManage jwtCacheManage, JwtProperties jwtProperties) {
+    protected JwtReactiveAuthenticationTokenFilter(JwtHelper jwtHelper, ReactiveJwtCacheManage jwtCacheManage, JwtProperties jwtProperties) {
         this.jwtHelper = jwtHelper;
         this.jwtCacheManage = jwtCacheManage;
         this.jwtProperties = jwtProperties;

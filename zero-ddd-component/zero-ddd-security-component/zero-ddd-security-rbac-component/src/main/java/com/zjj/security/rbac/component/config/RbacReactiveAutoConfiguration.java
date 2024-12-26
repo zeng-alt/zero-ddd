@@ -2,12 +2,14 @@ package com.zjj.security.rbac.component.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zjj.autoconfigure.component.security.rbac.RbacCacheManage;
+import com.zjj.security.core.component.spi.ReactiveAuthorizationManagerProvider;
 import com.zjj.security.rbac.component.handler.ReactiveGraphqlResourceHandler;
 import com.zjj.security.rbac.component.handler.ReactiveHttpResourceHandler;
 import com.zjj.security.rbac.component.handler.ReactiveResourceHandler;
 import com.zjj.security.rbac.component.locator.ReactiveGraphqlResourceLocator;
 import com.zjj.security.rbac.component.locator.ReactiveHttpResourceLocator;
 import com.zjj.security.rbac.component.locator.ReactiveResourceLocator;
+import com.zjj.security.rbac.component.manager.ReactiveAdminAuthorizationManager;
 import com.zjj.security.rbac.component.manager.ReactiveParseManager;
 import com.zjj.security.rbac.component.manager.ReactiveResourceQueryManager;
 import com.zjj.security.rbac.component.manager.ReactiveRbacAccessAuthorizationManager;
@@ -16,6 +18,9 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.core.annotation.Order;
+import org.springframework.security.web.server.authorization.AuthorizationContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,9 +66,28 @@ public class RbacReactiveAutoConfiguration {
     }
 
 
+//    @Bean
+//    @Order(10)
+//    public ReactiveRbacAccessAuthorizationManager rbacReactiveAuthorizationManager(ReactiveParseManager reactiveParseManager) {
+//        return new ReactiveRbacAccessAuthorizationManager(reactiveParseManager);
+//    }
+//
+//    @Bean
+//    @Order(5)
+//    public ReactiveAdminAuthorizationManager reactiveAdminAuthorizationManager(ReactiveParseManager reactiveParseManager) {
+//        return new ReactiveAdminAuthorizationManager();
+//    }
+
     @Bean
-    public ReactiveRbacAccessAuthorizationManager rbacReactiveAuthorizationManager(ReactiveParseManager reactiveParseManager) {
-        return new ReactiveRbacAccessAuthorizationManager(reactiveParseManager);
+    @Order(10)
+    public ReactiveAuthorizationManagerProvider<AuthorizationContext> rbacReactiveAuthorizationManager(ReactiveParseManager reactiveParseManager) {
+        return () -> new ReactiveRbacAccessAuthorizationManager(reactiveParseManager);
+    }
+
+    @Bean
+    @Order(5)
+    public ReactiveAuthorizationManagerProvider<AuthorizationContext> reactiveAdminAuthorizationManager() {
+        return ReactiveAdminAuthorizationManager::new;
     }
 
 

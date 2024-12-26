@@ -26,6 +26,7 @@ public final class ReactiveRbacAccessAuthorizationManager implements ReactiveAut
      */
     @Override
     public Mono<AuthorizationDecision> check(Mono<Authentication> authentication, AuthorizationContext object) {
+
         return reactiveParseManager
                 .parse(object.getExchange())
                 .flatMap(r -> r.handler(authentication, object))

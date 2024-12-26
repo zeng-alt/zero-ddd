@@ -1,11 +1,14 @@
 package com.zjj.main.infrastructure.db.jpa.entity;
 
 import com.zjj.domain.component.BaseEntity;
+import com.zjj.domain.component.TenantAuditable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.annotations.TenantId;
+import org.springframework.lang.Nullable;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -21,7 +24,7 @@ import java.util.Set;
 @SQLDelete(sql = "update main_role set deleted = 1 where id = ?")
 @SQLRestriction(value = "deleted = 0")
 @Table(name = "main_role")
-public class Role extends BaseEntity<Long> {
+public class Role extends BaseEntity<Long> implements TenantAuditable<String> {
     @Id
     @GeneratedValue
     private Long id;
@@ -66,5 +69,9 @@ public class Role extends BaseEntity<Long> {
      * 删除标志（0代表存在 2代表删除）
      */
     private Integer deleted;
+
+    @TenantId
+    @Nullable
+    private String tenantBy;
 
 }

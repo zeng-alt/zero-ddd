@@ -34,4 +34,8 @@ public final class TenantContextHolder {
     public static void switchTenant(String tenant) {
         setTenantId(tenant);
     }
+
+    public static String getPrimaryTenant() {
+        return "master";
+    }
 }

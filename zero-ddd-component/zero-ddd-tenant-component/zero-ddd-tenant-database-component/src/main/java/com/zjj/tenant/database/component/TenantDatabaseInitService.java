@@ -6,7 +6,6 @@ import com.zjj.tenant.management.component.service.TenantInitDataSourceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.StatementCallback;
-import org.springframework.orm.jpa.vendor.Database;
 
 /**
  * @author zengJiaJun
@@ -21,7 +20,7 @@ public class TenantDatabaseInitService implements TenantInitDataSourceService {
 
     @Override
     public void initDataSource(Tenant tenant) {
-        if (multiTenancyProperties.getDatabase().equals(Database.POSTGRESQL)) {
+        if (multiTenancyProperties.getDatabase().equals(MultiTenancyProperties.Database.POSTGRESQL)) {
             jdbcTemplate.execute((StatementCallback<Boolean>) stmt -> stmt.execute("CREATE DATABASE " + tenant.getDb()));
             jdbcTemplate.execute((StatementCallback<Boolean>) stmt -> stmt.execute("CREATE USER " + tenant.getDb() + " WITH ENCRYPTED PASSWORD '" + tenant.getPassword() + "'"));
             jdbcTemplate.execute((StatementCallback<Boolean>) stmt -> stmt.execute("GRANT ALL PRIVILEGES ON DATABASE " + tenant.getDb() + " TO " + tenant.getDb()));

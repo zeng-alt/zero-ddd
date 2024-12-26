@@ -2,7 +2,6 @@ package com.zjj.autoconfigure.component.tenant;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.stereotype.Component;
 
 /**
@@ -21,6 +20,36 @@ public class MultiTenancyProperties {
     private Database database;
 
     private String tenantToken = "X-TENANT-ID";
+
+    public enum Database {
+
+        DEFAULT,
+
+        DB2,
+
+        DERBY,
+
+        /** @since 2.5.5 */
+        H2,
+
+        /** @since 5.1 */
+        HANA,
+
+        HSQL,
+
+        INFORMIX,
+
+        MYSQL,
+
+        ORACLE,
+
+        POSTGRESQL,
+
+        SQL_SERVER,
+
+        SYBASE
+
+    }
 
     @Data
     public static class DataSourceCache {

@@ -50,9 +50,6 @@ final class TenantSelector implements ImportSelector {
         EnableMultiTenancy annotation = importMetadata.getAnnotations().get(EnableMultiTenancy.class).synthesize();
         List<String> imports = new ArrayList<>(getCacheImports(annotation.cache()));
 
-
-        imports.add(TenantColumnAutoConfiguration.class.getName());
-
         if (annotation.mode() == TenantMode.DATABASE) {
             imports.add(DataSourceConfiguration.class.getName());
             imports.add(LiquibaseConfiguration.class.getName());

@@ -4,6 +4,7 @@ import com.zjj.autoconfigure.component.security.ServerHttpSecurityBuilderCustomi
 import com.zjj.autoconfigure.component.security.jwt.JwtCacheManage;
 import com.zjj.autoconfigure.component.security.jwt.JwtHelper;
 import com.zjj.autoconfigure.component.security.jwt.JwtProperties;
+import com.zjj.autoconfigure.component.security.jwt.ReactiveJwtCacheManage;
 import com.zjj.security.jwt.component.JwtReactiveAuthenticationTokenFilter;
 import com.zjj.security.jwt.component.JwtReactiveRenewFilter;
 import com.zjj.security.jwt.component.supper.DefaultJwtReactiveAuthenticationTokenFilter;
@@ -28,25 +29,30 @@ import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 @ConditionalOnProperty(name = "security.jwt.enabled", havingValue = "true", matchIfMissing = true)
 public class JwtReactiveAutoConfiguration {
 
-    @Bean
-    @ConditionalOnMissingBean
-    public JwtReactiveAuthenticationTokenFilter jwtReactiveAuthenticationTokenFilter(JwtHelper jwtHelper,
-                                                                                     JwtCacheManage jwtCacheManage,
-                                                                                     JwtProperties jwtProperties) {
-        return new DefaultJwtReactiveAuthenticationTokenFilter(jwtHelper, jwtCacheManage, jwtProperties);
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public JwtReactiveRenewFilter jwtReactiveRenewFilter(JwtCacheManage jwtCacheManage) {
-        return new DefaultJwtReactiveRenewFilter(jwtCacheManage);
-    }
+//    @Bean
+//    @ConditionalOnMissingBean
+//    public JwtReactiveAuthenticationTokenFilter jwtReactiveAuthenticationTokenFilter(JwtHelper jwtHelper,
+//                                                                                     JwtCacheManage jwtCacheManage,
+//                                                                                     JwtProperties jwtProperties) {
+//        return new DefaultJwtReactiveAuthenticationTokenFilter(jwtHelper, jwtCacheManage, jwtProperties);
+//    }
+//
+//    @Bean
+//    @ConditionalOnMissingBean
+//    public JwtReactiveRenewFilter jwtReactiveRenewFilter(JwtCacheManage jwtCacheManage) {
+//        return new DefaultJwtReactiveRenewFilter(jwtCacheManage);
+//    }
 
     @Order(9)
     @Bean
-    public ServerHttpSecurityBuilderCustomizer jwtCustomizer(JwtReactiveAuthenticationTokenFilter jwtReactiveAuthenticationTokenFilter, JwtReactiveRenewFilter jwtReactiveRenewFilter) {
+    public ServerHttpSecurityBuilderCustomizer jwtCustomizer(JwtHelper jwtHelper,
+                                                             ReactiveJwtCacheManage jwtCacheManage,
+                                                             JwtProperties jwtProperties) {
+
+        DefaultJwtReactiveRenewFilter jwtReactiveRenewFilter = new DefaultJwtReactiveRenewFilter(jwtCacheManage);
+        DefaultJwtReactiveAuthenticationTokenFilter jwtReactiveAuthenticationTokenFilter = new DefaultJwtReactiveAuthenticationTokenFilter(jwtHelper, jwtCacheManage, jwtProperties);
         return http -> http
-                .addFilterAt(jwtReactiveAuthenticationTokenFilter, SecurityWebFiltersOrder.HTTP_BASIC)
+                .addFilterBefore(jwtReactiveAuthenticationTokenFilter, SecurityWebFiltersOrder.HTTP_BASIC)
                 .addFilterAfter(jwtReactiveRenewFilter, SecurityWebFiltersOrder.HTTP_BASIC);
     }
 }

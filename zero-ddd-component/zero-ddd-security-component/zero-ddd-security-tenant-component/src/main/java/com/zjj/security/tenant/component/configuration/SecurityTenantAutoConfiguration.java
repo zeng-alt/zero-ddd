@@ -6,6 +6,7 @@ import com.zjj.autoconfigure.component.tenant.TenantService;
 import com.zjj.security.tenant.component.supper.TenantHeaderFilter;
 import com.zjj.security.tenant.component.supper.TenantWitchDataSourceFilter;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -25,38 +26,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @ConditionalOnClass({ EnableWebSecurity.class })
 public class SecurityTenantAutoConfiguration {
 
-//    private CacheType cacheType;
-//
-//    @Bean
-//    @ConditionalOnMissingBean(JwtCacheManage.class)
-//    public JwtCacheManage tenantJwtCacheManage(RedisStringRepository redisStringRepository, JwtProperties jwtProperties, TenantContextHolder tenantContextHolder, L2CacheManage l2CacheManage) {
-//        return switch (cacheType) {
-//            case REDIS -> new TenantJwtCacheManage(redisStringRepository, jwtProperties);
-//            case L2 -> new TenantJwtL2CacheManage(l2CacheManage);
-//        };
-//    }
-
-//    @Bean
-//    public L2JwtCacheProvider tenantJwtCacheProvider(JwtProperties jwtProperties, TenantService tenantService) {
-//        return new L2JwtCacheProvider(jwtProperties, tenantService);
-//    }
-
-//    @Bean
-//    public TenantHeaderFilter tenantFilter(TenantService tenantService) {
-//        return new TenantHeaderFilter(tenantService);
-//    }
-
-
-//    @Bean
-//    @ConditionalOnMissingBean
-//    public TenantWitchDataSourceFilter tenantWitchDataSourceFilter(DynamicSourceManage dynamicSourceManage, TenantContextHolder tenantContextHolder, JwtProperties jwtProperties) {
-//        return new TenantWitchDataSourceFilter(dynamicSourceManage, tenantContextHolder, jwtProperties);
-//    }
-
-    @Bean
-    public TenantHeaderFilter tenantFilter(ObjectProvider<TenantService> tenantService, MultiTenancyProperties multiTenancyProperties) {
-        return new TenantHeaderFilter(tenantService.getIfAvailable(), multiTenancyProperties);
-    }
+    @Value("${multi-tenancy.tenant-token:X-TENANT-ID}")
+    private String tenantToken;
 
     @Bean
     public TenantWitchDataSourceFilter tenantWitchDataSourceFilter() {
@@ -65,10 +36,10 @@ public class SecurityTenantAutoConfiguration {
 
     @Bean
     @Order(10)
-    public SecurityBuilderCustomizer tenantCustomizer(
-            TenantHeaderFilter tenantHeaderFilter,
-            TenantWitchDataSourceFilter tenantWitchDataSourceFilter
-    ) {
+    public SecurityBuilderCustomizer tenantCustomizer(ObjectProvider<TenantService> tenantService, ObjectProvider<MultiTenancyProperties> multiTenancyProperties) {
+        TenantWitchDataSourceFilter tenantWitchDataSourceFilter = new TenantWitchDataSourceFilter();
+        MultiTenancyProperties properties = multiTenancyProperties.getIfAvailable();
+        TenantHeaderFilter tenantHeaderFilter = new TenantHeaderFilter(tenantService.getIfAvailable(), properties == null ? tenantToken : properties.getTenantToken());
         return http -> {
             http.addFilterBefore(tenantHeaderFilter, UsernamePasswordAuthenticationFilter.class);
             http.addFilterAfter(tenantWitchDataSourceFilter, AnonymousAuthenticationFilter.class);

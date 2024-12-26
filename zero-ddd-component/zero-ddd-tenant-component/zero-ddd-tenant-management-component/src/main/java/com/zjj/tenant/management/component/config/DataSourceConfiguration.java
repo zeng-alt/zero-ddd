@@ -1,26 +1,14 @@
 package com.zjj.tenant.management.component.config;
 
 import com.zaxxer.hikari.HikariDataSource;
-import com.zjj.autoconfigure.component.tenant.MultiTenancyProperties;
-import com.zjj.cache.component.repository.impl.RedisTopicRepositoryImpl;
 import com.zjj.exchange.tenant.client.RemoteTenantClient;
-import com.zjj.exchange.tenant.domain.Tenant;
-import com.zjj.tenant.management.component.service.TenantDataSourceService;
-import com.zjj.tenant.management.component.service.TenantInitDataSourceService;
-import com.zjj.tenant.management.component.service.TenantManagementService;
-import com.zjj.tenant.management.component.service.TenantManagementServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseDataSource;
-import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.io.ResourceLoader;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
-import java.util.function.Consumer;
 
 /**
  * @author zengJiaJun
@@ -45,6 +33,7 @@ public class DataSourceConfiguration {
                 .initializeDataSourceBuilder()
                 .type(HikariDataSource.class)
                 .build();
+
         dataSource.setPoolName("masterDataSource");
         return dataSource;
     }

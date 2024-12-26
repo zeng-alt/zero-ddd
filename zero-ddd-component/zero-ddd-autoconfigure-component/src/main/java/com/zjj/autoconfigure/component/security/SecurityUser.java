@@ -28,6 +28,8 @@ import java.util.function.Function;
  * @version 1.0
  * @crateTime 2024年12月10日 21:17
  */
+@Getter
+@Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SecurityUser implements UserDetails, TenantDetail, CredentialsContainer {
 
@@ -48,15 +50,13 @@ public class SecurityUser implements UserDetails, TenantDetail, CredentialsConta
     @Getter
     private final Set<String> roles;
 
-    private final boolean accountNonExpired;
+    private boolean accountNonExpired;
 
-    private final boolean accountNonLocked;
+    private boolean accountNonLocked;
 
-    private final boolean credentialsNonExpired;
+    private boolean credentialsNonExpired;
 
-    private final boolean enabled;
-    @Getter
-    @Setter
+    private boolean enabled;
     private LocalDateTime expire;
 
     /**
@@ -196,7 +196,7 @@ public class SecurityUser implements UserDetails, TenantDetail, CredentialsConta
      * @param username the username to use
      * @return the UserBuilder
      */
-    public static SecurityUser.UserBuilder withUsername(String username) {
+    public static UserBuilder withUsername(String username) {
 
         return builder().username(username);
     }
@@ -272,17 +272,17 @@ public class SecurityUser implements UserDetails, TenantDetail, CredentialsConta
         return builder().passwordEncoder(encoder::encode);
     }
 
-    public static SecurityUser.UserBuilder withUserDetails(UserDetails userDetails) {
-        // @formatter:off
-        return withUsername(userDetails.getUsername())
-                .password(userDetails.getPassword())
-                .accountExpired(!userDetails.isAccountNonExpired())
-                .accountLocked(!userDetails.isAccountNonLocked())
-                .authorities(userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
-                .credentialsExpired(!userDetails.isCredentialsNonExpired())
-                .disabled(!userDetails.isEnabled());
-        // @formatter:on
-    }
+//    public static SecurityUser.UserBuilder withUserDetails(UserDetails userDetails) {
+//        // @formatter:off
+//        return withUsername(userDetails.getUsername())
+//                .password(userDetails.getPassword())
+//                .accountExpired(!userDetails.isAccountNonExpired())
+//                .accountLocked(!userDetails.isAccountNonLocked())
+//                .authorities(userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
+//                .credentialsExpired(!userDetails.isCredentialsNonExpired())
+//                .disabled(!userDetails.isEnabled());
+//        // @formatter:on
+//    }
 
     @Override
     public String getTenantName() {
@@ -487,7 +487,7 @@ public class SecurityUser implements UserDetails, TenantDetail, CredentialsConta
             return this;
         }
 
-        public UserDetails build() {
+        public SecurityUser build() {
             String encodedPassword = this.passwordEncoder.apply(this.password);
             return new SecurityUser(this.username, encodedPassword, tenant, !this.disabled, !this.accountExpired,
                     !this.credentialsExpired, !this.accountLocked, new HashSet<>(this.roles), expire);

@@ -34,7 +34,7 @@ spring:
     properties:
       hibernate:
         multiTenancy: true
-        tenant_identifier_resolver: com.zjj.tenant.column.component.TenantIdentifierResolver
+#        tenant_identifier_resolver: com.zjj.tenant.column.component.TenantIdentifierResolver
         format_sql: true
     database: h2
     defer-datasource-initialization: true
@@ -74,7 +74,9 @@ logging:
             FilterChainProxy=DEBUG:
 
 security:
-  username-login:
-    enabled: true
-    login-path: /tenant/login/username
-  logout-path: /tenant/logout
+  context:
+    enabled-access: false
+#  username-login:
+#    enabled: true
+#    login-path: /tenant/login/username
+#  logout-path: /tenant/logout

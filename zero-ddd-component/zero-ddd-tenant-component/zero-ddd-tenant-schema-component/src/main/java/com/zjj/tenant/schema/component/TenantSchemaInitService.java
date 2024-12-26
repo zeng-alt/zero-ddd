@@ -21,10 +21,10 @@ public class TenantSchemaInitService implements TenantInitDataSourceService {
 
     @Override
     public void initDataSource(Tenant tenant) {
-        if (multiTenancyProperties.getDatabase().equals(Database.POSTGRESQL)) {
+        if (multiTenancyProperties.getDatabase().equals(MultiTenancyProperties.Database.POSTGRESQL)) {
             jdbcTemplate.execute((StatementCallback<Boolean>) stmt -> stmt.execute("CREATE SCHEMA " + tenant.getSchema()));
         }
-        if (multiTenancyProperties.getDatabase().equals(Database.H2)) {
+        if (multiTenancyProperties.getDatabase().equals(MultiTenancyProperties.Database.H2)) {
             jdbcTemplate.execute((StatementCallback<Boolean>) stmt -> stmt.execute("CREATE SCHEMA IF NOT EXISTS " + tenant.getSchema()));
         }
     }

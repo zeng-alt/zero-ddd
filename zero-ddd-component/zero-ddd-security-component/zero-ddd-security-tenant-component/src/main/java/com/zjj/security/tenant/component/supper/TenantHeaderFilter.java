@@ -1,6 +1,6 @@
 package com.zjj.security.tenant.component.supper;
 
-import com.zjj.autoconfigure.component.tenant.MultiTenancyProperties;
+
 import com.zjj.autoconfigure.component.tenant.TenantContextHolder;
 import com.zjj.autoconfigure.component.tenant.TenantService;
 import jakarta.servlet.FilterChain;
@@ -26,19 +26,19 @@ public class TenantHeaderFilter extends OncePerRequestFilter {
 
 
     private final TenantService tenantService;
-    private final MultiTenancyProperties multiTenancyProperties;
+    private final String tenantToken;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        String tenant = request.getHeader(multiTenancyProperties.getTenantToken());
+        String tenant = request.getHeader(tenantToken);
         try {
-//            if (tenant == null) {
-//                TenantContextHolder.switchPrimaryTenant();
-//                log.debug("切换到主数据源");
-//                filterChain.doFilter(request, response);
-//                return;
-//            }
+            if (tenant == null) {
+                TenantContextHolder.switchPrimaryTenant();
+                log.debug("切换到主数据源");
+                filterChain.doFilter(request, response);
+                return;
+            }
 
             boolean hasAccess = isUserAllowed(tenant);
             if (!hasAccess) {

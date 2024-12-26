@@ -13,7 +13,6 @@ import java.time.Duration;
  * @version 1.0
  * @crateTime 2024年09月29日 20:54
  */
-
 public class DefaultJwtCacheManage implements JwtCacheManage {
 
 	private final RedisStringRepository redisStringRepository;
@@ -24,22 +23,26 @@ public class DefaultJwtCacheManage implements JwtCacheManage {
         this.expireTime = Duration.of(jwtProperties.getExpiration(), jwtProperties.getTemporalUnit());
     }
 
+	private String getKey(String id) {
+		return "jwt:" + id;
+	}
+
     @Override
 	public UserDetails get(@NonNull String id) {
-		return redisStringRepository.get(id);
+		return redisStringRepository.get(getKey(id));
 	}
 
 	@Override
 	public <T> T get(String id, Class<T> tClass) {
-		return redisStringRepository.get(id);
+		return redisStringRepository.get(getKey(id));
 	}
 
 	@Override
 	public void put(String id, UserDetails userDetails) {
-		redisStringRepository.put(id, userDetails, expireTime);
+		redisStringRepository.put(getKey(id), userDetails, expireTime);
 	}
 	@Override
 	public void remove(String username) {
-		redisStringRepository.removeAll(username);
+		redisStringRepository.removeAll(getKey(username));
 	}
 }

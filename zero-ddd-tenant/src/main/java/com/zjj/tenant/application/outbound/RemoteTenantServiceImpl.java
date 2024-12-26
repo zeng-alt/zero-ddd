@@ -24,6 +24,7 @@ public class RemoteTenantServiceImpl implements RemoteTenantApi {
     public Option<Tenant> findById(String id) {
         return tenantDao
                 .findByTenantKey(id)
+                .filter(t -> t.getTenantDataSource() != null)
                 .map(tenant -> Tenant.builder()
                         .tenantId(tenant.getTenantKey())
                         .schema(tenant.getTenantDataSource().getSchema())
@@ -37,6 +38,7 @@ public class RemoteTenantServiceImpl implements RemoteTenantApi {
     public List<Tenant> findAll() {
         return tenantDao.findAll()
                 .stream()
+                .filter(t -> t.getTenantDataSource() != null)
                 .map(tenant -> Tenant.builder()
                         .tenantId(tenant.getTenantKey())
                         .schema(tenant.getTenantDataSource().getSchema())

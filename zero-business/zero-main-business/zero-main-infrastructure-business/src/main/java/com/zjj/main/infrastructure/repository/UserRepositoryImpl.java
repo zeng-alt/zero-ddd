@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 
@@ -32,7 +31,7 @@ public class UserRepositoryImpl implements UserRepository {
         return BeanHelper.copyToOptionObject(
                 userDao.findById(userId),
                 UserAgg.class,
-                (BiConsumer<User, UserAgg>) (user, userAgg) -> userAgg.setRoleIds(user.getUserRoles().stream().map(userRole -> userRole.getRole().getId()).collect(Collectors.toSet()))
+                (BiConsumer<User, UserAgg>) (user, userAgg) -> userAgg.setRoleIds(user.getUserRoles().stream().map(userRole -> userRole.getRole().getRoleKey()).collect(Collectors.toSet()))
         );
     }
 
@@ -41,7 +40,7 @@ public class UserRepositoryImpl implements UserRepository {
         return BeanHelper.copyToOptionObject(
                 userDao.findByUsername(username),
                 UserAgg.class,
-                (BiConsumer<User, UserAgg>) (user, userAgg) -> userAgg.setRoleIds(user.getUserRoles().stream().map(userRole -> userRole.getRole().getId()).collect(Collectors.toSet()))
+                (BiConsumer<User, UserAgg>) (user, userAgg) -> userAgg.setRoleIds(user.getUserRoles().stream().map(userRole -> userRole.getRole().getRoleKey()).collect(Collectors.toSet()))
         );
     }
 
@@ -51,7 +50,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public boolean existsByRoles(List<Long> roleIds) {
+    public boolean existsByRoles(List<String> roleIds) {
         return false;
     }
 

@@ -21,11 +21,11 @@ class RoleFactory(roleRepository: RoleRepository) {
         .peek(role => Option.when(StringUtils.hasText(cmd.roleKey) && !role.roleKey.equals(cmd.roleKey))(throw new BaseI18nException("roleKey.cannot.modified")))
         .peek(role => BeanUtils.copyProperties(cmd, role))
         .map(Option.apply(_))
-        .getOrElseThrow(() => new BaseI18nException("role.not.exists", cmd.id))
+        .getOrElseThrow(() => new BaseI18nException("role.not.exists", "role.not.exists", cmd.id))
     }
     roleRepository
       .findByRoleKey(cmd.roleKey)
-      .peek(_ => throw new BaseI18nException("roleKey.exists", cmd.roleKey))
+      .peek(_ => throw new BaseI18nException("roleKey.exists", "roleKey.exists", cmd.roleKey))
 
     Option.apply(BeanHelper.copyToObject(cmd, classOf[RoleAgg]))
   }

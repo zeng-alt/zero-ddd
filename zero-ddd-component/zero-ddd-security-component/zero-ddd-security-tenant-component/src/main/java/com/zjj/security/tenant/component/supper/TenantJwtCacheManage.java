@@ -25,7 +25,7 @@ public class TenantJwtCacheManage implements JwtCacheManage {
     }
 
     private String getKey(String id) {
-        return "jwt" + TenantContextHolder.getTenantId() + ":" + id;
+        return "jwt:" + TenantContextHolder.getTenantId() + ":" + id;
     }
 
     @Override

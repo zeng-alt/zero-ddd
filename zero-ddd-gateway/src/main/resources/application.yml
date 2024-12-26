@@ -23,14 +23,24 @@ spring:
           order: 0
           predicates:
             - Path=/main/**
+        - id: zero-ddd-auth
+          uri: lb://zero-ddd-auth
+          order: 0
+          predicates:
+            - Path=/auth/**
 
   redis:
     redisson:
       file: classpath:redisson.yml
+
 security:
+  context:
+    enabled-access: true
   filter:
     ignore-url:
-      - /tenant/login/username
-      - /tenant/logout
+      - /auth/login/username
+      - /auth/logout
+  jwt:
+    enabled: true
 
 

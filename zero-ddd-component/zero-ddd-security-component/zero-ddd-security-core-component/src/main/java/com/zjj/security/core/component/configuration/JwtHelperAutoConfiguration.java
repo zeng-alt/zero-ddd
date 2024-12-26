@@ -10,6 +10,7 @@ import com.zjj.cache.component.config.RedisAutoConfiguration;
 import com.zjj.security.core.component.configuration.properties.LoginProperties;
 import com.zjj.security.core.component.supper.DefaultJwtCacheManage;
 import com.zjj.security.core.component.supper.DefaultJwtHelper;
+import com.zjj.security.core.component.supper.DefaultJwtL2CacheManage;
 import com.zjj.security.core.component.supper.JwtCacheProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -42,13 +43,5 @@ public class JwtHelperAutoConfiguration {
 		return new JwtCacheProvider(jwtProperties);
 	}
 
-
-	@Bean
-	@ConditionalOnMissingBean(JwtCacheManage.class)
-	@ConditionalOnBean(RedisAutoConfiguration.class)
-	@ConditionalOnMissingClass("com.zjj.security.tenant.component.configuration.SecurityTenantAutoConfiguration")
-	public JwtCacheManage defaultJwtCacheManage(RedisStringRepository redisStringRepository, JwtProperties jwtProperties) {
-		return new DefaultJwtCacheManage(redisStringRepository, jwtProperties);
-	}
 
 }

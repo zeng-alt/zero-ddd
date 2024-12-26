@@ -1,6 +1,7 @@
 package com.zjj.tenant.management.component.config;
 
 import com.zjj.cache.component.repository.impl.RedisTopicRepositoryImpl;
+import com.zjj.exchange.tenant.client.RemoteTenantClient;
 import com.zjj.exchange.tenant.domain.Tenant;
 import com.zjj.tenant.management.component.service.TenantDataSourceService;
 import com.zjj.tenant.management.component.service.TenantInitDataSourceService;
@@ -47,5 +48,22 @@ public class TenantManagementAutoConfiguration {
         });
 
         return tenantManagementService;
+    }
+
+    @Bean
+    public DynamicDatasourceMultiTenantSpringLiquibase dynamicDatasourceMultiTenantSpringLiquibase(
+            RemoteTenantClient remoteTenantClient,
+            LiquibaseProperties liquibaseProperties,
+            TenantInitDataSourceService tenantInitDataSourceService,
+            TenantDataSourceService tenantDataSourceService,
+            ResourceLoader resourceLoader
+    ) {
+        return new DynamicDatasourceMultiTenantSpringLiquibase(
+                remoteTenantClient,
+                liquibaseProperties,
+                resourceLoader,
+                tenantInitDataSourceService,
+                tenantDataSourceService
+        );
     }
 }

@@ -2,7 +2,9 @@ package com.zjj.autoconfigure.component.security;
 
 import com.zjj.autoconfigure.component.tenant.TenantDetail;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.core.userdetails.UserDetails;
 
 /**
@@ -45,6 +47,19 @@ public class UserContextHolder {
         }
 
         return null;
+    }
+
+    public static Authentication getAuthentication() {
+        return SecurityContextHolder.getContext().getAuthentication();
+    }
+
+    public static void setAuthentication(Authentication authentication) {
+        SecurityContext context = SecurityContextHolder.getContext();
+        if (context == null) {
+            SecurityContextHolder.setContext(new SecurityContextImpl(authentication));
+        } else {
+            context.setAuthentication(authentication);
+        }
     }
 
     public static SecurityUser getSecurityUser() {

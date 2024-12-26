@@ -33,6 +33,16 @@
             <groupId>com.zjj</groupId>
             <artifactId>zero-ddd-autoconfigure-component</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.zjj</groupId>
+            <artifactId>zero-ddd-security-core-component</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.zjj</groupId>
+            <artifactId>zero-ddd-exchange-main</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

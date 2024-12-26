@@ -37,9 +37,6 @@ public class QBaseAggregate extends EntityPathBase<BaseAggregate<? extends java.
     //inherited
     public final SimplePath<java.util.Optional<java.time.LocalDateTime>> lastModifiedDate = _super.lastModifiedDate;
 
-    //inherited
-    public final StringPath tenantBy = _super.tenantBy;
-
     @SuppressWarnings({"all", "rawtypes", "unchecked"})
     public QBaseAggregate(String variable) {
         super((Class) BaseAggregate.class, forVariable(variable));

@@ -18,7 +18,7 @@ public class DefaultLoginFailureHandler implements AuthenticationFailureHandler 
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException exception) {
 		AuthenticationHelper.renderString(response, HttpStatus.OK.value(),
-				"登录失败: " + AuthenticationHelper.getErrorMsg(request).orElse(exception.getMessage()), null);
+				"登录失败: " + AuthenticationHelper.getErrorMsg(request).orElse(exception.getMessage()));
 	}
 
 }

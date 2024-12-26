@@ -2,11 +2,16 @@ package com.zjj.security.core.component.configuration;
 
 import com.zjj.autoconfigure.component.security.AbstractLoginConfigurer;
 import com.zjj.autoconfigure.component.security.SecurityBuilderCustomizer;
+import com.zjj.autoconfigure.component.security.SecurityProperties;
+import com.zjj.security.core.component.spi.AuthorizationManagerProvider;
+import com.zjj.security.core.component.spi.ReactiveAuthorizationManagerProvider;
 import com.zjj.security.core.component.spi.WhiteListService;
 import com.zjj.security.core.component.supper.CompositeAuthorizationManager;
 import com.zjj.security.core.component.supper.WhiteListAuthorizationManager;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -24,6 +29,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
@@ -34,6 +40,7 @@ import org.springframework.security.web.access.intercept.RequestAuthorizationCon
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.server.WebFilterChainProxy;
+import org.springframework.security.web.server.authorization.AuthorizationContext;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -45,19 +52,26 @@ import java.util.List;
  * @crateTime 2024年09月29日 21:04
  */
 @AutoConfiguration
+//@ConditionalOnBean(WebSecurityConfiguration.class)
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 @ConditionalOnClass({ EnableWebSecurity.class })
 @Import({ LoginAutoConfiguration.class, LoginHandlerAutoConfiguration.class,
-		AccessFailedAutoConfiguration.class })
+		AccessFailedAutoConfiguration.class, JwtCacheManageConfiguration.class })
 public class WebSecurityAutoConfiguration {
+
+
+	@Autowired
+	private SecurityProperties securityProperties;
 
 	@Bean
 	@ConditionalOnMissingBean(SecurityFilterChain.class)
 	public SecurityFilterChain filterChain(HttpSecurity http, ObjectProvider<SecurityBuilderCustomizer> customizers,
-			CompositeAuthorizationManager compositeAuthorizationManager,
+			ObjectProvider<AuthorizationManagerProvider<RequestAuthorizationContext>> authorizationManagerProviders,
 			ObjectProvider<AbstractLoginConfigurer> configurers,
-			AuthenticationSuccessHandler loginSuccessAuthenticationHandler,
-			AuthenticationFailureHandler loginFailureAuthenticationHandler, AuthenticationManager authenticationManager,
+			WhiteListService whiteListService,
+			ObjectProvider<AuthenticationSuccessHandler> loginSuccessAuthenticationHandler,
+			ObjectProvider<AuthenticationFailureHandler> loginFailureAuthenticationHandler,
+			AuthenticationManager authenticationManager,
 			AuthenticationEntryPoint authenticationEntryPoint, AccessDeniedHandler accessDeniedHandler,
 			ApplicationEventPublisher applicationEventPublisher
 
@@ -67,15 +81,19 @@ public class WebSecurityAutoConfiguration {
 				.csrf(AbstractHttpConfigurer::disable)
 				.httpBasic(AbstractHttpConfigurer::disable)
 				.cors(AbstractHttpConfigurer::disable)
-				.authorizeHttpRequests(author -> author
-						.requestMatchers(HttpMethod.POST, "/login/**").permitAll()
-						.requestMatchers("/h2-console/**").permitAll()
-						.requestMatchers("/tenant/graphiql/**").permitAll()
-						.requestMatchers("/tenant/graphql/**").permitAll()
-						.requestMatchers(HttpMethod.POST,"/actuator/startup").permitAll()
-//						.anyRequest().access(compositeAuthorizationManager)
-						.anyRequest().permitAll()
-				)
+				.authorizeHttpRequests(author -> {
+					author
+							.requestMatchers(HttpMethod.POST, "/login/**").permitAll()
+							.requestMatchers("/h2-console/**").permitAll()
+							.requestMatchers("/tenant/graphiql/**").permitAll()
+							.requestMatchers("/tenant/graphql/**").permitAll()
+							.requestMatchers(HttpMethod.POST, "/actuator/startup").permitAll();
+					if (securityProperties.getEnabledAccess()) {
+						author.anyRequest().access(compositeAuthorizationManager(authorizationManagerProviders, whiteListService));
+					} else {
+						author.anyRequest().permitAll();
+					}
+				})
 				.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
 				.exceptionHandling(e -> e
 						.authenticationEntryPoint(authenticationEntryPoint)
@@ -107,9 +125,11 @@ public class WebSecurityAutoConfiguration {
 
 		configurers.orderedStream().forEach(configurer -> {
 			try {
-				http.with(configurer, c -> c.successHandler(loginSuccessAuthenticationHandler)
-						.failureHandler(loginFailureAuthenticationHandler).authenticationManager(authenticationManager)
-						.eventPublisher(applicationEventPublisher));
+				http.with(configurer, c -> {
+					loginSuccessAuthenticationHandler.ifAvailable(c::successHandler);
+					loginFailureAuthenticationHandler.ifAvailable(c::failureHandler);
+					c.authenticationManager(authenticationManager).eventPublisher(applicationEventPublisher);
+				});
 			}
 			catch (Exception e) {
 				throw new RuntimeException(e);
@@ -119,17 +139,28 @@ public class WebSecurityAutoConfiguration {
 		return http.build();
 	}
 
-	@Bean
-	@ConditionalOnMissingBean
-	public CompositeAuthorizationManager compositeAuthorizationManager(List<AuthorizationManager<RequestAuthorizationContext>> authorizationManagers, WhiteListService whiteListService) {
+
+	private CompositeAuthorizationManager compositeAuthorizationManager(ObjectProvider<AuthorizationManagerProvider<RequestAuthorizationContext>> authorizationManagerProviders, WhiteListService whiteListService) {
 		List<AuthorizationManager<RequestAuthorizationContext>> list = new ArrayList<>();
 		list.add(WhiteListAuthorizationManager.authenticated(whiteListService));
-		list.addAll(authorizationManagers);
-		if (CollectionUtils.isEmpty(authorizationManagers)) {
+		List<AuthorizationManager<RequestAuthorizationContext>> managers = authorizationManagerProviders.orderedStream().map(AuthorizationManagerProvider::get).toList();
+		if (CollectionUtils.isEmpty(managers)) {
 			list.add(AuthenticatedAuthorizationManager.authenticated());
 		}
 		return new CompositeAuthorizationManager(list);
 	}
+
+//	@Bean
+//	@ConditionalOnMissingBean
+//	public CompositeAuthorizationManager compositeAuthorizationManager(List<AuthorizationManager<RequestAuthorizationContext>> authorizationManagers, WhiteListService whiteListService) {
+//		List<AuthorizationManager<RequestAuthorizationContext>> list = new ArrayList<>();
+//		list.add(WhiteListAuthorizationManager.authenticated(whiteListService));
+//		list.addAll(authorizationManagers);
+//		if (CollectionUtils.isEmpty(authorizationManagers)) {
+//			list.add(AuthenticatedAuthorizationManager.authenticated());
+//		}
+//		return new CompositeAuthorizationManager(list);
+//	}
 
 	@Bean
 	@ConditionalOnMissingBean(AuthenticationManager.class)

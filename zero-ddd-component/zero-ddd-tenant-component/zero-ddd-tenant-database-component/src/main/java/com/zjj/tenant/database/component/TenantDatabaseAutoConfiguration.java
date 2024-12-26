@@ -2,6 +2,7 @@ package com.zjj.tenant.database.component;
 
 import com.zjj.exchange.tenant.client.RemoteTenantClient;
 import com.zjj.autoconfigure.component.tenant.MultiTenancyProperties;
+import com.zjj.tenant.management.component.service.TenantDataSourceService;
 import com.zjj.tenant.management.component.service.TenantInitDataSourceService;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
@@ -26,16 +27,6 @@ import javax.sql.DataSource;
  */
 @AutoConfiguration
 public class TenantDatabaseAutoConfiguration {
-
-    @Bean
-    public DynamicDataSourceBasedMultiTenantSpringLiquibase dynamicDataSourceBasedMultiTenantSpringLiquibase(
-            RemoteTenantClient remoteTenantClient,
-            LiquibaseProperties liquibaseProperties,
-            MultiTenancyProperties multiTenancyProperties,
-            ResourceLoader resourceLoader
-    ) {
-        return new DynamicDataSourceBasedMultiTenantSpringLiquibase(remoteTenantClient, liquibaseProperties, multiTenancyProperties, resourceLoader);
-    }
 
     @Primary
     @Bean

@@ -186,10 +186,15 @@
             <artifactId>zero-ddd-security-core-component</artifactId>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>com.zjj</groupId>-->
-<!--            <artifactId>zero-ddd-security-fast-auth-component</artifactId>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>com.zjj</groupId>
+            <artifactId>zero-ddd-security-tenant-component</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.zjj</groupId>
+            <artifactId>zero-ddd-security-fast-auth-component</artifactId>
+        </dependency>
 
 <!--        <dependency>-->
 <!--            <groupId>com.zjj</groupId>-->
@@ -201,10 +206,10 @@
 <!--            <artifactId>zero-ddd-security-abac-component</artifactId>-->
 <!--        </dependency>-->
 
-        <dependency>
-            <groupId>com.zjj</groupId>
-            <artifactId>zero-ddd-tenant-column-component</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.zjj</groupId>-->
+<!--            <artifactId>zero-ddd-tenant-column-component</artifactId>-->
+<!--        </dependency>-->
 
 <!--        <dependency>-->
 <!--            <groupId>com.zjj</groupId>-->

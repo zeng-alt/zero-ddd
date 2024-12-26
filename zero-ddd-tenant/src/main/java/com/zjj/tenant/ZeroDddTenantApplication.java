@@ -1,7 +1,6 @@
 package com.zjj.tenant;
 
 import com.google.common.collect.Sets;
-import com.zaxxer.hikari.HikariDataSource;
 import com.zjj.autoconfigure.component.security.rbac.GraphqlResource;
 import com.zjj.autoconfigure.component.security.rbac.HttpResource;
 import com.zjj.autoconfigure.component.security.rbac.RbacCacheManage;
@@ -9,35 +8,16 @@ import com.zjj.graphql.component.config.EnableGenEntityFuzzyQuery;
 import com.zjj.graphql.component.config.EnableGenEntityInput;
 import com.zjj.graphql.component.config.EnableGenEntityQuery;
 import com.zjj.graphql.component.config.EnableGenEntityType;
-//import com.zjj.security.abac.component.annotation.AbacPostAuthorize;
-//import com.zjj.security.abac.component.annotation.AbacPreAuthorize;
-//import com.zjj.security.abac.component.annotation.EnableAbac;
-//import com.zjj.autoconfigure.component.security.SecurityUser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
-import org.springframework.context.annotation.Primary;
-import org.springframework.context.annotation.ScannedGenericBeanDefinition;
-import org.springframework.core.annotation.AnnotatedElementUtils;
-import org.springframework.core.annotation.MergedAnnotations;
-import org.springframework.core.type.MethodMetadata;
-import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.HttpMethod;
 
-import org.springframework.stereotype.Component;
-
-import javax.sql.DataSource;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Map;
 
 
 /**

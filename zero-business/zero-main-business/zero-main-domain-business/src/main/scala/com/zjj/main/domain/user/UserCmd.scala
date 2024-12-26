@@ -10,8 +10,8 @@ import com.zjj.domain.component.Command
  */
 case class StockInUserCmd(id: java.lang.Long, username: String, nickName: String, email: String, phoneNumber: String, gender: String, avatar: String, password: String, status: String, deleted: Integer) extends Command
 
-case class AssignRoleCmd(userId: java.lang.Long, roleIds: List[java.lang.Long]) extends Command {
-  def getRoleIds(): java.util.List[java.lang.Long] = {
+case class AssignRoleCmd(userId: java.lang.Long, roleIds: List[String]) extends Command {
+  def getRoleIds(): java.util.List[String] = {
     import scala.jdk.CollectionConverters._
     roleIds.asJava
   }

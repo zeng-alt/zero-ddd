@@ -1,9 +1,12 @@
 package com.zjj.main.domain.user
 
+import com.google.common.collect.Lists
 import com.zjj.bean.componenet.BeanHelper
 import com.zjj.i18n.component.BaseI18nException
+import com.zjj.main.domain.user.UserFactory.passwordEncoder
 import org.springframework.beans.BeanUtils
-import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.crypto.factory.PasswordEncoderFactories
+import org.springframework.security.crypto.password.{DelegatingPasswordEncoder, PasswordEncoder}
 import org.springframework.stereotype.Component
 
 import java.util.function.Consumer
@@ -22,20 +25,22 @@ class UserFactory(userRepository: UserRepository) {
                 .findById(cmd.id)
                 .peek(user => BeanUtils.copyProperties(cmd, user))
                 .map(Option.apply(_))
-                .getOrElseThrow(() => new BaseI18nException("user.not.exists", cmd.id))
+                .getOrElseThrow(() => new BaseI18nException("user.not.exists", cmd.id + "的用户不存在", cmd.id))
     }
 
 
     userRepository
       .findByUserName(cmd.username)
 //      .map(user => user.setPassword(passwordEncoder.encode(cmd.password)))
-      .peek(_ => throw new BaseI18nException("user.name.exists", cmd.username))
+      .peek(_ => throw new BaseI18nException("user.name.exists", cmd.username + "的用户已存在", cmd.username))
 
-    val result = BeanHelper.copyToObject(cmd, classOf[UserAgg], new Consumer[UserAgg] {
-      override def accept(t: UserAgg): Unit = {
-//        t.setPassword(passwordEncoder.encode(cmd.password))
-      }
-    })
+    val result = BeanHelper.copyToObject(cmd, classOf[UserAgg])
+    result.setPassword(passwordEncoder.encode(cmd.password))
     Option.apply(result)
   }
+}
+
+
+object UserFactory {
+  val passwordEncoder: PasswordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 }

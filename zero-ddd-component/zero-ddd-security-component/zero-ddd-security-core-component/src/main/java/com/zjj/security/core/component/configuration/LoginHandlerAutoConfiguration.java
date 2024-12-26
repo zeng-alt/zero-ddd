@@ -23,7 +23,7 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 @AutoConfiguration
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 @EnableConfigurationProperties({ LoginProperties.class })
-@ConditionalOnProperty(name = "security.login.enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(name = "security.context.enabled-login-handler", havingValue = "true", matchIfMissing = false)
 public class LoginHandlerAutoConfiguration {
 
 	@Bean

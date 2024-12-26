@@ -1,11 +1,14 @@
 package com.zjj.main.infrastructure.db.jpa.entity;
 
 import com.zjj.domain.component.BaseEntity;
+import com.zjj.domain.component.TenantAuditable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.annotations.TenantId;
+import org.springframework.lang.Nullable;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -21,7 +24,7 @@ import java.util.Set;
 @SQLDelete(sql = "update main_user set deleted = 1 where id = ?")
 @SQLRestriction(value = "deleted = 0")
 @Table(name = "main_user")
-public class User extends BaseEntity<Long> {
+public class User extends BaseEntity<Long> implements TenantAuditable<String> {
 
     @Id
     @GeneratedValue
@@ -81,6 +84,10 @@ public class User extends BaseEntity<Long> {
      * 逻辑删除标志位，0 未删除，1 已删除
      */
     private Integer deleted = 0;
+
+    @TenantId
+    @Nullable
+    private String tenantBy;
 
     @PreRemove
     public void deleteUser() {

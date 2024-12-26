@@ -9,7 +9,7 @@ import java.util.Optional;
  */
 public interface TenantAuditable<T> {
 
-    Optional<T> getTenantBy();
+    T getTenantBy();
 
     /**
      * Sets the user who created this entity.

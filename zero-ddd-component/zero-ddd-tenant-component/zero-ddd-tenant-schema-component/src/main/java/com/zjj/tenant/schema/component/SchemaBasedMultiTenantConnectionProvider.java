@@ -88,6 +88,9 @@ public class SchemaBasedMultiTenantConnectionProvider implements MultiTenantConn
         } else {
             tenantSchema = tenantSchemas.get(tenantIdentifier);
         }
+        if (tenantSchema == null) {
+            throw new TenantCreationException("No such tenant: " + tenantIdentifier);
+        }
         final Connection connection = getAnyConnection();
         connection.setSchema(tenantSchema.toUpperCase(Locale.ROOT));
         return connection;

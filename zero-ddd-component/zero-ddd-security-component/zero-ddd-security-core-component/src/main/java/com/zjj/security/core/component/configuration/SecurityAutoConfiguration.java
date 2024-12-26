@@ -1,9 +1,11 @@
 package com.zjj.security.core.component.configuration;
 
+import com.zjj.autoconfigure.component.security.SecurityProperties;
 import com.zjj.autoconfigure.component.security.WhiteListProperties;
 import com.zjj.autoconfigure.component.security.SecurityUser;
 import com.zjj.security.core.component.spi.WhiteListService;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -13,6 +15,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.security.authentication.AuthenticationEventPublisher;
 import org.springframework.security.authentication.DefaultAuthenticationEventPublisher;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,7 +32,7 @@ import java.util.List;
 @AutoConfiguration
 @Import(JwtHelperAutoConfiguration.class)
 @ConditionalOnClass({ EnableWebSecurity.class, WebFilterChainProxy.class, })
-@EnableConfigurationProperties({ WhiteListProperties.class })
+@EnableConfigurationProperties({ WhiteListProperties.class, SecurityProperties.class })
 public class SecurityAutoConfiguration {
 
 	// @Bean

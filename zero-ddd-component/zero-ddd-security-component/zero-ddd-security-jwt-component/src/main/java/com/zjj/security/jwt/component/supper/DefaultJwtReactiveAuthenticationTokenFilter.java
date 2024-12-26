@@ -1,6 +1,8 @@
 package com.zjj.security.jwt.component.supper;
 
 import com.zjj.autoconfigure.component.security.SecurityUser;
+import com.zjj.autoconfigure.component.security.jwt.ReactiveJwtCacheManage;
+import reactor.util.context.Context;
 import com.zjj.autoconfigure.component.security.jwt.JwtCacheManage;
 import com.zjj.autoconfigure.component.security.jwt.JwtHelper;
 import com.zjj.autoconfigure.component.security.jwt.JwtProperties;
@@ -28,7 +30,7 @@ import java.util.Map;
  */
 public class DefaultJwtReactiveAuthenticationTokenFilter extends JwtReactiveAuthenticationTokenFilter {
 
-    public DefaultJwtReactiveAuthenticationTokenFilter(JwtHelper jwtHelper, JwtCacheManage jwtCacheManage, JwtProperties jwtProperties) {
+    public DefaultJwtReactiveAuthenticationTokenFilter(JwtHelper jwtHelper, ReactiveJwtCacheManage jwtCacheManage, JwtProperties jwtProperties) {
         super(jwtHelper, jwtCacheManage, jwtProperties);
     }
 
@@ -39,35 +41,44 @@ public class DefaultJwtReactiveAuthenticationTokenFilter extends JwtReactiveAuth
             Map<String, Object> claims = jwtHelper.getClaimsFromToken(token);
             String soleId = (String) jwtHelper.getClaim(claims);
 
-            UserDetails user = jwtCacheManage.get(soleId);
+            return this.jwtCacheManage
+                    .get(soleId)
+                    .flatMap(user -> {
 
-            if (user == null) {
-                throw new BadCredentialsException("用户登录时间过期，重新登录");
-            }
-
-            ServerHttpRequest modifiedRequest = exchange.getRequest().mutate()
-                    .header(jwtProperties.getFastToken(), soleId)
-                    .build();
+                        ServerHttpRequest modifiedRequest = exchange.getRequest().mutate()
+                                .header(jwtProperties.getFastToken(), soleId)
+                                .build();
 
 
-            // Create a new exchange with the modified request
-            ServerWebExchange modifiedExchange = exchange.mutate()
-                    .request(modifiedRequest)
-                    .build();
+                        // Create a new exchange with the modified request
+                        ServerWebExchange modifiedExchange = exchange.mutate()
+                                .request(modifiedRequest)
+                                .build();
 
-            LocalDateTime expire = LocalDateTime.now();
-            if (user instanceof SecurityUser securityUser) {
-                expire = securityUser.getExpire();
-            }
-            modifiedExchange.getAttributes().put(DefaultJwtRenewFilter.RENEW_KEY,
-                    JwtDetail.builder().id(soleId).user(user).expire(expire).build());
+                        LocalDateTime expire = LocalDateTime.now();
+                        if (user instanceof SecurityUser securityUser) {
+                            expire = securityUser.getExpire();
+                        }
+                        modifiedExchange.getAttributes().put(DefaultJwtRenewFilter.RENEW_KEY,
+                                JwtDetail.builder().id(soleId).user(user).expire(expire).build());
 
-            return Mono.fromCallable(() -> UsernamePasswordAuthenticationToken.authenticated(user, null, user.getAuthorities()))
-                    .subscribeOn(Schedulers.boundedElastic())
-                    .flatMap(authentication -> chain.filter(modifiedExchange).contextWrite(ReactiveSecurityContextHolder.withAuthentication(authentication)));
+                        UsernamePasswordAuthenticationToken authenticated = UsernamePasswordAuthenticationToken.authenticated(user, null, user.getAuthorities());
+                        return chain.filter(modifiedExchange).contextWrite(ReactiveSecurityContextHolder.withAuthentication(authenticated));
+                    });
+
+//            if (user == null) {
+//                throw new BadCredentialsException("用户登录时间过期，重新登录");
+//            }
+//
+//
+//
+//            return Mono.fromCallable(() -> UsernamePasswordAuthenticationToken.authenticated(user, null, user.getAuthorities()))
+//                    .subscribeOn(Schedulers.boundedElastic())
+//                    .flatMap(authentication -> chain.filter(modifiedExchange).contextWrite(ReactiveSecurityContextHolder.withAuthentication(authentication)));
         }
         return chain.filter(exchange);
     }
+
 
     private String resolveToken(ServerHttpRequest request) {
         String bearerToken = request.getHeaders().getFirst(jwtHelper.tokenHeader());

@@ -2,6 +2,7 @@ package com.zjj.security.rbac.component.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zjj.autoconfigure.component.security.rbac.RbacCacheManage;
+import com.zjj.security.core.component.spi.AuthorizationManagerProvider;
 import com.zjj.security.rbac.component.handler.*;
 import com.zjj.security.rbac.component.locator.*;
 import com.zjj.security.rbac.component.manager.*;
@@ -10,6 +11,7 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.web.access.intercept.RequestAuthorizationContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,9 +55,14 @@ public class RbacWebAutoConfiguration {
 		return new ParseManager(list, new HttpResourceHandler(resourceQueryManager));
 	}
 
+//	@Bean
+//	public RbacAccessAuthorizationManager rbacAuthorizationManager(ParseManager parseManager) {
+//		return new RbacAccessAuthorizationManager(parseManager);
+//	}
+
 	@Bean
-	public RbacAccessAuthorizationManager rbacAuthorizationManager(ParseManager parseManager) {
-		return new RbacAccessAuthorizationManager(parseManager);
+	public AuthorizationManagerProvider<RequestAuthorizationContext> rbacAuthorizationManager(ParseManager parseManager) {
+		return () -> new RbacAccessAuthorizationManager(parseManager);
 	}
 
 //	@Bean

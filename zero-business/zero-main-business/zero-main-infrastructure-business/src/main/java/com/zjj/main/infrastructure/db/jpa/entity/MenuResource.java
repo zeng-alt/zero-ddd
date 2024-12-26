@@ -2,9 +2,12 @@ package com.zjj.main.infrastructure.db.jpa.entity;
 
 import com.zjj.core.component.api.Parent;
 import com.zjj.domain.component.BaseEntity;
+import com.zjj.domain.component.TenantAuditable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.TenantId;
+import org.springframework.lang.Nullable;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -18,7 +21,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "main_resource")
-public class MenuResource extends BaseEntity<Long> implements Parent<Long> {
+public class MenuResource extends BaseEntity<Long> implements Parent<Long>, TenantAuditable<String> {
 
     @Id
     @GeneratedValue
@@ -45,6 +48,10 @@ public class MenuResource extends BaseEntity<Long> implements Parent<Long> {
 
     @OneToMany(mappedBy = "parentMenu")
     private Set<MenuResource> chileMenus = new LinkedHashSet<>();
+
+    @TenantId
+    @Nullable
+    private String tenantBy;
 
     @Override
     public Long parent() {
