@@ -8,6 +8,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -27,6 +28,8 @@ public class TenantHeaderFilter extends OncePerRequestFilter {
 
     private final TenantService tenantService;
     private final String tenantToken;
+    @Setter
+    private String master;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -34,7 +37,7 @@ public class TenantHeaderFilter extends OncePerRequestFilter {
         String tenant = request.getHeader(tenantToken);
         try {
             if (tenant == null) {
-                TenantContextHolder.switchPrimaryTenant();
+                TenantContextHolder.switchTenant(master);
                 log.debug("切换到主数据源");
                 filterChain.doFilter(request, response);
                 return;

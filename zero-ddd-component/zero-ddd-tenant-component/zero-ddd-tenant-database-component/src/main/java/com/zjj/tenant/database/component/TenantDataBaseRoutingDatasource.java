@@ -27,7 +27,9 @@ import org.springframework.util.StringUtils;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
@@ -86,7 +88,7 @@ public class TenantDataBaseRoutingDatasource extends AbstractRoutingDataSource i
     protected DataSource determineTargetDataSource(String tenantIdentifier) {
         Assert.notNull(this.tenantDataSources, "DataSource router not initialized");
         DataSource dataSource = this.tenantDataSources.get(tenantIdentifier);
-        if (dataSource == null && "master".equals(tenantIdentifier)) {
+        if (dataSource == null && multiTenancyProperties.getMaster().equals(tenantIdentifier)) {
             dataSource = getResolvedDefaultDataSource();
         }
 
@@ -158,6 +160,14 @@ public class TenantDataBaseRoutingDatasource extends AbstractRoutingDataSource i
     @Override
     public void runLiquibase(Tenant tenant, DataSource dataSource, LiquibaseProperties liquibaseProperties, ResourceLoader resourceLoader) throws LiquibaseException {
         SpringLiquibase liquibase = SpringLiquibaseUtils.create(dataSource, liquibaseProperties, resourceLoader);
+        if (liquibaseProperties.getParameters() != null) {
+            liquibaseProperties.getParameters().put("tenantName", tenant.getTenantId());
+            liquibaseProperties.getParameters().put("db", tenant.getDb());
+            liquibaseProperties.getParameters().put("username", tenant.getUsername());
+            liquibase.setChangeLogParameters(liquibaseProperties.getParameters());
+        } else {
+            liquibase.setChangeLogParameters(Map.of("tenantName", tenant.getTenantId(), "db", tenant.getDb(), "username", tenant.getUsername()));
+        }
         liquibase.afterPropertiesSet();
     }
 }

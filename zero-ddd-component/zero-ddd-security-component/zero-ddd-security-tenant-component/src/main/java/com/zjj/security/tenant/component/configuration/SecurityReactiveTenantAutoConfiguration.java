@@ -32,6 +32,7 @@ public class SecurityReactiveTenantAutoConfiguration {
     public ServerHttpSecurityBuilderCustomizer tenantCustomizer(ObjectProvider<TenantService> tenantService, ObjectProvider<MultiTenancyProperties> multiTenancyProperties) {
         MultiTenancyProperties properties = multiTenancyProperties.getIfAvailable();
         ReactiveTenantHeaderFilter reactiveTenantHeaderFilter = new ReactiveTenantHeaderFilter(tenantService.getIfAvailable(), properties == null ? tenantToken : properties.getTenantToken());
+        multiTenancyProperties.ifAvailable(m -> reactiveTenantHeaderFilter.setMaster(m.getMaster()));
         ReactiveTenantWitchDataSourceFilter reactiveTenantWitchDataSourceFilter = new ReactiveTenantWitchDataSourceFilter();
         return (http) -> {
             http.addFilterAfter(reactiveTenantHeaderFilter, SecurityWebFiltersOrder.REACTOR_CONTEXT);

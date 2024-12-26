@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.StatementCallback;
 import org.springframework.orm.jpa.vendor.Database;
+import org.springframework.util.StringUtils;
 
 /**
  * @author zengJiaJun
@@ -21,6 +22,7 @@ public class TenantSchemaInitService implements TenantInitDataSourceService {
 
     @Override
     public void initDataSource(Tenant tenant) {
+
         if (multiTenancyProperties.getDatabase().equals(MultiTenancyProperties.Database.POSTGRESQL)) {
             jdbcTemplate.execute((StatementCallback<Boolean>) stmt -> stmt.execute("CREATE SCHEMA " + tenant.getSchema()));
         }

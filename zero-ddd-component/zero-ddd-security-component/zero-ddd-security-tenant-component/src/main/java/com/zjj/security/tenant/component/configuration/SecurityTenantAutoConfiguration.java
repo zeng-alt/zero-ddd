@@ -40,6 +40,7 @@ public class SecurityTenantAutoConfiguration {
         TenantWitchDataSourceFilter tenantWitchDataSourceFilter = new TenantWitchDataSourceFilter();
         MultiTenancyProperties properties = multiTenancyProperties.getIfAvailable();
         TenantHeaderFilter tenantHeaderFilter = new TenantHeaderFilter(tenantService.getIfAvailable(), properties == null ? tenantToken : properties.getTenantToken());
+        multiTenancyProperties.ifAvailable(m -> tenantHeaderFilter.setMaster(m.getMaster()));
         return http -> {
             http.addFilterBefore(tenantHeaderFilter, UsernamePasswordAuthenticationFilter.class);
             http.addFilterAfter(tenantWitchDataSourceFilter, AnonymousAuthenticationFilter.class);

@@ -333,9 +333,9 @@ insert into
     main_user
 (deleted, password, status, tenant_by, username, id)
 values
-    (0, '{bcrypt}$2a$10$8xbX8CngT8AO8froAt8Ky.VDSzhxSFpIZlp4aO.XKnX3g3tGbj/QO', '0', 'master', 'admin', 1);
+    (0, '{bcrypt}$2a$10$8xbX8CngT8AO8froAt8Ky.VDSzhxSFpIZlp4aO.XKnX3g3tGbj/QO', '0', '${tenantName}', 'admin', 1);
 insert into
     main_user
 (deleted, password, status, tenant_by, username, id)
 values
-    (0, '{bcrypt}$2a$10$mbJbeoem4jwjn2ADRQHqQeyy39SHnn37.TNsWknBA8upQzdhWUPQK	', '0', 'master', 'root', 2);
+    (0, '{bcrypt}$2a$10$mbJbeoem4jwjn2ADRQHqQeyy39SHnn37.TNsWknBA8upQzdhWUPQK', '0', '${tenantName}', 'root', 2);

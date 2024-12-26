@@ -22,8 +22,8 @@ import org.springframework.stereotype.Component;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Collections;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -40,6 +40,7 @@ public class SchemaBasedMultiTenantConnectionProvider implements MultiTenantConn
     private final DataSource datasource;
     private final RemoteTenantClient remoteTenantClient;
     private final String master;
+    private final String masterTenant;
     private final MultiTenancyProperties tenancyProperties;
 
     private LoadingCache<String, String> tenantSchemas;
@@ -48,6 +49,7 @@ public class SchemaBasedMultiTenantConnectionProvider implements MultiTenantConn
     public SchemaBasedMultiTenantConnectionProvider(DataSource datasource, MultiTenancyProperties tenancyProperties, RemoteTenantClient remoteTenantClient) {
         this.datasource = datasource;
         this.remoteTenantClient = remoteTenantClient;
+        this.masterTenant = tenancyProperties.getMaster();
         this.tenancyProperties = tenancyProperties;
         try(Connection connection = datasource.getConnection()) {
             this.master = connection.getSchema();
@@ -83,7 +85,7 @@ public class SchemaBasedMultiTenantConnectionProvider implements MultiTenantConn
     public Connection getConnection(String tenantIdentifier) throws SQLException {
         log.info("Get connection for tenant {}", tenantIdentifier);
         String tenantSchema = null;
-        if ("master".equals(tenantIdentifier)) {
+        if (masterTenant.equals(tenantIdentifier)) {
             tenantSchema = master;
         } else {
             tenantSchema = tenantSchemas.get(tenantIdentifier);
@@ -124,7 +126,7 @@ public class SchemaBasedMultiTenantConnectionProvider implements MultiTenantConn
 
     @Override
     public void verify(Tenant tenant) {
-        if (tenant.getSchema() != null && !tenant.getSchema().matches(VALID_SCHEMA_NAME_REGEXP)) {
+        if (tenant.getSchema() == null || !tenant.getSchema().matches(VALID_SCHEMA_NAME_REGEXP)) {
             throw new TenantCreationException("Invalid schema name: " + tenant.getSchema());
         }
     }
@@ -144,10 +146,11 @@ public class SchemaBasedMultiTenantConnectionProvider implements MultiTenantConn
         String schema = tenant.getSchema().toUpperCase();
         SpringLiquibase liquibase = SpringLiquibaseUtils.create(dataSource, liquibaseProperties, resourceLoader);
         if (liquibaseProperties.getParameters() != null) {
+            liquibaseProperties.getParameters().put("tenantName", tenant.getTenantId());
             liquibaseProperties.getParameters().put("schema", schema);
             liquibase.setChangeLogParameters(liquibaseProperties.getParameters());
         } else {
-            liquibase.setChangeLogParameters(Collections.singletonMap("schema", schema));
+            liquibase.setChangeLogParameters(Map.of("tenantName", tenant.getTenantId(), "schema", schema));
         }
         liquibase.setLiquibaseSchema(schema);
         liquibase.setDefaultSchema(schema);

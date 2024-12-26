@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public final class TenantContextHolder {
 
+
     private TenantContextHolder() {}
 
     private static final InheritableThreadLocal<String> currentTenant = new InheritableThreadLocal<>();
@@ -27,15 +28,7 @@ public final class TenantContextHolder {
         currentTenant.remove();
     }
 
-    public static void switchPrimaryTenant() {
-        currentTenant.set("master");
-    }
-
     public static void switchTenant(String tenant) {
         setTenantId(tenant);
-    }
-
-    public static String getPrimaryTenant() {
-        return "master";
     }
 }

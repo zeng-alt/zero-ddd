@@ -29,31 +29,52 @@ public class MessageSourceHelper implements ApplicationContextAware {
 
 
     public static String getMessage(String code) throws NoSuchMessageException {
+        if (messageSourceAccessor == null) {
+            return code;
+        }
         return messageSourceAccessor.getMessage(code);
     }
 
     public static String getMessage(String code, String defaultMessage) throws NoSuchMessageException {
+        if (messageSourceAccessor == null) {
+            return code;
+        }
         return messageSourceAccessor.getMessage(code, defaultMessage);
     }
 
     public static String getMessage(String code, Locale locale) throws NoSuchMessageException {
+        if (messageSourceAccessor == null) {
+            return code;
+        }
         return messageSourceAccessor.getMessage(code, locale);
     }
 
     public static String getMessage(String code, String defaultMessage, Locale locale) throws NoSuchMessageException {
+        if (messageSourceAccessor == null) {
+            return code;
+        }
         return messageSourceAccessor.getMessage(code, defaultMessage, locale);
     }
 
     public static String getMessage(String code, String defaultMessage, Object... args) {
+        if (messageSourceAccessor == null) {
+            return code;
+        }
         return messageSourceAccessor.getMessage(code, args, defaultMessage);
     }
 
     public static String getMessage(String code, @Nullable Object... args) {
+        if (messageSourceAccessor == null) {
+            return code;
+        }
         return getMessage(code, code, args);
     }
 
 
     public static String getMessage(String code, @Nullable Object[] args, String defaultMessage, Locale locale) {
+        if (messageSourceAccessor == null) {
+            return code;
+        }
         return messageSourceAccessor.getMessage(code, args, defaultMessage, locale);
     }
 

@@ -17,6 +17,7 @@ public class MultiTenancyProperties {
     private DataSourceCache dataSourceCache = new DataSourceCache();
     private DatabasePattern databasePattern = new DatabasePattern();
     private SchemaPattern schemaPattern = new SchemaPattern();
+    private String master = "master";
     private Database database;
 
     private String tenantToken = "X-TENANT-ID";

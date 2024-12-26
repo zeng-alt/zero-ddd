@@ -5,6 +5,7 @@ import com.zjj.autoconfigure.component.tenant.TenantContext;
 import com.zjj.autoconfigure.component.tenant.TenantContextHolder;
 import com.zjj.autoconfigure.component.tenant.TenantService;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.lang.Nullable;
@@ -26,6 +27,8 @@ public class ReactiveTenantHeaderFilter implements WebFilter {
 
     private final TenantService tenantService;
     private final String tenantToken;
+    @Setter
+    private String master;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
@@ -33,7 +36,7 @@ public class ReactiveTenantHeaderFilter implements WebFilter {
 
 
         if (!StringUtils.hasText(tenant)) {
-            tenant = TenantContextHolder.getPrimaryTenant();
+            tenant = master;
         }
 
         boolean hasAccess = isUserAllowed(tenant);
