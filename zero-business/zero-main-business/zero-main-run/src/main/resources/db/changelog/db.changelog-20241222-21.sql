@@ -56,33 +56,33 @@ drop sequence if exists main_user_seq;
 
 drop sequence if exists main_user_session_seq;
     
-create sequence main_expression_seq start with 1 increment by 50;
+create sequence main_expression_seq start with 10 increment by 1;
     
-create sequence main_permission_seq start with 1 increment by 50;
+create sequence main_permission_seq start with 10 increment by 1;
     
-create sequence main_resource_seq start with 1 increment by 50;
+create sequence main_resource_seq start with 10 increment by 1;
     
-create sequence main_role_permission_seq start with 1 increment by 50;
+create sequence main_role_permission_seq start with 10 increment by 1;
     
-create sequence main_role_precondition_seq start with 1 increment by 50;
+create sequence main_role_precondition_seq start with 10 increment by 1;
     
-create sequence main_role_seq start with 1 increment by 50;
+create sequence main_role_seq start with 10 increment by 1;
     
-create sequence main_user_expression_seq start with 1 increment by 50;
+create sequence main_user_expression_seq start with 10 increment by 1;
     
-create sequence main_user_group_role_seq start with 1 increment by 50;
+create sequence main_user_group_role_seq start with 10 increment by 1;
     
-create sequence main_user_group_seq start with 1 increment by 50;
+create sequence main_user_group_seq start with 10 increment by 1;
     
-create sequence main_user_group_user_seq start with 1 increment by 50;
+create sequence main_user_group_user_seq start with 10 increment by 1;
     
-create sequence main_user_resource_seq start with 1 increment by 50;
+create sequence main_user_resource_seq start with 10 increment by 1;
     
-create sequence main_user_role_seq start with 1 increment by 50;
+create sequence main_user_role_seq start with 10 increment by 1;
     
-create sequence main_user_seq start with 1 increment by 50;
+create sequence main_user_seq start with 10 increment by 1;
     
-create sequence main_user_session_seq start with 1 increment by 50;
+create sequence main_user_session_seq start with 10 increment by 1;
 
 create table main_expression (
                                  created_date timestamp(6),

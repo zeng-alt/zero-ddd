@@ -1,9 +1,9 @@
 package com.zjj.main;
 
-import com.zjj.graphql.component.config.EnableGenEntityFuzzyQuery;
 import com.zjj.graphql.component.config.EnableGenEntityInput;
 import com.zjj.graphql.component.config.EnableGenEntityQuery;
 import com.zjj.graphql.component.config.EnableGenEntityType;
+import com.zjj.i18n.component.MessageSourceHelper;
 import com.zjj.tenant.datasource.component.EnableMultiTenancy;
 import com.zjj.tenant.datasource.component.TenantMode;
 import org.springframework.boot.SpringApplication;
