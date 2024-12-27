@@ -42,6 +42,7 @@
             <groupId>com.zjj</groupId>
             <artifactId>zero-ddd-security-tenant-component</artifactId>
         </dependency>
+
     </dependencies>
 
 </project>

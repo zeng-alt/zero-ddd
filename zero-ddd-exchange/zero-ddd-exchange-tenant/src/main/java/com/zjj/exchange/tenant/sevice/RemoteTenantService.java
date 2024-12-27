@@ -1,6 +1,6 @@
 package com.zjj.exchange.tenant.sevice;
 
-import com.zjj.exchange.tenant.domain.Tenant;
+import com.zjj.autoconfigure.component.tenant.Tenant;
 import io.vavr.control.Option;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

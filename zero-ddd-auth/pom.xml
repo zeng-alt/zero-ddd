@@ -44,6 +44,32 @@
         </dependency>
 
         <dependency>
+            <groupId>com.zjj</groupId>
+            <artifactId>zero-ddd-tenant-datasource-component</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.zjj</groupId>
+            <artifactId>zero-ddd-exchange-tenant</artifactId>
+        </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>com.h2database</groupId>-->
+<!--            <artifactId>h2</artifactId>-->
+<!--            <scope>runtime</scope>-->
+<!--        </dependency>-->
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>com.zjj</groupId>-->
+<!--            <artifactId>zero-ddd-exchange-tenant</artifactId>-->
+<!--        </dependency>-->
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
@@ -104,9 +130,15 @@
             <artifactId>zero-ddd-exchange-main</artifactId>
         </dependency>
 
+<!--        <dependency>-->
+<!--            <groupId>com.zjj</groupId>-->
+<!--            <artifactId>zero-ddd-security-tenant-component</artifactId>-->
+<!--        </dependency>-->
+
+
         <dependency>
-            <groupId>com.zjj</groupId>
-            <artifactId>zero-ddd-security-tenant-component</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
 

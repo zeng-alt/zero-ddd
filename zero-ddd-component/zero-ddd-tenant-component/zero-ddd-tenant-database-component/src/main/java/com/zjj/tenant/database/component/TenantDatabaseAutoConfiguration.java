@@ -1,21 +1,20 @@
 package com.zjj.tenant.database.component;
 
-import com.zjj.exchange.tenant.client.RemoteTenantClient;
+
 import com.zjj.autoconfigure.component.tenant.MultiTenancyProperties;
-import com.zjj.tenant.management.component.service.TenantDataSourceService;
 import com.zjj.tenant.management.component.service.TenantInitDataSourceService;
+import com.zjj.tenant.management.component.spi.TenantSingleDataSourceProvider;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
-import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernatePropertiesCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
@@ -33,17 +32,19 @@ public class TenantDatabaseAutoConfiguration {
     public TenantDataBaseRoutingDatasource tenantDataSource(
             DataSource dataSource,
             DataSourceProperties dataSourceProperties,
-            RemoteTenantClient remoteTenantClient,
+            TenantSingleDataSourceProvider tenantSingleDataSourceProvider,
             MultiTenancyProperties multiTenancyProperties,
-            CurrentTenantIdentifierResolver<String> currentTenantIdentifierResolver
+            CurrentTenantIdentifierResolver<String> currentTenantIdentifierResolver,
+            ObjectProvider<TenantDatabaseInitService> tenantDatabaseInitService
     ) {
 
         return new TenantDataBaseRoutingDatasource(
                 dataSource,
                 dataSourceProperties,
-                remoteTenantClient,
+                tenantSingleDataSourceProvider,
                 multiTenancyProperties,
-                currentTenantIdentifierResolver
+                currentTenantIdentifierResolver,
+                tenantDatabaseInitService
         );
     }
 

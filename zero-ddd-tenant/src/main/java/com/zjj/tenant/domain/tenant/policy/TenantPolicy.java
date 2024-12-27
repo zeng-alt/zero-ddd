@@ -1,9 +1,8 @@
 package com.zjj.tenant.domain.tenant.policy;
 
 import com.zjj.autoconfigure.component.redis.RedisStringRepository;
-import com.zjj.autoconfigure.component.redis.RedisSubPubRepository;
+import com.zjj.autoconfigure.component.tenant.Tenant;
 import com.zjj.cache.component.repository.impl.RedisTopicRepositoryImpl;
-import com.zjj.exchange.tenant.domain.Tenant;
 import com.zjj.tenant.domain.tenant.event.CreateTenantDataSourceEvent;
 import com.zjj.tenant.domain.tenant.event.DisableTenantMenuEvent;
 import com.zjj.tenant.domain.tenant.event.EnableTenantMenuEvent;
@@ -38,7 +37,7 @@ public class TenantPolicy {
     @EventListener(value = CreateTenantDataSourceEvent.class)
     public void handler(CreateTenantDataSourceEvent event) {
         System.out.println("event");
-        redisSubPubRepository.publish("tenant-channel", Tenant.builder().tenantId(event.getTenantKey()).db(event.getPoolName()).password(event.getPassword()).schema(event.getSchema()).build());
+        redisSubPubRepository.publish("tenant-channel", Tenant.builder().tenantId(event.getTenantKey()).db(event.getDb()).password(event.getPassword()).schema(event.getSchema()).build());
         repository.put("event:" + event.getId(), event);
     }
 

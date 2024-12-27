@@ -1,6 +1,7 @@
 package com.zjj.tenant.management.component.service;
 
-import com.zjj.exchange.tenant.domain.Tenant;
+
+import com.zjj.autoconfigure.component.tenant.Tenant;
 import liquibase.exception.LiquibaseException;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.core.io.ResourceLoader;

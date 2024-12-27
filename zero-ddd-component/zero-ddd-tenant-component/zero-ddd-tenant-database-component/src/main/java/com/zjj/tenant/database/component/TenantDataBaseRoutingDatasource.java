@@ -5,17 +5,19 @@ import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.github.benmanes.caffeine.cache.RemovalListener;
 import com.zaxxer.hikari.HikariDataSource;
 import com.zjj.autoconfigure.component.tenant.MultiTenancyProperties;
-import com.zjj.exchange.tenant.client.RemoteTenantClient;
-import com.zjj.exchange.tenant.domain.Tenant;
+import com.zjj.autoconfigure.component.tenant.Tenant;
 import com.zjj.tenant.management.component.SpringLiquibase;
 import com.zjj.tenant.management.component.service.TenantCreationException;
 import com.zjj.tenant.management.component.service.TenantDataSourceService;
+import com.zjj.tenant.management.component.spi.TenantSingleDataSourceProvider;
 import com.zjj.tenant.management.component.utils.SpringLiquibaseUtils;
 import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import liquibase.exception.LiquibaseException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.core.io.ResourceLoader;
@@ -27,9 +29,7 @@ import org.springframework.util.StringUtils;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
@@ -46,9 +46,10 @@ public class TenantDataBaseRoutingDatasource extends AbstractRoutingDataSource i
     private LoadingCache<String, DataSource> tenantDataSources;
 
     private final DataSourceProperties dataSourceProperties;
-    private final RemoteTenantClient remoteTenantClient;
+    private final TenantSingleDataSourceProvider tenantSingleDataSourceProvider;
     private final CurrentTenantIdentifierResolver<String> currentTenantIdentifierResolver;
     private final MultiTenancyProperties multiTenancyProperties;
+    private final ObjectProvider<TenantDatabaseInitService> tenantDatabaseInitService;
 
     @PostConstruct
     private void createCache() {
@@ -61,23 +62,25 @@ public class TenantDataBaseRoutingDatasource extends AbstractRoutingDataSource i
                         log.info("Closed datasource: {}", hikariDataSource.getPoolName());
                     }
                 })
-                .build(tenantId -> remoteTenantClient.findById(tenantId).map(this::createAndConfigureDataSource).getOrElse((DataSource) null));
+                .build(tenantId -> tenantSingleDataSourceProvider.findById(tenantId).map(this::createAndConfigureDataSource).getOrElse((DataSource) null));
     }
 
     public TenantDataBaseRoutingDatasource(
             DataSource dataSource,
             DataSourceProperties dataSourceProperties,
-            RemoteTenantClient remoteTenantClient,
+            TenantSingleDataSourceProvider tenantSingleDataSourceProvider,
             MultiTenancyProperties multiTenancyProperties,
-            CurrentTenantIdentifierResolver<String> currentTenantIdentifierResolver
+            CurrentTenantIdentifierResolver<String> currentTenantIdentifierResolver,
+            ObjectProvider<TenantDatabaseInitService> tenantDatabaseInitService
     ) {
         this.setDefaultTargetDataSource(dataSource);
         this.setTargetDataSources(new HashMap<>());
 
         this.dataSourceProperties = dataSourceProperties;
-        this.remoteTenantClient = remoteTenantClient;
+        this.tenantSingleDataSourceProvider = tenantSingleDataSourceProvider;
         this.multiTenancyProperties = multiTenancyProperties;
         this.currentTenantIdentifierResolver = currentTenantIdentifierResolver;
+        this.tenantDatabaseInitService = tenantDatabaseInitService;
     }
 
     public Connection getConnection(String tenantIdentifier) throws SQLException {
@@ -100,18 +103,23 @@ public class TenantDataBaseRoutingDatasource extends AbstractRoutingDataSource i
     }
 
     private DataSource createAndConfigureDataSource(Tenant tenant) {
-//        String decryptedPassword = encryptionService.decrypt(tenant.getPassword(), secret, salt);
 
-        HikariDataSource ds = dataSourceProperties.initializeDataSourceBuilder().type(HikariDataSource.class).build();
+        verify(tenant);
+        tenantDatabaseInitService.getIfAvailable().initDataSource(tenant);
+        DataSource datasource = createDatasource(tenant);
 
-        ds.setUsername(tenant.getDb());
-        ds.setPassword(tenant.getPassword());
-        ds.setJdbcUrl(multiTenancyProperties.getDatabasePattern().getUrlPrefix() + tenant.getDb());
-
-        ds.setPoolName(tenant.getTenantId() + TENANT_POOL_NAME_SUFFIX);
-
-        log.info("Configured datasource: {}", ds.getPoolName());
-        return ds;
+////        String decryptedPassword = encryptionService.decrypt(tenant.getPassword(), secret, salt);
+//
+//        HikariDataSource ds = dataSourceProperties.initializeDataSourceBuilder().type(HikariDataSource.class).build();
+//
+//        ds.setUsername(tenant.getDb());
+//        ds.setPassword(tenant.getPassword());
+//        ds.setJdbcUrl(multiTenancyProperties.getDatabasePattern().getUrlPrefix() + tenant.getDb());
+//
+//        ds.setPoolName(tenant.getTenantId() + TENANT_POOL_NAME_SUFFIX);
+//
+//        log.info("Configured datasource: {}", ds.getPoolName());
+        return datasource;
     }
 
 
@@ -166,8 +174,22 @@ public class TenantDataBaseRoutingDatasource extends AbstractRoutingDataSource i
             liquibaseProperties.getParameters().put("username", tenant.getUsername());
             liquibase.setChangeLogParameters(liquibaseProperties.getParameters());
         } else {
-            liquibase.setChangeLogParameters(Map.of("tenantName", tenant.getTenantId(), "db", tenant.getDb(), "username", tenant.getUsername()));
+            HashMap<String, String> parameters = new HashMap<>();
+            parameters.put("tenantName", tenant.getTenantId());
+            parameters.put("db", tenant.getDb());
+            parameters.put("username", tenant.getUsername());
+            liquibase.setChangeLogParameters(parameters);
         }
         liquibase.afterPropertiesSet();
+    }
+
+    @PreDestroy
+    public void clearDataSourceCache() {
+        ConcurrentMap<String, DataSource> map = tenantDataSources.asMap();
+        map.forEach((key, value) -> {
+            if (value instanceof HikariDataSource hikariDataSource) {
+                hikariDataSource.close();
+            }
+        });
     }
 }

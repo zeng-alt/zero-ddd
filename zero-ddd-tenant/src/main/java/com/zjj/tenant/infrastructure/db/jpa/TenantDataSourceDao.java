@@ -2,6 +2,7 @@ package com.zjj.tenant.infrastructure.db.jpa;
 
 import com.zjj.graphql.component.supper.BaseRepository;
 import com.zjj.tenant.domain.tenant.TenantDataSource;
+import io.vavr.control.Option;
 import org.springframework.graphql.data.GraphQlRepository;
 
 /**
@@ -11,4 +12,8 @@ import org.springframework.graphql.data.GraphQlRepository;
  */
 @GraphQlRepository
 public interface TenantDataSourceDao extends BaseRepository<TenantDataSource, Long> {
+
+    Option<TenantDataSource> findBySchema(String schema);
+
+    Option<TenantDataSource> findByDb(String db);
 }

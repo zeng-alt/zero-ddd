@@ -1,4 +1,4 @@
-package com.zjj.exchange.tenant.domain;
+package com.zjj.autoconfigure.component.tenant;
 
 
 import lombok.Data;

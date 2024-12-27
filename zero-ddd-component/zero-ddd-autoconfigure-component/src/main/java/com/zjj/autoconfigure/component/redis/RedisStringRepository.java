@@ -19,7 +19,7 @@ import java.util.function.UnaryOperator;
  * @version 1.0
  * @crateTime 2024年06月18日 18:56
  */
-public abstract class RedisStringRepository extends RedisCrudRepository<String, Object> {
+public abstract class RedisStringRepository extends RedisCrudRepository<String, Object> implements Lock {
 
 	public RedisStringRepository(RedissonClient template) {
 		super(template);
@@ -46,16 +46,6 @@ public abstract class RedisStringRepository extends RedisCrudRepository<String, 
 	public abstract long increment(String key);
 
 	public abstract long decrement(String key);
-
-	public abstract boolean tryLock(String lockName);
-
-	public abstract boolean tryLock(String lockName, long time, TimeUnit timeUnit) throws InterruptedException;
-
-	public abstract boolean tryLock(String lockName, long time) throws InterruptedException;
-
-	public abstract boolean tryLock(String lockName, long waitTime, long leaseTime) throws InterruptedException;
-
-	public abstract void unlock(String lockName);
 
 	public abstract void removeAll(String key);
 

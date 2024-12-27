@@ -1,6 +1,7 @@
 package com.zjj.tenant.management.component.service;
 
-import com.zjj.exchange.tenant.domain.Tenant;
+
+import com.zjj.autoconfigure.component.tenant.Tenant;
 
 /**
  * @author zengJiaJun

@@ -4,11 +4,17 @@ server:
 spring:
   application:
     name: zero-ddd-main
+#  datasource:
+#    url: jdbc:h2:mem:mydb
+#    username: sa
+#    password:
+#    driverClassName: org.h2.Driver
+#    type: com.zaxxer.hikari.HikariDataSource
   datasource:
-    url: jdbc:h2:mem:mydb
-    username: sa
-    password:
-    driverClassName: org.h2.Driver
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: postgres
+    driverClassName: org.postgresql.Driver
     type: com.zaxxer.hikari.HikariDataSource
   cloud:
     nacos:
@@ -19,13 +25,13 @@ spring:
         enabled: false
   jpa:
     show-sql: true
-    database-platform: org.hibernate.dialect.H2Dialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: none
     properties:
       hibernate:
         format_sql: true
-    database: h2
+    database: PostgreSQL
     defer-datasource-initialization: false
   h2:
     console:
@@ -48,10 +54,21 @@ spring:
     redisson:
       file: classpath:redisson.yml
 
+
+management:
+  endpoint:
+    shutdown:
+      access: UNRESTRICTED
+  endpoints:
+    web:
+      base-path: /main/actuator
+      exposure:
+        include: shutdown
+
 multi-tenancy:
-  database: h2
+  database: PostgreSQL
   database-pattern:
-    url-prefix: "jdbc:h2:mem:"
+    url-prefix: "jdbc:postgresql://localhost:5432/"
   schema-pattern:
     schema: "PUBLIC"
 

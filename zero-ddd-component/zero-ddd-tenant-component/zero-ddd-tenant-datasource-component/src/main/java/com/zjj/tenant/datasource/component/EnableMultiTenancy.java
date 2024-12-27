@@ -1,8 +1,8 @@
 package com.zjj.tenant.datasource.component;
 
-import com.zjj.autoconfigure.component.cache.CacheType;
+
 import com.zjj.autoconfigure.component.tenant.MultiTenancyProperties;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Import;
 
@@ -16,13 +16,24 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Documented
-@EnableConfigurationProperties(MultiTenancyProperties.class)
+@EnableConfigurationProperties({MultiTenancyProperties.class, LiquibaseProperties.class})
 @Import(TenantSelector.class)
 public @interface EnableMultiTenancy {
 
+    /**
+     * 使用多租户模式
+     * @return 模式
+     */
     TenantMode mode() default TenantMode.DATABASE;
 
-    CacheType cache() default CacheType.REDIS;
+    /**
+     * 是否启用master的Liquibase
+     */
+    boolean enabledLiquibase() default true;
 
-//    ConditionalOnWebApplication.Type type() default ConditionalOnWebApplication.Type.SERVLET;
+    /**
+     * 是否启动动态添加数据源时候执行Liquibase
+     */
+    boolean dynamicLiquibase() default true;
+
 }

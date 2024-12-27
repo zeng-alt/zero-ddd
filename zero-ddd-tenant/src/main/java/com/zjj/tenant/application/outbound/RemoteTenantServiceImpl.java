@@ -1,7 +1,7 @@
 package com.zjj.tenant.application.outbound;
 
+import com.zjj.autoconfigure.component.tenant.Tenant;
 import com.zjj.exchange.tenant.api.RemoteTenantApi;
-import com.zjj.exchange.tenant.domain.Tenant;
 import com.zjj.tenant.infrastructure.db.jpa.TenantDao;
 import io.vavr.control.Option;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ public class RemoteTenantServiceImpl implements RemoteTenantApi {
                 .map(tenant -> Tenant.builder()
                         .tenantId(tenant.getTenantKey())
                         .schema(tenant.getTenantDataSource().getSchema())
-                        .db(tenant.getTenantDataSource().getPoolName())
+                        .db(tenant.getTenantDataSource().getDb())
                         .password(tenant.getTenantDataSource().getPassword())
                         .build()
                 );
@@ -42,7 +42,7 @@ public class RemoteTenantServiceImpl implements RemoteTenantApi {
                 .map(tenant -> Tenant.builder()
                         .tenantId(tenant.getTenantKey())
                         .schema(tenant.getTenantDataSource().getSchema())
-                        .db(tenant.getTenantDataSource().getPoolName())
+                        .db(tenant.getTenantDataSource().getDb())
                         .password(tenant.getTenantDataSource().getPassword())
                         .build()
                 ).toList();

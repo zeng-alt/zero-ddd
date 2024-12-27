@@ -32,6 +32,7 @@
         <dependency>
             <groupId>com.zjj</groupId>
             <artifactId>zero-ddd-exchange-tenant</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>

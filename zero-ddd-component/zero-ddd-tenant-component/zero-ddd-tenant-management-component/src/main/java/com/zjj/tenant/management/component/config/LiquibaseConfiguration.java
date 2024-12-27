@@ -26,17 +26,18 @@ import java.util.Map;
  */
 @AutoConfiguration
 @RequiredArgsConstructor
-@EnableConfigurationProperties(LiquibaseProperties.class)
 public class LiquibaseConfiguration {
 
     private final LiquibaseProperties liquibaseProperties;
     private final DataSourceProperties dataSourceProperties;
     private final MultiTenancyProperties multiTenancyProperties;
+    private final ResourceLoader resourceLoader;
 
     @Bean
-    @ConditionalOnProperty(name = "spring.liquibase.enabled", havingValue = "true")
+//    @ConditionalOnProperty(name = "spring.liquibase.enabled", havingValue = "true")
     public SpringLiquibase masterLiquibase(@LiquibaseDataSource ObjectProvider<DataSource> liquibaseDataSource) {
         SpringLiquibase liquibase = new SpringLiquibase();
+        liquibase.setResourceLoader(resourceLoader);
         liquibase.setDataSource(liquibaseDataSource.getIfAvailable());
         liquibase.setChangeLog(liquibaseProperties.getChangeLog());
         liquibase.setContexts(CollectionUtils.isEmpty(liquibaseProperties.getContexts()) ? null : liquibaseProperties.getContexts().get(0));

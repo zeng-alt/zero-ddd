@@ -16,6 +16,7 @@ public class TenantHandler {
     private final TenantRepository tenantRepository;
     private final TenantMenuRepository tenantMenuRepository;
     private final TenantFactory tenantFactory;
+    private final TenantDataSourceRepository tenantDataSourceRepository;
 
     public void handler(StockInTenantCmd stockInTenantCmd) {
         ITenant tenant = this.tenantFactory.createTenant(stockInTenantCmd);
@@ -26,6 +27,15 @@ public class TenantHandler {
     public void handler(StockInTenantDataSourceCmd stockCmd) {
         this.tenantRepository
                 .findById(stockCmd.tenantId())
+                .filter(t -> {
+                    if (stockCmd.schema() != null) {
+                        return tenantDataSourceRepository.findBySchema(stockCmd.schema()).isEmpty();
+                    }
+                    if (stockCmd.db() != null) {
+                        return tenantDataSourceRepository.findBySchema(stockCmd.db()).isEmpty();
+                    }
+                    return true;
+                })
                 .map(t -> t.save(stockCmd))
                 .map(tenantRepository::save)
                 .getOrElseThrow(() -> new IllegalArgumentException("租户不存在"));

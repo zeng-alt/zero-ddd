@@ -23,9 +23,7 @@ public class TenantDataSource extends BaseEntity<Long> {
     @GeneratedValue
     private Long id;
 
-    private String poolName;
-    private String url;
-    private String username;
+    private String db;
     private String password;
 
     private String schema;

@@ -23,7 +23,7 @@ import java.util.Set;
 @Entity
 @SQLDelete(sql = "update main_user set deleted = 1 where id = ?")
 @SQLRestriction(value = "deleted = 0")
-@Table(name = "main_user")
+@Table(name = "MAIN_USER")
 public class User extends BaseEntity<Long> implements TenantAuditable<String> {
 
     @Id

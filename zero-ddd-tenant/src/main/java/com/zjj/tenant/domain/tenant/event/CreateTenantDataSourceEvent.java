@@ -20,9 +20,7 @@ public class CreateTenantDataSourceEvent extends TenantEvent {
 
     private String tenantKey;
     private Long tenantId;
-    private String poolName;
-    private String url;
-    private String username;
+    private String db;
     private String password;
 
     private String schema;

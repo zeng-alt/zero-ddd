@@ -7,9 +7,7 @@ package com.zjj.tenant.domain.tenant.cmd;
  */
 public record StockInTenantDataSourceCmd(
         Long tenantId,
-        String poolName,
-        String url,
-        String username,
+        String db,
         String password,
         String schema,
         Boolean enabled

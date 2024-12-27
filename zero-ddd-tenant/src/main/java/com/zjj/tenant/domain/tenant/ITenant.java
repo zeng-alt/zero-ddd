@@ -21,4 +21,6 @@ public interface ITenant {
     ITenant disableMenu(Long menuId);
 
     ITenant enableMenu(Long menuId);
+
+    TenantDataSource getTenantDataSource();
 }

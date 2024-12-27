@@ -1,7 +1,7 @@
 package com.zjj.exchange.tenant.factory;
 
+import com.zjj.autoconfigure.component.tenant.Tenant;
 import com.zjj.exchange.tenant.client.RemoteTenantClient;
-import com.zjj.exchange.tenant.domain.Tenant;
 import io.vavr.control.Option;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;

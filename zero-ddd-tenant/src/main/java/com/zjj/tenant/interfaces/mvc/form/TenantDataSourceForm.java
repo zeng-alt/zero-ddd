@@ -21,9 +21,7 @@ public class TenantDataSourceForm implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long tenantId;
-    private String poolName;
-    private String url;
-    private String username;
+    private String db;
     private String password;
     private String schema;
     private Boolean enabled;

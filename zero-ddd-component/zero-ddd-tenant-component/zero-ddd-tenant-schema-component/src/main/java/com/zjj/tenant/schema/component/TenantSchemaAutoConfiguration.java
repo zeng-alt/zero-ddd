@@ -1,17 +1,17 @@
 package com.zjj.tenant.schema.component;
 
 import com.zjj.autoconfigure.component.tenant.MultiTenancyProperties;
-import com.zjj.exchange.tenant.client.RemoteTenantClient;
 import com.zjj.tenant.management.component.service.TenantDataSourceService;
 import com.zjj.tenant.management.component.service.TenantInitDataSourceService;
+import com.zjj.tenant.management.component.spi.TenantSingleDataSourceProvider;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernatePropertiesCustomizer;
-import org.springframework.cloud.openfeign.FeignAutoConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -22,7 +22,7 @@ import javax.sql.DataSource;
  * @version 1.0
  * @crateTime 2024年12月23日 21:54
  */
-@AutoConfiguration(after = FeignAutoConfiguration.class)
+@AutoConfiguration
 public class TenantSchemaAutoConfiguration {
 
 //    @Bean
@@ -31,11 +31,21 @@ public class TenantSchemaAutoConfiguration {
 //    }
 
     @Bean
-    public MultiTenantConnectionProvider<String> schemaBasedMultiTenantConnectionProvider(ObjectProvider<DataSource> masterDataSource, MultiTenancyProperties tenancyProperties, RemoteTenantClient remoteTenantClient) {
-        return new SchemaBasedMultiTenantConnectionProvider(masterDataSource.getIfAvailable(), tenancyProperties, remoteTenantClient);
+    @Lazy
+    public MultiTenantConnectionProvider<String> schemaBasedMultiTenantConnectionProvider(
+            ObjectProvider<DataSource> masterDataSource,
+            MultiTenancyProperties tenancyProperties,
+            ObjectProvider<TenantSingleDataSourceProvider> tenantSingleDataSourceProvider
+    ) {
+        return new SchemaBasedMultiTenantConnectionProvider(
+                masterDataSource.getIfAvailable(),
+                tenancyProperties,
+                tenantSingleDataSourceProvider.getIfAvailable()
+        );
     }
 
     @Bean
+    @Lazy
     public TenantInitDataSourceService tenantSchemaInitService(JdbcTemplate jdbcTemplate, MultiTenancyProperties multiTenancyProperties) {
         return new TenantSchemaInitService(jdbcTemplate, multiTenancyProperties);
     }

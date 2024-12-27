@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20241222-21
+      author: zengJiaJun
+      changes:
+        - sqlFile:
+            splitStatements: true
+            path: classpath:/db/changelog/db.changelog-20241222-21.sql
+            stripComments: true

@@ -1,7 +1,7 @@
 package com.zjj.tenant.management.component.service;
 
-import com.zjj.exchange.tenant.domain.Tenant;
-import org.springframework.orm.jpa.vendor.Database;
+
+import com.zjj.autoconfigure.component.tenant.Tenant;
 
 /**
  * @author zengJiaJun
