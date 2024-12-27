@@ -56,14 +56,18 @@ public class TenantManagementServiceImpl implements TenantManagementService, Ini
             lock.unlock(lockName);
         }
 
+
         if (dataSource != null) {
             try {
+                lock.tryLock(lockName + "rent", 10000L);
                 tenantDataSourceService.runLiquibase(tenant, dataSource, liquibaseProperties, resourceLoader);
-            } catch (LiquibaseException e) {
+            } catch (LiquibaseException | InterruptedException e) {
                 if (dataSource instanceof HikariDataSource hikariDataSource) {
                     hikariDataSource.close();
                 }
                 throw new TenantCreationException("Error when populating db: ", e);
+            } finally {
+                lock.unlock(lockName + "rent");
             }
         }
 

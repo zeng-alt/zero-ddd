@@ -49,7 +49,7 @@ public class JwtAutoConfiguration {
 												   JwtCacheManage jwtCacheManage, JwtProperties jwtProperties) {
 
 		DefaultJwtAuthenticationTokenFilter jwtAuthenticationTokenFilter = new DefaultJwtAuthenticationTokenFilter(jwtHelper, jwtCacheManage, jwtProperties);
-		DefaultJwtRenewFilter jwtRenewFilter = new DefaultJwtRenewFilter(jwtCacheManage);
+		DefaultJwtRenewFilter jwtRenewFilter = new DefaultJwtRenewFilter(jwtCacheManage, jwtProperties);
 		return http -> {
 
 			http.addFilterBefore(jwtAuthenticationTokenFilter, LogoutFilter.class);

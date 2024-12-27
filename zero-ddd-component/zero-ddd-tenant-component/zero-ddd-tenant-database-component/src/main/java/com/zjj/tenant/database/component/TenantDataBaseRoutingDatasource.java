@@ -90,9 +90,13 @@ public class TenantDataBaseRoutingDatasource extends AbstractRoutingDataSource i
 
     protected DataSource determineTargetDataSource(String tenantIdentifier) {
         Assert.notNull(this.tenantDataSources, "DataSource router not initialized");
-        DataSource dataSource = this.tenantDataSources.get(tenantIdentifier);
-        if (dataSource == null && multiTenancyProperties.getMaster().equals(tenantIdentifier)) {
+        DataSource dataSource = null;
+        if (multiTenancyProperties.getMaster().equals(tenantIdentifier)) {
             dataSource = getResolvedDefaultDataSource();
+        }
+
+        if (dataSource == null) {
+            dataSource = this.tenantDataSources.get(tenantIdentifier);
         }
 
         if (dataSource == null) {
@@ -141,8 +145,8 @@ public class TenantDataBaseRoutingDatasource extends AbstractRoutingDataSource i
         HikariDataSource ds = dataSourceProperties.initializeDataSourceBuilder().type(HikariDataSource.class).build();
 
 
-        if (StringUtils.hasText(tenant.getUsername())) {
-            ds.setUsername(tenant.getUsername());
+        if (StringUtils.hasText(tenant.getDb())) {
+            ds.setUsername(tenant.getDb());
         }
         ds.setPassword(tenant.getPassword());
         ds.setJdbcUrl(multiTenancyProperties.getDatabasePattern().getUrlPrefix() + tenant.getDb());
@@ -171,13 +175,13 @@ public class TenantDataBaseRoutingDatasource extends AbstractRoutingDataSource i
         if (liquibaseProperties.getParameters() != null) {
             liquibaseProperties.getParameters().put("tenantName", tenant.getTenantId());
             liquibaseProperties.getParameters().put("db", tenant.getDb());
-            liquibaseProperties.getParameters().put("username", tenant.getUsername());
+            liquibaseProperties.getParameters().put("username", tenant.getDb());
             liquibase.setChangeLogParameters(liquibaseProperties.getParameters());
         } else {
             HashMap<String, String> parameters = new HashMap<>();
             parameters.put("tenantName", tenant.getTenantId());
             parameters.put("db", tenant.getDb());
-            parameters.put("username", tenant.getUsername());
+            parameters.put("username", tenant.getDb());
             liquibase.setChangeLogParameters(parameters);
         }
         liquibase.afterPropertiesSet();

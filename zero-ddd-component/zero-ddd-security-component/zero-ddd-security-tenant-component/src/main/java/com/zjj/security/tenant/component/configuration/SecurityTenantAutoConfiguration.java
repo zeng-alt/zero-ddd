@@ -15,6 +15,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.header.HeaderWriterFilter;
 
 /**
  * @author zengJiaJun
@@ -29,10 +30,10 @@ public class SecurityTenantAutoConfiguration {
     @Value("${multi-tenancy.tenant-token:X-TENANT-ID}")
     private String tenantToken;
 
-    @Bean
-    public TenantWitchDataSourceFilter tenantWitchDataSourceFilter() {
-        return new TenantWitchDataSourceFilter();
-    }
+//    @Bean
+//    public TenantWitchDataSourceFilter tenantWitchDataSourceFilter() {
+//        return new TenantWitchDataSourceFilter();
+//    }
 
     @Bean
     @Order(10)
@@ -42,7 +43,7 @@ public class SecurityTenantAutoConfiguration {
         TenantHeaderFilter tenantHeaderFilter = new TenantHeaderFilter(tenantService.getIfAvailable(), properties == null ? tenantToken : properties.getTenantToken());
         multiTenancyProperties.ifAvailable(m -> tenantHeaderFilter.setMaster(m.getMaster()));
         return http -> {
-            http.addFilterBefore(tenantHeaderFilter, UsernamePasswordAuthenticationFilter.class);
+            http.addFilterAfter(tenantHeaderFilter, HeaderWriterFilter.class);
             http.addFilterAfter(tenantWitchDataSourceFilter, AnonymousAuthenticationFilter.class);
         };
     }

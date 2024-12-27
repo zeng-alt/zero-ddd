@@ -34,7 +34,6 @@ public class ReactiveTenantHeaderFilter implements WebFilter {
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         String tenant = resolveTenant(exchange.getRequest());
 
-
         if (!StringUtils.hasText(tenant)) {
             tenant = master;
         }

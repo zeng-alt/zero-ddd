@@ -8,6 +8,7 @@ import com.zjj.graphql.component.config.EnableGenEntityFuzzyQuery;
 import com.zjj.graphql.component.config.EnableGenEntityInput;
 import com.zjj.graphql.component.config.EnableGenEntityQuery;
 import com.zjj.graphql.component.config.EnableGenEntityType;
+import com.zjj.security.tenant.component.EnableTenantJwtCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -26,6 +27,7 @@ import java.util.Map;
  * @crateTime 2024年10月29日 21:34
  */
 //@EnableAbac
+@EnableTenantJwtCache
 @EnableFeignClients(basePackages = "com.zjj")
 @EnableJpaRepositories(basePackages = "com.zjj")
 @SpringBootApplication

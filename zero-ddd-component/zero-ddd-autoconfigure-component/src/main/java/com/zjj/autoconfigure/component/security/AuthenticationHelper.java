@@ -87,7 +87,7 @@ public final class AuthenticationHelper {
 
 	public static DataBuffer renderString(@NonNull ServerHttpResponse response, int status, String msg) {
 		response.setStatusCode(HttpStatus.OK);
-		response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
+//		response.getHeaders();
 		String result = """
 					{
 					    "code":   "%d",

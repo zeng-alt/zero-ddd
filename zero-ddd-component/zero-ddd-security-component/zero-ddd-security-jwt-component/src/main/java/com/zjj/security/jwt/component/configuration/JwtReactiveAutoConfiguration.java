@@ -49,7 +49,7 @@ public class JwtReactiveAutoConfiguration {
                                                              ReactiveJwtCacheManage jwtCacheManage,
                                                              JwtProperties jwtProperties) {
 
-        DefaultJwtReactiveRenewFilter jwtReactiveRenewFilter = new DefaultJwtReactiveRenewFilter(jwtCacheManage);
+        DefaultJwtReactiveRenewFilter jwtReactiveRenewFilter = new DefaultJwtReactiveRenewFilter(jwtCacheManage, jwtProperties);
         DefaultJwtReactiveAuthenticationTokenFilter jwtReactiveAuthenticationTokenFilter = new DefaultJwtReactiveAuthenticationTokenFilter(jwtHelper, jwtCacheManage, jwtProperties);
         return http -> http
                 .addFilterBefore(jwtReactiveAuthenticationTokenFilter, SecurityWebFiltersOrder.HTTP_BASIC)

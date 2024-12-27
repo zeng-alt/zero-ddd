@@ -29,6 +29,7 @@ public class TenantDatabaseInitService implements TenantInitDataSourceService {
                 jdbcTemplate.execute((StatementCallback<Boolean>) stmt -> stmt.execute("CREATE DATABASE " + tenant.getDb()));
                 jdbcTemplate.execute((StatementCallback<Boolean>) stmt -> stmt.execute("CREATE USER " + tenant.getDb() + " WITH ENCRYPTED PASSWORD '" + tenant.getPassword() + "'"));
                 jdbcTemplate.execute((StatementCallback<Boolean>) stmt -> stmt.execute("GRANT ALL PRIVILEGES ON DATABASE " + tenant.getDb() + " TO " + tenant.getDb()));
+                jdbcTemplate.execute((StatementCallback<Boolean>) stmt -> stmt.execute("ALTER DATABASE " + tenant.getDb() + " OWNER TO " + tenant.getDb()));
             }
         }
     }

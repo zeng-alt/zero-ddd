@@ -21,4 +21,8 @@ public interface JwtCacheManage {
     default void remove(String username) {
 
 	}
+
+	default void renew(String id) {
+
+	}
 }

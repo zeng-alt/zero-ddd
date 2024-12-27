@@ -19,14 +19,14 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 public class FastAuthAutoConfiguration {
 
-    @Bean
-    public FastAuthenticationFilter fastAuthenticationFilter(JwtCacheManage jwtCacheManage, JwtProperties jwtProperties) {
-        return new FastAuthenticationFilter(jwtCacheManage, jwtProperties);
-    }
+//    @Bean
+//    public FastAuthenticationFilter fastAuthenticationFilter(JwtCacheManage jwtCacheManage, JwtProperties jwtProperties) {
+//        return new FastAuthenticationFilter(jwtCacheManage, jwtProperties);
+//    }
 
 
     @Bean
-    public SecurityBuilderCustomizer fastAuthCustomizer(FastAuthenticationFilter fastAuthenticationFilter) {
-        return http -> http.addFilterBefore(fastAuthenticationFilter, LogoutFilter.class);
+    public SecurityBuilderCustomizer fastAuthCustomizer(JwtCacheManage jwtCacheManage, JwtProperties jwtProperties) {
+        return http -> http.addFilterBefore(new FastAuthenticationFilter(jwtCacheManage, jwtProperties), LogoutFilter.class);
     }
 }

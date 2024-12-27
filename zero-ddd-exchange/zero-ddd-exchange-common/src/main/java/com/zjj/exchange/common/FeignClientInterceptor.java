@@ -33,7 +33,7 @@ public class FeignClientInterceptor implements RequestInterceptor {
 
         requestTemplate.header(tenantToken, TenantContextHolder.getTenantId());
 
-        if (!"anonymousUser".equals(UserContextHolder.getUsername())) {
+        if (!StringUtils.hasText(UserContextHolder.getUsername()) && !"anonymousUser".equals(UserContextHolder.getUsername())) {
             requestTemplate.header(fastToken, UserContextHolder.getUsername());
         }
     }

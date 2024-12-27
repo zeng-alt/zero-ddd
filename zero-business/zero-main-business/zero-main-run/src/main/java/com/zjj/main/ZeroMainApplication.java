@@ -4,6 +4,7 @@ import com.zjj.graphql.component.config.EnableGenEntityInput;
 import com.zjj.graphql.component.config.EnableGenEntityQuery;
 import com.zjj.graphql.component.config.EnableGenEntityType;
 import com.zjj.i18n.component.MessageSourceHelper;
+import com.zjj.security.tenant.component.EnableTenantJwtCache;
 import com.zjj.tenant.datasource.component.EnableMultiTenancy;
 import com.zjj.tenant.datasource.component.TenantMode;
 import org.springframework.boot.SpringApplication;
@@ -17,6 +18,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  * @version 1.0
  * @crateTime 2024年11月14日 21:08
  */
+@EnableTenantJwtCache
 @EnableMultiTenancy(mode = TenantMode.DATABASE)
 @EnableJpaRepositories(basePackages = "com.zjj")
 @SpringBootApplication

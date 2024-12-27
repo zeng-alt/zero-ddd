@@ -22,12 +22,16 @@ public class UserContextHolder {
             return null;
         }
 
-        return authentication.getName();
+        if (authentication.isAuthenticated()) {
+            return authentication.getName();
+        }
+
+        return null;
     }
 
     public static UserDetails getUserDetails() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null) {
+        if (authentication == null || !authentication.isAuthenticated()) {
             return null;
         }
 
@@ -37,7 +41,7 @@ public class UserContextHolder {
 
     public static String getTenant() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null) {
+        if (authentication == null || !authentication.isAuthenticated()) {
             return null;
         }
 
@@ -50,6 +54,10 @@ public class UserContextHolder {
     }
 
     public static Authentication getAuthentication() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return null;
+        }
         return SecurityContextHolder.getContext().getAuthentication();
     }
 
@@ -64,7 +72,7 @@ public class UserContextHolder {
 
     public static SecurityUser getSecurityUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null) {
+        if (authentication == null || !authentication.isAuthenticated()) {
             return null;
         }
 

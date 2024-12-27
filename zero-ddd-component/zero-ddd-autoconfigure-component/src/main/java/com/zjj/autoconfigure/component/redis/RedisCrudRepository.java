@@ -26,6 +26,11 @@ public abstract class RedisCrudRepository<K, V> {
 
 	public abstract void putIfAbsent(K key, V value);
 
+	public void expire(K key, Duration expire) {
+		RBucket<V> rBucket = template.getBucket(key.toString());
+		rBucket.expire(expire);
+	}
+
 	public long getTimeToLive(final String key) {
 		RBucket<V> rBucket = template.getBucket(key);
 		return rBucket.remainTimeToLive();

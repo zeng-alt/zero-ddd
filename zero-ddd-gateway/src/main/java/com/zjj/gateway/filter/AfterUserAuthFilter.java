@@ -1,32 +1,53 @@
-//package com.zjj.gateway.filter;
-//
-//import com.zjj.autoconfigure.component.security.jwt.JwtProperties;
-//import jakarta.annotation.Resource;
-//import lombok.extern.slf4j.Slf4j;
-//import org.springframework.cloud.gateway.filter.GatewayFilterChain;
-//import org.springframework.cloud.gateway.filter.GlobalFilter;
-//import org.springframework.core.Ordered;
-//import org.springframework.http.server.reactive.ServerHttpRequest;
-//import org.springframework.security.core.context.ReactiveSecurityContextHolder;
-//import org.springframework.stereotype.Component;
-//import org.springframework.web.server.ServerWebExchange;
-//import reactor.core.publisher.Mono;
-//
-///**
-// * @author zengJiaJun
-// * @version 1.0
-// * @crateTime 2024年11月28日 21:38
-// */
-//@Slf4j
-//@Component
-//public class AfterUserAuthFilter implements GlobalFilter, Ordered {
-//
-//    @Resource
-//    private JwtProperties jwtProperties;
-//
-//    @Override
-//    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-//
+package com.zjj.gateway.filter;
+
+import com.zjj.autoconfigure.component.security.jwt.JwtProperties;
+import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.gateway.filter.GatewayFilterChain;
+import org.springframework.cloud.gateway.filter.GlobalFilter;
+import org.springframework.core.Ordered;
+import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.stereotype.Component;
+import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Mono;
+import reactor.util.context.Context;
+
+import java.util.Optional;
+
+/**
+ * @author zengJiaJun
+ * @version 1.0
+ * @crateTime 2024年11月28日 21:38
+ */
+@Slf4j
+@Component
+public class AfterUserAuthFilter implements GlobalFilter, Ordered {
+
+    @Resource
+    private JwtProperties jwtProperties;
+
+    @Override
+    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+
+        return Mono.deferContextual(Mono::just)
+                .cast(Context.class)
+                .flatMap(context -> {
+                    Optional<String> user = context.getOrEmpty("user");
+                    if (user.isEmpty()) {
+                        return chain.filter(exchange);
+                    } else {
+                        ServerHttpRequest modifiedRequest = exchange.getRequest().mutate()
+                                .header(jwtProperties.getFastToken(), user.get())
+                                .build();
+                        // Create a new exchange with the modified request
+                        return chain.filter(exchange.mutate()
+                                .request(modifiedRequest)
+                                .build());
+                    }
+                });
+
+
 //        return ReactiveSecurityContextHolder.getContext()
 //                .map(securityContext -> {
 //                    if (securityContext == null || securityContext.getAuthentication() == null) {
@@ -54,10 +75,10 @@
 //                })
 //                .switchIfEmpty(Mono.just(exchange))
 //                .flatMap(chain::filter);
-//    }
-//
-//    @Override
-//    public int getOrder() {
-//        return 0;
-//    }
-//}
+    }
+
+    @Override
+    public int getOrder() {
+        return 0;
+    }
+}

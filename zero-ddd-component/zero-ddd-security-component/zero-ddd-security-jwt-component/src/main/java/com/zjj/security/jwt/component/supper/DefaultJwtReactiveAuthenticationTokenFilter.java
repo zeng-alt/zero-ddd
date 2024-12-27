@@ -63,8 +63,10 @@ public class DefaultJwtReactiveAuthenticationTokenFilter extends JwtReactiveAuth
                                 JwtDetail.builder().id(soleId).user(user).expire(expire).build());
 
                         UsernamePasswordAuthenticationToken authenticated = UsernamePasswordAuthenticationToken.authenticated(user, null, user.getAuthorities());
-                        return chain.filter(modifiedExchange).contextWrite(ReactiveSecurityContextHolder.withAuthentication(authenticated));
-                    });
+                        return chain.filter(modifiedExchange)
+                                .contextWrite(ReactiveSecurityContextHolder.withAuthentication(authenticated))
+                                .contextWrite(Context.of("user", soleId));
+                    }).switchIfEmpty(chain.filter(exchange));
 
 //            if (user == null) {
 //                throw new BadCredentialsException("用户登录时间过期，重新登录");

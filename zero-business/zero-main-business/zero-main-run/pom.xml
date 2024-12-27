@@ -42,6 +42,11 @@
 
         <dependency>
             <groupId>com.zjj</groupId>
+            <artifactId>zero-ddd-security-fast-auth-component</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.zjj</groupId>
             <artifactId>zero-ddd-tenant-datasource-component</artifactId>
         </dependency>
 
