@@ -38,6 +38,8 @@ public class DefaultJwtReactiveAuthenticationTokenFilter extends JwtReactiveAuth
     public @NonNull Mono<Void> filter(ServerWebExchange exchange, @NonNull WebFilterChain chain) {
         String token = resolveToken(exchange.getRequest());
         if (StringUtils.hasText(token)) {
+            // 去掉Bearer前缀
+            token = token.substring(7).trim();
             Map<String, Object> claims = jwtHelper.getClaimsFromToken(token);
             String soleId = (String) jwtHelper.getClaim(claims);
 

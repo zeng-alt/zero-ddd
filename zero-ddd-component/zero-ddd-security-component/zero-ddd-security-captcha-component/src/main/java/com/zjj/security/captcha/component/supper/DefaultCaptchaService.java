@@ -44,7 +44,7 @@ public class DefaultCaptchaService implements CaptchaService {
     }
 
     @Override
-    public void removateCaptcha(String captchaKey) {
+    public void removeCaptcha(String captchaKey) {
         redisStringRepository.remove(getCaptchaKey(captchaKey));
     }
 }

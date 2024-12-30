@@ -33,7 +33,7 @@ public class CaptchaAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean
 	public CaptchaSuccessHandler captchaSuccessHandler(CaptchaService captchaService) {
-		return (request, response, authentication) -> captchaService.removateCaptcha(authentication.getPrincipal().toString());
+		return (request, response, authentication) -> captchaService.removeCaptcha(authentication.getPrincipal().toString());
 	}
 
 

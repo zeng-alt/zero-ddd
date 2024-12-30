@@ -43,7 +43,7 @@ public class CaptchaAuthenticationFilter extends OncePerRequestFilter {
     private String captchaKey = CAPTCHA_KEY;
     private AuthenticationManager authenticationManager;
     private CaptchaSuccessHandler successHandler = (request, response, authentication) -> {};
-    private CaptchaFailureHandler failureHandler = (request, response, exception) -> AuthenticationHelper.renderString(response, HttpServletResponse.SC_BAD_REQUEST, "验证码错误");
+    private CaptchaFailureHandler failureHandler = (request, response, exception) -> AuthenticationHelper.renderString(response, 10003, "验证码错误");
     public CaptchaAuthenticationFilter() {}
 
     public CaptchaAuthenticationFilter(CaptchaProperties captchaProperties) {

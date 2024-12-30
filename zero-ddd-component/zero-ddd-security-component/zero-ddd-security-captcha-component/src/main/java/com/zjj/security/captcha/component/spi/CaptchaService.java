@@ -11,5 +11,5 @@ public interface CaptchaService {
 
     public void putCaptcha(String captchaKey, String captcha);
 
-    void removateCaptcha(String captchaKey);
+    void removeCaptcha(String captchaKey);
 }
