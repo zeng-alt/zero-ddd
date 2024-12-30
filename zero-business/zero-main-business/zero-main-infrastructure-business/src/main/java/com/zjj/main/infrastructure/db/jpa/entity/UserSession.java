@@ -2,10 +2,7 @@ package com.zjj.main.infrastructure.db.jpa.entity;
 
 import com.zjj.domain.component.BaseEntity;
 import com.zjj.domain.component.TenantAuditable;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.TenantId;
@@ -22,7 +19,7 @@ import org.springframework.lang.Nullable;
 @Table(name = "main_user_session")
 public class UserSession extends BaseEntity<Long> implements TenantAuditable<String> {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
 

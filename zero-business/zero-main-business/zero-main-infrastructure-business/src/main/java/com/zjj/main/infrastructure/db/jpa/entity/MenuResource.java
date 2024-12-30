@@ -24,7 +24,7 @@ import java.util.Set;
 public class MenuResource extends BaseEntity<Long> implements Parent<Long>, TenantAuditable<String> {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
 

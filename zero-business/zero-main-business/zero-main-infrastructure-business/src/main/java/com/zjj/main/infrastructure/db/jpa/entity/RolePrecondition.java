@@ -19,7 +19,7 @@ import org.springframework.lang.Nullable;
 @Table(name = "main_role_precondition")
 public class RolePrecondition extends BaseEntity<Long> implements TenantAuditable<String> {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne

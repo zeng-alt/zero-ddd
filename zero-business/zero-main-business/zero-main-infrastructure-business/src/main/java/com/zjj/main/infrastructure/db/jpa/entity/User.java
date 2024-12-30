@@ -27,7 +27,7 @@ import java.util.Set;
 public class User extends BaseEntity<Long> implements TenantAuditable<String> {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToMany(mappedBy = "user", orphanRemoval = true)

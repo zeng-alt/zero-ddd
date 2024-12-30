@@ -28,6 +28,7 @@ public class CompositeReactiveAuthorizationManager implements ReactiveAuthorizat
                 .flatMap(manager -> manager.check(authentication, context))
                 .filter(AuthorizationDecision::isGranted)
                 .hasElements()
-                .map(AuthorizationDecision::new);
+                .map(AuthorizationDecision::new)
+                .switchIfEmpty(Mono.just(new AuthorizationDecision(false)));
     }
 }

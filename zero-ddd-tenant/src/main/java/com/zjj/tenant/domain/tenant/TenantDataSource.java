@@ -1,10 +1,7 @@
 package com.zjj.tenant.domain.tenant;
 
 import com.zjj.domain.component.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,7 +17,7 @@ import lombok.Setter;
 public class TenantDataSource extends BaseEntity<Long> {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String db;

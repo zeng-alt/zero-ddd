@@ -37,7 +37,7 @@ public class Tenant extends BaseAggregate<Long> implements ITenant, Serializable
 
     @Id
     @Nullable
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**

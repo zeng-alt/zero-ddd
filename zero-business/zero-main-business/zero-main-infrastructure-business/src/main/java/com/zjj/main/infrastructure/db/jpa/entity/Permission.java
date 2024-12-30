@@ -22,7 +22,7 @@ import java.util.Set;
 @Table(name = "main_permission")
 public class Permission extends BaseEntity<Long> implements TenantAuditable<String> {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToMany(mappedBy = "permission", orphanRemoval = true)

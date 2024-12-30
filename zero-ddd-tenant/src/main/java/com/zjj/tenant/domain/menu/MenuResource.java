@@ -28,7 +28,7 @@ import java.util.Set;
 public class MenuResource extends BaseAggregate<Long> implements IMenuResource, Parent<Long> {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
 //    @TenantId

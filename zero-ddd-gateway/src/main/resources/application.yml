@@ -40,6 +40,7 @@ security:
     ignore-url:
       - /auth/login/username
       - /auth/logout
+      - /auth/v1/captcha
   jwt:
     enabled: true
 

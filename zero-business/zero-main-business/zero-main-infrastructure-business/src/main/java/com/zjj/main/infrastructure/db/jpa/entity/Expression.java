@@ -19,7 +19,7 @@ import org.springframework.lang.Nullable;
 @Table(name = "main_expression")
 public class Expression extends BaseEntity<Long> implements TenantAuditable<String> {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne

@@ -22,7 +22,7 @@ import java.util.Set;
 @Table(name = "main_user_role")
 public class UserRole extends BaseEntity<Long> implements TenantAuditable<String> {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
 

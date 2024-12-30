@@ -19,7 +19,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  * @crateTime 2024年11月14日 21:08
  */
 @EnableTenantJwtCache
-@EnableMultiTenancy(mode = TenantMode.DATABASE)
+@EnableMultiTenancy(mode = TenantMode.SCHEMA)
 @EnableJpaRepositories(basePackages = "com.zjj")
 @SpringBootApplication
 @EnableFeignClients(basePackages = "com.zjj")

@@ -1,4 +1,4 @@
-insert into menu_resource(id, menu_name, parent_id) values(1, '父菜单', null);
+-- insert into menu_resource(id, menu_name, parent_id) values(1, '父菜单', null);
 -- insert into menu_resource(id, menu_name, parent_id) values(2, '子菜单1', 1);
 -- insert into menu_resource(id, menu_name, parent_id) values(3, '子菜单2', 1);
 -- insert into menu_resource(id, menu_name, parent_id) values(4, '子菜单3', 1);

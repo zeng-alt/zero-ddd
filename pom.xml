@@ -435,6 +435,12 @@
 
             <dependency>
                 <groupId>com.zjj</groupId>
+                <artifactId>zero-ddd-security-captcha-component</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.zjj</groupId>
                 <artifactId>zero-ddd-security-abac-component</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>

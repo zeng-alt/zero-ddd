@@ -11,7 +11,7 @@ spring:
 #    driverClassName: org.h2.Driver
 #    type: com.zaxxer.hikari.HikariDataSource
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: jdbc:postgresql://localhost:5432/zero-ddd
     username: postgres
     password: postgres
     driverClassName: org.postgresql.Driver
@@ -88,7 +88,3 @@ logging:
       - debug
       - info
     org.springframework.web: error
-    org.hibernate.SQL: debug
-    org.hibernate.engine.QueryParameters: debug
-    org.hibernate.engine.query.HQLQueryPlan: debug
-    org.hibernate.type.descriptor.sql.BasicBinder: trace

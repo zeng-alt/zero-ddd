@@ -41,13 +41,13 @@ spring:
   h2:
     console:
       enabled: true
-#  liquibase:
-#    enabled: true
+  liquibase:
+    enabled: false
 #    # 如下配置是被spring.datasource赋值的，所以可以不配置
 #    #    url: jdbc:mysql://localhost:3306/test_db_liquibase?useSSL=false&autoReconnect=true&characterEncoding=utf8
 #    #    user: root
 #    #    password: bfXa4Pt2lUUScy8jakXf
-#    change-log: classpath:/db/changelog/db.changelog-master.yaml
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
 
   graphql:
     graphiql:

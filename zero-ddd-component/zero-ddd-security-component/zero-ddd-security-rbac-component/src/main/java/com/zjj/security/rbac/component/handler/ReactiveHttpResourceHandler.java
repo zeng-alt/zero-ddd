@@ -31,7 +31,8 @@ public class ReactiveHttpResourceHandler extends AbstractReactiveResourceHandler
                 .query(new HttpResource(), authentication)
                 .flatMapIterable(resources -> resources)
                 .flatMap(resource -> resource.compareTo(object.getExchange()).map(ServerWebExchangeMatcher.MatchResult::isMatch))
-                .any(Boolean::booleanValue);
+                .any(Boolean::booleanValue)
+                .switchIfEmpty(Mono.just(false));
     }
 
     public HttpResource create(ServerWebExchange exchange) {

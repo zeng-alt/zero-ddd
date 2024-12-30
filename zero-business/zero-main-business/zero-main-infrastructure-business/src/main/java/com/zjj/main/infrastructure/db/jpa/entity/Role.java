@@ -26,7 +26,7 @@ import java.util.Set;
 @Table(name = "main_role")
 public class Role extends BaseEntity<Long> implements TenantAuditable<String> {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToMany(mappedBy = "role", orphanRemoval = true)
