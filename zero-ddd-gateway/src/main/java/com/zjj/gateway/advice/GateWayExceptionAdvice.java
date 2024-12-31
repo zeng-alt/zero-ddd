@@ -2,6 +2,7 @@ package com.zjj.gateway.advice;
 
 import com.zjj.autoconfigure.component.core.Response;
 import com.zjj.autoconfigure.component.json.JsonHelper;
+import com.zjj.core.component.api.ExceptionResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.ErrorProperties;
 import org.springframework.boot.autoconfigure.web.WebProperties;
@@ -11,6 +12,8 @@ import org.springframework.boot.web.reactive.error.ErrorAttributes;
 import org.springframework.cloud.gateway.support.NotFoundException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.*;
 
@@ -33,12 +36,16 @@ public class GateWayExceptionAdvice extends DefaultErrorWebExceptionHandler {
 
     @Override
     protected Map<String, Object> getErrorAttributes(ServerRequest request, ErrorAttributeOptions options) {
-        Response<Void> fail = Response.fail();
         Throwable error = super.getError(request);
+        ExceptionResponse fail = ExceptionResponse.of(error.getMessage(), request.path(), request.method().name());
+
         if (error instanceof NotFoundException) {
             fail = fail.code(404);
+        } else if (error instanceof AccessDeniedException) {
+            fail = fail.code(HttpStatus.FORBIDDEN.value());
+        } else if (error instanceof AuthenticationException) {
+            fail = fail.code(HttpStatus.UNAUTHORIZED.value());
         }
-        fail = fail.message(request.uri() + ": " + error.getMessage());
         return jsonHelper.toMap(fail);
     }
 

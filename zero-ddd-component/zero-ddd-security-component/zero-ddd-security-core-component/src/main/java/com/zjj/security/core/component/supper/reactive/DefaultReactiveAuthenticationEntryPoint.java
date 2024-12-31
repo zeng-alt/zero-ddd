@@ -5,6 +5,7 @@ import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.server.DelegatingServerAuthenticationEntryPoint;
@@ -29,7 +30,9 @@ public class DefaultReactiveAuthenticationEntryPoint implements ServerAuthentica
 
     @Override
     public Mono<Void> commence(ServerWebExchange exchange, AuthenticationException ex) {
-        DataBuffer dataBuffer = AuthenticationHelper.renderString(exchange.getResponse(), HttpStatus.OK.value(), "验证失败: " + ex.getCause().getMessage());
+        ServerHttpResponse response = exchange.getResponse();
+        response.setStatusCode(HttpStatus.UNAUTHORIZED);
+        DataBuffer dataBuffer = AuthenticationHelper.renderString(exchange.getResponse(), exchange.getRequest(),  HttpStatus.UNAUTHORIZED.value(), "验证失败: " + ex.getCause().getMessage());
         return exchange.getResponse().writeWith(Mono.just(dataBuffer));
     }
 

@@ -4,6 +4,8 @@ import com.zjj.autoconfigure.component.security.AuthenticationHelper;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.server.ServerHttpRequest;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.server.authorization.ServerAccessDeniedHandler;
 import org.springframework.web.server.ServerWebExchange;
@@ -19,12 +21,10 @@ public class DefaultReactiveAccessDeniedHandler implements ServerAccessDeniedHan
 
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, AccessDeniedException denied) {
-        return Mono
-                .defer(() -> Mono.just(exchange.getResponse()))
-                .flatMap(response -> {
-                    DataBuffer buffer = AuthenticationHelper.renderString(response, HttpStatus.FORBIDDEN.value(), "访问拒绝: " + denied.getMessage());
-                    return response.writeWith(Mono.just(buffer)).doOnError(error -> DataBufferUtils.release(buffer));
-                });
+        ServerHttpResponse response = exchange.getResponse();
+        response.setStatusCode(HttpStatus.FORBIDDEN);
+        DataBuffer dataBuffer = AuthenticationHelper.renderString(exchange.getResponse(), exchange.getRequest(),  HttpStatus.FORBIDDEN.value(), "访问拒绝: " + denied.getMessage());
+        return exchange.getResponse().writeWith(Mono.just(dataBuffer));
     }
 
     public static ServerAccessDeniedHandler handler() {

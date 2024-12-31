@@ -7,11 +7,13 @@ import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.lang.NonNull;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
@@ -85,19 +87,19 @@ public final class AuthenticationHelper {
 		}
 	}
 
-	public static DataBuffer renderString(@NonNull ServerHttpResponse response, int status, String msg) {
-		response.setStatusCode(HttpStatus.OK);
-//		response.getHeaders();
+	public static DataBuffer renderString(@NonNull ServerHttpResponse response, ServerHttpRequest request, int status, String msg) {
 		String result = """
 					{
 					    "code":   "%d",
 					    "message":      "%s",
+					    "method": "%s",
 					    "time":     "%s",
+					    "url":	"%s",
 					    "success": "%s"
 					}
-					""".formatted(status, msg, LocalDateTime.now().format(DATE_TIME_FORMATTER), status == 200);
+					""".formatted(status, request.getMethod(), msg, LocalDateTime.now().format(DATE_TIME_FORMATTER), request.getURI(), status == 200);
 		DataBufferFactory dataBufferFactory = response.bufferFactory();
-		return dataBufferFactory.wrap(result.getBytes(Charset.defaultCharset()));
+		return dataBufferFactory.wrap(result.getBytes(StandardCharsets.UTF_8));
 	}
 
 }
