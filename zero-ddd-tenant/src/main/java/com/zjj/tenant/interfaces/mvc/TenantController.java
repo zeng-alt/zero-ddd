@@ -1,6 +1,8 @@
 package com.zjj.tenant.interfaces.mvc;
 
 import com.zjj.domain.component.AbstractTxController;
+import com.zjj.security.abac.component.annotation.AbacPreHttpAuthorize;
+import com.zjj.security.abac.component.annotation.MasterSuperAdminAuth;
 import com.zjj.tenant.domain.tenant.TenantHandler;
 import com.zjj.tenant.domain.tenant.cmd.DisableTenantCmd;
 import com.zjj.tenant.domain.tenant.cmd.EnableTenantCmd;
@@ -26,6 +28,10 @@ public class TenantController extends AbstractTxController {
     private final TenantHandler tenantHandler;
     private final StockInTenantFormTransform stockInTenantFormTransform;
 
+//    @AbacPreAuthorize("delete:menu:resource")
+//    @AdminAuth
+    @MasterSuperAdminAuth
+    @AbacPreHttpAuthorize("delete:menu:resource")
     @Operation(summary = "创建租户")
     @PostMapping
     public String createTenant(@RequestBody StockInTenantForm stockInTenantForm, ServletRequest servletRequest) {

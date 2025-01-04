@@ -34,7 +34,7 @@ public class RedisRbacCacheManage implements RbacCacheManage, Ordered {
         if (CollectionUtils.isEmpty(authority)) return new ArrayList<>();
         List<String> roleKeys = authority.stream().map(s -> ROLE_KEY + tenant + ":" + s).toList();
         List<Set<String>> permissionKeys = redisStringRepository.getAll(roleKeys);
-        Set<String> keys = permissionKeys.stream().flatMap(Set::stream).map(s -> key + tenant + ":" + s).collect(Collectors.toSet());
+        Set<String> keys = permissionKeys.stream().filter(Objects::nonNull).flatMap(Set::stream).map(s -> key + tenant + ":" + s).collect(Collectors.toSet());
         List<Resource> result = redisStringRepository.getAll(keys);
         return result.stream().filter(Objects::nonNull).toList();
     }

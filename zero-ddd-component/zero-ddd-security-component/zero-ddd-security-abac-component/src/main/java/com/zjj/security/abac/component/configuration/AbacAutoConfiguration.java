@@ -6,6 +6,7 @@ import com.zjj.autoconfigure.component.security.abac.EnvironmentAttribute;
 import com.zjj.autoconfigure.component.security.abac.ObjectAttribute;
 import com.zjj.autoconfigure.component.security.abac.PolicyDefinition;
 import com.zjj.security.abac.component.advice.AbacExceptionAdvice;
+import com.zjj.security.abac.component.annotation.AbacAdminAuth;
 import com.zjj.security.abac.component.annotation.AbacPostAuthorize;
 import com.zjj.security.abac.component.annotation.AbacPreAuthorize;
 import com.zjj.security.abac.component.supper.*;
@@ -119,6 +120,21 @@ public class AbacAutoConfiguration {
         return new DefaultEnvironmentAttribute();
     }
 
+
+
+    @Bean
+    public AbacAdminAuthManager adminAuthManager(AbacPreAuthorizeExpressionAttributeRegistry abacPreAuthorizeExpressionAttributeRegistry) {
+        return new AbacAdminAuthManager(abacPreAuthorizeExpressionAttributeRegistry);
+    }
+
+    @Bean
+    public Advisor adminAuthMethodInterceptor(AbacAdminAuthManager adminAuthManager) {
+        ComposablePointcut pointcut = new ComposablePointcut(classOrMethod(AbacAdminAuth.class));
+        AuthorizationManagerBeforeMethodInterceptor interceptor = new AuthorizationManagerBeforeMethodInterceptor(
+                pointcut, adminAuthManager);
+        interceptor.setOrder(AuthorizationInterceptorsOrder.FIRST.getOrder());
+        return interceptor;
+    }
 
 //    @RouterOperations({
 //            @RouterOperation(

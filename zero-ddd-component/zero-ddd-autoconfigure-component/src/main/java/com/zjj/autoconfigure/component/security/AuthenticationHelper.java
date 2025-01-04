@@ -69,7 +69,7 @@ public final class AuthenticationHelper {
 
 	public static void renderString(@NonNull HttpServletResponse response, int status, String msg) {
 		try {
-			response.setStatus(HttpStatus.OK.value());
+			response.setStatus(status);
 			response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 			response.setCharacterEncoding("utf-8");
 			String result = """
@@ -97,7 +97,7 @@ public final class AuthenticationHelper {
 					    "url":	"%s",
 					    "success": "%s"
 					}
-					""".formatted(status, request.getMethod(), msg, LocalDateTime.now().format(DATE_TIME_FORMATTER), request.getURI(), status == 200);
+					""".formatted(status, msg,  request.getMethod(), LocalDateTime.now().format(DATE_TIME_FORMATTER), request.getURI(), status == 200);
 		DataBufferFactory dataBufferFactory = response.bufferFactory();
 		return dataBufferFactory.wrap(result.getBytes(StandardCharsets.UTF_8));
 	}

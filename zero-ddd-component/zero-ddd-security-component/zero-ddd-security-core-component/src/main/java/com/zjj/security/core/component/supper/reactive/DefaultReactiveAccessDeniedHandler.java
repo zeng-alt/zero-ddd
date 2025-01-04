@@ -4,6 +4,7 @@ import com.zjj.autoconfigure.component.security.AuthenticationHelper;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.security.access.AccessDeniedException;
@@ -24,6 +25,7 @@ public class DefaultReactiveAccessDeniedHandler implements ServerAccessDeniedHan
         ServerHttpResponse response = exchange.getResponse();
         response.setStatusCode(HttpStatus.FORBIDDEN);
         DataBuffer dataBuffer = AuthenticationHelper.renderString(exchange.getResponse(), exchange.getRequest(),  HttpStatus.FORBIDDEN.value(), "访问拒绝: " + denied.getMessage());
+        response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
         return exchange.getResponse().writeWith(Mono.just(dataBuffer));
     }
 

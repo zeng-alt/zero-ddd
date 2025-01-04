@@ -25,6 +25,6 @@ public class ReactiveAdminAuthorizationManager implements ReactiveAuthorizationM
     }
 
     private boolean isAdmin(Authentication authentication) {
-        return "admin".equals(authentication.getName());
+        return "superAdmin".equals(authentication.getName());
     }
 }

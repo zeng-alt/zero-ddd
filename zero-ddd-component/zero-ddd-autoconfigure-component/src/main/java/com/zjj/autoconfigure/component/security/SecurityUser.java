@@ -50,6 +50,8 @@ public class SecurityUser implements UserDetails, TenantDetail, CredentialsConta
     @Getter
     private final Set<String> roles;
 
+    private String currentRole;
+
     private boolean accountNonExpired;
 
     private boolean accountNonLocked;
@@ -63,7 +65,11 @@ public class SecurityUser implements UserDetails, TenantDetail, CredentialsConta
      * Calls the more complex constructor with all boolean arguments set to {@code true}.
      */
     public SecurityUser(String username, String password, Set<String> roles) {
-        this(username, password, null, true, true, true, true, roles, null);
+        this(username, password, null, true, true, true, true, roles, null, null);
+        Iterator<String> iterator = roles.iterator();
+        if (iterator.hasNext()) {
+            setCurrentRole(iterator.next());
+        }
     }
 
     /**
@@ -84,9 +90,10 @@ public class SecurityUser implements UserDetails, TenantDetail, CredentialsConta
      * a parameter or as an element in the <code>GrantedAuthority</code> collection
      */
     @JsonCreator
-    public SecurityUser(@JsonProperty("username") String username, @JsonProperty("password") String password, @JsonProperty("tenant") String tenant, @JsonProperty("enabled") boolean enabled, @JsonProperty("accountNonExpired") boolean accountNonExpired,
+    public SecurityUser(@JsonProperty("username") String username, @JsonProperty("password") String password,
+                        @JsonProperty("tenant") String tenant, @JsonProperty("enabled") boolean enabled, @JsonProperty("accountNonExpired") boolean accountNonExpired,
                         @JsonProperty("credentialsNonExpired") boolean credentialsNonExpired, @JsonProperty("accountNonLocked") boolean accountNonLocked,
-                        @JsonProperty("roles") Set<String> roles, @JsonProperty("expire") LocalDateTime expire) {
+                        @JsonProperty("roles") Set<String> roles, @JsonProperty("currentRole") String currentRole, @JsonProperty("expire") LocalDateTime expire) {
         Assert.isTrue(username != null && !"".equals(username),
                 "Cannot pass null or empty values to constructor");
         this.username = username;
@@ -97,6 +104,7 @@ public class SecurityUser implements UserDetails, TenantDetail, CredentialsConta
         this.credentialsNonExpired = credentialsNonExpired;
         this.accountNonLocked = accountNonLocked;
         this.roles = roles;
+        this.currentRole = currentRole;
         this.authorities = Collections.unmodifiableSet(sortAuthorities(roles.stream().map(SimpleGrantedAuthority::new).toList()));
         this.expire = expire;
     }
@@ -320,6 +328,7 @@ public class SecurityUser implements UserDetails, TenantDetail, CredentialsConta
         private String password;
 
         private List<String> roles = new ArrayList<>();
+        private String currentRole;
 
         private boolean accountExpired;
 
@@ -487,10 +496,15 @@ public class SecurityUser implements UserDetails, TenantDetail, CredentialsConta
             return this;
         }
 
+        public SecurityUser.UserBuilder currentRole(String currentRole) {
+            this.currentRole = currentRole;
+            return this;
+        }
+
         public SecurityUser build() {
             String encodedPassword = this.passwordEncoder.apply(this.password);
             return new SecurityUser(this.username, encodedPassword, tenant, !this.disabled, !this.accountExpired,
-                    !this.credentialsExpired, !this.accountLocked, new HashSet<>(this.roles), expire);
+                    !this.credentialsExpired, !this.accountLocked, new HashSet<>(this.roles), currentRole, expire);
         }
 
     }

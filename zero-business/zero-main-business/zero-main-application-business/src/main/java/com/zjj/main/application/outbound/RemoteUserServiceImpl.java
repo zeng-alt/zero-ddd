@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jmolecules.architecture.layered.ApplicationLayer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 /**
  * @author zengJiaJun
@@ -33,6 +34,7 @@ public class RemoteUserServiceImpl implements RemoteUserApi {
                      SecurityUser
                             .withUsername(user.getUsername())
                             .roles(user.getRoleIds())
+                            .currentRole(CollectionUtils.isEmpty(user.getRoleIds()) ? null : user.getRoleIds().iterator().next())
                             .password(user.getPassword())
                             .tenant(user.getTenantBy())
                             .disabled(!"0".equals(user.status()))

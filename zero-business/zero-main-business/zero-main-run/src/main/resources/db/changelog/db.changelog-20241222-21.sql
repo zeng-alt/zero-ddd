@@ -324,9 +324,33 @@ insert into
     main_user
 (deleted, password, status, tenant_by, username)
 values
+    (0, '{bcrypt}$2a$10$8xbX8CngT8AO8froAt8Ky.VDSzhxSFpIZlp4aO.XKnX3g3tGbj/QO', '0', '${tenantName}', 'superAdmin');
+insert into
+    main_user
+(deleted, password, status, tenant_by, username)
+values
     (0, '{bcrypt}$2a$10$8xbX8CngT8AO8froAt8Ky.VDSzhxSFpIZlp4aO.XKnX3g3tGbj/QO', '0', '${tenantName}', 'admin');
 insert into
     main_user
 (deleted, password, status, tenant_by, username)
 values
     (0, '{bcrypt}$2a$10$mbJbeoem4jwjn2ADRQHqQeyy39SHnn37.TNsWknBA8upQzdhWUPQK', '0', '${tenantName}', 'root');
+
+
+insert into
+    main_role
+(deleted, role_sort, status, role_key, role_name, tenant_by)
+values
+    (0, 0, '0', 'admin', '管理员', '${tenantName}');
+
+insert into
+    main_user_role
+(role_id, user_id, tenant_by)
+values
+    (1, 2, '${tenantName}');
+
+insert into
+    main_user_role
+(role_id, user_id, tenant_by)
+values
+    (1, 3, '${tenantName}');

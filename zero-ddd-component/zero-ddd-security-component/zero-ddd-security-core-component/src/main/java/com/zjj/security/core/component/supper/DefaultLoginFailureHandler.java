@@ -17,7 +17,7 @@ public class DefaultLoginFailureHandler implements AuthenticationFailureHandler 
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException exception) {
-		AuthenticationHelper.renderString(response, HttpStatus.OK.value(),
+		AuthenticationHelper.renderString(response, HttpStatus.INTERNAL_SERVER_ERROR.value(),
 				"登录失败: " + AuthenticationHelper.getErrorMsg(request).orElse(exception.getMessage()));
 	}
 

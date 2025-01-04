@@ -5,15 +5,16 @@ import com.zjj.security.abac.component.configuration.AdminPolicyType;
 import java.lang.annotation.*;
 
 /**
- * 角色为admin的用户才能访问
+ * 根据policy来使用不同的权限校验
  * @author zengJiaJun
  * @version 1.0
- * @crateTime 2024年12月31日 21:04
+ * @crateTime 2025年01月01日 21:59
  */
 @Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-@AbacAdminAuth(policy = AdminPolicyType.ADMIN)
-public @interface AdminAuth {
+public @interface AbacAdminAuth {
+
+    AdminPolicyType policy();
 }
