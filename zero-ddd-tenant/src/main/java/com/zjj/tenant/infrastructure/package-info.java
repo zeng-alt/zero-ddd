@@ -1,6 +1,6 @@
 
-@InfrastructureLayer
-@ApplicationModule(allowedDependencies = {"domain", "domain::tenant", "domain::menu", "application", "interfaces"})
+@InfrastructureRing
+//@ApplicationModule(allowedDependencies = {"domain.tenant", "domain.menu"})
 package com.zjj.tenant.infrastructure;
 
 import org.jmolecules.architecture.layered.InfrastructureLayer;

@@ -1,7 +1,7 @@
+
 @InterfaceLayer
-@ApplicationModule(allowedDependencies = {"domain", "domain::menu", "domain::tenant", "domain::tenant::cmd", "application::service", "application::form"})
+//@ApplicationModule(allowedDependencies = {"domain.tenant", "domain.menu", "application.form", "application.service"})
 package com.zjj.tenant.interfaces;
 
 import org.jmolecules.architecture.layered.InterfaceLayer;
-import org.jmolecules.ddd.annotation.Module;
 import org.springframework.modulith.ApplicationModule;

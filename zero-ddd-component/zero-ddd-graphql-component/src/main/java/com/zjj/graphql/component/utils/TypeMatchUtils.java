@@ -10,6 +10,7 @@ import org.hibernate.metamodel.model.domain.internal.SetAttributeImpl;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -98,6 +99,7 @@ public class TypeMatchUtils {
                 Case($(LocalDate.class), "Date"),
                 Case($(LocalTime.class), "LocalTime"),
                 Case($(LocalDateTime.class), "LocalDateTime"),
+                Case($(Instant.class), "Long"),
                 Case($(isIn(Date.class, Timestamp.class)), () -> {
                     System.out.println();
                     throw new IllegalArgumentException("不支持类型" + clasz.getTypeName() + ", 请 "+ attribute +" 修改成jdk8的时间类型");

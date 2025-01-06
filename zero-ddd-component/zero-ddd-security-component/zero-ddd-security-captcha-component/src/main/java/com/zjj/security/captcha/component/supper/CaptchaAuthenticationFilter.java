@@ -44,10 +44,12 @@ public class CaptchaAuthenticationFilter extends OncePerRequestFilter {
     private AuthenticationManager authenticationManager;
     private CaptchaSuccessHandler successHandler = (request, response, authentication) -> {};
     private CaptchaFailureHandler failureHandler = (request, response, exception) -> AuthenticationHelper.renderString(response, 10003, "验证码错误");
+    private CaptchaProperties captchaProperties;
     public CaptchaAuthenticationFilter() {}
 
     public CaptchaAuthenticationFilter(CaptchaProperties captchaProperties) {
         this(captchaProperties.getFilterUrl(), captchaProperties.getCaptchaParameter(), captchaProperties.getCaptchaKeyParameter());
+        this.captchaProperties = captchaProperties;
     }
 
     public CaptchaAuthenticationFilter(AuthenticationManager authenticationManager) {
@@ -68,6 +70,10 @@ public class CaptchaAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
+        if (Boolean.FALSE.equals(captchaProperties.getEnable())) {
+            chain.doFilter(request, response);
+            return;
+        }
         if (!requiresAuthentication(request, response)) {
             chain.doFilter(request, response);
             return;

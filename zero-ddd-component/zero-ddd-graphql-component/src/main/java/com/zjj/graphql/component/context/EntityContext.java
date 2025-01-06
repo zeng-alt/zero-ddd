@@ -128,6 +128,9 @@ public class EntityContext {
 
     protected void initEntity() {
         for (EntityType<?> entity : entityManager.getMetamodel().getEntities()) {
+            if (!entity.getJavaType().getName().startsWith("com.zjj")) {
+                continue;
+            }
             if (this.excludeTypeProviderList.stream().anyMatch(e -> e.exclude().contains(entity.getName()))) {
                 continue;
             }

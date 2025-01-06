@@ -38,6 +38,8 @@ public class DefaultJwtAuthenticationTokenFilter extends JwtAuthenticationTokenF
 			throws ServletException, IOException {
 		String token = request.getHeader(jwtHelper.tokenHeader());
 		if (StringUtils.hasText(token)) {
+			// 去掉Bearer前缀
+			token = token.substring(7).trim();
 			Map<String, Object> claims = jwtHelper.getClaimsFromToken(token);
 			String soleId = (String) jwtHelper.getClaim(claims);
 

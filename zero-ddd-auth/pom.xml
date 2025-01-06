@@ -121,10 +121,10 @@
             <artifactId>zero-ddd-security-core-component</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.zjj</groupId>
-            <artifactId>zero-ddd-security-fast-auth-component</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.zjj</groupId>-->
+<!--            <artifactId>zero-ddd-security-fast-auth-component</artifactId>-->
+<!--        </dependency>-->
 
 <!--        <dependency>-->
 <!--            <groupId>com.zjj</groupId>-->
@@ -138,8 +138,13 @@
 
         <dependency>
             <groupId>com.zjj</groupId>
-            <artifactId>zero-ddd-exchange-main</artifactId>
+            <artifactId>zero-ddd-domain-component</artifactId>
         </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>com.zjj</groupId>-->
+<!--            <artifactId>zero-ddd-exchange-main</artifactId>-->
+<!--        </dependency>-->
 
 <!--        <dependency>-->
 <!--            <groupId>com.zjj</groupId>-->
