@@ -2,6 +2,7 @@ package com.zjj.tenant.domain.tenant.cmd;
 
 import com.zjj.tenant.domain.tenant.TenantMenu;
 import lombok.Builder;
+import org.jmolecules.ddd.types.Association;
 
 import java.util.List;
 
@@ -13,8 +14,7 @@ import java.util.List;
 @Builder
 public record StockInTenantMenuCmd(
         Long tenantId,
-        List<TenantMenu> menuResources
-
+        List<Association<TenantMenu, TenantMenu.TenantMenuId>> menuResources
 ) {
 
 }

@@ -107,11 +107,11 @@
         </dependency>
 
 
-        <dependency>
-            <groupId>org.jmolecules.integrations</groupId>
-            <artifactId>jmolecules-bytebuddy-nodep</artifactId>
-            <scope>provided</scope>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.jmolecules.integrations</groupId>-->
+<!--            <artifactId>jmolecules-bytebuddy-nodep</artifactId>-->
+<!--            <scope>provided</scope>-->
+<!--        </dependency>-->
 
 
 
@@ -270,21 +270,21 @@
     <build>
         <finalName>${project.artifactId}</finalName>
         <plugins>
-            <plugin>
-                <groupId>net.bytebuddy</groupId>
-                <artifactId>byte-buddy-maven-plugin</artifactId>
-                <version>${bytebuddy.version}</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>transform-extended</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <classPathDiscovery>true</classPathDiscovery>
-                </configuration>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>net.bytebuddy</groupId>-->
+<!--                <artifactId>byte-buddy-maven-plugin</artifactId>-->
+<!--                <version>${bytebuddy.version}</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <goals>-->
+<!--                            <goal>transform-extended</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--                <configuration>-->
+<!--                    <classPathDiscovery>true</classPathDiscovery>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>

@@ -3,22 +3,24 @@ package com.zjj.tenant.domain.tenant;
 
 import com.zjj.autoconfigure.component.core.BaseException;
 import com.zjj.bean.componenet.BeanHelper;
-import com.zjj.domain.component.BaseAggregate;
 import com.zjj.tenant.domain.tenant.cmd.StockInTenantDataSourceCmd;
 import com.zjj.tenant.domain.tenant.cmd.StockInTenantMenuCmd;
 import com.zjj.tenant.domain.tenant.event.*;
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.jmolecules.ddd.types.AggregateRoot;
+import org.jmolecules.ddd.types.Association;
 import org.springframework.beans.BeanUtils;
-import org.springframework.lang.Nullable;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static com.zjj.bean.componenet.ApplicationContextHelper.publishEvent;
 
 
 /**
@@ -28,17 +30,12 @@ import java.util.stream.Collectors;
  */
 @Getter
 @Setter
-@Entity
-@Table(name = "tenant")
-public class Tenant extends BaseAggregate<Long> implements ITenant, Serializable {
+public class Tenant implements AggregateRoot<Tenant, TenantId>, TenantAggregate, Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
-    @Id
-    @Nullable
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private TenantId id;
 
     /**
      * 租户编号
@@ -100,15 +97,14 @@ public class Tenant extends BaseAggregate<Long> implements ITenant, Serializable
      */
     private String status = "1";
 
-    @OneToOne(orphanRemoval = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = "tenant_data_source_id")
+
     private TenantDataSource tenantDataSource;
 
-    @OneToMany(mappedBy = "tenant", orphanRemoval = true, cascade = CascadeType.ALL)
-    private Set<TenantMenu> tenantMenus = new LinkedHashSet<>();
+
+    private Set<Association<TenantMenu, TenantMenu.TenantMenuId>> tenantMenus = new LinkedHashSet<>();
 
     @Override
-    public ITenant save(StockInTenantDataSourceCmd sourceCmd) {
+    public TenantAggregate save(StockInTenantDataSourceCmd sourceCmd) {
         if (this.tenantDataSource != null) {
             BeanUtils.copyProperties(sourceCmd, this.tenantDataSource);
         } else {
@@ -119,13 +115,10 @@ public class Tenant extends BaseAggregate<Long> implements ITenant, Serializable
     }
 
     @Override
-    public ITenant save(StockInTenantMenuCmd sourceCmd) {
-        Set<TenantMenu> set = sourceCmd.menuResources().stream().map(t -> {
-            t.setTenant(this);
-            return t;
-        }).collect(Collectors.toSet());
+    public TenantAggregate save(StockInTenantMenuCmd sourceCmd) {
+        Set<Association<TenantMenu, TenantMenu.TenantMenuId>> set = new HashSet<>(sourceCmd.menuResources());
 
-        for (TenantMenu tenantMenu : tenantMenus) {
+        for (Association<TenantMenu, TenantMenu.TenantMenuId> tenantMenu : tenantMenus) {
             if (set.contains(tenantMenu)) {
                 set.remove(tenantMenu);
                 set.add(tenantMenu);
@@ -135,50 +128,52 @@ public class Tenant extends BaseAggregate<Long> implements ITenant, Serializable
         this.tenantMenus.clear();
         this.tenantMenus.addAll(set);
 
-        this.publishEvent(
+        publishEvent(
                 UpdateTenantMenuEvent
                         .apply(
                                 this,
                                 this.tenantKey,
-                                this.tenantMenus.stream().map(m -> m.getMenuResource().getId()).collect(Collectors.toSet())
+                                this.tenantMenus.stream().map(m -> m.getId().getId()).collect(Collectors.toSet())
                         )
         );
         return this;
     }
 
     @Override
-    public ITenant disable() {
+    public TenantAggregate disable() {
         this.status = "1";
-        this.publishEvent(DisableTenantEvent.apply(this, this.tenantKey));
+        publishEvent(DisableTenantEvent.apply(this, this.tenantKey));
         return this;
     }
 
     @Override
-    public ITenant enable() {
+    public TenantAggregate enable() {
         this.status = "0";
         if (this.tenantDataSource == null) {
             throw new BaseException("数据源为空, 无法启用租户");
         }
-        this.publishEvent(EnableTenantEvent.apply(this, this.id, this.tenantDataSource));
+        publishEvent(EnableTenantEvent.apply(this, this.id.getId(), this.tenantDataSource));
         return this;
     }
 
     @Override
-    public ITenant disableMenu(Long menuId) {
-        for (TenantMenu tenantMenu : this.tenantMenus) {
-            if (tenantMenu.getMenuResource() != null && menuId.equals(tenantMenu.getMenuResource().getId())) {
-                this.publishEvent(DisableTenantMenuEvent.apply(this, tenantMenu.getId(), tenantKey));
+    public TenantAggregate disableMenu(Long menuId) {
+        for (Association<TenantMenu, TenantMenu.TenantMenuId> tenantMenu : this.tenantMenus) {
+            if (tenantMenu.getId() != null && tenantMenu.pointsTo(TenantMenu.TenantMenuId.of(menuId))) {
+                publishEvent(DisableTenantMenuEvent.apply(this, tenantMenu.getId().getId(), tenantKey));
                 return this;
             }
         }
+
+
         throw new IllegalArgumentException(menuId + "没有相关的菜单资源");
     }
 
     @Override
-    public ITenant enableMenu(Long menuId) {
-        for (TenantMenu tenantMenu : this.tenantMenus) {
-            if (tenantMenu.getMenuResource() != null && menuId.equals(tenantMenu.getMenuResource().getId())) {
-                publishEvent(DisableTenantMenuEvent.apply(this, tenantMenu.getId(), tenantKey));
+    public TenantAggregate enableMenu(Long menuId) {
+        for (Association<TenantMenu, TenantMenu.TenantMenuId> tenantMenu : this.tenantMenus) {
+            if (tenantMenu.getId() != null && menuId.equals(tenantMenu.getId().getId())) {
+                publishEvent(DisableTenantMenuEvent.apply(this, tenantMenu.getId().getId(), tenantKey));
                 return this;
             }
         }

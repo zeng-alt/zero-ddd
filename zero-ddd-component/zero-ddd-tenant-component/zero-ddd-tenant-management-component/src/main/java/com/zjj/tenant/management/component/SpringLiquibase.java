@@ -26,6 +26,8 @@ import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternUtils;
 
 import javax.sql.DataSource;
 import java.io.*;
@@ -67,7 +69,6 @@ public class SpringLiquibase implements InitializingBean, BeanNameAware, Resourc
     protected String beanName;
 
     @Getter
-    @Setter
     protected ResourceLoader resourceLoader;
 
     protected DataSource dataSource;
@@ -433,4 +434,9 @@ public class SpringLiquibase implements InitializingBean, BeanNameAware, Resourc
         return getClass().getName() + "(" + this.getResourceLoader().toString() + ")";
     }
 
+
+    @Override
+    public void setResourceLoader(ResourceLoader resourceLoader) {
+        this.resourceLoader = resourceLoader;
+    }
 }

@@ -17,13 +17,12 @@ class JMoleculesRulesUnitTest {
 
     @ArchTest ArchRule layer = JMoleculesArchitectureRules.ensureLayering();
 
-    // alternatively
+    @ArchTest ArchRule hexagonal = JMoleculesArchitectureRules.ensureHexagonal();
+
 
     @ArchTest // (3)
     void detectsViolations(JavaClasses classes) {
-
-      EvaluationResult result = onion.evaluate(classes);
-
-      assertThat(result.hasViolation()).isFalse();
+        EvaluationResult result = JMoleculesDddRules.all().evaluate(classes);
+        assertThat(result.hasViolation()).isFalse();
     }
 }

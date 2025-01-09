@@ -11,9 +11,9 @@ import java.util.Collection;
  */
 public interface TenantMenuRepository {
 
-    public Option<TenantMenu> findById(Long id);
+    public Option<TenantMenuAggregate> findById(Long id);
 
-    public Void saveAll(Collection<TenantMenu> tenantMenuList);
+    public Void saveAll(Collection<TenantMenuAggregate> tenantMenuList);
 
-    TenantMenu save(TenantMenu tenantMenu);
+    TenantMenuAggregate save(TenantMenuAggregate tenantMenu);
 }

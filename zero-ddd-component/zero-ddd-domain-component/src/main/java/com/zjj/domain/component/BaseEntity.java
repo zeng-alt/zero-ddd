@@ -26,7 +26,6 @@ import java.util.Optional;
  * @version 1.0
  * @crateTime 2024年10月30日 20:05
  */
-@Setter
 @MappedSuperclass
 //@FilterDef(name = "tenantFilter", parameters = {@ParamDef(name = "tenantId", type = Long.class)})
 //@Filter(name = "tenantFilter", condition = "tenant_id = :tenantId")
@@ -51,17 +50,6 @@ public abstract class BaseEntity<PK extends Serializable> implements Auditable<S
     @LastModifiedDate
     @Nullable
     private LocalDateTime lastModifiedDate;
-//    @TenantId
-//    @Nullable
-//    private String tenantBy;
-//
-//    public String getTenantBy() {
-//        return this.tenantBy;
-//    }
-//
-//    public void setTenantBy(String tenantBy) {
-//        this.tenantBy = tenantBy;
-//    }
 
     /**
      * Returns the user who created this entity.
@@ -103,6 +91,26 @@ public abstract class BaseEntity<PK extends Serializable> implements Auditable<S
     @Override
     public Optional<LocalDateTime> getLastModifiedDate() {
         return this.lastModifiedDate == null ? Optional.empty() : Optional.of(this.lastModifiedDate);
+    }
+
+    @Override
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    @Override
+    public void setCreatedDate(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    @Override
+    public void setLastModifiedBy(String lastModifiedBy) {
+        this.lastModifiedBy = lastModifiedBy;
+    }
+
+    @Override
+    public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
     }
 
     @Override

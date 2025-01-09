@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 public class TenantFactory {
     private final TenantRepository tenantRepository;
 
-    public ITenant createTenant(StockInTenantCmd stockInTenantCmd) {
+    public TenantAggregate createTenant(StockInTenantCmd stockInTenantCmd) {
 
         return (Tenant) tenantRepository
                 .findByTenantKey(stockInTenantCmd::tenantKey)

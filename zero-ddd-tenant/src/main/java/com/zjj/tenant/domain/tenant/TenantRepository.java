@@ -12,13 +12,13 @@ import java.util.function.Supplier;
  */
 public interface TenantRepository {
 
-    Option<ITenant> findByTenantKey(String tenantKey);
+    Option<TenantAggregate> findByTenantKey(String tenantKey);
 
-    default Option<ITenant> findByTenantKey(@NonNull Supplier<String> tenantKey) {
+    default Option<TenantAggregate> findByTenantKey(@NonNull Supplier<String> tenantKey) {
         return findByTenantKey(tenantKey.get());
     }
 
-    Option<ITenant> findById(Long id);
+    Option<TenantAggregate> findById(Long id);
 
-    ITenant save(ITenant tenant);
+    TenantAggregate save(TenantAggregate tenant);
 }

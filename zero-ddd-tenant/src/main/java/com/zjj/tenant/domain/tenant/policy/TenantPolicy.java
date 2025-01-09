@@ -3,6 +3,7 @@ package com.zjj.tenant.domain.tenant.policy;
 import com.zjj.autoconfigure.component.redis.RedisStringRepository;
 import com.zjj.autoconfigure.component.tenant.Tenant;
 import com.zjj.cache.component.repository.impl.RedisTopicRepositoryImpl;
+import com.zjj.tenant.domain.tenant.TenantMenuAggregate;
 import com.zjj.tenant.domain.tenant.event.CreateTenantDataSourceEvent;
 import com.zjj.tenant.domain.tenant.event.DisableTenantMenuEvent;
 import com.zjj.tenant.domain.tenant.event.EnableTenantMenuEvent;
@@ -47,7 +48,7 @@ public class TenantPolicy {
         System.out.println("event");
         tenantMenuRepository
                 .findById(event.getMenuId())
-                .map(TenantMenu::enable)
+                .map(TenantMenuAggregate::enable)
                 .map(tenantMenuRepository::save)
                 .getOrElseThrow(() -> new IllegalArgumentException(event.getMenuId() + "租户菜单不存在"));
         repository.put("event:" + event.getId(), event);
@@ -58,7 +59,7 @@ public class TenantPolicy {
         System.out.println("event");
         tenantMenuRepository
                 .findById(event.getMenuId())
-                .map(TenantMenu::disable)
+                .map(TenantMenuAggregate::disable)
                 .map(tenantMenuRepository::save)
                 .getOrElseThrow(() -> new IllegalArgumentException(event.getMenuId() + "租户菜单不存在"));
         repository.put("event:" + event.getId(), event);

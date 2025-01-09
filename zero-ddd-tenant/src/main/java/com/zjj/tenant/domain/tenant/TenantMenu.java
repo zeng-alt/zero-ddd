@@ -1,12 +1,18 @@
 package com.zjj.tenant.domain.tenant;
 
-import com.zjj.domain.component.BaseEntity;
 import com.zjj.tenant.domain.menu.MenuResource;
-import jakarta.persistence.*;
+import com.zjj.tenant.domain.menu.MenuResourceAggregate;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.Value;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.jmolecules.ddd.types.AggregateRoot;
+import org.jmolecules.ddd.types.Association;
+import org.jmolecules.ddd.types.Identifier;
+
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * @author zengJiaJun
@@ -15,29 +21,31 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  */
 @Getter
 @Setter
-@Entity
-@Table(name = "tenant_menu")
-public class TenantMenu extends BaseEntity<Long> {
+public class TenantMenu implements TenantMenuAggregate, Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    private TenantMenuId id;
 
     private String status = "0";
 
-    @ManyToOne
-    @JoinColumn(name = "tenant_id")
-    private Tenant tenant;
 
-    @ManyToOne
-    @JoinColumn(name = "menu_resource_id")
-    private MenuResource menuResource;
+    private Association<Tenant, TenantId> tenant;
+
+
+    private Association<MenuResource, MenuResource.MenuResourceId> menuResource;
 
     public TenantMenu() {}
 
 
-    public TenantMenu(MenuResource menuResource) {
+    public TenantMenu(Association<MenuResource, MenuResource.MenuResourceId> menuResource) {
         this.menuResource = menuResource;
+    }
+
+    @Value(staticConstructor = "of")
+    public static class TenantMenuId implements Identifier {
+        Long id;
     }
 
 

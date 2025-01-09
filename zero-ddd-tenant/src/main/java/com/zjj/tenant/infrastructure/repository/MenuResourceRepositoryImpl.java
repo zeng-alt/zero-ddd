@@ -1,6 +1,8 @@
 package com.zjj.tenant.infrastructure.repository;
 
-import com.zjj.tenant.domain.menu.IMenuResource;
+import com.zjj.domain.component.DomainBeanHelper;
+import com.zjj.tenant.domain.menu.MenuResourceAggregate;
+import com.zjj.tenant.infrastructure.db.entity.MenuResourceEntity;
 import com.zjj.tenant.infrastructure.db.jpa.MenuResourceDao;
 import com.zjj.tenant.domain.menu.MenuResource;
 import com.zjj.tenant.domain.menu.MenuResourceRepository;
@@ -19,30 +21,29 @@ import java.util.Collection;
 public record MenuResourceRepositoryImpl(MenuResourceDao menuResourceDao) implements MenuResourceRepository {
 
 
-    public List<MenuResource> findAllById(Collection<Long> ids) {
+    public List<MenuResourceAggregate> findAllById(Collection<Long> ids) {
 //        return List.ofAll(menuResourceDao.findAllById(ids));
-        return menuResourceDao.findAllByIdIn(ids);
+        return menuResourceDao.findAllByIdIn(ids).map(m -> DomainBeanHelper.copyToDomain(m, MenuResource.class, MenuResource.MenuResourceId.class));
     }
 
-    public Option<IMenuResource> findById(Long id) {
-        return menuResourceDao.findById(id).map(m->m);
+    public Option<MenuResourceAggregate> findById(Long id) {
+        return menuResourceDao.findById(id).map(m -> DomainBeanHelper.copyToDomain(m, MenuResource.class, MenuResource.MenuResourceId.class));
     }
 
     @Override
-    public IMenuResource save(IMenuResource iMenuResource) {
-
+    public MenuResourceAggregate save(MenuResourceAggregate iMenuResource) {
         if (iMenuResource instanceof MenuResource menuResource) {
-            return menuResourceDao.save(menuResource);
+            MenuResourceEntity save = menuResourceDao.save(DomainBeanHelper.copyToDomain(menuResource, MenuResourceEntity.class));
+            return DomainBeanHelper.copyToDomain(save, MenuResource.class, MenuResource.MenuResourceId.class);
         }
-
         throw new IllegalArgumentException("iMenuResource is not instance of MenuResource");
     }
 
     @Override
-    public void remove(IMenuResource iMenuResource) {
+    public void remove(MenuResourceAggregate iMenuResource) {
 
         if (iMenuResource instanceof MenuResource menuResource) {
-            menuResourceDao.delete(menuResource);
+            menuResourceDao.delete(DomainBeanHelper.copyToDomain(menuResource, MenuResourceEntity.class));
 //            menuResourceDao.deleteById(menuResource.getId());
             return;
         }

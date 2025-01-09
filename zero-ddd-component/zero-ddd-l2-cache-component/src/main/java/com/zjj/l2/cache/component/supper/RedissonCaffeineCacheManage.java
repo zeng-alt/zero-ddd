@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 /**
  * @author zengJiaJun
@@ -37,10 +38,10 @@ public class RedissonCaffeineCacheManage implements L2RedissonCaffeineCacheManag
     private final L2CacheProperties l2CacheProperties;
     private final RedisStringRepository redisStringRepository;
     private final EventSubPubProvider<EvictEvent> eventSubPubProvider;
-    @Setter
-    private Function<String, String> cacheNamePrefix = name -> name;
 
-    private boolean dynamic;
+    private UnaryOperator<String> cacheNamePrefix = name -> name;
+
+    private final boolean dynamic;
     private Object serverId;
 
     public RedissonCaffeineCacheManage(L2CacheProperties l2CacheProperties,
@@ -64,6 +65,11 @@ public class RedissonCaffeineCacheManage implements L2RedissonCaffeineCacheManag
                 this.cacheMap.put(cacheNamePrefix.apply(name), createCache(cacheNamePrefix.apply(name)));
             }
         }
+    }
+
+    @Override
+    public void setCacheNamePrefix(UnaryOperator<String> cacheNamePrefix) {
+        this.cacheNamePrefix = cacheNamePrefix;
     }
 
     public void setCacheSpecification(String cacheSpecification) {

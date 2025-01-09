@@ -7,7 +7,6 @@ import com.zjj.tenant.domain.menu.cmd.RemoveMenuCmd;
 import com.zjj.tenant.domain.menu.cmd.StockInMenuResourceCmd;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author zengJiaJun
@@ -30,7 +29,7 @@ public class MenuResourceHandler {
     public void handler(DisableMenuCmd disableMenuCmd) {
         menuResourceRepository
                 .findById(disableMenuCmd.id())
-                .map(IMenuResource::disable)
+                .map(MenuResourceAggregate::disable)
                 .map(menuResourceRepository::save)
                 .getOrElseThrow(() -> new BaseI18nException(MenuResponseEnum.MENU_NOT_EXIST, disableMenuCmd.id()));
     }
@@ -38,7 +37,7 @@ public class MenuResourceHandler {
     public void handler(EnableMenuCmd enableMenuCmd) {
         menuResourceRepository
                 .findById(enableMenuCmd.id())
-                .map(IMenuResource::enable)
+                .map(MenuResourceAggregate::enable)
                 .map(menuResourceRepository::save)
                 .getOrElseThrow(() -> new BaseI18nException(MenuResponseEnum.MENU_NOT_EXIST, enableMenuCmd.id()));
     }
@@ -46,7 +45,7 @@ public class MenuResourceHandler {
     public void handler(RemoveMenuCmd removeMenuCmd) {
         menuResourceRepository
                 .findById(removeMenuCmd.id())
-                .map(IMenuResource::remove)
+                .map(MenuResourceAggregate::remove)
                 .peek(menuResourceRepository::remove)
                 .getOrElseThrow(() -> new BaseI18nException(MenuResponseEnum.MENU_NOT_EXIST, removeMenuCmd.id()));
     }

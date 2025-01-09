@@ -19,7 +19,7 @@ public class MenuResourceFactory {
 
     private final MenuResourceRepository menuResourceRepository;
 
-    public Consumer<Consumer<IMenuResource>> create(StockInMenuResourceCmd cmd) {
+    public Consumer<Consumer<MenuResourceAggregate>> create(StockInMenuResourceCmd cmd) {
         if (cmd.parentId() == null) {
             return iMenuResourceConsumer -> iMenuResourceConsumer.accept(BeanHelper.copyToObject(cmd, MenuResource.class));
         }
@@ -27,7 +27,7 @@ public class MenuResourceFactory {
         return menuResourceRepository
                 .findById(cmd.parentId())
                 .map(BeanHelper.copyToObject(cmd, MenuResource.class)::setParentMenu)
-                .map(m -> (Consumer<Consumer<IMenuResource>>) iMenuResourceConsumer -> iMenuResourceConsumer.accept(m))
+                .map(m -> (Consumer<Consumer<MenuResourceAggregate>>) iMenuResourceConsumer -> iMenuResourceConsumer.accept(m))
                 .getOrElseThrow(() -> new IllegalArgumentException(cmd.parentId() + " 菜单不存在"));
     }
 

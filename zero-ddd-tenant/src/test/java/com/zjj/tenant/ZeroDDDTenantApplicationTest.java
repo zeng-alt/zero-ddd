@@ -10,7 +10,7 @@ import org.springframework.modulith.test.ApplicationModuleTest;
  * @crateTime 2025年01月02日 21:46
  */
 @ApplicationModuleTest
-public class ZeroDDDTenantApplicationTest {
+class ZeroDDDTenantApplicationTest {
 
     @Test
     void contextLoads() {

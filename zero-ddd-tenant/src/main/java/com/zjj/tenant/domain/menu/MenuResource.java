@@ -2,39 +2,33 @@ package com.zjj.tenant.domain.menu;
 
 import com.zjj.autoconfigure.component.core.BaseException;
 import com.zjj.core.component.api.Parent;
-import com.zjj.domain.component.BaseAggregate;
 import com.zjj.tenant.domain.menu.event.DisableMenuEvent;
 import com.zjj.tenant.domain.menu.event.EnableMenuEvent;
 import com.zjj.tenant.domain.menu.event.RemoveMenuEvent;
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.TenantId;
-import org.springframework.lang.Nullable;
+import lombok.Value;
+import org.jmolecules.ddd.types.AggregateRoot;
+import org.jmolecules.ddd.types.Association;
+import org.jmolecules.ddd.types.Identifier;
 import org.springframework.util.CollectionUtils;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
+
+import static com.zjj.bean.componenet.ApplicationContextHelper.publishEvent;
 
 /**
  * @author zengJiaJun
  * @version 1.0
  * @crateTime 2024年10月30日 15:50
  */
-@Entity
-@Table(name = "menu_resource")
 @Getter
 @Setter
-public class MenuResource extends BaseAggregate<Long> implements IMenuResource, Parent<Long> {
+public class MenuResource implements MenuResourceAggregate, Parent<Long> {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-//    @TenantId
-//    @Nullable
-//    private String tenantBy;
-
+    private MenuResourceId id;
 
     /**
      * 菜单名称
@@ -95,55 +89,56 @@ public class MenuResource extends BaseAggregate<Long> implements IMenuResource, 
     /**
      * 父菜单
      */
-    @ManyToOne(optional = true, cascade = {CascadeType.REFRESH, CascadeType.REMOVE}, fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_id")
-    private MenuResource parentMenu;
+    private Association<MenuResource, MenuResourceId> parentMenu;
 
-    /**
-     * 子菜单
-     */
-    @OneToMany(mappedBy = "parentMenu")
-    private Set<MenuResource> chileMenus = new LinkedHashSet<>();
+
+    private Set<Association<MenuResource, MenuResourceId>> chileMenus = new LinkedHashSet<>();
+
+    @Value(staticConstructor = "of")
+    public static class MenuResourceId implements Identifier {
+        Long id;
+    }
 
     @Override
-    public IMenuResource disable() {
+    public MenuResourceAggregate disable() {
         this.status = "1";
-        publishEvent(DisableMenuEvent.apply(this, this.id));
+        publishEvent(DisableMenuEvent.apply(this, this.id.getId()));
         return this;
     }
 
     @Override
-    public IMenuResource enable() {
+    public MenuResourceAggregate enable() {
         this.status = "0";
-        publishEvent(EnableMenuEvent.apply(this, this.id));
+        publishEvent(EnableMenuEvent.apply(this, this.id.getId()));
         return this;
     }
 
     @Override
-    public IMenuResource setParentMenu(IMenuResource parentMenu) {
+    public MenuResourceAggregate setParentMenu(MenuResourceAggregate parentMenu) {
         if (parentMenu instanceof MenuResource menuResource) {
-            this.parentMenu = menuResource;
+            this.parentMenu = Association.forAggregate(menuResource);
+//            parentMenu
             return this;
         }
         throw new IllegalArgumentException("parentMenu 不是 MenuResource 类型");
     }
 
     @Override
-    public IMenuResource remove() {
+    public MenuResourceAggregate remove() {
         if (!CollectionUtils.isEmpty(chileMenus)) {
             throw new BaseException("MenuResource.remove");
         }
-        publishEvent(RemoveMenuEvent.apply(this, this.id));
+        publishEvent(RemoveMenuEvent.apply(this, this.id.getId()));
         return this;
     }
 
     @Override
     public Long parent() {
-        return parentMenu == null ? null : parentMenu.getId();
+        return parentMenu == null ? null : parentMenu.getId().getId();
     }
 
     @Override
     public Long current() {
-        return id;
+        return id.getId();
     }
 }

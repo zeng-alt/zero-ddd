@@ -4,6 +4,8 @@ server:
 spring:
   modulith:
     detection-strategy: explicitly-annotated
+    events:
+      republish-outstanding-events-on-restart: true
   messages:
     basename: messages
   # swagger-ui custom path

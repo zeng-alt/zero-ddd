@@ -1,17 +1,20 @@
 package com.zjj.graphql.component.context;
 
 import com.zjj.autoconfigure.component.graphql.ExcludeTypeProvider;
+import com.zjj.graphql.component.utils.RepositoryUtils;
 import com.zjj.graphql.component.utils.TypeMatchUtils;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.metamodel.*;
 import lombok.Getter;
 import org.hibernate.annotations.Comment;
 import org.hibernate.metamodel.AttributeClassification;
+import org.hibernate.metamodel.model.domain.internal.AbstractAttribute;
 import org.hibernate.metamodel.model.domain.internal.AbstractPluralAttribute;
 import org.hibernate.metamodel.model.domain.internal.SetAttributeImpl;
 import org.hibernate.metamodel.model.domain.internal.SingularAttributeImpl;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.data.repository.Repository;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -43,6 +46,10 @@ public class EntityContext {
 
     public Collection<EntityGraphqlType> getEntity() {
         return entityTypes.values().stream().filter(entity -> !entity.isEmbedded()).toList();
+    }
+
+    public EntityType<?> entity(Repository<?, ?> repository) {
+        return entityManager.getMetamodel().entity(RepositoryUtils.getEntityType(repository));
     }
 
     public Collection<EntityGraphqlType> getEmbeddable() {
@@ -98,9 +105,11 @@ public class EntityContext {
 
             if (attribute.isAssociation()) {
                 if (attribute.isCollection()) {
-                    attributeBuilder.type(((AbstractPluralAttribute) attribute).getBindableJavaType().getSimpleName());
+                    attributeBuilder.type(((AbstractAttribute) attribute).getValueGraphType().toString());
+//                    attributeBuilder.type(((AbstractPluralAttribute) attribute).getBindableJavaType().getSimpleName());
+//                    attributeBuilder.type(((AbstractPluralAttribute) attribute).getBindableJavaType().getSimpleName());
                 } else {
-                    attributeBuilder.type(attribute.getJavaType().getSimpleName());
+                    attributeBuilder.type(((SingularAttributeImpl) attribute).getType().toString());
                 }
             }
 
@@ -108,9 +117,11 @@ public class EntityContext {
                 if (singularAttribute.getAttributeClassification().equals(AttributeClassification.EMBEDDED)) {
                     attributeBuilder.embedded(true);
                     if (attribute.isCollection()) {
-                        attributeBuilder.type(((SetAttributeImpl) attribute).getBindableJavaType().getSimpleName());
+//                        attributeBuilder.type(((SetAttributeImpl) attribute).getBindableJavaType().getSimpleName());
+                        attributeBuilder.type(((SingularAttributeImpl) attribute).getType().toString());
                     } else {
-                        attributeBuilder.type(attribute.getJavaType().getSimpleName());
+//                        attributeBuilder.type(attribute.getJavaType().getSimpleName());
+                        attributeBuilder.type(((SingularAttributeImpl) attribute).getType().toString());
                     }
                 } else {
                     attributeBuilder.embedded(false);

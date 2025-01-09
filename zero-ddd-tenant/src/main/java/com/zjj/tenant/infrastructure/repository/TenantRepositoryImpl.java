@@ -1,7 +1,11 @@
 package com.zjj.tenant.infrastructure.repository;
 
+import com.zjj.bean.componenet.BeanHelper;
+import com.zjj.domain.component.DomainBeanHelper;
+import com.zjj.tenant.domain.tenant.TenantId;
+import com.zjj.tenant.infrastructure.db.entity.TenantEntity;
 import com.zjj.tenant.infrastructure.db.jpa.TenantDao;
-import com.zjj.tenant.domain.tenant.ITenant;
+import com.zjj.tenant.domain.tenant.TenantAggregate;
 import com.zjj.tenant.domain.tenant.Tenant;
 import com.zjj.tenant.domain.tenant.TenantRepository;
 import io.vavr.control.Option;
@@ -20,20 +24,22 @@ public class TenantRepositoryImpl implements TenantRepository {
     private final TenantDao tenantDao;
 
     @Override
-    public Option<ITenant> findByTenantKey(String tenantKey) {
-        return tenantDao.findByTenantKey(tenantKey).map(t->t);
+    public Option<TenantAggregate> findByTenantKey(String tenantKey) {
+        return tenantDao.findByTenantKey(tenantKey).map(t -> DomainBeanHelper.copyToDomain(t, Tenant.class, TenantId.class));
     }
 
     @Override
-    public Option<ITenant> findById(Long id) {
-        return tenantDao.findById(id).map(t -> t);
+    public Option<TenantAggregate> findById(Long id) {
+        return tenantDao.findById(id).map(t -> DomainBeanHelper.copyToDomain(t, Tenant.class, TenantId.class));
     }
 
 
     @Override
-    public Tenant save(ITenant itenant) {
-        if (itenant instanceof Tenant tenant) {
-            return tenantDao.save(tenant);
+    public TenantAggregate save(TenantAggregate tenantAggregate) {
+        if (tenantAggregate instanceof Tenant tenant) {
+            TenantEntity tenantEntity = DomainBeanHelper.copyToDomain(tenant, TenantEntity.class);
+            tenantDao.save(tenantEntity);
+            return BeanHelper.copyToObject(tenantEntity, Tenant.class);
         }
         throw new IllegalArgumentException("不能转换为 Tenant 类型");
     }

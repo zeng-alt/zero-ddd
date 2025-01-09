@@ -12,11 +12,11 @@ import java.util.Collection;
  */
 public interface MenuResourceRepository {
 
-    List<MenuResource> findAllById(Collection<Long> ids);
+    List<MenuResourceAggregate> findAllById(Collection<Long> ids);
 
-    Option<IMenuResource> findById(Long id);
+    Option<MenuResourceAggregate> findById(Long id);
 
-    IMenuResource save(IMenuResource iMenuResource);
+    MenuResourceAggregate save(MenuResourceAggregate iMenuResource);
 
-    void remove(IMenuResource iMenuResource);
+    void remove(MenuResourceAggregate iMenuResource);
 }

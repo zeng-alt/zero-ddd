@@ -19,7 +19,7 @@ public class TenantHandler {
     private final TenantDataSourceRepository tenantDataSourceRepository;
 
     public void handler(StockInTenantCmd stockInTenantCmd) {
-        ITenant tenant = this.tenantFactory.createTenant(stockInTenantCmd);
+        TenantAggregate tenant = this.tenantFactory.createTenant(stockInTenantCmd);
         this.tenantRepository.save(tenant);
     }
 
@@ -63,7 +63,7 @@ public class TenantHandler {
     public void handler(DisableTenantCmd cmd) {
         this.tenantRepository
                 .findById(cmd.id())
-                .map(ITenant::disable)
+                .map(TenantAggregate::disable)
                 .map(tenantRepository::save)
                 .getOrElseThrow(() -> new IllegalArgumentException(cmd.id() + " 租户不存在, 无法禁用"));
     }
@@ -71,7 +71,7 @@ public class TenantHandler {
     public void handler(EnableTenantCmd cmd) {
         this.tenantRepository
                 .findById(cmd.id())
-                .map(ITenant::enable)
+                .map(TenantAggregate::enable)
                 .map(tenantRepository::save)
                 .getOrElseThrow(() -> new IllegalArgumentException(cmd.id() + " 租户不存在, 无法开启"));
     }
