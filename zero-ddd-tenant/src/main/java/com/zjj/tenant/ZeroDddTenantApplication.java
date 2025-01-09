@@ -28,14 +28,14 @@ import java.util.Map;
  * @crateTime 2024年10月29日 21:34
  */
 //@EnableAbac
-@EnableTenantJwtCache
+//@EnableTenantJwtCache
 @EnableFeignClients(basePackages = "com.zjj")
 @EnableJpaRepositories(basePackages = "com.zjj")
 @SpringBootApplication
-@EnableGenEntityType
-@EnableGenEntityInput
-@EnableGenEntityQuery
-@EnableGenEntityFuzzyQuery
+//@EnableGenEntityType
+//@EnableGenEntityInput
+//@EnableGenEntityQuery
+//@EnableGenEntityFuzzyQuery
 public class ZeroDddTenantApplication implements CommandLineRunner {
 
 
