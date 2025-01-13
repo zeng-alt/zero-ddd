@@ -15,7 +15,6 @@ public class EnableTenantMenuEvent extends TenantEvent {
 
 
     protected EnableTenantMenuEvent(Object o, Long menuId, String tenantKey) {
-        super(o);
         this.menuId = menuId;
         this.tenantKey = tenantKey;
     }

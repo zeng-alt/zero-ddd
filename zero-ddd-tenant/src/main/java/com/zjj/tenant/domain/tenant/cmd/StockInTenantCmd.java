@@ -17,7 +17,7 @@ public record StockInTenantCmd(
         String domain,
         String intro,
         String remark,
-        LocalDateTime expi,
+        LocalDateTime expireTime,
         Long accountCount
 ) {
 }

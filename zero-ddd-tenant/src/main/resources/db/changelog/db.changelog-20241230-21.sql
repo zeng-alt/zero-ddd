@@ -1,6 +1,18 @@
 --liquibase formatted sql
 
-drop table if exists jpa_event_publication cascade;
+alter table if exists menu_resource
+drop constraint if exists FK44d3jb1s67mqmav66rufxlndj;
+
+alter table if exists tenant
+drop constraint if exists FKmc75yf7tmpqiaxb101oosvae2;
+
+alter table if exists tenant_menu
+drop constraint if exists FKcm61ntrwkqkqm5tg87jd3wd8s;
+
+alter table if exists tenant_menu
+drop constraint if exists FKqw859jd783qmie5omnsitgtp2;
+
+drop table if exists EVENT_PUBLICATION cascade;
     
 drop table if exists menu_resource cascade;
     
@@ -10,7 +22,7 @@ drop table if exists tenant_data_source cascade;
     
 drop table if exists tenant_menu cascade;
 
-create table jpa_event_publication (
+create table EVENT_PUBLICATION (
                                        completion_date timestamp(6) with time zone,
                                        publication_date timestamp(6) with time zone,
                                        id uuid not null,

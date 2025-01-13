@@ -34,7 +34,7 @@ public class LiquibaseConfiguration {
     private final ResourceLoader resourceLoader;
 
     @Bean
-//    @ConditionalOnProperty(name = "spring.liquibase.enabled", havingValue = "true")
+    @ConditionalOnProperty(name = "spring.liquibase.enabled", havingValue = "true")
     public SpringLiquibase masterLiquibase(@LiquibaseDataSource ObjectProvider<DataSource> liquibaseDataSource) {
         SpringLiquibase liquibase = new SpringLiquibase();
         liquibase.setResourceLoader(resourceLoader);

@@ -19,8 +19,10 @@ public class TenantHandler {
     private final TenantDataSourceRepository tenantDataSourceRepository;
 
     public void handler(StockInTenantCmd stockInTenantCmd) {
-        TenantAggregate tenant = this.tenantFactory.createTenant(stockInTenantCmd);
-        this.tenantRepository.save(tenant);
+//        TenantAggregate tenant = this.tenantFactory.createTenant(stockInTenantCmd);
+//        this.tenantRepository.save(tenant);
+
+        this.tenantFactory.createTenant(stockInTenantCmd);
     }
 
 

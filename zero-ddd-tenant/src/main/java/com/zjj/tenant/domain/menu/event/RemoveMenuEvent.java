@@ -14,7 +14,6 @@ public class RemoveMenuEvent extends TenantEvent {
     private final Long menuId;
 
     protected RemoveMenuEvent(Object o, Long menuId) {
-        super(o);
         this.menuId = menuId;
     }
 

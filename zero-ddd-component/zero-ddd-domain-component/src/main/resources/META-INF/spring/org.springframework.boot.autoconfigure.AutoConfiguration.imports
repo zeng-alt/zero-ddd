@@ -1,2 +1,3 @@
 com.zjj.domain.component.config.DomainAutoConfiguration
 com.zjj.domain.component.ExcludeEventPublicationProvider
+com.zjj.domain.component.event.EventSourceAutoConfiguration

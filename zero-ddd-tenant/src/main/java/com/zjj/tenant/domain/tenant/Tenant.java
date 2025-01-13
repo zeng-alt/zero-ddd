@@ -110,7 +110,7 @@ public class Tenant implements AggregateRoot<Tenant, TenantId>, TenantAggregate,
         } else {
             tenantDataSource = BeanHelper.copyToObject(sourceCmd, TenantDataSource.class);
         }
-        publishEvent(new CreateTenantDataSourceEvent(this, this.tenantKey, sourceCmd));
+        publishEvent(new CreateTenantDataSourceEvent(this.tenantKey, sourceCmd));
         return this;
     }
 

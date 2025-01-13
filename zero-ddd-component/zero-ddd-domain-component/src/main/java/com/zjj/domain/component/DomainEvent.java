@@ -13,16 +13,16 @@ import java.util.UUID;
  * @crateTime 2024年06月27日 19:55
  */
 @Getter
-public abstract class DomainEvent extends ApplicationEvent implements Serializable {
+public abstract class DomainEvent extends ApplicationEvent implements org.jmolecules.event.types.DomainEvent, Serializable {
 
 	@Serial
 	private static final long serialVersionUID = 1L;
 
-	protected final String id;
+	protected final String eventId;
 
 	protected DomainEvent(Object o) {
 		super(o);
-		this.id = UUID.randomUUID().toString();
+		this.eventId = UUID.randomUUID().toString();
 	}
 
 }

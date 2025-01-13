@@ -15,7 +15,6 @@ public class DisableTenantMenuEvent extends TenantEvent {
 
 
     protected DisableTenantMenuEvent(Object o, Long menuId, String tenantKey) {
-        super(o);
         this.menuId = menuId;
         this.tenantKey = tenantKey;
     }

@@ -18,6 +18,8 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.HttpMethod;
+import org.springframework.modulith.events.config.EnablePersistentDomainEvents;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.util.Map;
 
@@ -36,6 +38,8 @@ import java.util.Map;
 @EnableGenEntityInput
 @EnableGenEntityQuery
 @EnableGenEntityFuzzyQuery
+@EnableScheduling
+//@EnablePersistentDomainEvents
 public class ZeroDddTenantApplication implements CommandLineRunner {
 
 

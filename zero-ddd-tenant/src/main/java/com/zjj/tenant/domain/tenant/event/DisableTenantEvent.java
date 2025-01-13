@@ -13,7 +13,6 @@ public class DisableTenantEvent  extends TenantEvent {
     private final String tenantKey;
 
     public DisableTenantEvent(Object o, String tenantKey) {
-        super(o);
         this.tenantKey = tenantKey;
     }
 

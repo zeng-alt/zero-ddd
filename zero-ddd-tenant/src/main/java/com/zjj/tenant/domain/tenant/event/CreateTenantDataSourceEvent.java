@@ -26,8 +26,7 @@ public class CreateTenantDataSourceEvent extends TenantEvent {
     private String schema;
     private Boolean enabled;
 
-    public CreateTenantDataSourceEvent(Object o, String tenantKey, StockInTenantDataSourceCmd cmd) {
-        super(o);
+    public CreateTenantDataSourceEvent(String tenantKey, StockInTenantDataSourceCmd cmd) {
         this.tenantKey = tenantKey;
         BeanUtils.copyProperties(cmd, this);
     }

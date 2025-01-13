@@ -13,7 +13,6 @@ public class UpdateTenantMenuEvent extends TenantEvent {
     private final Set<Long> menuIds;
 
     protected UpdateTenantMenuEvent(Object o, String tenantKey, Set<Long> menuIds) {
-        super(o);
         this.tenantKey = tenantKey;
         this.menuIds = menuIds;
     }

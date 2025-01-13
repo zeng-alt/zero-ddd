@@ -1,6 +1,8 @@
 package com.zjj.tenant.domain.tenant.event;
 
 import com.zjj.tenant.domain.tenant.TenantDataSource;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.BeanUtils;
 
 /**
@@ -8,6 +10,8 @@ import org.springframework.beans.BeanUtils;
  * @version 1.0
  * @crateTime 2024年11月07日 21:27
  */
+@Getter
+@Setter
 public class EnableTenantEvent extends TenantEvent {
 
     private String tenantKey;
@@ -25,7 +29,6 @@ public class EnableTenantEvent extends TenantEvent {
     private Boolean enable;
 
     private EnableTenantEvent(Object o, Long tenantId) {
-        super(o);
         this.tenantId = tenantId;
     }
 
