@@ -110,7 +110,6 @@
             <version>1.5.4</version>
         </dependency>
 
-
         <dependency>
             <groupId>com.zjj</groupId>
             <artifactId>zero-ddd-autoconfigure-component</artifactId>

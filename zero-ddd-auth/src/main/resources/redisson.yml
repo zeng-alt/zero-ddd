@@ -7,8 +7,7 @@ singleServerConfig:
   retryInterval: 1500
   subscriptionsPerConnection: 5
   clientName: ${spring.application.name}
-  address: "redis://127.0.0.1:16379"
-  password: M5s-Rr9yt@0V
+  address: "redis://127.0.0.1:6379"
   subscriptionConnectionMinimumIdleSize: 1
   subscriptionConnectionPoolSize: 50
   connectionMinimumIdleSize: 24

@@ -32,7 +32,6 @@ public class Role extends BaseEntity<Long> implements TenantAuditable<String> {
     @OneToMany(mappedBy = "role", orphanRemoval = true)
     private Set<UserRole> userRoles = new LinkedHashSet<>();
 
-
     /**
      * 角色名称
      */
