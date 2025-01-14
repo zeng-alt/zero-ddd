@@ -7,3 +7,11 @@ databaseChangeLog:
             splitStatements: true
             path: classpath:/db/changelog/db.changelog-20241230-21.sql
             stripComments: true
+  - changeSet:
+      id: 20250113-21
+      author: zengJiaJun
+      changes:
+        - sqlFile:
+            splitStatements: true
+            path: classpath:/db/changelog/db.changelog-20250113-21.sql
+            stripComments: true

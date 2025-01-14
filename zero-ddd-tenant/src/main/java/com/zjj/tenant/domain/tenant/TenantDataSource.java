@@ -15,13 +15,11 @@ import org.jmolecules.ddd.types.Identifier;
 @Setter
 public class TenantDataSource implements Entity<Tenant, TenantDataSource.TenantDataSourceId> {
 
-
     private TenantDataSourceId id;
-
     private String db;
     private String password;
-
     private String schema;
+    private String mode;
     private Boolean enabled;
 
 

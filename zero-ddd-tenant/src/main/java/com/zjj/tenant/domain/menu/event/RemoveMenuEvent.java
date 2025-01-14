@@ -1,6 +1,6 @@
 package com.zjj.tenant.domain.menu.event;
 
-import com.zjj.tenant.domain.tenant.event.TenantEvent;
+import com.zjj.domain.component.event.TenantEvent;
 import lombok.Getter;
 
 /**
@@ -20,4 +20,5 @@ public class RemoveMenuEvent extends TenantEvent {
     public static RemoveMenuEvent apply(Object o, Long menuId) {
         return new RemoveMenuEvent(o, menuId);
     }
+
 }

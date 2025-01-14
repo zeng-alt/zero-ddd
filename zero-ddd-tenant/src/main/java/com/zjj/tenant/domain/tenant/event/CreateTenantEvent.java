@@ -1,5 +1,6 @@
 package com.zjj.tenant.domain.tenant.event;
 
+import com.zjj.domain.component.event.TenantEvent;
 import com.zjj.tenant.domain.tenant.Tenant;
 import com.zjj.tenant.domain.tenant.cmd.StockInTenantCmd;
 import com.zjj.tenant.domain.tenant.cmd.StockInTenantDataSourceCmd;

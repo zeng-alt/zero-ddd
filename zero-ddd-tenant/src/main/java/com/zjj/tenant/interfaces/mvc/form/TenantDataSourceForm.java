@@ -24,5 +24,6 @@ public class TenantDataSourceForm implements Serializable {
     private String db;
     private String password;
     private String schema;
+    private String mode;
     private Boolean enabled;
 }

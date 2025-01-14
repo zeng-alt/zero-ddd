@@ -6,6 +6,8 @@ spring:
     detection-strategy: explicitly-annotated
     events:
       republish-outstanding-events-on-restart: true
+      externalization:
+        enabled: true
   messages:
     basename: messages
   # swagger-ui custom path

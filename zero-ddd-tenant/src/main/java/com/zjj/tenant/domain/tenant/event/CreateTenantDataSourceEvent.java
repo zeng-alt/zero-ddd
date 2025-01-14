@@ -1,13 +1,10 @@
 package com.zjj.tenant.domain.tenant.event;
 
-import com.zjj.autoconfigure.component.redis.RedisStringRepository;
-import com.zjj.cache.component.repository.impl.RedisReliableTopicRepositoryImpl;
-import com.zjj.domain.component.DomainEvent;
 import com.zjj.tenant.domain.tenant.cmd.StockInTenantDataSourceCmd;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.BeanUtils;
+import org.springframework.modulith.events.Externalized;
 
 /**
  * @author zengJiaJun
@@ -16,15 +13,19 @@ import org.springframework.beans.BeanUtils;
  */
 @Getter
 @Setter
-public class CreateTenantDataSourceEvent extends TenantEvent {
+@Externalized
+public class CreateTenantDataSourceEvent {
 
     private String tenantKey;
     private Long tenantId;
     private String db;
     private String password;
-
     private String schema;
+    private String mode;
     private Boolean enabled;
+
+    public CreateTenantDataSourceEvent() {
+    }
 
     public CreateTenantDataSourceEvent(String tenantKey, StockInTenantDataSourceCmd cmd) {
         this.tenantKey = tenantKey;

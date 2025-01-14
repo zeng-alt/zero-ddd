@@ -30,7 +30,7 @@ public class User extends BaseEntity<Long> implements TenantAuditable<String> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    @OneToMany(mappedBy = "user", orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<UserRole> userRoles = new LinkedHashSet<>();
 
     /**

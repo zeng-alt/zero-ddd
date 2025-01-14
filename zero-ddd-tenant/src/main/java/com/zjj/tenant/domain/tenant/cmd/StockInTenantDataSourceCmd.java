@@ -10,6 +10,7 @@ public record StockInTenantDataSourceCmd(
         String db,
         String password,
         String schema,
+        String mode,
         Boolean enabled
 ) {
 }

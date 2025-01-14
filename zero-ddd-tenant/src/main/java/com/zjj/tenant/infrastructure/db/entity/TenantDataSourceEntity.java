@@ -26,4 +26,5 @@ public class TenantDataSourceEntity extends BaseEntity<Long> implements Serializ
 
     private String schema;
     private Boolean enabled;
+    private String mode;
 }

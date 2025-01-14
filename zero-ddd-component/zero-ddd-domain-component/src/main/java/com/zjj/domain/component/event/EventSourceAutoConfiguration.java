@@ -2,11 +2,13 @@ package com.zjj.domain.component.event;
 
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.modulith.events.EventExternalizationConfiguration;
 import org.springframework.modulith.events.IncompleteEventPublications;
+import org.springframework.modulith.events.config.EventExternalizationAutoConfiguration;
 import org.springframework.modulith.events.config.EventPublicationAutoConfiguration;
 
 /**
@@ -14,6 +16,7 @@ import org.springframework.modulith.events.config.EventPublicationAutoConfigurat
  * @version 1.0
  * @crateTime 2025年01月13日 21:07
  */
+@ConditionalOnClass(EventPublicationAutoConfiguration.class)
 @AutoConfiguration(after = EventPublicationAutoConfiguration.class)
 @EnableConfigurationProperties(EventTryAgainProperties.class)
 public class EventSourceAutoConfiguration {
@@ -23,4 +26,7 @@ public class EventSourceAutoConfiguration {
     public IncompleteEventTryAgain incompleteEventTryAgain(IncompleteEventPublications incompleteEventPublications, EventTryAgainProperties eventTryAgainProperties) {
         return new DefaultIncompleteEventTryAgain(incompleteEventPublications, eventTryAgainProperties.getBeforeDuration(), eventTryAgainProperties.getInterval());
     }
+
+
+
 }
