@@ -1,12 +1,14 @@
 package com.zjj.domain.component.command;
 
 import lombok.extern.slf4j.Slf4j;
+import org.jmolecules.architecture.cqrs.CommandHandler;
 import org.springframework.aop.framework.autoproxy.AutoProxyUtils;
 import org.springframework.aop.scope.ScopedObject;
 import org.springframework.aop.scope.ScopedProxyUtils;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanInitializationException;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -14,20 +16,18 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.event.ApplicationListenerMethodAdapter;
-import org.springframework.context.event.EventListener;
-import org.springframework.context.event.EventListenerFactory;
 import org.springframework.core.MethodIntrospector;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.event.TransactionalEventListenerFactory;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -38,19 +38,16 @@ import java.util.concurrent.ConcurrentHashMap;
  * @version 1.0
  */
 @Slf4j
-public class AbstractCommandDispatcher implements CommandDispatcher, SmartInitializingSingleton, BeanFactoryPostProcessor, ApplicationContextAware {
+public class CommandHandlerMethodProcessor implements SmartInitializingSingleton, BeanFactoryPostProcessor, ApplicationContextAware {
 
     @Nullable
     private ConfigurableListableBeanFactory beanFactory;
     @Nullable
     private ConfigurableApplicationContext applicationContext;
+    @Nullable
+    private CommandDispatcher commandDispatcher;
     private final Set<Class<?>> nonAnnotatedClasses = ConcurrentHashMap.newKeySet(64);
-
-
-    @Override
-    public void dispatches(Object command) {
-
-    }
+//    final Map<String, ApplicationListener<?>> retrieverCache = new ConcurrentHashMap<>(64);
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) {
@@ -106,14 +103,14 @@ public class AbstractCommandDispatcher implements CommandDispatcher, SmartInitia
 
     private void processBean(final String beanName, final Class<?> targetType) {
         if (!this.nonAnnotatedClasses.contains(targetType) &&
-                AnnotationUtils.isCandidateClass(targetType, EventListener.class) &&
+                AnnotationUtils.isCandidateClass(targetType, CommandHandler.class) &&
                 !isSpringContainerClass(targetType)) {
 
-            Map<Method, EventListener> annotatedMethods = null;
+            Map<Method, CommandHandler> annotatedMethods = null;
             try {
                 annotatedMethods = MethodIntrospector.selectMethods(targetType,
-                        (MethodIntrospector.MetadataLookup<EventListener>) method ->
-                                AnnotatedElementUtils.findMergedAnnotation(method, EventListener.class));
+                        (MethodIntrospector.MetadataLookup<CommandHandler>) method ->
+                                AnnotatedElementUtils.findMergedAnnotation(method, CommandHandler.class));
             }
             catch (Throwable ex) {
                 // An unresolvable type in a method signature, probably from a lazy bean - let's ignore it.
@@ -131,23 +128,25 @@ public class AbstractCommandDispatcher implements CommandDispatcher, SmartInitia
             else {
                 // Non-empty set of methods
                 ConfigurableApplicationContext context = this.applicationContext;
+                final CommandTransactionalEventListenerFactory factory = new CommandTransactionalEventListenerFactory();
                 Assert.state(context != null, "No ApplicationContext set");
-//                List<EventListenerFactory> factories = this.eventListenerFactories;
-//                Assert.state(factories != null, "EventListenerFactory List not initialized");
-//                for (Method method : annotatedMethods.keySet()) {
-//                    for (EventListenerFactory factory : factories) {
-//                        if (factory.supportsMethod(method)) {
-//                            Method methodToUse = AopUtils.selectInvocableMethod(method, context.getType(beanName));
-//                            ApplicationListener<?> applicationListener =
-//                                    factory.createApplicationListener(beanName, targetType, methodToUse);
-//                            if (applicationListener instanceof ApplicationListenerMethodAdapter alma) {
-//                                alma.init(context, this.evaluator);
-//                            }
-//                            context.addApplicationListener(applicationListener);
-//                            break;
-//                        }
-//                    }
-//                }
+
+
+                for (Map.Entry<Method, CommandHandler> entry : annotatedMethods.entrySet()) {
+                    CommandHandler commandHandler = entry.getValue();
+                    Method method = entry.getKey();
+                    Method methodToUse = AopUtils.selectInvocableMethod(method, context.getType(beanName));
+                    ApplicationListener<?> applicationListener =
+                            factory.createApplicationListener(beanName, targetType, methodToUse);
+
+                    String key = commandHandler.namespace() + "." + commandHandler.name();
+                    if (!StringUtils.hasText(key) || ".".equals(key)) {
+                        key = methodToUse.getParameterTypes()[0].getName();
+                    }
+
+                    this.commandDispatcher.addApplicationListener(key, applicationListener);
+                }
+
                 if (log.isDebugEnabled()) {
                     log.debug(annotatedMethods.size() + " @EventListener methods processed on bean '" +
                             beanName + "': " + annotatedMethods);
@@ -165,5 +164,9 @@ public class AbstractCommandDispatcher implements CommandDispatcher, SmartInitia
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
         this.beanFactory = beanFactory;
+        ObjectProvider<CommandDispatcher> beanProvider = beanFactory.getBeanProvider(CommandDispatcher.class);
+        this.commandDispatcher = beanProvider.getIfAvailable();
+        Assert.isNull(this.commandDispatcher,
+                "CommandDispatcher is NULL");
     }
 }

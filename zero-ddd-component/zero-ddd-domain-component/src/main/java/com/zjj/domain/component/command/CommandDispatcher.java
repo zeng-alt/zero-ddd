@@ -1,5 +1,8 @@
 package com.zjj.domain.component.command;
 
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationListener;
+
 /**
  * @author zengJiaJun
  * @crateTime 2025年02月17日 21:26
@@ -7,5 +10,9 @@ package com.zjj.domain.component.command;
  */
 public interface CommandDispatcher {
 
-    public void dispatches(Object command);
+    public void addApplicationListener(String key, ApplicationListener<?> listener);
+
+    public void removeApplicationListener(String key);
+
+    public void dispatches(ApplicationEvent command);
 }
