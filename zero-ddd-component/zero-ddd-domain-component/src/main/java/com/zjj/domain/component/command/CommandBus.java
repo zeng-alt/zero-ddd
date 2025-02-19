@@ -13,5 +13,4 @@ public interface CommandBus {
 
     public void emit(Object command);
 
-
 }
