@@ -74,7 +74,19 @@ public class SimpleCommandDispatcher implements CommandDispatcher {
 
     @Override
     public void dispatches(ApplicationEvent command) {
-        Object source = command.getSource();
+
+        if (listenersCache == null) {
+            return;
+        }
+
+        Object source;
+
+        if (command instanceof PayloadApplicationEvent<?> payloadApplicationEvent) {
+            source = payloadApplicationEvent.getPayload();
+        } else {
+            source = command;
+        }
+
         String key = this.cachedKeys.computeIfAbsent(source.getClass(), k -> resolvePolicyKey(source));
         listenersCache.get(key).forEach(listener -> invokeListener(listener, command));
     }

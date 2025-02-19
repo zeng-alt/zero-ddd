@@ -16,6 +16,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.event.ApplicationListenerMethodAdapter;
 import org.springframework.core.MethodIntrospector;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -143,7 +144,9 @@ public class CommandHandlerMethodProcessor implements SmartInitializingSingleton
                     if (!StringUtils.hasText(key) || ".".equals(key)) {
                         key = methodToUse.getParameterTypes()[0].getName();
                     }
-
+                    if (applicationListener instanceof CommandTransactionalApplicationListenerMethodAdapter alma) {
+                        alma.init(context);
+                    }
                     this.commandDispatcher.addApplicationListener(key, applicationListener);
                 }
 
@@ -166,7 +169,7 @@ public class CommandHandlerMethodProcessor implements SmartInitializingSingleton
         this.beanFactory = beanFactory;
         ObjectProvider<CommandDispatcher> beanProvider = beanFactory.getBeanProvider(CommandDispatcher.class);
         this.commandDispatcher = beanProvider.getIfAvailable();
-        Assert.isNull(this.commandDispatcher,
+        Assert.notNull(this.commandDispatcher,
                 "CommandDispatcher is NULL");
     }
 }

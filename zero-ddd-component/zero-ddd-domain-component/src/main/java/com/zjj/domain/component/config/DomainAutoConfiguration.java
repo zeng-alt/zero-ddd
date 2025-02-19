@@ -61,9 +61,4 @@ public class DomainAutoConfiguration {
     public CommandHandlerMethodProcessor commandHandlerMethodProcessor() {
         return new CommandHandlerMethodProcessor();
     }
-
-    @Bean
-    public TestCommand testCommand() {
-        return new TestCommand();
-    }
 }

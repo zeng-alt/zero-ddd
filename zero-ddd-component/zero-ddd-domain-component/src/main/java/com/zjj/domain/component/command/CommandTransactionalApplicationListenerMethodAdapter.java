@@ -1,6 +1,7 @@
 package com.zjj.domain.component.command;
 
 import org.jmolecules.architecture.cqrs.CommandHandler;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.event.ApplicationListenerMethodAdapter;
 import org.springframework.core.annotation.AnnotatedElementUtils;
@@ -19,9 +20,21 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class CommandTransactionalApplicationListenerMethodAdapter extends ApplicationListenerMethodAdapter
         implements TransactionalApplicationListener<ApplicationEvent> {
     private final TransactionPhase transactionPhase;
+    private ApplicationContext  applicationContext;
+    private final String beanName;
 
     private final List<SynchronizationCallback> callbacks = new CopyOnWriteArrayList<>();
 
+
+    void init(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+    }
+
+    @Override
+    protected Object getTargetBean() {
+        Assert.notNull(this.applicationContext, "ApplicationContext must not be null");
+        return this.applicationContext.getBean(this.beanName);
+    }
 
     /**
      * Construct a new TransactionalApplicationListenerMethodAdapter.
@@ -31,6 +44,7 @@ public class CommandTransactionalApplicationListenerMethodAdapter extends Applic
      */
     public CommandTransactionalApplicationListenerMethodAdapter(String beanName, Class<?> targetClass, Method method) {
         super(beanName, targetClass, method);
+        this.beanName = beanName;
         CommandHandler eventAnn =
                 AnnotatedElementUtils.findMergedAnnotation(getTargetMethod(), CommandHandler.class);
         if (eventAnn == null) {
