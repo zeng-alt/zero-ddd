@@ -1,6 +1,8 @@
 package com.zjj.domain.component.config;
 
+import com.zjj.domain.component.command.*;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
@@ -41,4 +43,27 @@ public class DomainAutoConfiguration {
 //            }
 //        };
 //    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public CommandDispatcher commandDispatcher() {
+        return new SimpleCommandDispatcher();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public CommandBus commandBus(CommandDispatcher commandDispatcher) {
+        return new SimpleCommandBus(commandDispatcher);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public CommandHandlerMethodProcessor commandHandlerMethodProcessor() {
+        return new CommandHandlerMethodProcessor();
+    }
+
+    @Bean
+    public TestCommand testCommand() {
+        return new TestCommand();
+    }
 }
