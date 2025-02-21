@@ -23,6 +23,7 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionalEventListenerFactory;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.CollectionUtils;
@@ -42,6 +43,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class CommandHandlerMethodProcessor implements SmartInitializingSingleton, BeanFactoryPostProcessor, ApplicationContextAware {
 
     @Nullable
+    private volatile TransactionalEventListenerFactory factory;
+    @Nullable
     private ConfigurableListableBeanFactory beanFactory;
     @Nullable
     private ConfigurableApplicationContext applicationContext;
@@ -59,6 +62,9 @@ public class CommandHandlerMethodProcessor implements SmartInitializingSingleton
 
     @Override
     public void afterSingletonsInstantiated() {
+        if (this.factory == null) {
+            this.factory = new CommandTransactionalEventListenerFactory(this.applicationContext.getBean(TransactionTemplate.class));
+        }
         ConfigurableListableBeanFactory beanFactory = this.beanFactory;
         Assert.state(beanFactory != null, "No ConfigurableListableBeanFactory set");
         String[] beanNames = beanFactory.getBeanNamesForType(Object.class);
@@ -129,7 +135,6 @@ public class CommandHandlerMethodProcessor implements SmartInitializingSingleton
             else {
                 // Non-empty set of methods
                 ConfigurableApplicationContext context = this.applicationContext;
-                final CommandTransactionalEventListenerFactory factory = new CommandTransactionalEventListenerFactory();
                 Assert.state(context != null, "No ApplicationContext set");
 
 
@@ -138,7 +143,7 @@ public class CommandHandlerMethodProcessor implements SmartInitializingSingleton
                     Method method = entry.getKey();
                     Method methodToUse = AopUtils.selectInvocableMethod(method, context.getType(beanName));
                     ApplicationListener<?> applicationListener =
-                            factory.createApplicationListener(beanName, targetType, methodToUse);
+                            this.factory.createApplicationListener(beanName, targetType, methodToUse);
 
                     String key = commandHandler.namespace() + "." + commandHandler.name();
                     if (!StringUtils.hasText(key) || ".".equals(key)) {
@@ -169,7 +174,6 @@ public class CommandHandlerMethodProcessor implements SmartInitializingSingleton
         this.beanFactory = beanFactory;
         ObjectProvider<CommandDispatcher> beanProvider = beanFactory.getBeanProvider(CommandDispatcher.class);
         this.commandDispatcher = beanProvider.getIfAvailable();
-        Assert.notNull(this.commandDispatcher,
-                "CommandDispatcher is NULL");
+        Assert.notNull(this.commandDispatcher, "CommandDispatcher is NULL");
     }
 }

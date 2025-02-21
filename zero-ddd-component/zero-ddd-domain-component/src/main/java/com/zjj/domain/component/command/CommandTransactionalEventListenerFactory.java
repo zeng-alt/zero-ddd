@@ -3,7 +3,10 @@ package com.zjj.domain.component.command;
 import org.jmolecules.architecture.cqrs.CommandHandler;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.annotation.AnnotatedElementUtils;
+import org.springframework.lang.NonNull;
 import org.springframework.transaction.event.TransactionalEventListenerFactory;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.util.Assert;
 
 import java.lang.reflect.Method;
 
@@ -13,6 +16,15 @@ import java.lang.reflect.Method;
  * @version 1.0
  */
 public class CommandTransactionalEventListenerFactory extends TransactionalEventListenerFactory {
+
+    @NonNull
+    private final TransactionTemplate transactionTemplate;
+
+
+    public CommandTransactionalEventListenerFactory(TransactionTemplate transactionTemplate) {
+        Assert.notNull(transactionTemplate, "TransactionTemplate must not be null");
+        this.transactionTemplate = transactionTemplate;
+    }
 
     @Override
     public boolean supportsMethod(Method method) {
@@ -25,6 +37,6 @@ public class CommandTransactionalEventListenerFactory extends TransactionalEvent
      */
     @Override
     public ApplicationListener<?> createApplicationListener(String beanName, Class<?> type, Method method) {
-        return new CommandTransactionalApplicationListenerMethodAdapter(beanName, type, method);
+        return new CommandTransactionalApplicationListenerMethodAdapter(beanName, type, method, transactionTemplate);
     }
 }

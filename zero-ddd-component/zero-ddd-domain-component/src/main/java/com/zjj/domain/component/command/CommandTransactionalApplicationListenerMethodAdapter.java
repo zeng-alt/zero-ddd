@@ -1,11 +1,13 @@
 package com.zjj.domain.component.command;
 
+import com.zjj.domain.component.TransactionCallbackWithoutResult;
 import org.jmolecules.architecture.cqrs.CommandHandler;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.event.ApplicationListenerMethodAdapter;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.transaction.event.*;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.Assert;
 
 import java.lang.reflect.Method;
@@ -20,6 +22,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class CommandTransactionalApplicationListenerMethodAdapter extends ApplicationListenerMethodAdapter
         implements TransactionalApplicationListener<ApplicationEvent> {
     private final TransactionPhase transactionPhase;
+    protected final TransactionTemplate transactionTemplate;
     private ApplicationContext  applicationContext;
     private final String beanName;
 
@@ -42,7 +45,7 @@ public class CommandTransactionalApplicationListenerMethodAdapter extends Applic
      * @param targetClass the target class that the method is declared on
      * @param method the listener method to invoke
      */
-    public CommandTransactionalApplicationListenerMethodAdapter(String beanName, Class<?> targetClass, Method method) {
+    public CommandTransactionalApplicationListenerMethodAdapter(String beanName, Class<?> targetClass, Method method, TransactionTemplate transactionTemplate) {
         super(beanName, targetClass, method);
         this.beanName = beanName;
         CommandHandler eventAnn =
@@ -50,7 +53,8 @@ public class CommandTransactionalApplicationListenerMethodAdapter extends Applic
         if (eventAnn == null) {
             throw new IllegalStateException("No TransactionalEventListener annotation found on method: " + method);
         }
-        this.transactionPhase = TransactionPhase.AFTER_COMMIT;
+        this.transactionPhase = TransactionPhase.BEFORE_COMMIT;
+        this.transactionTemplate = transactionTemplate;
     }
 
 
@@ -68,17 +72,12 @@ public class CommandTransactionalApplicationListenerMethodAdapter extends Applic
 
     @Override
     public void onApplicationEvent(ApplicationEvent event) {
-//        if (TransactionalApplicationListenerSynchronization.register(event, this, this.callbacks)) {
-//            if (logger.isDebugEnabled()) {
-//                logger.debug("Registered transaction synchronization for " + event);
-//            }
-//        }
-//        else
+
         if (isDefaultExecution()) {
             if (getTransactionPhase() == TransactionPhase.AFTER_ROLLBACK && logger.isWarnEnabled()) {
                 logger.warn("Processing " + event + " as a fallback execution on AFTER_ROLLBACK phase");
             }
-            processEvent(event);
+            transactionTemplate.execute((TransactionCallbackWithoutResult) () -> processEvent(event));
         }
         else {
             // No transactional event execution at all
