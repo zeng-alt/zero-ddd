@@ -1,7 +1,9 @@
 package com.zjj.domain.component.event;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.event.EventListener;
 import org.springframework.modulith.events.IncompleteEventPublications;
+import org.springframework.modulith.moments.HourHasPassed;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
@@ -14,22 +16,10 @@ import java.time.Duration;
  * @version 1.0
  * @crateTime 2025年01月13日 21:10
  */
-@RequiredArgsConstructor
-public abstract class IncompleteEventTryAgain implements SchedulingConfigurer {
+public interface IncompleteEventTryAgain {
 
-    private final Duration interval;
 
-    public abstract void tryAgain();
+    @EventListener
+    public void on(HourHasPassed hourHasPassed);
 
-    /**
-     * Callback allowing a {@link TaskScheduler}
-     * and specific {@link Task} instances
-     * to be registered against the given the {@link ScheduledTaskRegistrar}.
-     *
-     * @param taskRegistrar the registrar to be configured
-     */
-    @Override
-    public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
-        taskRegistrar.addFixedDelayTask(this::tryAgain, interval);
-    }
 }
