@@ -1,8 +1,8 @@
 package com.zjj.core.component.advice;
 
-import com.zjj.autoconfigure.component.core.ResponseAdviceProvider;
-import com.zjj.autoconfigure.component.json.JsonHelper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zjj.autoconfigure.component.core.Response;
+import com.zjj.autoconfigure.component.core.ResponseAdviceProvider;
 import com.zjj.autoconfigure.component.core.ResponseEnum;
 import com.zjj.core.component.api.ExceptionResponse;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ import static io.vavr.API.*;
 @Slf4j
 public class GlobalResultAdvice implements ResponseBodyAdvice<Object> {
 
-    private final JsonHelper jsonHelper;
+    private final ObjectMapper objectMapper;
     private final ObjectProvider<ResponseAdviceProvider> responseAdviceProvider;
 
     @Override
@@ -53,7 +53,11 @@ public class GlobalResultAdvice implements ResponseBodyAdvice<Object> {
             if (serializableResponse == null) {
                 return body;
             }
-            return jsonHelper.toJsonString(handler(serializableResponse));
+            try {
+                return objectMapper.writeValueAsString(handler(serializableResponse));
+            } catch (Exception e) {
+                log.error("全局返回处理器json解析出错: " + e);
+            }
         }
 
         if (body instanceof ResponseEnum responseEnum) {

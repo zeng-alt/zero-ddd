@@ -1,5 +1,6 @@
 package com.zjj.core.component.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zjj.autoconfigure.component.core.ResponseAdviceProvider;
 import com.zjj.autoconfigure.component.json.JsonHelper;
 import com.zjj.core.component.advice.GlobalResultAdvice;
@@ -22,8 +23,8 @@ public class CoreAutoConfig {
 
 
     @Bean
-    public GlobalResultAdvice globalResultAdvice(JsonHelper jsonHelper, ObjectProvider<ResponseAdviceProvider> responseAdviceProvider) {
-        return new GlobalResultAdvice(jsonHelper, responseAdviceProvider);
+    public GlobalResultAdvice globalResultAdvice(ObjectMapper objectMapper, ObjectProvider<ResponseAdviceProvider> responseAdviceProvider) {
+        return new GlobalResultAdvice(objectMapper, responseAdviceProvider);
     }
 
     @Bean
