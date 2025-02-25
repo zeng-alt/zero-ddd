@@ -2,6 +2,7 @@ package com.zjj.tenant.datasource.component;
 
 
 import com.zjj.autoconfigure.component.tenant.MultiTenancyProperties;
+import com.zjj.autoconfigure.component.tenant.TenantMode;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Import;

@@ -19,7 +19,6 @@
         <module>zero-ddd-component-bom</module>
         <module>zero-ddd-core-component</module>
         <module>zero-ddd-domain-component</module>
-        <module>zero-ddd-cache-component</module>
         <module>zero-ddd-doc-component</module>
         <module>zero-ddd-security-component</module>
         <module>zero-ddd-tenant-component</module>
@@ -29,9 +28,8 @@
         <module>zero-ddd-autoconfigure-component</module>
         <module>zero-ddd-bean-component</module>
         <module>zero-ddd-graphql-component</module>
-        <module>zero-ddd-memory-component</module>
-        <module>zero-ddd-l2-cache-component</module>
         <module>zero-ddd-i18n-component</module>
         <module>zero-ddd-message-queue-component</module>
+        <module>zero-ddd-storage-component</module>
     </modules>
 </project>

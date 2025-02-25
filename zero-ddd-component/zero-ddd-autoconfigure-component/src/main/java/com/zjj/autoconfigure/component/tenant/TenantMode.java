@@ -1,4 +1,4 @@
-package com.zjj.tenant.datasource.component;
+package com.zjj.autoconfigure.component.tenant;
 
 /**
  * @author zengJiaJun

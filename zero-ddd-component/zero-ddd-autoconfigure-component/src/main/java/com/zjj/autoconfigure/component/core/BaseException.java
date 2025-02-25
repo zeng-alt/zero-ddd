@@ -12,7 +12,7 @@ import java.util.function.Supplier;
  * @crateTime 2024年11月07日 21:15
  */
 @Getter
-public class BaseException extends RuntimeException{
+public class BaseException extends RuntimeException {
 
     private Integer code = 500;
 
