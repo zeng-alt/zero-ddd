@@ -1,8 +1,8 @@
 package com.zjj.excel.component.domain;
 
-import com.alibaba.excel.context.AnalysisContext;
-import com.alibaba.excel.event.AnalysisEventListener;
-import com.alibaba.excel.read.listener.ReadListener;
+import cn.idev.excel.event.AnalysisEventListener;
+import cn.idev.excel.context.AnalysisContext;
+import cn.idev.excel.read.listener.ReadListener;
 import io.vavr.collection.HashMap;
 import io.vavr.collection.Map;
 import lombok.extern.slf4j.Slf4j;

@@ -1,19 +1,23 @@
 package com.zjj.excel.component.utils;
 
-import com.alibaba.excel.EasyExcelFactory;
-import com.alibaba.excel.ExcelWriter;
-import com.alibaba.excel.write.metadata.WriteSheet;
-import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
+
+import cn.idev.excel.ExcelWriter;
+import cn.idev.excel.FastExcelFactory;
+import cn.idev.excel.write.metadata.WriteSheet;
+import cn.idev.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.zjj.excel.component.domain.DefaultExcelListenerSuccess;
 import com.zjj.excel.component.domain.ExcelSuccessListener;
+import com.zjj.excel.component.dynamic.InterfaceDynamicColumn;
+import com.zjj.excel.component.dynamic.DynamicEntity;
+import com.zjj.excel.component.listener.DefaultDynamicReadListener;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.CollectionUtils;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -29,13 +33,43 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ExcelHelper {
 
+
+	public static <T extends InterfaceDynamicColumn<E>, E extends DynamicEntity> void exportDynamicExcel(List<T> list, OutputStream os) {
+		if (CollectionUtils.isEmpty(list)) return;
+
+		T t = list.get(0);
+		List<List<String>> heads = t.getHeads();
+		List<List<String>> data = t.getData();
+
+		FastExcelFactory
+				.write(os)
+				.autoCloseStream(false)
+				.registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
+				.sheet();
+	}
+
+
+	public static <T extends InterfaceDynamicColumn<E>, E extends DynamicEntity> List<T> importDynamicExcel(InputStream is, Class<T> clazz) {
+		DefaultDynamicReadListener<T, E> dynamicReadListener = new DefaultDynamicReadListener<>(clazz);
+		FastExcelFactory
+				.read(is)
+				.head(clazz)
+				.autoCloseStream(false)
+				.registerReadListener(dynamicReadListener)
+				.sheet()
+				.doRead();
+
+		return dynamicReadListener.getList();
+	}
+
+
 	/**
 	 * 同步导入(适用于小数据量)
 	 * @param is 输入流
 	 * @return 转换后集合
 	 */
 	public static <T> List<T> importExcel(InputStream is, Class<T> clazz) {
-		return EasyExcelFactory.read(is).head(clazz).autoCloseStream(false).sheet().doReadSync();
+		return FastExcelFactory.read(is).head(clazz).autoCloseStream(false).sheet().doReadSync();
 	}
 
 	/**
@@ -47,7 +81,7 @@ public class ExcelHelper {
 	 */
 	public static <T> List<T> importExcel(InputStream is, Class<T> clazz, boolean isValidate) {
 		DefaultExcelListenerSuccess<T> listener = new DefaultExcelListenerSuccess<>();
-		EasyExcelFactory.read(is, clazz, listener).sheet().doRead();
+		FastExcelFactory.read(is, clazz, listener).sheet().doRead();
 		return listener.getResult();
 	}
 
@@ -59,7 +93,7 @@ public class ExcelHelper {
 	 * @return 转换后集合
 	 */
 	public static <T> List<T> importExcel(InputStream is, Class<T> clazz, ExcelSuccessListener<T> listener) {
-		EasyExcelFactory.read(is, clazz, listener).sheet().doRead();
+		FastExcelFactory.read(is, clazz, listener).sheet().doRead();
 		return listener.getResult();
 	}
 
@@ -81,7 +115,7 @@ public class ExcelHelper {
 	 * @param os 输出流
 	 */
 	public static <T> void exportExcel(List<T> list, String sheetName, Class<T> clazz, OutputStream os) {
-		EasyExcelFactory.write(os, clazz).autoCloseStream(false)
+		FastExcelFactory.write(os, clazz).autoCloseStream(false)
 				// 自动适配
 				.registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
 				// 大数值自动转换 防止失真
@@ -119,12 +153,12 @@ public class ExcelHelper {
 	public static void exportTemplate(Collection<Object> data, String templatePath, OutputStream os)
 			throws IOException {
 		ClassPathResource templateResource = new ClassPathResource(templatePath);
-		ExcelWriter excelWriter = EasyExcelFactory.write(os).withTemplate(templateResource.getInputStream())
+		ExcelWriter excelWriter = FastExcelFactory.write(os).withTemplate(templateResource.getInputStream())
 				.autoCloseStream(false)
 				// 大数值自动转换 防止失真
 				// .registerConverter(new ExcelBigNumberConvert())
 				.build();
-		WriteSheet writeSheet = EasyExcelFactory.writerSheet().build();
+		WriteSheet writeSheet = FastExcelFactory.writerSheet().build();
 		if (CollectionUtils.isEmpty(data)) {
 			throw new IllegalArgumentException("数据为空");
 		}
@@ -148,7 +182,8 @@ public class ExcelHelper {
 	private static void resetResponse(String sheetName, HttpServletResponse response)
 			throws UnsupportedEncodingException {
 		String filename = encodingFilename(sheetName);
-		ResponseHeaderUtils.setAttachmentResponseHeader(response, filename);
+		// TODO
+//		ResponseHeaderUtils.setAttachmentResponseHeader(response, filename);
 		response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8");
 	}
 
