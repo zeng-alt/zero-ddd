@@ -10,4 +10,12 @@ public interface TenantContext {
     String getTenant();
 
     void setTenant(String tenant);
+
+    String getDatabase();
+
+    void setDatabase(String database);
+
+    String getSchema();
+
+    void setSchema(String schema);
 }

@@ -42,6 +42,8 @@ public class SecurityUser implements UserDetails, TenantDetail, CredentialsConta
     private final String username;
 
     private final String tenant;
+    private String database;
+    private String schema;
 
     @JsonIgnore
     private final Set<GrantedAuthority> authorities;

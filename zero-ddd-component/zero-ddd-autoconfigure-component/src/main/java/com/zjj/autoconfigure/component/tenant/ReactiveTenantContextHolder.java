@@ -38,6 +38,10 @@ public final class ReactiveTenantContextHolder {
         return withTenantContext(Mono.just(new TenantContextImpl(tenant)));
     }
 
+    public static Context withTenant(String tenant, String database, String schema) {
+        return withTenantContext(Mono.just(new TenantContextImpl(tenant, database, schema)));
+    }
+
     private static Mono<TenantContext> getTenantContext(Context context) {
         return context.<Mono<TenantContext>>get(TENANT_CONTEXT_KEY);
     }

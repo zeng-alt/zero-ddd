@@ -30,7 +30,7 @@ public class ReactiveTenantWitchDataSourceFilter implements WebFilter {
                 .filter(TenantDetail.class::isInstance)
                 .map(o -> (TenantDetail) o)
                 .doOnNext(this::setTenantContext)
-                .flatMap(c -> chain.filter(exchange).contextWrite(ReactiveTenantContextHolder.withTenant(c.getTenantName())))
+                .flatMap(c -> chain.filter(exchange).contextWrite(ReactiveTenantContextHolder.withTenant(c.getTenantName(), c.getDatabase(), c.getSchema())))
                 .switchIfEmpty(chain.filter(exchange));
     }
 

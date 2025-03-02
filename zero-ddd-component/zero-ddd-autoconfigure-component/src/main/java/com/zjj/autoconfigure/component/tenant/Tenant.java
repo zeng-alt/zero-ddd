@@ -22,6 +22,24 @@ public class Tenant {
      * ********************************/
     private String schema;
 
+    private Mode mode;
+
+
+    public enum Mode {
+        DATABASE,
+        SCHEMA,
+        COLUMN;
+
+        public static Mode of(String s) {
+            for (Mode mode : Mode.values()) {
+                if (mode.name().equalsIgnoreCase(s)) {
+                    return mode;
+                }
+            }
+            return null;
+        }
+    }
+
     public Tenant() {}
 
     Tenant(String tenantId, String db, String password, String schema) {

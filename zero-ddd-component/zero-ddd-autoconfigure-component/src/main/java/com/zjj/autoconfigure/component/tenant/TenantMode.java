@@ -10,6 +10,7 @@ public enum TenantMode {
     COLUMN,
     SCHEMA,
     DATABASE,
+    MIXED,
 
     /*************************
      * 分库分表未实现

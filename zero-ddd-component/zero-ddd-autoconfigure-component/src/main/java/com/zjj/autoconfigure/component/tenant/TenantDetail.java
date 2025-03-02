@@ -10,4 +10,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 public interface TenantDetail extends UserDetails {
 
     String getTenantName();
+
+    String getDatabase();
+
+    String getSchema();
 }

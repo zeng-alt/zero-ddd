@@ -2,6 +2,7 @@ package com.zjj.tenant.domain.tenant;
 
 import com.zjj.tenant.domain.tenant.cmd.*;
 import lombok.RequiredArgsConstructor;
+import org.jmolecules.architecture.cqrs.CommandHandler;
 import org.springframework.stereotype.Service;
 
 /**
@@ -26,6 +27,7 @@ public class TenantHandler {
     }
 
 
+    @CommandHandler
     public void handler(StockInTenantDataSourceCmd stockCmd) {
         this.tenantRepository
                 .findById(stockCmd.tenantId())
@@ -39,7 +41,6 @@ public class TenantHandler {
 //                    return true;
 //                })
                 .map(t -> t.save(stockCmd))
-                .map(tenantRepository::save)
                 .getOrElseThrow(() -> new IllegalArgumentException("租户不存在"));
     }
 

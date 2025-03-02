@@ -1,8 +1,8 @@
 package com.zjj.auth;
 
+import com.zjj.autoconfigure.component.tenant.TenantMode;
 import com.zjj.security.tenant.component.EnableTenantJwtCache;
 import com.zjj.tenant.datasource.component.EnableMultiTenancy;
-import com.zjj.tenant.datasource.component.TenantMode;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;

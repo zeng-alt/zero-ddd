@@ -17,4 +17,6 @@ public interface TenantDataSourceDao extends BaseRepository<TenantDataSourceEnti
     Option<TenantDataSourceEntity> findBySchema(String schema);
 
     Option<TenantDataSourceEntity> findByDb(String db);
+
+    TenantDataSourceEntity save(TenantDataSourceEntity tenantDataSourceEntity);
 }
