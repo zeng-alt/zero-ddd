@@ -14,8 +14,15 @@ import javax.sql.DataSource;
  * @crateTime 2024年12月23日 21:49
  */
 public interface TenantDataSourceService {
+
     void verify(Tenant tenant);
 
+    /**
+     * 如果是database 模式，则创建database
+     * 如果是schema模式，则创建schema
+     * 最后要返回数据源
+     * @return 数据源
+     */
     DataSource createDatasource(Tenant tenant);
 
     void addTenantDataSource(Tenant tenant, DataSource dataSource);

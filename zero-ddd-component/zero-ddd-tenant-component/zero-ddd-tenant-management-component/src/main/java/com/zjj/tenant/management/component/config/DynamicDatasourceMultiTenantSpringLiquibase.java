@@ -29,7 +29,7 @@ public class DynamicDatasourceMultiTenantSpringLiquibase implements CommandLineR
     private final LiquibaseProperties liquibaseProperties;
     private final ResourceLoader resourceLoader;
     private final ObjectProvider<TenantDataSourceProvider> tenantDataSourceProviders;
-    private final TenantInitDataSourceService tenantInitDataSourceService;
+//    private final TenantInitDataSourceService tenantInitDataSourceService;
     private final TenantDataSourceService tenantDataSourceService;
 
 
@@ -38,7 +38,6 @@ public class DynamicDatasourceMultiTenantSpringLiquibase implements CommandLineR
             log.info("Initializing Liquibase for tenant " + tenant.getTenantId());
             try {
                 tenantDataSourceService.verify(tenant);
-                tenantInitDataSourceService.initDataSource(tenant);
                 DataSource datasource = tenantDataSourceService.createDatasource(tenant);
                 tenantDataSourceService.runLiquibase(tenant, datasource, liquibaseProperties, resourceLoader);
                 tenantDataSourceService.addTenantDataSource(tenant, datasource);

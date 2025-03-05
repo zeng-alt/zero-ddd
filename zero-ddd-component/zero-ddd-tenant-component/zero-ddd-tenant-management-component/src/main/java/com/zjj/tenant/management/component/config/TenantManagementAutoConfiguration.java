@@ -57,14 +57,14 @@ public class TenantManagementAutoConfiguration {
             LiquibaseProperties liquibaseProperties,
             ResourceLoader resourceLoader,
             ObjectProvider<TenantDataSourceProvider> tenantDataSourceProviders,
-            TenantInitDataSourceService tenantInitDataSourceService,
+//            TenantInitDataSourceService tenantInitDataSourceService,
             TenantDataSourceService tenantDataSourceService
     ) {
         return new DynamicDatasourceMultiTenantSpringLiquibase(
                 liquibaseProperties,
                 resourceLoader,
                 tenantDataSourceProviders,
-                tenantInitDataSourceService,
+//                tenantInitDataSourceService,
                 tenantDataSourceService
         );
     }

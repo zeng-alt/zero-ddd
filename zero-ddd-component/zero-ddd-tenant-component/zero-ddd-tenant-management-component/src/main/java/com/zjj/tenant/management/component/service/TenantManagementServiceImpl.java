@@ -45,7 +45,7 @@ public class TenantManagementServiceImpl implements TenantManagementService, Ini
         final String lockName = "lock:tenant:manage" + tenant.getTenantId();
         try {
             lock.tryLock(lockName, 10000L);
-            tenantInitDataSourceService.initDataSource(tenant);
+//            tenantInitDataSourceService.initDataSource(tenant);
             dataSource = tenantDataSourceService.createDatasource(tenant);
         } catch (DataAccessException | InterruptedException e) {
             if (dataSource instanceof HikariDataSource hikariDataSource) {
