@@ -7,7 +7,6 @@ import org.checkerframework.checker.initialization.qual.Initialized;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.UnknownKeyFor;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
-import org.springframework.stereotype.Component;
 
 import java.io.Serial;
 import java.sql.Connection;
@@ -15,20 +14,19 @@ import java.sql.SQLException;
 
 @RequiredArgsConstructor
 @Slf4j
-@Component
 public class DynamicDataSourceBasedMultiTenantConnectionProvider
         implements MultiTenantConnectionProvider<String> {
 
     @Serial
     private static final long serialVersionUID = -460277105706399638L;
 
-    private final TenantDataBaseRoutingDatasource dataSource;
+    private final TenantConnectionService tenantConnectionService;
 
 
 
     @Override
     public Connection getAnyConnection() throws SQLException {
-        return dataSource.getConnection();
+        return tenantConnectionService.getConnection();
     }
 
 
@@ -40,7 +38,7 @@ public class DynamicDataSourceBasedMultiTenantConnectionProvider
 
     @Override
     public Connection getConnection(String tenantIdentifier) throws SQLException {
-        return dataSource.getConnection(tenantIdentifier);
+        return tenantConnectionService.getConnection(tenantIdentifier);
     }
 
 

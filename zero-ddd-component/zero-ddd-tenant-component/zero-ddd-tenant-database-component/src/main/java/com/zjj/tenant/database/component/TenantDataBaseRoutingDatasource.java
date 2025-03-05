@@ -9,6 +9,7 @@ import com.zjj.autoconfigure.component.tenant.Tenant;
 import com.zjj.tenant.management.component.SpringLiquibase;
 import com.zjj.tenant.management.component.service.TenantCreationException;
 import com.zjj.tenant.management.component.service.TenantDataSourceService;
+import com.zjj.tenant.management.component.service.TenantInitDataSourceService;
 import com.zjj.tenant.management.component.spi.TenantSingleDataSourceProvider;
 import com.zjj.tenant.management.component.utils.SpringLiquibaseUtils;
 import jakarta.annotation.PostConstruct;
@@ -39,8 +40,7 @@ import java.util.concurrent.TimeUnit;
  * @crateTime 2024年12月04日 11:42
  */
 @Slf4j
-@RequiredArgsConstructor
-public class TenantDataBaseRoutingDatasource extends AbstractRoutingDataSource implements TenantDataSourceService {
+public class TenantDataBaseRoutingDatasource extends AbstractRoutingDataSource implements TenantDataSourceService, TenantConnectionService {
     private static final String TENANT_POOL_NAME_SUFFIX = "DataSource";
     private static final String VALID_DATABASE_NAME_REGEXP = "\\w*";
     private LoadingCache<String, DataSource> tenantDataSources;
@@ -49,7 +49,7 @@ public class TenantDataBaseRoutingDatasource extends AbstractRoutingDataSource i
     private final TenantSingleDataSourceProvider tenantSingleDataSourceProvider;
     private final CurrentTenantIdentifierResolver<String> currentTenantIdentifierResolver;
     private final MultiTenancyProperties multiTenancyProperties;
-    private final ObjectProvider<TenantDatabaseInitService> tenantDatabaseInitService;
+    private final TenantInitDataSourceService tenantDatabaseInitService;
 
     @PostConstruct
     private void createCache() {
@@ -71,7 +71,7 @@ public class TenantDataBaseRoutingDatasource extends AbstractRoutingDataSource i
             TenantSingleDataSourceProvider tenantSingleDataSourceProvider,
             MultiTenancyProperties multiTenancyProperties,
             CurrentTenantIdentifierResolver<String> currentTenantIdentifierResolver,
-            ObjectProvider<TenantDatabaseInitService> tenantDatabaseInitService
+            TenantInitDataSourceService tenantDatabaseInitService
     ) {
         this.setDefaultTargetDataSource(dataSource);
         this.setTargetDataSources(new HashMap<>());
@@ -83,6 +83,7 @@ public class TenantDataBaseRoutingDatasource extends AbstractRoutingDataSource i
         this.tenantDatabaseInitService = tenantDatabaseInitService;
     }
 
+    @Override
     public Connection getConnection(String tenantIdentifier) throws SQLException {
         return this.determineTargetDataSource(tenantIdentifier).getConnection();
     }
@@ -109,7 +110,7 @@ public class TenantDataBaseRoutingDatasource extends AbstractRoutingDataSource i
     private DataSource createAndConfigureDataSource(Tenant tenant) {
 
         verify(tenant);
-        tenantDatabaseInitService.getIfAvailable().initDataSource(tenant);
+//        tenantDatabaseInitService.initDataSource(tenant, getResolvedDefaultDataSource());
         DataSource datasource = createDatasource(tenant);
 
 ////        String decryptedPassword = encryptionService.decrypt(tenant.getPassword(), secret, salt);
@@ -134,13 +135,15 @@ public class TenantDataBaseRoutingDatasource extends AbstractRoutingDataSource i
 
     @Override
     public void verify(Tenant tenant) {
-        if (!tenant.getDb().matches(VALID_DATABASE_NAME_REGEXP)) {
+        if (tenant != null || !tenant.getDb().matches(VALID_DATABASE_NAME_REGEXP)) {
             throw new TenantCreationException("Invalid db name: " + tenant.getDb());
         }
     }
 
     @Override
     public DataSource createDatasource(Tenant tenant) {
+
+        this.tenantDatabaseInitService.initDataSource(tenant, getResolvedDefaultDataSource());
 
         HikariDataSource ds = dataSourceProperties.initializeDataSourceBuilder().type(HikariDataSource.class).build();
 

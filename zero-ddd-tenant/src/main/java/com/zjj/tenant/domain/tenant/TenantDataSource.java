@@ -1,5 +1,6 @@
 package com.zjj.tenant.domain.tenant;
 
+import com.zjj.autoconfigure.component.tenant.TenantMode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.Value;
@@ -19,7 +20,7 @@ public class TenantDataSource implements Entity<Tenant, TenantDataSource.TenantD
     private String db;
     private String password;
     private String schema;
-    private String mode;
+    private TenantMode mode;
     private Boolean enabled;
 
 

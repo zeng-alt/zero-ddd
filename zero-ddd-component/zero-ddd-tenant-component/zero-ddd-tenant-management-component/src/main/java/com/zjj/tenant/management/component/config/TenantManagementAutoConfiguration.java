@@ -32,14 +32,14 @@ public class TenantManagementAutoConfiguration {
             ResourceLoader resourceLoader,
             TenantDataSourceService tenantDataSourceService,
             RedisTopicRepositoryImpl repository,
-            TenantInitDataSourceService tenantInitDataSourceService,
+//            TenantInitDataSourceService tenantInitDataSourceService,
             ObjectProvider<Lock> lock
     ) {
         TenantManagementServiceImpl tenantManagementService = new TenantManagementServiceImpl(
                 liquibaseProperties,
                 resourceLoader,
                 tenantDataSourceService,
-                tenantInitDataSourceService,
+//                tenantInitDataSourceService,
                 lock.getIfAvailable()
         );
         repository.addListener("tenant-channel", Tenant.class, new Consumer<Tenant>() {

@@ -35,19 +35,21 @@ public class TenantSchemaAutoConfiguration {
     public MultiTenantConnectionProvider<String> schemaBasedMultiTenantConnectionProvider(
             ObjectProvider<DataSource> masterDataSource,
             MultiTenancyProperties tenancyProperties,
-            ObjectProvider<TenantSingleDataSourceProvider> tenantSingleDataSourceProvider
+            ObjectProvider<TenantSingleDataSourceProvider> tenantSingleDataSourceProvider,
+            TenantInitDataSourceService tenantInitDataSourceService
     ) {
         return new SchemaBasedMultiTenantConnectionProvider(
                 masterDataSource.getIfAvailable(),
                 tenancyProperties,
-                tenantSingleDataSourceProvider.getIfAvailable()
+                tenantSingleDataSourceProvider.getIfAvailable(),
+                tenantInitDataSourceService
         );
     }
 
     @Bean
     @Lazy
-    public TenantInitDataSourceService tenantSchemaInitService(JdbcTemplate jdbcTemplate, MultiTenancyProperties multiTenancyProperties) {
-        return new TenantSchemaInitService(jdbcTemplate, multiTenancyProperties);
+    public TenantInitDataSourceService tenantSchemaInitService(MultiTenancyProperties multiTenancyProperties) {
+        return new TenantSchemaInitService(multiTenancyProperties);
     }
 
     @Bean

@@ -9,7 +9,7 @@ import lombok.Getter;
  * @crateTime 2024年11月07日 21:27
  */
 @Getter
-public class DisableTenantEvent  extends TenantEvent {
+public class DisableTenantEvent extends TenantEvent {
 
     private final String tenantKey;
 

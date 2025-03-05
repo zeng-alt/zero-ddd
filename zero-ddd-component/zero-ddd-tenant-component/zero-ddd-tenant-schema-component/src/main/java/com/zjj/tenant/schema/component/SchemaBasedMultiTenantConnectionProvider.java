@@ -7,6 +7,7 @@ import com.zjj.autoconfigure.component.tenant.Tenant;
 import com.zjj.tenant.management.component.SpringLiquibase;
 import com.zjj.tenant.management.component.service.TenantCreationException;
 import com.zjj.tenant.management.component.service.TenantDataSourceService;
+import com.zjj.tenant.management.component.service.TenantInitDataSourceService;
 import com.zjj.tenant.management.component.spi.TenantSingleDataSourceProvider;
 import com.zjj.tenant.management.component.utils.SpringLiquibaseUtils;
 import jakarta.annotation.PostConstruct;
@@ -18,6 +19,7 @@ import org.hibernate.service.UnknownUnwrapTypeException;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -42,13 +44,15 @@ public class SchemaBasedMultiTenantConnectionProvider implements MultiTenantConn
     private final String masterTenant;
     private final boolean isUppercase;
     private final MultiTenancyProperties tenancyProperties;
+    private final TenantInitDataSourceService tenantInitDataSourceService;
 
     private LoadingCache<String, String> tenantSchemas;
 
 
-    public SchemaBasedMultiTenantConnectionProvider(DataSource datasource, MultiTenancyProperties tenancyProperties, TenantSingleDataSourceProvider tenantSingleDataSourceProvider) {
+    public SchemaBasedMultiTenantConnectionProvider(DataSource datasource, MultiTenancyProperties tenancyProperties, TenantSingleDataSourceProvider tenantSingleDataSourceProvider, TenantInitDataSourceService tenantInitDataSourceService) {
         this.datasource = datasource;
         this.tenantSingleDataSourceProvider = tenantSingleDataSourceProvider;
+        this.tenantInitDataSourceService = tenantInitDataSourceService;
         this.masterTenant = tenancyProperties.getMaster();
         this.tenancyProperties = tenancyProperties;
         try(Connection connection = datasource.getConnection()) {
@@ -137,13 +141,16 @@ public class SchemaBasedMultiTenantConnectionProvider implements MultiTenantConn
 
     @Override
     public void verify(Tenant tenant) {
+
         if (tenant.getSchema() == null || !tenant.getSchema().matches(VALID_SCHEMA_NAME_REGEXP)) {
-            throw new TenantCreationException("Invalid schema name: " + tenant.getSchema());
+            throw new IllegalArgumentException("Invalid schema name: " + tenant.getSchema());
         }
+
     }
 
     @Override
     public DataSource createDatasource(Tenant tenant) {
+        this.tenantInitDataSourceService.initDataSource(tenant, datasource);
         return datasource;
     }
 

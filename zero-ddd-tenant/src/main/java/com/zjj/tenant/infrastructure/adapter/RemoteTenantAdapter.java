@@ -33,6 +33,7 @@ public class RemoteTenantAdapter implements RemoteTenantApi {
                             .db(dataSource.getDb())
                             .password(dataSource.getPassword())
                             .schema(dataSource.getSchema())
+                            .mode(dataSource.getMode())
                             .build();
                 });
     }
@@ -48,6 +49,7 @@ public class RemoteTenantAdapter implements RemoteTenantApi {
                             .db(dataSource.getDb())
                             .password(dataSource.getPassword())
                             .schema(dataSource.getSchema())
+                            .mode(dataSource.getMode())
                             .build();
                 })
                 .toList();

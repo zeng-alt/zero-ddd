@@ -35,7 +35,7 @@ public class TenantDatabaseAutoConfiguration {
             TenantSingleDataSourceProvider tenantSingleDataSourceProvider,
             MultiTenancyProperties multiTenancyProperties,
             CurrentTenantIdentifierResolver<String> currentTenantIdentifierResolver,
-            ObjectProvider<TenantDatabaseInitService> tenantDatabaseInitService
+            TenantInitDataSourceService tenantDatabaseInitService
     ) {
 
         return new TenantDataBaseRoutingDatasource(
@@ -61,7 +61,7 @@ public class TenantDatabaseAutoConfiguration {
     }
 
     @Bean
-    public TenantInitDataSourceService tenantInitDataSourceService(JdbcTemplate jdbcTemplate, MultiTenancyProperties multiTenancyProperties) {
-        return new TenantDatabaseInitService(jdbcTemplate, multiTenancyProperties);
+    public TenantInitDataSourceService tenantInitDataSourceService(MultiTenancyProperties multiTenancyProperties) {
+        return new TenantDatabaseInitService(multiTenancyProperties);
     }
 }

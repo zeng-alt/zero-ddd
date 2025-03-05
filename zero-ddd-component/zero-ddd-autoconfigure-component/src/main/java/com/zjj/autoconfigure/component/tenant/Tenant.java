@@ -42,11 +42,12 @@ public class Tenant {
 
     public Tenant() {}
 
-    Tenant(String tenantId, String db, String password, String schema) {
+    Tenant(String tenantId, String db, String password, String schema, Mode mode) {
         this.tenantId = tenantId;
         this.db = db;
         this.password = password;
         this.schema = schema;
+        this.mode = mode;
     }
 
     public static TenantDbBuilder dbBuilder() {
@@ -78,7 +79,7 @@ public class Tenant {
         }
 
         public Tenant build() {
-            return new Tenant(this.tenantId, null, null, schema);
+            return new Tenant(this.tenantId, null, null, schema, Mode.SCHEMA);
         }
 
         public String toString() {
@@ -114,7 +115,7 @@ public class Tenant {
 
 
         public Tenant build() {
-            return new Tenant(this.tenantId, this.db, this.password, null);
+            return new Tenant(this.tenantId, this.db, this.password, null, Mode.DATABASE);
         }
 
         public String toString() {
@@ -127,6 +128,7 @@ public class Tenant {
         private String db;
         private String password;
         private String schema;
+        private Mode mode;
 
         TenantBuilder() {
         }
@@ -151,8 +153,18 @@ public class Tenant {
             return this;
         }
 
+        public TenantBuilder mode(String mode) {
+            this.mode = Mode.of(mode);
+            return this;
+        }
+
+        public TenantBuilder mode(Mode mode) {
+            this.mode = mode;
+            return this;
+        }
+
         public Tenant build() {
-            return new Tenant(this.tenantId, this.db, this.password, this.schema);
+            return new Tenant(this.tenantId, this.db, this.password, this.schema, this.mode);
         }
 
         public String toString() {

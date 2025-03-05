@@ -26,14 +26,14 @@ public class TenantManagementServiceImpl implements TenantManagementService, Ini
     private final LiquibaseProperties liquibaseProperties;
     private final ResourceLoader resourceLoader;
     private final TenantDataSourceService tenantDataSourceService;
-    private final TenantInitDataSourceService tenantInitDataSourceService;
+//    private final TenantInitDataSourceService tenantInitDataSourceService;
     private Lock lock;
 
-    public TenantManagementServiceImpl(LiquibaseProperties liquibaseProperties, ResourceLoader resourceLoader, TenantDataSourceService tenantDataSourceService, TenantInitDataSourceService tenantInitDataSourceService, Lock lock) {
+    public TenantManagementServiceImpl(LiquibaseProperties liquibaseProperties, ResourceLoader resourceLoader, TenantDataSourceService tenantDataSourceService, Lock lock) {
         this.liquibaseProperties = liquibaseProperties;
         this.resourceLoader = resourceLoader;
         this.tenantDataSourceService = tenantDataSourceService;
-        this.tenantInitDataSourceService = tenantInitDataSourceService;
+//        this.tenantInitDataSourceService = tenantInitDataSourceService;
         this.lock = lock;
     }
 

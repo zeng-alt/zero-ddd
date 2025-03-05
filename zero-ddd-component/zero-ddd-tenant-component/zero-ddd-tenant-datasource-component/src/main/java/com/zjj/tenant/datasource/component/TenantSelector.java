@@ -5,6 +5,8 @@ import com.zjj.tenant.database.component.TenantDatabaseAutoConfiguration;
 import com.zjj.tenant.management.component.config.DataSourceConfiguration;
 import com.zjj.tenant.management.component.config.LiquibaseConfiguration;
 import com.zjj.tenant.management.component.config.TenantManagementAutoConfiguration;
+import com.zjj.tenant.mix.component.TenantMixedAutoConfiguration;
+import com.zjj.tenant.mix.component.TenantMixedRoutingDatasource;
 import com.zjj.tenant.schema.component.TenantSchemaAutoConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.ImportSelector;
@@ -56,6 +58,20 @@ final class TenantSelector implements ImportSelector {
             }
             log.info("Enable schema multi-tenancy mode!!!");
         }
+
+        if ((annotation.mode() == TenantMode.MIXED)) {
+            imports.add(DataSourceConfiguration.class.getName());
+            imports.add(TenantMixedAutoConfiguration.class.getName());
+            if (annotation.dynamicLiquibase()) {
+                imports.add(TenantManagementAutoConfiguration.class.getName());
+            }
+            if (annotation.enabledLiquibase()) {
+                imports.add(LiquibaseConfiguration.class.getName());
+            }
+            log.info("Enable mixed multi-tenancy mode!!!");
+        }
+
+
         if (annotation.mode() == TenantMode.COLUMN) {
             log.info("Enable column multi-tenancy mode!!!");
         }
