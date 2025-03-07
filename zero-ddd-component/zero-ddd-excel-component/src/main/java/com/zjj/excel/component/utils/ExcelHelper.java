@@ -9,13 +9,16 @@ import com.zjj.excel.component.domain.DefaultExcelListenerSuccess;
 import com.zjj.excel.component.domain.ExcelSuccessListener;
 import com.zjj.excel.component.dynamic.InterfaceDynamicColumn;
 import com.zjj.excel.component.dynamic.DynamicEntity;
+import com.zjj.excel.component.handler.I18nHeadWriteHandler;
 import com.zjj.excel.component.listener.DefaultDynamicReadListener;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.util.ClassUtils;
 import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
@@ -24,6 +27,8 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * @author zengJiaJun
@@ -115,12 +120,18 @@ public class ExcelHelper {
 	 * @param os 输出流
 	 */
 	public static <T> void exportExcel(List<T> list, String sheetName, Class<T> clazz, OutputStream os) {
-		FastExcelFactory.write(os, clazz).autoCloseStream(false)
+		FastExcelFactory.write(os, clazz)
+				.autoCloseStream(false)
+				// i18n国际化
+				.registerWriteHandler(new I18nHeadWriteHandler())
 				// 自动适配
 				.registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
 				// 大数值自动转换 防止失真
 				// .registerConverter(new ExcelBigNumberConvert())
-				.sheet(sheetName).doWrite(list);
+				.sheet(sheetName)
+				.doWrite(list);
+
+
 	}
 
 	/**

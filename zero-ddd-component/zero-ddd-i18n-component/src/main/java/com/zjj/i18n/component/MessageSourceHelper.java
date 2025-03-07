@@ -6,6 +6,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.lang.Nullable;
+import org.springframework.util.StringUtils;
 
 import java.util.Locale;
 
@@ -25,6 +26,18 @@ public class MessageSourceHelper implements ApplicationContextAware {
 
     public static MessageSourceHelper create() {
         return new MessageSourceHelper();
+    }
+
+
+    public static String toMessage(String code) {
+        if (!isCode(code)) {
+            return code;
+        }
+        return getMessage(code, code);
+    }
+
+    public static boolean isCode(String code) {
+        return StringUtils.hasText(code) && code.startsWith("{") && code.endsWith("}");
     }
 
 
