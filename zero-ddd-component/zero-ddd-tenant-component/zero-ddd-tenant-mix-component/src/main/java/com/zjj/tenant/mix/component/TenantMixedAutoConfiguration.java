@@ -27,16 +27,14 @@ public class TenantMixedAutoConfiguration {
             DataSource dataSource,
             DataSourceProperties dataSourceProperties,
             TenantSingleDataSourceProvider tenantSingleDataSourceProvider,
-            MultiTenancyProperties multiTenancyProperties,
-            CurrentTenantIdentifierResolver<String> currentTenantIdentifierResolver
+            MultiTenancyProperties multiTenancyProperties
     ) {
 
         return new TenantMixedRoutingDatasource(
                 dataSource,
                 dataSourceProperties,
                 tenantSingleDataSourceProvider,
-                multiTenancyProperties,
-                currentTenantIdentifierResolver
+                multiTenancyProperties
         );
     }
 

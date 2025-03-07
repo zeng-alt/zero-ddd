@@ -1,17 +1,16 @@
 package com.zjj.tenant.mix.component;
 
-import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.github.benmanes.caffeine.cache.RemovalListener;
 import com.zaxxer.hikari.HikariDataSource;
 import com.zjj.autoconfigure.component.tenant.MultiTenancyProperties;
 import com.zjj.autoconfigure.component.tenant.Tenant;
+import com.zjj.autoconfigure.component.tenant.TenantContextHolder;
 import com.zjj.tenant.database.component.TenantConnectionService;
 import com.zjj.tenant.database.component.TenantDataSourceException;
 import com.zjj.tenant.database.component.TenantDatabaseInitService;
 import com.zjj.tenant.management.component.SpringLiquibase;
-import com.zjj.tenant.management.component.service.TenantCreationException;
 import com.zjj.tenant.management.component.service.TenantDataSourceService;
 import com.zjj.tenant.management.component.service.TenantInitDataSourceService;
 import com.zjj.tenant.management.component.spi.TenantSingleDataSourceProvider;
@@ -21,8 +20,6 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import liquibase.exception.LiquibaseException;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.core.io.ResourceLoader;
@@ -39,15 +36,17 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
-public class TenantMixedRoutingDatasource extends AbstractRoutingDataSource implements TenantDataSourceService, TenantConnectionService {
+public class TenantMixedRoutingDatasource extends AbstractRoutingDataSource implements TenantDataSourceService, TenantConnectionService<String> {
 
     private static final String TENANT_POOL_NAME_SUFFIX = "DataSource";
     private static final String VALID_DATABASE_NAME_REGEXP = "\\w*";
+
+    // key为db, value为datasource
     private LoadingCache<String, DataSource> tenantDataSources;
 
     private final DataSourceProperties dataSourceProperties;
     private final TenantSingleDataSourceProvider tenantSingleDataSourceProvider;
-    private final CurrentTenantIdentifierResolver<String> currentTenantIdentifierResolver;
+//    private final CurrentTenantIdentifierResolver<TenantKey> currentTenantIdentifierResolver;
     private final MultiTenancyProperties multiTenancyProperties;
     private final TenantInitDataSourceService tenantDatabaseInitService;
     private final TenantInitDataSourceService tenantSchemaInitService;
@@ -76,8 +75,7 @@ public class TenantMixedRoutingDatasource extends AbstractRoutingDataSource impl
             DataSource dataSource,
             DataSourceProperties dataSourceProperties,
             TenantSingleDataSourceProvider tenantSingleDataSourceProvider,
-            MultiTenancyProperties multiTenancyProperties,
-            CurrentTenantIdentifierResolver<String> currentTenantIdentifierResolver
+            MultiTenancyProperties multiTenancyProperties
     ) {
         this.setDefaultTargetDataSource(dataSource);
         this.setTargetDataSources(new HashMap<>());
@@ -85,13 +83,18 @@ public class TenantMixedRoutingDatasource extends AbstractRoutingDataSource impl
         this.dataSourceProperties = dataSourceProperties;
         this.tenantSingleDataSourceProvider = tenantSingleDataSourceProvider;
         this.multiTenancyProperties = multiTenancyProperties;
-        this.currentTenantIdentifierResolver = currentTenantIdentifierResolver;
+//        this.currentTenantIdentifierResolver = currentTenantIdentifierResolver;
         this.tenantDatabaseInitService = new TenantDatabaseInitService(multiTenancyProperties);
         this.tenantSchemaInitService = new TenantSchemaInitService(multiTenancyProperties);
     }
 
+    @Override
     public Connection getConnection(String tenantIdentifier) throws SQLException {
-        return this.determineTargetDataSource(tenantIdentifier).getConnection();
+        Connection connection = this.determineTargetDataSource(TenantContextHolder.getDatabase()).getConnection();
+        if (StringUtils.hasText(TenantContextHolder.getSchema())) {
+            connection.setSchema(TenantContextHolder.getSchema());
+        }
+        return connection;
     }
 
 
@@ -135,7 +138,7 @@ public class TenantMixedRoutingDatasource extends AbstractRoutingDataSource impl
 
     @Override
     protected @NonNull Object determineCurrentLookupKey() {
-        return currentTenantIdentifierResolver.resolveCurrentTenantIdentifier();
+        return TenantContextHolder.getTenantId();
     }
 
     @Override

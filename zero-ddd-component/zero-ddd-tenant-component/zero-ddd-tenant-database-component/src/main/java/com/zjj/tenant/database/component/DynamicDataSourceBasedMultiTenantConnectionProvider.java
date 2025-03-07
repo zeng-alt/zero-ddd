@@ -14,13 +14,13 @@ import java.sql.SQLException;
 
 @RequiredArgsConstructor
 @Slf4j
-public class DynamicDataSourceBasedMultiTenantConnectionProvider
-        implements MultiTenantConnectionProvider<String> {
+public class DynamicDataSourceBasedMultiTenantConnectionProvider<K>
+        implements MultiTenantConnectionProvider<K> {
 
     @Serial
     private static final long serialVersionUID = -460277105706399638L;
 
-    private final TenantConnectionService tenantConnectionService;
+    private final TenantConnectionService<K> tenantConnectionService;
 
 
 
@@ -37,13 +37,13 @@ public class DynamicDataSourceBasedMultiTenantConnectionProvider
 
 
     @Override
-    public Connection getConnection(String tenantIdentifier) throws SQLException {
+    public Connection getConnection(K tenantIdentifier) throws SQLException {
         return tenantConnectionService.getConnection(tenantIdentifier);
     }
 
 
     @Override
-    public void releaseConnection(String tenantIdentifier, Connection connection) throws SQLException {
+    public void releaseConnection(K tenantIdentifier, Connection connection) throws SQLException {
         connection.close();
     }
 

@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit;
  * @crateTime 2024年12月04日 11:42
  */
 @Slf4j
-public class TenantDataBaseRoutingDatasource extends AbstractRoutingDataSource implements TenantDataSourceService, TenantConnectionService {
+public class TenantDataBaseRoutingDatasource extends AbstractRoutingDataSource implements TenantDataSourceService, TenantConnectionService<String> {
     private static final String TENANT_POOL_NAME_SUFFIX = "DataSource";
     private static final String VALID_DATABASE_NAME_REGEXP = "\\w*";
     private LoadingCache<String, DataSource> tenantDataSources;

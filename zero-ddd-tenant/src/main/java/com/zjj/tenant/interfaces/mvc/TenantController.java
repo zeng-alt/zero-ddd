@@ -40,6 +40,8 @@ public class TenantController extends AbstractTxController {
                 tenantHandler.handler(stockInTenantFormTransform.transform(stockInTenantForm))
         );
 
+//        this.handler(stockInTenantFormTransform.transform(stockInTenantForm));
+
         return "ok";
     }
 

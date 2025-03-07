@@ -341,6 +341,8 @@ public class SecurityUser implements UserDetails, TenantDetail, CredentialsConta
         private boolean disabled;
 
         private String tenant;
+        private String database;
+        private String schema;
 
         private Function<String, String> passwordEncoder = (password) -> password;
 
@@ -500,6 +502,16 @@ public class SecurityUser implements UserDetails, TenantDetail, CredentialsConta
 
         public SecurityUser.UserBuilder currentRole(String currentRole) {
             this.currentRole = currentRole;
+            return this;
+        }
+
+        public SecurityUser.UserBuilder database(String database) {
+            this.database = database;
+            return this;
+        }
+
+        public SecurityUser.UserBuilder schema(String schema) {
+            this.schema = schema;
             return this;
         }
 
