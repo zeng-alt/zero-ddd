@@ -1,0 +1,18 @@
+spring:
+  messages:
+    basename: messages
+  modulith:
+    detection-strategy: explicitly-annotated
+    events:
+      republish-outstanding-events-on-restart: true
+      externalization:
+        enabled: true
+  datasource:
+    url: jdbc:h2:mem:mydb
+    username: sa
+    password:
+    driverClassName: org.h2.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+  h2:
+    console:
+      enabled: true
