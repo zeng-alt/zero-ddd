@@ -1,11 +1,13 @@
 package com.zjj.example.config;
 
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.DirectExchange;
-import org.springframework.amqp.core.Queue;
+import com.zjj.example.ExampleApplication;
+import org.springframework.amqp.core.*;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.modulith.events.ApplicationModuleListener;
 
 /**
  * @author zengJiaJun
@@ -15,9 +17,12 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitConfig {
 
+    @Value("${spring.application.name}")
+    private String name;
+
     @Bean
     public Queue queue() {
-        return new Queue("ddd-event-test");
+        return new Queue(name);
     }
 
 
@@ -30,5 +35,14 @@ public class RabbitConfig {
     Binding bindingExchangeA(Queue queue, DirectExchange eventExchange) {
         return BindingBuilder.bind(queue).to(eventExchange).withQueueName();
     }
+
+    @Bean
+    public MessageConverter jsonMessageConverter() {
+        return new Jackson2JsonMessageConverter();
+    }
+
+
+
+
 
 }

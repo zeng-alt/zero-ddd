@@ -47,7 +47,7 @@ public class UserService {
 
 
     @Data
-    @Externalized("ddd-event-test")
+    @Externalized("ddd-event-test::zero-example")
     public static class ExternalizedUserEvent {
         private String name;
         private Integer age;

@@ -1,4 +1,14 @@
 spring:
+  application:
+    name: zero-example
+  rabbitmq:
+    virtual-host: /
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    publisher-returns: true # 队列确认
+    publisher-confirm-type: correlated # 交换机确认
   messages:
     basename: messages
   modulith:
