@@ -9,6 +9,7 @@ import com.zjj.core.component.utils.ClassUtils;
 import com.zjj.excel.component.dynamic.AbaDynamicColumn;
 import com.zjj.excel.component.dynamic.DynamicEntity;
 import com.zjj.excel.component.dynamic.InterfaceDynamicColumn;
+import com.zjj.excel.component.exception.DynamicReadExcelException;
 import com.zjj.excel.component.utils.ValidaHelper;
 import com.zjj.i18n.component.MessageSourceHelper;
 import io.vavr.Tuple;
@@ -96,7 +97,7 @@ public abstract class DynamicReadListener<T extends InterfaceDynamicColumn<E>, E
                         try {
                             m.invoke(object, data);
                         } catch (IllegalAccessException | InvocationTargetException e) {
-                            throw new RuntimeException("访问 [" + value.getFieldName() + "] 的set方法权限不够，或者没有找到set方法！！！");
+                            throw new DynamicReadExcelException("访问 [" + value.getFieldName() + "] 的set方法权限不够，或者没有找到set方法！！！");
                         }
                     });
 

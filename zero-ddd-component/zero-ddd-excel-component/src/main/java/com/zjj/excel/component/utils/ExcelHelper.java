@@ -5,6 +5,7 @@ import cn.idev.excel.ExcelWriter;
 import cn.idev.excel.FastExcelFactory;
 import cn.idev.excel.write.metadata.WriteSheet;
 import cn.idev.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
+import com.zjj.excel.component.configuration.ExcelTemplate;
 import com.zjj.excel.component.domain.DefaultExcelListenerSuccess;
 import com.zjj.excel.component.domain.ExcelSuccessListener;
 import com.zjj.excel.component.dynamic.InterfaceDynamicColumn;
@@ -13,12 +14,11 @@ import com.zjj.excel.component.handler.I18nHeadWriteHandler;
 import com.zjj.excel.component.listener.DefaultDynamicReadListener;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.util.ClassUtils;
 import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
@@ -27,16 +27,15 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * @author zengJiaJun
  * @version 1.0
  * @crateTime 2024年07月05日 20:32
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class ExcelHelper {
+public class ExcelHelper implements BeanFactoryPostProcessor {
+	
+	private static ExcelTemplate excelTemplate;
 
 
 	public static <T extends InterfaceDynamicColumn<E>, E extends DynamicEntity> void exportDynamicExcel(List<T> list, OutputStream os) {
@@ -46,7 +45,7 @@ public class ExcelHelper {
 		List<List<String>> heads = t.getHeads();
 		List<List<String>> data = t.getData();
 
-		FastExcelFactory
+		excelTemplate
 				.write(os)
 				.autoCloseStream(false)
 				.registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
@@ -56,8 +55,8 @@ public class ExcelHelper {
 
 	public static <T extends InterfaceDynamicColumn<E>, E extends DynamicEntity> List<T> importDynamicExcel(InputStream is, Class<T> clazz) {
 		DefaultDynamicReadListener<T, E> dynamicReadListener = new DefaultDynamicReadListener<>(clazz);
-		FastExcelFactory
-				.read(is)
+		excelTemplate
+				.read(is, clazz)
 				.head(clazz)
 				.autoCloseStream(false)
 				.registerReadListener(dynamicReadListener)
@@ -74,7 +73,7 @@ public class ExcelHelper {
 	 * @return 转换后集合
 	 */
 	public static <T> List<T> importExcel(InputStream is, Class<T> clazz) {
-		return FastExcelFactory.read(is).head(clazz).autoCloseStream(false).sheet().doReadSync();
+		return excelTemplate.read(is, clazz).head(clazz).autoCloseStream(false).sheet().doReadSync();
 	}
 
 	/**
@@ -86,7 +85,7 @@ public class ExcelHelper {
 	 */
 	public static <T> List<T> importExcel(InputStream is, Class<T> clazz, boolean isValidate) {
 		DefaultExcelListenerSuccess<T> listener = new DefaultExcelListenerSuccess<>();
-		FastExcelFactory.read(is, clazz, listener).sheet().doRead();
+		excelTemplate.read(is, clazz, listener).sheet().doRead();
 		return listener.getResult();
 	}
 
@@ -98,7 +97,7 @@ public class ExcelHelper {
 	 * @return 转换后集合
 	 */
 	public static <T> List<T> importExcel(InputStream is, Class<T> clazz, ExcelSuccessListener<T> listener) {
-		FastExcelFactory.read(is, clazz, listener).sheet().doRead();
+		excelTemplate.read(is, clazz, listener).sheet().doRead();
 		return listener.getResult();
 	}
 
@@ -120,14 +119,14 @@ public class ExcelHelper {
 	 * @param os 输出流
 	 */
 	public static <T> void exportExcel(List<T> list, String sheetName, Class<T> clazz, OutputStream os) {
-		FastExcelFactory.write(os, clazz)
+		excelTemplate.write(os, clazz)
 				.autoCloseStream(false)
 				// i18n国际化
 				.registerWriteHandler(new I18nHeadWriteHandler())
 				// 自动适配
 				.registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
 				// 大数值自动转换 防止失真
-				// .registerConverter(new ExcelBigNumberConvert())
+//				 .registerConverter(new ExcelBigNumberConvert())
 				.sheet(sheetName)
 				.doWrite(list);
 
@@ -164,7 +163,7 @@ public class ExcelHelper {
 	public static void exportTemplate(Collection<Object> data, String templatePath, OutputStream os)
 			throws IOException {
 		ClassPathResource templateResource = new ClassPathResource(templatePath);
-		ExcelWriter excelWriter = FastExcelFactory.write(os).withTemplate(templateResource.getInputStream())
+		ExcelWriter excelWriter = excelTemplate.write(os).withTemplate(templateResource.getInputStream())
 				.autoCloseStream(false)
 				// 大数值自动转换 防止失真
 				// .registerConverter(new ExcelBigNumberConvert())
@@ -198,4 +197,17 @@ public class ExcelHelper {
 		response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8");
 	}
 
+	/**
+	 * Modify the application context's internal bean factory after its standard
+	 * initialization. All bean definitions will have been loaded, but no beans
+	 * will have been instantiated yet. This allows for overriding or adding
+	 * properties even to eager-initializing beans.
+	 *
+	 * @param beanFactory the bean factory used by the application context
+	 * @throws BeansException in case of errors
+	 */
+	@Override
+	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+		ExcelHelper.excelTemplate = beanFactory.getBean(ExcelTemplate.class);
+	}
 }

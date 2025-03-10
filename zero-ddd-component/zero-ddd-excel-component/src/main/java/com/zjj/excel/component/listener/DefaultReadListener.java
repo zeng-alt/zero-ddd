@@ -16,6 +16,7 @@ public class DefaultReadListener<T> extends AbstractReadListener<T> {
 
     private BiConsumer<T, AnalysisContext> invokeConsumer;
     private Consumer<AnalysisContext> doAfterConsumer;
+    private BiConsumer<Exception, AnalysisContext> onExceptionConsumer;
 
     public DefaultReadListener(Class<T> clazz) {
         super(clazz);
@@ -41,7 +42,11 @@ public class DefaultReadListener<T> extends AbstractReadListener<T> {
     }
 
     @Override
-    public void onException(Exception exception, AnalysisContext context) {
-        System.out.println(exception.getMessage());
+    public void onException(Exception exception, AnalysisContext context) throws Exception {
+        if (onExceptionConsumer != null) {
+            onExceptionConsumer.accept(exception, context);
+        } else {
+            super.onException(exception, context);
+        }
     }
 }
