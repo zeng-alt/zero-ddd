@@ -89,6 +89,11 @@
         </dependency>
 
         <dependency>
+            <groupId>com.zjj</groupId>
+            <artifactId>zero-ddd-bean-component</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>io.github.linpeilie</groupId>
             <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
         </dependency>

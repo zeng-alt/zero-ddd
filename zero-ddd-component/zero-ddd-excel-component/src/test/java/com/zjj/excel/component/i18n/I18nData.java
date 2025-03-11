@@ -3,6 +3,7 @@ package com.zjj.excel.component.i18n;
 import cn.idev.excel.annotation.ExcelIgnore;
 import cn.idev.excel.annotation.ExcelProperty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.util.Date;
@@ -15,9 +16,10 @@ import java.util.Date;
 @Data
 public class I18nData {
 
-    @NotNull
+    @Size(min = 1, max = 1000)
     @ExcelProperty("字符串标题")
     private String stringt;
+    @Size(min = 1, max = 20)
     @ExcelProperty("{writeData.string}")
     private String string;
     @ExcelProperty("{writeData.string}")

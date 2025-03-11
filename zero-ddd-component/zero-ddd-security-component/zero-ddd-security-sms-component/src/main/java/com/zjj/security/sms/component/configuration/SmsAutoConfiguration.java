@@ -42,8 +42,14 @@ public class SmsAutoConfiguration {
 	}
 
 	private Cache<Object, Object> codeCache() {
-		return Caffeine.newBuilder().initialCapacity(100).maximumSize(500).expireAfterAccess(1, TimeUnit.MINUTES)
-				.weakKeys().recordStats().build();
+		return Caffeine
+				.newBuilder()
+				.initialCapacity(100)
+				.maximumSize(500)
+				.expireAfterAccess(1, TimeUnit.MINUTES)
+				.weakKeys()
+				.recordStats()
+				.build();
 	}
 
 	@Bean

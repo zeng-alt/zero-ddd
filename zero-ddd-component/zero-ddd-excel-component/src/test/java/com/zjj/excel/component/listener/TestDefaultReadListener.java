@@ -2,7 +2,10 @@ package com.zjj.excel.component.listener;
 
 import cn.idev.excel.FastExcelFactory;
 import cn.idev.excel.read.listener.PageReadListener;
+import com.zjj.bean.componenet.ApplicationContextHelper;
 import com.zjj.excel.component.i18n.I18nData;
+import jakarta.annotation.Resource;
+import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -20,6 +23,8 @@ import java.util.function.Consumer;
 @SpringBootTest
 public class TestDefaultReadListener {
 
+    @Resource
+    private ValidatorFactory validatorFactory;
 
     @Test
     public void testConstructor() {
