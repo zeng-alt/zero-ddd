@@ -28,7 +28,7 @@ public class ConstraintsTest {
 
     @Test
     public void testSize() throws JsonProcessingException {
-        SizeImpl size = new SizeImpl("出错了", "4", "5");
+        SizeImpl size = new SizeImpl("4", "5");
         String s = objectMapper.writeValueAsString(size);
         SizeImpl size1 = objectMapper.readValue(s, SizeImpl.class);
         SizeValidatorForCharSequence validator1 = new SizeValidatorForCharSequence();

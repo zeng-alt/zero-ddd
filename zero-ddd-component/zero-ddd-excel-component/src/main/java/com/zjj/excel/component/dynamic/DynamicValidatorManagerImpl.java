@@ -1,11 +1,13 @@
 package com.zjj.excel.component.dynamic;
 
+import com.google.common.collect.Lists;
 import com.zjj.excel.component.dynamic.constraints.SizeImpl;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorFactory;
 import jakarta.validation.Payload;
 import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.Size;
+import org.apache.commons.collections4.ListUtils;
 import org.hibernate.validator.internal.util.Contracts;
 import org.hibernate.validator.internal.util.logging.Log;
 import org.hibernate.validator.internal.util.logging.LoggerFactory;
@@ -30,14 +32,14 @@ public class DynamicValidatorManagerImpl implements DynamicValidatorManager {
 
     private static final Log LOG = LoggerFactory.make( MethodHandles.lookup() );
     private final ConstraintValidatorFactory defaultConstraintValidatorFactory;
-    private final ConcurrentHashMap<CacheKey, ConstraintValidator<?, ?>> constraintValidatorCache;
+    private final ConcurrentHashMap<CacheKey, DynamicConstraintValidator> constraintValidatorCache;
     private final DynamicAttributeService dynamicAttributeService;
 
     /**
      * Dummy {@code ConstraintValidator} used as placeholder for the case that for a given context there exists
      * no matching constraint validator instance
      */
-    private static final ConstraintValidator<?, ?> DUMMY_CONSTRAINT_VALIDATOR = (ConstraintValidator<Null, Object>) (value, context) -> false;
+    private static final DynamicConstraintValidator DUMMY_CONSTRAINT_VALIDATOR = DynamicConstraintValidator.of((ConstraintValidator<Null, Object>) (value, context) -> false, "不能为空");
 
     public DynamicValidatorManagerImpl(ConstraintValidatorFactory defaultConstraintValidatorFactory, DynamicAttributeService dynamicAttributeService) {
         this.defaultConstraintValidatorFactory = defaultConstraintValidatorFactory;
@@ -51,12 +53,12 @@ public class DynamicValidatorManagerImpl implements DynamicValidatorManager {
     }
 
     @Override
-    public <A extends Annotation> ConstraintValidator<A, ?> getInitializedValidator(CacheKey cacheKey) {
+    public DynamicConstraintValidator getInitializedValidator(CacheKey cacheKey) {
         Contracts.assertNotNull(cacheKey);
         Contracts.assertNotNull(cacheKey.getRawType());
         Contracts.assertNotNull(cacheKey.getRawId());
 
-        ConstraintValidator<A, ?> constraintValidator = (ConstraintValidator<A, ?>) constraintValidatorCache.get(cacheKey);
+        DynamicConstraintValidator constraintValidator =  constraintValidatorCache.get(cacheKey);
 
         if (constraintValidator == null) {
             constraintValidator = createAndInitializeValidator(cacheKey);
@@ -74,7 +76,7 @@ public class DynamicValidatorManagerImpl implements DynamicValidatorManager {
         return temp;
     }
 
-    protected <A extends Annotation> ConstraintValidator<A, ?> createAndInitializeValidator(CacheKey cacheKey) {
+    protected <A extends Annotation> DynamicConstraintValidator createAndInitializeValidator(CacheKey cacheKey) {
 
         DynamicAttributeService.DynamicAttribute<ConstraintValidator<?, ?>> dynamicAttribute = dynamicAttributeService.getDynamicAttribute(cacheKey);
         if (dynamicAttribute == null) {
@@ -85,27 +87,26 @@ public class DynamicValidatorManagerImpl implements DynamicValidatorManager {
         Class<?> annotationType = dynamicAttribute.getAnnotationType();
         String message = dynamicAttribute.getMessage();
         List<String> argument = dynamicAttribute.getArgument();
-        Object[] arguments = new Object[] {};
-        if (!CollectionUtils.isEmpty(argument)) {
+        if (CollectionUtils.isEmpty(argument)) {
             argument = new ArrayList<>();
-            argument.add(message);
-        } else {
-            argument.set(0, message);
         }
 
-        arguments = argument.toArray(new String[0]);
         Constructor<?> resolvableConstructor = BeanUtils.getResolvableConstructor(annotationType);
-        Object o = BeanUtils.instantiateClass(resolvableConstructor, arguments);
+        Class<?>[] parameterTypes = resolvableConstructor.getParameterTypes();
+        for (int i = argument.size(); i < parameterTypes.length; i++) {
+            argument.add(null);
+        }
+        Object o = BeanUtils.instantiateClass(resolvableConstructor, argument.toArray(new String[0]));
         instance.initialize((A) o);
-        return instance;
+        return DynamicConstraintValidator.of(instance, message);
     }
 
 
-    private <A extends Annotation> ConstraintValidator<A, ?> cacheValidator(CacheKey key,
-                                                                            ConstraintValidator<A, ?> constraintValidator) {
+    private DynamicConstraintValidator cacheValidator(CacheKey key,
+                                                      DynamicConstraintValidator constraintValidator) {
 
         @SuppressWarnings("unchecked")
-        ConstraintValidator<A, ?> cached = (ConstraintValidator<A, ?>) constraintValidatorCache.putIfAbsent( key,
+        DynamicConstraintValidator cached = constraintValidatorCache.putIfAbsent( key,
                 constraintValidator != null ? constraintValidator : DUMMY_CONSTRAINT_VALIDATOR );
 
         return cached != null ? cached : constraintValidator;

@@ -16,20 +16,18 @@ import java.lang.annotation.Annotation;
 @Data
 public class SizeImpl implements Size {
 
-     private String message = "{jakarta.validation.constraints.Size.message}";
      private Integer min = 0;
      private Integer max = Integer.MAX_VALUE;
 
     @JsonCreator
-     public SizeImpl(@JsonProperty("name") String message, @JsonProperty("min") String min, @JsonProperty("max") String max) {
-         this.message = message;
+     public SizeImpl(@JsonProperty("min") String min, @JsonProperty("max") String max) {
          this.min = Integer.valueOf(min);
          this.max = Integer.valueOf(max);
      }
 
     @Override
     public String message() {
-        return message;
+        return "{jakarta.validation.constraints.Size.message}";
     }
 
     @Override

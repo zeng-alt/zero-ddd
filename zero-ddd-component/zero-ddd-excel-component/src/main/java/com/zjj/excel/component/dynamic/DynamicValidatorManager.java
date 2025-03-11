@@ -18,11 +18,11 @@ public interface DynamicValidatorManager {
 
     ConstraintValidatorFactory getDefaultConstraintValidatorFactory();
 
-    default <A extends Annotation> ConstraintValidator<A, ?> getInitializedValidator(Long rawId, String rawType) {
+    default DynamicConstraintValidator getInitializedValidator(Long rawId, String rawType) {
         return getInitializedValidator(new CacheKey(rawId, rawType));
     }
 
-    <A extends Annotation> ConstraintValidator<A, ?> getInitializedValidator(CacheKey cacheKey);
+    DynamicConstraintValidator getInitializedValidator(CacheKey cacheKey);
 
     <A extends Annotation> ConstraintValidator<A, ?> removeValidator(CacheKey cacheKey);
 

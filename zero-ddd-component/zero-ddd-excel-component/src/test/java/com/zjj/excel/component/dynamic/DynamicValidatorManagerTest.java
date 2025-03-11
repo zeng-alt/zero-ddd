@@ -1,10 +1,10 @@
 package com.zjj.excel.component.dynamic;
 
+import com.google.common.collect.Lists;
 import com.zjj.excel.component.dynamic.constraints.SizeImpl;
+import com.zjj.excel.component.i18n.I18nData;
 import jakarta.annotation.Resource;
-import jakarta.validation.ConstraintValidator;
-import jakarta.validation.ConstraintValidatorContext;
-import jakarta.validation.ConstraintValidatorFactory;
+import jakarta.validation.*;
 import org.hibernate.validator.internal.constraintvalidators.bv.size.SizeValidatorForCharSequence;
 import org.hibernate.validator.internal.engine.constraintvalidation.ConstraintValidatorContextImpl;
 import org.hibernate.validator.internal.engine.valuecontext.ValueContext;
@@ -18,6 +18,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * @author zengJiaJun
@@ -29,6 +30,8 @@ public class DynamicValidatorManagerTest {
 
     @Resource
     private LocalValidatorFactoryBean localValidatorFactoryBean;
+    @Resource
+    private Validator validator;
     private DynamicValidatorManager dynamicValidatorManager;
     private DynamicAttributeService dynamicAttributeService;
 
@@ -40,7 +43,7 @@ public class DynamicValidatorManagerTest {
                 DynamicAttribute dynamicAttribute = new DynamicAttribute();
                 dynamicAttribute.setValidator(SizeValidatorForCharSequence.class);
                 dynamicAttribute.setAnnotationType(SizeImpl.class);
-                dynamicAttribute.setArgument(List.of("2", "10"));
+                dynamicAttribute.setArgument(Lists.newArrayList("2", "10"));
                 dynamicAttribute.setMessage("长度在2-10之间");
                 return dynamicAttribute;
             }
@@ -52,18 +55,17 @@ public class DynamicValidatorManagerTest {
 
     @Test
     public void testGetInitializedValidator() throws InvocationTargetException, IllegalAccessException {
-        ConstraintValidator<Annotation, ?> initializedValidator = dynamicValidatorManager.getInitializedValidator(11234L, "123445");
+        I18nData i18nData = new I18nData();
+        i18nData.setString("1234");
+        validator.validateValue(I18nData.class, "string", i18nData.getString());
+//        Set<ConstraintViolation<I18nData>> validate = validator.validate(i18nData);
+        DynamicConstraintValidator initializedValidator = dynamicValidatorManager.getInitializedValidator(11234L, "123445");
 //        Object invoke = BeanUtils.findMethod(initializedValidator.getClass(), "isValid", String.class, ConstraintValidatorContext.class).invoke("1234", null);
 //        System.out.println(invoke);
-        boolean b = validateSingleConstraint("1234", initializedValidator);
+        boolean b = initializedValidator.isValid(123456);
         System.out.println(b);
     }
 
 
-    protected final <V, A extends Annotation> boolean validateSingleConstraint(
-            Object t,
-            ConstraintValidator<A, V> validator) {
 
-        return validator.isValid((V) t, null);
-    }
 }
