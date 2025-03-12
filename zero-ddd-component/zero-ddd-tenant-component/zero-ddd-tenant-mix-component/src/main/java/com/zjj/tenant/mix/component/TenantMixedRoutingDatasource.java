@@ -62,7 +62,9 @@ public class TenantMixedRoutingDatasource extends AbstractRoutingDataSource impl
                         log.info("Closed datasource: {}", hikariDataSource.getPoolName());
                     }
                 })
-                .build(tenantId -> tenantSingleDataSourceProvider.findById(tenantId).map(this::createAndConfigureDataSource).getOrElse((DataSource) null));
+                .build(tenantId -> {
+                    return tenantSingleDataSourceProvider.findById(tenantId).map(this::createAndConfigureDataSource).getOrElse((DataSource) null);
+                });
 //                .build(new CacheLoader<String, DataSource>() {
 //                    @Override
 //                    public @Nullable DataSource load(String key) throws Exception {
@@ -90,7 +92,8 @@ public class TenantMixedRoutingDatasource extends AbstractRoutingDataSource impl
 
     @Override
     public Connection getConnection(String tenantIdentifier) throws SQLException {
-        Connection connection = this.determineTargetDataSource(TenantContextHolder.getDatabase()).getConnection();
+        tenantIdentifier = StringUtils.hasText(TenantContextHolder.getDatabase()) ? TenantContextHolder.getDatabase() : tenantIdentifier;
+        Connection connection = this.determineTargetDataSource(tenantIdentifier).getConnection();
         if (StringUtils.hasText(TenantContextHolder.getSchema())) {
             connection.setSchema(TenantContextHolder.getSchema());
         }
@@ -98,7 +101,8 @@ public class TenantMixedRoutingDatasource extends AbstractRoutingDataSource impl
     }
 
 
-    protected DataSource determineTargetDataSource(String tenantIdentifier) {
+    protected @NonNull DataSource determineTargetDataSource(@NonNull String tenantIdentifier) {
+        Assert.notNull(tenantIdentifier, "tenantIdentifier cannot be null");
         Assert.notNull(this.tenantDataSources, "DataSource router not initialized");
         DataSource dataSource = null;
         if (multiTenancyProperties.getMaster().equals(tenantIdentifier)) {
@@ -111,9 +115,9 @@ public class TenantMixedRoutingDatasource extends AbstractRoutingDataSource impl
 
         if (dataSource == null) {
             throw new TenantDataSourceException("tenant.datasource.not.exist", (Object) tenantIdentifier);
-        } else {
-            return dataSource;
         }
+
+        return dataSource;
     }
 
     private DataSource createAndConfigureDataSource(Tenant tenant) {
@@ -169,24 +173,25 @@ public class TenantMixedRoutingDatasource extends AbstractRoutingDataSource impl
 
         tenantDatabaseInitService.initDataSource(tenant, getResolvedDefaultDataSource());
 
-        HikariDataSource ds = (HikariDataSource) getResolvedDefaultDataSource();
+        HikariDataSource ds = (HikariDataSource) this.tenantDataSources.getIfPresent(tenant.getDb());
 
-        if (StringUtils.hasText(tenant.getDb())) {
+        if (StringUtils.hasText(tenant.getDb()) && ds == null) {
             ds = dataSourceProperties.initializeDataSourceBuilder().type(HikariDataSource.class).build();
 
-            if (StringUtils.hasText(tenant.getDb())) {
-                ds.setUsername(tenant.getDb());
-            }
+            ds.setUsername(tenant.getDb());
             ds.setPassword(tenant.getPassword());
             ds.setJdbcUrl(multiTenancyProperties.getDatabasePattern().getUrlPrefix() + tenant.getDb());
 
             ds.setPoolName(tenant.getTenantId());
-
             log.info("Configured datasource: {}", ds.getPoolName());
         }
-        if (!Tenant.Mode.DATABASE.equals(tenant.getMode())) {
-            tenantSchemaInitService.initDataSource(tenant, ds);
+
+        tenantSchemaInitService.initDataSource(tenant, ds);
+
+        if (ds == null) {
+            ds = (HikariDataSource) getResolvedDefaultDataSource();
         }
+
         return ds;
     }
 
@@ -200,14 +205,12 @@ public class TenantMixedRoutingDatasource extends AbstractRoutingDataSource impl
 
     @Override
     public void addTenantDataSource(Tenant tenant, DataSource dataSource) {
-        ConcurrentMap<String, DataSource> map = tenantDataSources.asMap();
-        if (map.containsKey(tenant.getTenantId())) {
-            DataSource dataSource1 = tenantDataSources.get(tenant.getTenantId());
-            if (dataSource1 instanceof HikariDataSource hikariDataSource) {
-                hikariDataSource.close();
-            }
-        }
-        tenantDataSources.put(tenant.getTenantId(), dataSource);
+        DataSource cacheDataSource = this.tenantDataSources.getIfPresent(tenant.getDb());
+        if (cacheDataSource != null) return;
+//        if (cacheDataSource instanceof HikariDataSource hikariDataSource) {
+//            hikariDataSource.close();
+//        }
+        tenantDataSources.put(tenant.getDb(), dataSource);
     }
 
     @Override

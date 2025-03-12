@@ -2,8 +2,8 @@ package com.zjj.security.tenant.component.configuration;
 
 import com.zjj.autoconfigure.component.cache.CacheType;
 import com.zjj.security.tenant.component.EnableTenantJwtCache;
-import com.zjj.security.tenant.component.supper.TenantJwtCacheManage;
-import com.zjj.security.tenant.component.supper.TenantJwtL2CacheManage;
+import com.zjj.security.tenant.component.supper.web.TenantJwtCacheManage;
+import com.zjj.security.tenant.component.supper.web.TenantJwtL2CacheManage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.ImportSelector;
 import org.springframework.core.type.AnnotationMetadata;

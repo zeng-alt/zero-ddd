@@ -13,10 +13,11 @@ import org.springframework.modulith.events.Externalized;
  */
 @Getter
 @Setter
-@Externalized
+//@Externalized
 public class CreateTenantDataSourceEvent {
 
     private String tenantKey;
+    private Long id;
     private Long tenantId;
     private String db;
     private String password;
@@ -27,8 +28,16 @@ public class CreateTenantDataSourceEvent {
     public CreateTenantDataSourceEvent() {
     }
 
-    public CreateTenantDataSourceEvent(String tenantKey, StockInTenantDataSourceCmd cmd) {
-        this.tenantKey = tenantKey;
-        BeanUtils.copyProperties(cmd, this);
+    public static CreateTenantDataSourceEvent of(String tenantKey, StockInTenantDataSourceCmd cmd, Long id) {
+        CreateTenantDataSourceEvent createTenantDataSourceEvent = new CreateTenantDataSourceEvent();
+        createTenantDataSourceEvent.setTenantKey(tenantKey);
+        createTenantDataSourceEvent.setId(id);
+        BeanUtils.copyProperties(cmd, createTenantDataSourceEvent);
+        return createTenantDataSourceEvent;
     }
+
+//    public CreateTenantDataSourceEvent(String tenantKey, StockInTenantDataSourceCmd cmd) {
+//        this.tenantKey = tenantKey;
+//        BeanUtils.copyProperties(cmd, this);
+//    }
 }

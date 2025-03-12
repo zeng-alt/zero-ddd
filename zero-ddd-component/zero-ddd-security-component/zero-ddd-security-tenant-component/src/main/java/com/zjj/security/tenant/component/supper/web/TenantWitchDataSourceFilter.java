@@ -1,4 +1,4 @@
-package com.zjj.security.tenant.component.supper;
+package com.zjj.security.tenant.component.supper.web;
 
 import com.zjj.autoconfigure.component.tenant.TenantContextHolder;
 import com.zjj.autoconfigure.component.tenant.TenantDetail;
@@ -32,10 +32,14 @@ public class TenantWitchDataSourceFilter extends OncePerRequestFilter {
                 // no tenant
             } else if (principal instanceof TenantDetail tenantDetail) {
                 TenantContextHolder.setTenantId(tenantDetail.getTenantName());
+                TenantContextHolder.setDatabase(tenantDetail.getDatabase());
+                TenantContextHolder.setSchema(tenantDetail.getSchema());
             } else {
                 log.error("无法转成TenantDetail 查看UserDetailService实现类");
                 throw new ClassCastException("无法转成TenantDetail 查看UserDetailService实现类");
             }
+        } else {
+            // 在用户登录时
         }
 
         try {

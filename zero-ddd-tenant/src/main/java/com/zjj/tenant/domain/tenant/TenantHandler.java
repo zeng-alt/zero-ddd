@@ -27,6 +27,15 @@ public class TenantHandler {
     }
 
 
+    /**
+     * <blockquote><pre>
+     * mode = COLUMN   [db schema column] 数据库中不能有相同的db and schema and column
+     * mode = SCHEMA   [db schema] 数据库中不能有相同的db and schema
+     * mode = DATABASE [db] 数据库中不能有相同的db
+     * </pre></blockquote>
+     *
+     * @param stockCmd 保存数据源
+     */
     @CommandHandler
     public void handler(StockInTenantDataSourceCmd stockCmd) {
         this.tenantRepository

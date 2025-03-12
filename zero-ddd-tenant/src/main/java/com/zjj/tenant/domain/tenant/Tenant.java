@@ -6,6 +6,9 @@ import com.zjj.bean.componenet.BeanHelper;
 import com.zjj.tenant.domain.tenant.cmd.StockInTenantDataSourceCmd;
 import com.zjj.tenant.domain.tenant.cmd.StockInTenantMenuCmd;
 import com.zjj.tenant.domain.tenant.event.*;
+import com.zjj.tenant.infrastructure.db.entity.QMenuResourceEntity;
+import com.zjj.tenant.infrastructure.db.entity.QTenantDataSourceEntity;
+import com.zjj.tenant.infrastructure.db.entity.TenantDataSourceEntity;
 import lombok.Getter;
 import lombok.Setter;
 import org.jmolecules.ddd.types.AggregateRoot;
@@ -110,7 +113,8 @@ public class Tenant implements AggregateRoot<Tenant, TenantId>, TenantAggregate,
         } else {
             tenantDataSource = BeanHelper.copyToObject(sourceCmd, TenantDataSource.class);
         }
-        publishEvent(new CreateTenantDataSourceEvent(this.tenantKey, sourceCmd));
+        this.tenantDataSource.valid();
+        publishEvent(CreateTenantDataSourceEvent.of(this.tenantKey, sourceCmd, this.tenantDataSource.getId()));
         return this;
     }
 

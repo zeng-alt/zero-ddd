@@ -3,8 +3,8 @@ package com.zjj.security.tenant.component.configuration;
 import com.zjj.autoconfigure.component.security.SecurityBuilderCustomizer;
 import com.zjj.autoconfigure.component.tenant.MultiTenancyProperties;
 import com.zjj.autoconfigure.component.tenant.TenantService;
-import com.zjj.security.tenant.component.supper.TenantHeaderFilter;
-import com.zjj.security.tenant.component.supper.TenantWitchDataSourceFilter;
+import com.zjj.security.tenant.component.supper.web.TenantHeaderFilter;
+import com.zjj.security.tenant.component.supper.web.TenantWitchDataSourceFilter;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -14,7 +14,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.header.HeaderWriterFilter;
 
 /**

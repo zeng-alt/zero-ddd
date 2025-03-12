@@ -1,13 +1,11 @@
 package com.zjj.tenant.infrastructure.repository;
 
+import com.zjj.autoconfigure.component.tenant.TenantMode;
 import com.zjj.bean.componenet.BeanHelper;
 import com.zjj.domain.component.DomainBeanHelper;
-import com.zjj.tenant.domain.tenant.TenantId;
+import com.zjj.tenant.domain.tenant.*;
 import com.zjj.tenant.infrastructure.db.entity.TenantEntity;
 import com.zjj.tenant.infrastructure.db.jpa.TenantDao;
-import com.zjj.tenant.domain.tenant.TenantAggregate;
-import com.zjj.tenant.domain.tenant.Tenant;
-import com.zjj.tenant.domain.tenant.TenantRepository;
 import io.vavr.control.Option;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -30,7 +28,17 @@ public class TenantRepositoryImpl implements TenantRepository {
 
     @Override
     public Option<TenantAggregate> findById(Long id) {
-        return tenantDao.findById(id).map(t -> DomainBeanHelper.copyToDomain(t, Tenant.class, TenantId.class));
+        return tenantDao
+                .findById(id)
+                .map(t -> {
+                    Tenant tenant = DomainBeanHelper.copyToDomain(t, Tenant.class, TenantId.class);
+                    if (t.getTenantDataSource() != null) {
+                        TenantDataSource tenantDataSource = BeanHelper.copyToObject(t.getTenantDataSource(), TenantDataSource.class);
+                        tenantDataSource.setMode(TenantMode.valueOf(t.getTenantDataSource().getMode()));
+                        tenant.setTenantDataSource(tenantDataSource);
+                    }
+                    return tenant;
+                });
     }
 
 

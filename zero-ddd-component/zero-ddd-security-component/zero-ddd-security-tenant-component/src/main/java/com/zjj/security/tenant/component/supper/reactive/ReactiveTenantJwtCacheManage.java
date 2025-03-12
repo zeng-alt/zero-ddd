@@ -1,4 +1,4 @@
-package com.zjj.security.tenant.component.supper;
+package com.zjj.security.tenant.component.supper.reactive;
 
 import com.zjj.autoconfigure.component.redis.RedisStringRepository;
 import com.zjj.autoconfigure.component.security.jwt.JwtProperties;

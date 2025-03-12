@@ -67,7 +67,7 @@ public class SecurityUser implements UserDetails, TenantDetail, CredentialsConta
      * Calls the more complex constructor with all boolean arguments set to {@code true}.
      */
     public SecurityUser(String username, String password, Set<String> roles) {
-        this(username, password, null, true, true, true, true, roles, null, null);
+        this(username, password, null, null, null, true, true, true, true, roles, null, null);
         Iterator<String> iterator = roles.iterator();
         if (iterator.hasNext()) {
             setCurrentRole(iterator.next());
@@ -93,7 +93,8 @@ public class SecurityUser implements UserDetails, TenantDetail, CredentialsConta
      */
     @JsonCreator
     public SecurityUser(@JsonProperty("username") String username, @JsonProperty("password") String password,
-                        @JsonProperty("tenant") String tenant, @JsonProperty("enabled") boolean enabled, @JsonProperty("accountNonExpired") boolean accountNonExpired,
+                        @JsonProperty("tenant") String tenant, @JsonProperty("database") String database, @JsonProperty("schema") String schema,
+                        @JsonProperty("enabled") boolean enabled, @JsonProperty("accountNonExpired") boolean accountNonExpired,
                         @JsonProperty("credentialsNonExpired") boolean credentialsNonExpired, @JsonProperty("accountNonLocked") boolean accountNonLocked,
                         @JsonProperty("roles") Set<String> roles, @JsonProperty("currentRole") String currentRole, @JsonProperty("expire") LocalDateTime expire) {
         Assert.isTrue(username != null && !"".equals(username),
@@ -101,6 +102,8 @@ public class SecurityUser implements UserDetails, TenantDetail, CredentialsConta
         this.username = username;
         this.password = password;
         this.tenant = tenant;
+        this.database = database;
+        this.schema = schema;
         this.enabled = enabled;
         this.accountNonExpired = accountNonExpired;
         this.credentialsNonExpired = credentialsNonExpired;
@@ -517,7 +520,7 @@ public class SecurityUser implements UserDetails, TenantDetail, CredentialsConta
 
         public SecurityUser build() {
             String encodedPassword = this.passwordEncoder.apply(this.password);
-            return new SecurityUser(this.username, encodedPassword, tenant, !this.disabled, !this.accountExpired,
+            return new SecurityUser(this.username, encodedPassword, tenant, database, schema, !this.disabled, !this.accountExpired,
                     !this.credentialsExpired, !this.accountLocked, new HashSet<>(this.roles), currentRole, expire);
         }
 

@@ -9,6 +9,10 @@ import com.zjj.tenant.mix.component.TenantMixedAutoConfiguration;
 import com.zjj.tenant.mix.component.TenantMixedRoutingDatasource;
 import com.zjj.tenant.schema.component.TenantSchemaAutoConfiguration;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.context.annotation.ImportSelector;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.lang.NonNull;
@@ -24,6 +28,15 @@ import java.util.List;
 @Slf4j
 final class TenantSelector implements ImportSelector {
 
+    public static class SwitchTenantMethodInterceptorRegistrar implements ImportBeanDefinitionRegistrar {
+        @Override
+        public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
+            BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(SwitchTenantMethodInterceptor.class);
+            builder.setRole(BeanDefinition.ROLE_INFRASTRUCTURE); // 关键：避免过早初始化
+            registry.registerBeanDefinition("switchTenantMethodInterceptor", builder.getBeanDefinition());
+        }
+    }
+
     @Override
     public @NonNull String[] selectImports(AnnotationMetadata importMetadata) {
         if (!importMetadata.hasAnnotation(EnableMultiTenancy.class.getName())
@@ -34,7 +47,7 @@ final class TenantSelector implements ImportSelector {
         EnableMultiTenancy annotation = importMetadata.getAnnotations().get(EnableMultiTenancy.class).synthesize();
         List<String> imports = new ArrayList<>();
 
-        imports.add(SwitchTenantMethodInterceptor.class.getName());
+        imports.add(SwitchTenantMethodInterceptorRegistrar.class.getName());
 
         if (annotation.mode() == TenantMode.DATABASE) {
             imports.add(DataSourceConfiguration.class.getName());

@@ -3,6 +3,7 @@ package com.zjj.auth.service;
 import com.zjj.auth.repository.UserRepository;
 import com.zjj.autoconfigure.component.security.SecurityUser;
 import com.zjj.autoconfigure.component.tenant.Tenant;
+import com.zjj.autoconfigure.component.tenant.TenantContextHolder;
 import com.zjj.exchange.tenant.client.RemoteTenantClient;
 import io.vavr.control.Option;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+        remoteTenantClient
+                .findById(TenantContextHolder.getTenantId())
+                .forEach(t -> {
+                    TenantContextHolder.setDatabase(t.getDb());
+                    TenantContextHolder.setSchema(t.getSchema());
+                });
+
         return userRepository
                 .findByUsername(username)
                 .map(user -> {

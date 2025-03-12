@@ -20,6 +20,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.HttpMethod;
 import org.springframework.modulith.events.config.EnablePersistentDomainEvents;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.util.StopWatch;
 
 import java.util.Map;
 
@@ -40,7 +41,7 @@ import java.util.Map;
 @EnableGenEntityFuzzyQuery
 @EnableScheduling
 //@EnablePersistentDomainEvents
-public class ZeroDddTenantApplication implements CommandLineRunner {
+public class ZeroDddTenantApplication {
 
 
 //    @Bean
@@ -105,7 +106,6 @@ public class ZeroDddTenantApplication implements CommandLineRunner {
 
     public static void main(String[] args) throws ClassNotFoundException {
         ConfigurableApplicationContext application = SpringApplication.run(ZeroDddTenantApplication.class, args);
-
 //        new SpringApplicationBuilder(ZeroDddTenantApplication.class)
 //                .applicationStartup(new BufferingApplicationStartup(2048))
 //                .run(args);
@@ -166,7 +166,7 @@ public class ZeroDddTenantApplication implements CommandLineRunner {
 
     }
 
-    @Override
+//    @Override
     public void run(String... args) throws Exception {
         HttpResource httpResource = new HttpResource();
 

@@ -1,4 +1,4 @@
-package com.zjj.security.tenant.component.supper;
+package com.zjj.security.tenant.component.supper.web;
 
 
 import com.zjj.autoconfigure.component.tenant.TenantContextHolder;

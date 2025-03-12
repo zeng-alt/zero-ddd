@@ -34,10 +34,10 @@ public class TenantSchemaInitService implements TenantInitDataSourceService {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 
         if (multiTenancyProperties.getDatabase().equals(MultiTenancyProperties.Database.POSTGRESQL)) {
-            jdbcTemplate.execute((StatementCallback<Boolean>) stmt -> stmt.execute("CREATE SCHEMA IF NOT EXISTS " + tenant.getSchema()));
+            jdbcTemplate.execute((StatementCallback<Boolean>) stmt -> stmt.execute("CREATE SCHEMA IF NOT EXISTS \"" + tenant.getSchema() + "\""));
         }
         if (multiTenancyProperties.getDatabase().equals(MultiTenancyProperties.Database.H2)) {
-            jdbcTemplate.execute((StatementCallback<Boolean>) stmt -> stmt.execute("CREATE SCHEMA IF NOT EXISTS " + tenant.getSchema()));
+            jdbcTemplate.execute((StatementCallback<Boolean>) stmt -> stmt.execute("CREATE SCHEMA IF NOT EXISTS \"" + tenant.getSchema() + "\""));
         }
     }
 }

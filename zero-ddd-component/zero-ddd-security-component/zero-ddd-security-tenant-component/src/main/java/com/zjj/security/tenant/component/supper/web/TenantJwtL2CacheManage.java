@@ -1,4 +1,4 @@
-package com.zjj.security.tenant.component.supper;
+package com.zjj.security.tenant.component.supper.web;
 
 import com.zjj.autoconfigure.component.l2cache.L2Cache;
 import com.zjj.autoconfigure.component.l2cache.L2CacheManage;

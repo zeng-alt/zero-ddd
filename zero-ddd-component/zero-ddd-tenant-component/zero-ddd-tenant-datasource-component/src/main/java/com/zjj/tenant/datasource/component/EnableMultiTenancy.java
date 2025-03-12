@@ -18,7 +18,7 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Documented
 @EnableConfigurationProperties({MultiTenancyProperties.class, LiquibaseProperties.class})
-@Import(TenantSelector.class)
+@Import({TenantSelector.class})
 public @interface EnableMultiTenancy {
 
     /**

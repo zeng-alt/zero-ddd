@@ -12,24 +12,24 @@ import java.util.Objects;
 class ExternalizationConfiguration {
 
 
-    @Bean
-    EventExternalizationConfiguration eventExternalizationConfiguration() {
-        return EventExternalizationConfiguration.externalizing()
-                .select(EventExternalizationConfiguration.annotatedAsExternalized())
-                .route(
-                        CreateTenantDataSourceEvent.class,
-                        it -> RoutingTarget.forTarget("baeldung.articles.published").andKey(it.getTenantKey())
-                )
-                .mapping(
-                        CreateTenantDataSourceEvent.class,
-                        it -> new PostPublishedKafkaEvent(it.getTenantKey(), null)
-                )
-                .build();
-    }
-
-    record PostPublishedKafkaEvent(String slug, String title) {
-        PostPublishedKafkaEvent {
-            Objects.requireNonNull(slug, "Article Slug must not be null!");
-        }
-    }
+//    @Bean
+//    EventExternalizationConfiguration eventExternalizationConfiguration() {
+//        return EventExternalizationConfiguration.externalizing()
+//                .select(EventExternalizationConfiguration.annotatedAsExternalized())
+//                .route(
+//                        CreateTenantDataSourceEvent.class,
+//                        it -> RoutingTarget.forTarget("baeldung.articles.published").andKey(it.getTenantKey())
+//                )
+//                .mapping(
+//                        CreateTenantDataSourceEvent.class,
+//                        it -> new PostPublishedKafkaEvent(it.getTenantKey(), null)
+//                )
+//                .build();
+//    }
+//
+//    record PostPublishedKafkaEvent(String slug, String title) {
+//        PostPublishedKafkaEvent {
+//            Objects.requireNonNull(slug, "Article Slug must not be null!");
+//        }
+//    }
 }
