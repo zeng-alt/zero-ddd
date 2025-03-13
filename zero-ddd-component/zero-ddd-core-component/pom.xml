@@ -42,6 +42,7 @@
             <groupId>org.springframework.retry</groupId>
             <artifactId>spring-retry</artifactId>
         </dependency>
+
         <!-- also need to add Spring AOP into our project-->
         <dependency>
             <groupId>org.springframework</groupId>
