@@ -3,10 +3,7 @@ package com.zjj.tenant.management.component.config;
 import com.zjj.autoconfigure.component.redis.Lock;
 import com.zjj.autoconfigure.component.tenant.Tenant;
 import com.zjj.cache.component.repository.impl.RedisTopicRepositoryImpl;
-import com.zjj.tenant.management.component.service.TenantDataSourceService;
-import com.zjj.tenant.management.component.service.TenantInitDataSourceService;
-import com.zjj.tenant.management.component.service.TenantManagementService;
-import com.zjj.tenant.management.component.service.TenantManagementServiceImpl;
+import com.zjj.tenant.management.component.service.*;
 import com.zjj.tenant.management.component.spi.TenantDataSourceProvider;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -60,10 +57,11 @@ public class TenantManagementAutoConfiguration {
 //            TenantInitDataSourceService tenantInitDataSourceService,
             TenantDataSourceService tenantDataSourceService
     ) {
+
         return new DynamicDatasourceMultiTenantSpringLiquibase(
                 liquibaseProperties,
                 resourceLoader,
-                tenantDataSourceProviders,
+                tenantDataSourceProviders.getIfAvailable(),
 //                tenantInitDataSourceService,
                 tenantDataSourceService
         );

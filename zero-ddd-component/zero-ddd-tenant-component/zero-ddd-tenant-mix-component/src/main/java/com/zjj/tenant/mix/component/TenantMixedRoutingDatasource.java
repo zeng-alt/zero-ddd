@@ -20,6 +20,8 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import liquibase.exception.LiquibaseException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.core.io.ResourceLoader;
@@ -45,13 +47,15 @@ public class TenantMixedRoutingDatasource extends AbstractRoutingDataSource impl
     private LoadingCache<String, DataSource> tenantDataSources;
 
     private final DataSourceProperties dataSourceProperties;
-    private final TenantSingleDataSourceProvider tenantSingleDataSourceProvider;
+    private final DataSource masterDataSource;
+    private final BeanFactory beanFactory;
+//    private final TenantSingleDataSourceProvider tenantSingleDataSourceProvider;
 //    private final CurrentTenantIdentifierResolver<TenantKey> currentTenantIdentifierResolver;
     private final MultiTenancyProperties multiTenancyProperties;
     private final TenantInitDataSourceService tenantDatabaseInitService;
     private final TenantInitDataSourceService tenantSchemaInitService;
 
-    @PostConstruct
+//    @PostConstruct
     private void createCache() {
         tenantDataSources = Caffeine.newBuilder()
                 .maximumSize(multiTenancyProperties.getDataSourceCache().getMaximumSize())
@@ -63,7 +67,7 @@ public class TenantMixedRoutingDatasource extends AbstractRoutingDataSource impl
                     }
                 })
                 .build(tenantId -> {
-                    return tenantSingleDataSourceProvider.findById(tenantId).map(this::createAndConfigureDataSource).getOrElse((DataSource) null);
+                    return beanFactory.getBean(TenantSingleDataSourceProvider.class).findById(tenantId).map(this::createAndConfigureDataSource).getOrElse((DataSource) null);
                 });
 //                .build(new CacheLoader<String, DataSource>() {
 //                    @Override
@@ -76,16 +80,18 @@ public class TenantMixedRoutingDatasource extends AbstractRoutingDataSource impl
     public TenantMixedRoutingDatasource(
             DataSource dataSource,
             DataSourceProperties dataSourceProperties,
-            TenantSingleDataSourceProvider tenantSingleDataSourceProvider,
+//            TenantSingleDataSourceProvider tenantSingleDataSourceProvider,
+            BeanFactory beanFactory,
             MultiTenancyProperties multiTenancyProperties
     ) {
+        this.masterDataSource = dataSource;
         this.setDefaultTargetDataSource(dataSource);
         this.setTargetDataSources(new HashMap<>());
 
         this.dataSourceProperties = dataSourceProperties;
-        this.tenantSingleDataSourceProvider = tenantSingleDataSourceProvider;
+//        this.tenantSingleDataSourceProvider = tenantSingleDataSourceProvider;
+        this.beanFactory = beanFactory;
         this.multiTenancyProperties = multiTenancyProperties;
-//        this.currentTenantIdentifierResolver = currentTenantIdentifierResolver;
         this.tenantDatabaseInitService = new TenantDatabaseInitService(multiTenancyProperties);
         this.tenantSchemaInitService = new TenantSchemaInitService(multiTenancyProperties);
     }
@@ -100,6 +106,10 @@ public class TenantMixedRoutingDatasource extends AbstractRoutingDataSource impl
         return connection;
     }
 
+    @Override
+    public Connection getConnection() throws SQLException {
+        return masterDataSource.getConnection();
+    }
 
     protected @NonNull DataSource determineTargetDataSource(@NonNull String tenantIdentifier) {
         Assert.notNull(tenantIdentifier, "tenantIdentifier cannot be null");
@@ -266,6 +276,13 @@ public class TenantMixedRoutingDatasource extends AbstractRoutingDataSource impl
                 hikariDataSource.close();
             }
         });
+    }
+
+    @Override
+    public void afterPropertiesSet() {
+//        Assert.notNull(tenantSingleDataSourceProvider, "tenantSingleDataSourceProvider must not be null");
+        super.afterPropertiesSet();
+        createCache();
     }
 
 

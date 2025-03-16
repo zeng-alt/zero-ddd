@@ -16,13 +16,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DefaultTenantDataSourceProvider implements TenantDataSourceProvider {
 
-    private final ObjectProvider<RemoteTenantClient> remoteTenantClient;
+    private final RemoteTenantClient remoteTenantClient;
 
     @Override
     public Collection<Tenant> findAll() {
-        if (remoteTenantClient.getIfAvailable() == null) {
-            return List.of();
-        }
-        return remoteTenantClient.getIfAvailable().findAll();
+        return remoteTenantClient.findAll();
     }
 }

@@ -19,6 +19,7 @@
         <module>zero-ddd-tenant-column-component</module>
         <module>zero-ddd-tenant-datasource-component</module>
         <module>zero-ddd-tenant-mix-component</module>
+        <module>zero-ddd-tenant-service-component</module>
     </modules>
 
     <properties>

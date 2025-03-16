@@ -1,5 +1,6 @@
 package com.zjj.tenant.database.component;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -8,7 +9,7 @@ import java.sql.SQLException;
  * @version 1.0
  * @crateTime 2025年03月05日 21:30
  */
-public interface TenantConnectionService<K> {
+public interface TenantConnectionService<K> extends DataSource {
 
     public Connection getConnection() throws SQLException;
 

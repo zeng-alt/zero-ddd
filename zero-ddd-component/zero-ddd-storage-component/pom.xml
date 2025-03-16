@@ -10,7 +10,7 @@
     <artifactId>zero-ddd-storage-component</artifactId>
     <packaging>pom</packaging>
 
-    <name>zero-ddd-tenant-component</name>
+    <name>zero-ddd-storage-component</name>
     <modules>
         <module>zero-ddd-cache-component</module>
         <module>zero-ddd-l2-cache-component</module>

@@ -3,6 +3,7 @@ package com.zjj.tenant.management.component.service;
 
 import com.zjj.autoconfigure.component.tenant.Tenant;
 import liquibase.exception.LiquibaseException;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.core.io.ResourceLoader;
 
@@ -13,7 +14,7 @@ import javax.sql.DataSource;
  * @version 1.0
  * @crateTime 2024年12月23日 21:49
  */
-public interface TenantDataSourceService {
+public interface TenantDataSourceService extends InitializingBean {
 
     void verify(Tenant tenant);
 

@@ -10,6 +10,7 @@ import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernatePropertiesCustomizer;
@@ -30,9 +31,10 @@ public class TenantDatabaseAutoConfiguration {
     @Primary
     @Bean
     public TenantDataBaseRoutingDatasource tenantDataSource(
-            DataSource dataSource,
+            @Qualifier("masterDataSource") DataSource dataSource,
             DataSourceProperties dataSourceProperties,
-            TenantSingleDataSourceProvider tenantSingleDataSourceProvider,
+            ConfigurableListableBeanFactory beanFactory,
+//            TenantSingleDataSourceProvider tenantSingleDataSourceProvider,
             MultiTenancyProperties multiTenancyProperties,
             CurrentTenantIdentifierResolver<String> currentTenantIdentifierResolver,
             TenantInitDataSourceService tenantDatabaseInitService
@@ -41,11 +43,13 @@ public class TenantDatabaseAutoConfiguration {
         return new TenantDataBaseRoutingDatasource(
                 dataSource,
                 dataSourceProperties,
-                tenantSingleDataSourceProvider,
+                beanFactory,
+//                tenantSingleDataSourceProvider,
                 multiTenancyProperties,
                 currentTenantIdentifierResolver,
                 tenantDatabaseInitService
         );
+
     }
 
     @Bean

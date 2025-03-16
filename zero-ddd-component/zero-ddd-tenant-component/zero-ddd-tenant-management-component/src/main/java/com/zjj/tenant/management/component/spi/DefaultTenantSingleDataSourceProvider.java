@@ -14,14 +14,12 @@ import org.springframework.beans.factory.ObjectProvider;
 @RequiredArgsConstructor
 public class DefaultTenantSingleDataSourceProvider implements TenantSingleDataSourceProvider {
 
-    private final ObjectProvider<RemoteTenantClient> remoteTenantClient;
+    private final RemoteTenantClient remoteTenantClient;
 
     @Override
     public Option<Tenant> findById(String id) {
-        if (remoteTenantClient.getIfAvailable() == null) {
-            return Option.none();
-        }
-        return remoteTenantClient.getIfAvailable().findById(id);
+
+        return remoteTenantClient.findById(id);
     }
 
 }

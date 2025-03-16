@@ -16,9 +16,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
 import org.hibernate.service.UnknownUnwrapTypeException;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
@@ -175,4 +177,8 @@ public class SchemaBasedMultiTenantConnectionProvider implements MultiTenantConn
         liquibase.afterPropertiesSet();
     }
 
+    @Override
+    public void afterPropertiesSet() {
+        Assert.notNull(tenantSingleDataSourceProvider, "tenantSingleDataSourceProvider must not be null");
+    }
 }

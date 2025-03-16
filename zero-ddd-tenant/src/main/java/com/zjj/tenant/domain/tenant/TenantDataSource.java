@@ -1,7 +1,6 @@
 package com.zjj.tenant.domain.tenant;
 
 import com.zjj.autoconfigure.component.tenant.TenantMode;
-import com.zjj.tenant.infrastructure.db.entity.QTenantDataSourceEntity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.Value;
@@ -40,10 +39,10 @@ public class TenantDataSource implements Entity<Tenant, Long> {
      *
      */
     public void valid() {
-        QTenantDataSourceEntity query = QTenantDataSourceEntity.tenantDataSourceEntity;
-        if (TenantMode.COLUMN.equals(mode)) {
-            query.db.eq(this.db);
-        }
+//        QTenantDataSourceEntity query = QTenantDataSourceEntity.tenantDataSourceEntity;
+//        if (TenantMode.COLUMN.equals(mode)) {
+//            query.db.eq(this.db);
+//        }
         if (TenantMode.DATABASE.equals(mode)) {
             if (db == null || db.isEmpty()) {
                 throw new IllegalArgumentException("数据库名称不能为空");

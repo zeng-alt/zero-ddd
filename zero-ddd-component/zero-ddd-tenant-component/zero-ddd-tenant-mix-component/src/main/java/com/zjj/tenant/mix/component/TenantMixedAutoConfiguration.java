@@ -9,7 +9,9 @@ import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernatePropertiesCustomizer;
 import org.springframework.context.annotation.Bean;
@@ -24,16 +26,18 @@ public class TenantMixedAutoConfiguration {
     @Primary
     @Bean
     public TenantMixedRoutingDatasource tenantDataSource(
-            DataSource dataSource,
+            @Qualifier("masterDataSource") DataSource dataSource,
             DataSourceProperties dataSourceProperties,
-            TenantSingleDataSourceProvider tenantSingleDataSourceProvider,
+            ConfigurableListableBeanFactory beanFactory,
+//            TenantSingleDataSourceProvider tenantSingleDataSourceProvider,
             MultiTenancyProperties multiTenancyProperties
     ) {
 
         return new TenantMixedRoutingDatasource(
                 dataSource,
                 dataSourceProperties,
-                tenantSingleDataSourceProvider,
+//                tenantSingleDataSourceProvider,
+                beanFactory,
                 multiTenancyProperties
         );
     }

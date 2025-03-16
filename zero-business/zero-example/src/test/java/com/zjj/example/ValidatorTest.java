@@ -1,25 +1,14 @@
 package com.zjj.example;
 
-import com.google.common.collect.Maps;
 import com.zjj.example.entity.User;
 import jakarta.validation.ConstraintViolation;
-
 import jakarta.validation.Validator;
-import jakarta.validation.ValidatorFactory;
 import org.hibernate.validator.internal.constraintvalidators.bv.NullValidator;
-import org.hibernate.validator.internal.constraintvalidators.bv.size.SizeValidatorForCharSequence;
-import org.hibernate.validator.internal.engine.ValidatorFactoryImpl;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.support.MessageSourceAccessor;
-import org.springframework.validation.Errors;
-import org.springframework.validation.SimpleErrors;
-import org.springframework.validation.ValidationUtils;
-//import org.springframework.validation.Validator;
 
-import java.util.Map;
 import java.util.Set;
 
 /**

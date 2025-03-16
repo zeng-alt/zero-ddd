@@ -18,6 +18,8 @@ import liquibase.exception.LiquibaseException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
@@ -44,14 +46,13 @@ public class TenantDataBaseRoutingDatasource extends AbstractRoutingDataSource i
     private static final String TENANT_POOL_NAME_SUFFIX = "DataSource";
     private static final String VALID_DATABASE_NAME_REGEXP = "\\w*";
     private LoadingCache<String, DataSource> tenantDataSources;
-
+    private final DataSource masterDataSource;
+    private final BeanFactory beanFactory;
     private final DataSourceProperties dataSourceProperties;
-    private final TenantSingleDataSourceProvider tenantSingleDataSourceProvider;
     private final CurrentTenantIdentifierResolver<String> currentTenantIdentifierResolver;
     private final MultiTenancyProperties multiTenancyProperties;
     private final TenantInitDataSourceService tenantDatabaseInitService;
 
-    @PostConstruct
     private void createCache() {
         tenantDataSources = Caffeine.newBuilder()
                 .maximumSize(multiTenancyProperties.getDataSourceCache().getMaximumSize())
@@ -62,25 +63,30 @@ public class TenantDataBaseRoutingDatasource extends AbstractRoutingDataSource i
                         log.info("Closed datasource: {}", hikariDataSource.getPoolName());
                     }
                 })
-                .build(tenantId -> tenantSingleDataSourceProvider.findById(tenantId).map(this::createAndConfigureDataSource).getOrElse((DataSource) null));
+                .build(tenantId -> beanFactory.getBean(TenantSingleDataSourceProvider.class).findById(tenantId).map(this::createAndConfigureDataSource).getOrElse((DataSource) null));
     }
+
+
 
     public TenantDataBaseRoutingDatasource(
             DataSource dataSource,
             DataSourceProperties dataSourceProperties,
-            TenantSingleDataSourceProvider tenantSingleDataSourceProvider,
+//            TenantSingleDataSourceProvider tenantSingleDataSourceProvider,
+            BeanFactory beanFactory,
             MultiTenancyProperties multiTenancyProperties,
             CurrentTenantIdentifierResolver<String> currentTenantIdentifierResolver,
             TenantInitDataSourceService tenantDatabaseInitService
     ) {
+        this.masterDataSource = dataSource;
         this.setDefaultTargetDataSource(dataSource);
         this.setTargetDataSources(new HashMap<>());
-
         this.dataSourceProperties = dataSourceProperties;
-        this.tenantSingleDataSourceProvider = tenantSingleDataSourceProvider;
+//        this.tenantSingleDataSourceProvider = null;
+        this.beanFactory = beanFactory;
         this.multiTenancyProperties = multiTenancyProperties;
         this.currentTenantIdentifierResolver = currentTenantIdentifierResolver;
         this.tenantDatabaseInitService = tenantDatabaseInitService;
+        this.afterPropertiesSet();
     }
 
     @Override
@@ -88,6 +94,10 @@ public class TenantDataBaseRoutingDatasource extends AbstractRoutingDataSource i
         return this.determineTargetDataSource(tenantIdentifier).getConnection();
     }
 
+    @Override
+    public Connection getConnection() throws SQLException {
+        return masterDataSource.getConnection();
+    }
 
     protected DataSource determineTargetDataSource(String tenantIdentifier) {
         Assert.notNull(this.tenantDataSources, "DataSource router not initialized");
@@ -198,5 +208,17 @@ public class TenantDataBaseRoutingDatasource extends AbstractRoutingDataSource i
                 hikariDataSource.close();
             }
         });
+    }
+
+    @Override
+    public void afterPropertiesSet() {
+        super.afterPropertiesSet();
+        createCache();
+//        Assert.notNull(tenantSingleDataSourceProvider, "tenantSingleDataSourceProvider must not be null");
+    }
+
+    @Override
+    public String toString() {
+        return "TenantDataBaseRoutingDatasource(Database[" + getResolvedDefaultDataSource() + "])";
     }
 }
