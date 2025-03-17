@@ -4,7 +4,6 @@ import com.zjj.core.component.advice.GlobalServletExceptionAdvice;
 import com.zjj.core.component.api.HttpEntityReturnMethodProcessor;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -35,14 +34,7 @@ import java.util.List;
 public class CoreAutoConfig {
 
 
-//    @Bean(bootstrap = BACKGROUND)
-//    @ConditionalOnClass(ResponseBodyAdvice.class)
-//    public GlobalResultAdvice globalResultAdvice(ObjectMapper objectMapper, ObjectProvider<ResponseAdviceProvider> responseAdviceProvider) {
-//        return new GlobalResultAdvice(objectMapper, responseAdviceProvider);
-//    }
-
-
-    @Configuration
+    @Configuration(proxyBeanMethods = false)
     @ConditionalOnClass(WebMvcConfigurer.class)
     @ConditionalOnBean(DelegatingWebMvcConfiguration.class)
     @RequiredArgsConstructor
@@ -79,7 +71,7 @@ public class CoreAutoConfig {
         }
     }
 
-    @Configuration
+    @Configuration(proxyBeanMethods = false)
     @ConditionalOnClass(NoResourceFoundException.class)
     static class ServletAdviceConfig {
         @Bean

@@ -1,12 +1,15 @@
 package com.zjj.excel.component.configuration;
 
 import cn.idev.excel.metadata.GlobalConfiguration;
+import com.zjj.excel.component.builder.DefaultExcelTemplate;
+import com.zjj.excel.component.builder.ExcelTemplate;
 import com.zjj.excel.component.utils.ExcelHelper;
+import com.zjj.excel.component.utils.RxjavaExcelHelper;
+import com.zjj.excel.component.utils.ValidaHelper;
 import com.zjj.i18n.component.config.MessageBaseNameProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
 /**
@@ -15,7 +18,6 @@ import org.springframework.context.annotation.Bean;
  * @crateTime 2025年02月28日 14:44
  */
 @AutoConfiguration
-@EnableConfigurationProperties(GlobalConfiguration.class)
 public class ExcelAutoConfiguration {
 
     @Bean
@@ -33,6 +35,16 @@ public class ExcelAutoConfiguration {
     @Bean
     public ExcelHelper excelHelper() {
         return new ExcelHelper();
+    }
+
+    @Bean
+    public RxjavaExcelHelper rxjavaExcelHelper() {
+        return new RxjavaExcelHelper();
+    }
+
+    @Bean
+    public ValidaHelper validaHelper() {
+        return new ValidaHelper();
     }
 
 

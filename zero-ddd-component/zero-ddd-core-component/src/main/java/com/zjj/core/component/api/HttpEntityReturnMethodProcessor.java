@@ -1,5 +1,6 @@
 package com.zjj.core.component.api;
 
+import com.zjj.autoconfigure.component.core.HttpEntityStatus;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Setter;
@@ -122,7 +123,7 @@ public class HttpEntityReturnMethodProcessor extends AbstractMessageConverterMet
             });
         }
 
-        if (httpEntity instanceof com.zjj.autoconfigure.component.core.ResponseEntity<?> responseEntity) {
+        if (httpEntity instanceof HttpEntityStatus<?> responseEntity) {
             int returnStatus = responseEntity.getStatusCode();
             outputMessage.getServletResponse().setStatus(returnStatus);
             if (returnStatus == 200) {

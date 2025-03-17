@@ -1,4 +1,4 @@
-package com.zjj.excel.component.configuration;
+package com.zjj.excel.component.builder;
 
 import cn.idev.excel.FastExcelFactory;
 import cn.idev.excel.read.builder.ExcelReaderBuilder;

@@ -5,7 +5,7 @@ import cn.idev.excel.ExcelWriter;
 import cn.idev.excel.FastExcelFactory;
 import cn.idev.excel.write.metadata.WriteSheet;
 import cn.idev.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
-import com.zjj.excel.component.configuration.ExcelTemplate;
+import com.zjj.excel.component.builder.ExcelTemplate;
 import com.zjj.excel.component.domain.DefaultExcelListenerSuccess;
 import com.zjj.excel.component.domain.ExcelSuccessListener;
 import com.zjj.excel.component.dynamic.InterfaceDynamicColumn;
@@ -197,7 +197,7 @@ public class ExcelHelper implements BeanFactoryPostProcessor {
 		response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8");
 	}
 
-	/**
+    /**
 	 * Modify the application context's internal bean factory after its standard
 	 * initialization. All bean definitions will have been loaded, but no beans
 	 * will have been instantiated yet. This allows for overriding or adding

@@ -20,9 +20,7 @@ import java.util.function.Consumer;
  * @version 1.0
  * @crateTime 2025年02月25日 14:50
  */
-public class ResponseEntity<T> extends HttpEntity<T> {
-
-    private final Integer status;
+public class ResponseEntity<T> extends HttpEntityStatus<T> {
 
 
     /**
@@ -95,19 +93,8 @@ public class ResponseEntity<T> extends HttpEntity<T> {
      * @param statusCode the status code
      */
     public ResponseEntity(@Nullable T body, @Nullable MultiValueMap<String, String> headers, HttpStatusCode statusCode) {
-        super(body, headers);
+        super(body, headers, statusCode.value());
         Assert.notNull(statusCode, "HttpStatusCode must not be null");
-
-        this.status = statusCode.value();
-    }
-
-
-    /**
-     * Return the HTTP status code of the response.
-     * @return the HTTP status as an HttpStatus enum entry
-     */
-    public Integer getStatusCode() {
-        return this.status;
     }
 
 
@@ -152,7 +139,7 @@ public class ResponseEntity<T> extends HttpEntity<T> {
      * @return the created builder
      * @since 4.1
      */
-    public static ResponseEntity.BodyBuilder status(HttpStatusCode status) {
+    public static BodyBuilder status(HttpStatusCode status) {
         Assert.notNull(status, "HttpStatusCode must not be null");
         return new DefaultBuilder(status);
     }
@@ -185,7 +172,7 @@ public class ResponseEntity<T> extends HttpEntity<T> {
      * @since 4.1
      */
     public static <T> ResponseEntity<T> ok(@Nullable T body) {
-        return ok().body(body);
+        return (ResponseEntity<T>) ok().body(body);
     }
 
     /**
@@ -201,6 +188,10 @@ public class ResponseEntity<T> extends HttpEntity<T> {
         return body.map(ResponseEntity::ok).orElseGet(() -> notFound().build());
     }
 
+    public static <T> ResponseEntity<T> of(T body) {
+        return ok(body);
+    }
+
     /**
      * Create a new {@link ResponseEntity.HeadersBuilder} with its status set to
      * {@link ProblemDetail#getStatus()} and its body is set to
@@ -213,14 +204,15 @@ public class ResponseEntity<T> extends HttpEntity<T> {
      * @since 6.0
      */
     public static ResponseEntity.HeadersBuilder<?> of(ProblemDetail body) {
-        return new ResponseEntity.DefaultBuilder(body.getStatus()) {
-
+        return new DefaultBuilder(body.getStatus()) {
             @SuppressWarnings("unchecked")
             @Override
-            public <T> ResponseEntity<T> build() {
-                return (ResponseEntity<T>) body(body);
+            public ResponseEntity<ProblemDetail> build() {
+                return (ResponseEntity<ProblemDetail>) body(body);
             }
+
         };
+
     }
 
     /**
@@ -245,7 +237,7 @@ public class ResponseEntity<T> extends HttpEntity<T> {
      * @return the created builder
      * @since 4.1
      */
-    public static ResponseEntity.BodyBuilder created(URI location) {
+    public static HeadersBuilder created(URI location) {
         return status(HttpStatus.CREATED).location(location);
     }
 
@@ -315,7 +307,7 @@ public class ResponseEntity<T> extends HttpEntity<T> {
      * @since 4.1
      * @param <B> the builder subclass
      */
-    public interface HeadersBuilder<B extends ResponseEntity.HeadersBuilder<B>> {
+    public interface HeadersBuilder<B extends HeadersBuilder<B>> {
 
         /**
          * Add the given, single header value under the given name.
@@ -431,7 +423,7 @@ public class ResponseEntity<T> extends HttpEntity<T> {
          * @return the response entity
          * @see ResponseEntity.BodyBuilder#body(Object)
          */
-        <T> ResponseEntity<T> build();
+        <T, R extends HttpEntity<T>> R build();
     }
 
 
@@ -439,7 +431,7 @@ public class ResponseEntity<T> extends HttpEntity<T> {
      * Defines a builder that adds a body to the response entity.
      * @since 4.1
      */
-    public interface BodyBuilder extends ResponseEntity.HeadersBuilder<ResponseEntity.BodyBuilder> {
+    public interface BodyBuilder<B extends BodyBuilder<B>> extends HeadersBuilder<B> {
 
         /**
          * Set the length of the body in bytes, as specified by the
@@ -465,15 +457,15 @@ public class ResponseEntity<T> extends HttpEntity<T> {
          * @param body the body of the response entity
          * @return the built response entity
          */
-        <R extends ResponseEntity<T>, T> R body(@Nullable T body);
+        <R extends HttpEntity<T>, T> R body(@Nullable T body);
     }
 
 
-    protected static class DefaultBuilder implements ResponseEntity.BodyBuilder {
+    public static class DefaultBuilder<B extends BodyBuilder<B>> implements BodyBuilder<B> {
 
-        private final Integer statusCode;
+        protected final Integer statusCode;
 
-        private final HttpHeaders headers = new HttpHeaders();
+        protected final HttpHeaders headers = new HttpHeaders();
 
 
         public DefaultBuilder(int statusCode) {
@@ -486,89 +478,95 @@ public class ResponseEntity<T> extends HttpEntity<T> {
 
 
         @Override
-        public ResponseEntity.BodyBuilder header(String headerName, String... headerValues) {
+        public B header(String headerName, String... headerValues) {
             for (String headerValue : headerValues) {
                 this.headers.add(headerName, headerValue);
             }
-            return this;
+            return (B) this;
         }
 
         @Override
-        public ResponseEntity.BodyBuilder headers(@Nullable HttpHeaders headers) {
+        public B headers(@Nullable HttpHeaders headers) {
             if (headers != null) {
                 this.headers.putAll(headers);
             }
-            return this;
+            return (B) this;
         }
 
         @Override
-        public ResponseEntity.BodyBuilder headers(Consumer<HttpHeaders> headersConsumer) {
+        public B headers(Consumer<HttpHeaders> headersConsumer) {
             headersConsumer.accept(this.headers);
-            return this;
+            return (B) this;
         }
 
         @Override
-        public ResponseEntity.BodyBuilder allow(HttpMethod... allowedMethods) {
+        public B allow(HttpMethod... allowedMethods) {
             this.headers.setAllow(new LinkedHashSet<>(Arrays.asList(allowedMethods)));
-            return this;
+            return (B) this;
         }
 
         @Override
-        public ResponseEntity.BodyBuilder contentLength(long contentLength) {
+        public B contentLength(long contentLength) {
             this.headers.setContentLength(contentLength);
-            return this;
+            return (B) this;
         }
 
         @Override
-        public ResponseEntity.BodyBuilder contentType(MediaType contentType) {
+        public B contentType(MediaType contentType) {
             this.headers.setContentType(contentType);
-            return this;
+            return (B) this;
         }
 
         @Override
-        public ResponseEntity.BodyBuilder eTag(@Nullable String tag) {
+        public B eTag(@Nullable String tag) {
             this.headers.setETag(tag);
-            return this;
+            return (B) this;
         }
 
         @Override
-        public ResponseEntity.BodyBuilder lastModified(ZonedDateTime date) {
+        public B lastModified(ZonedDateTime date) {
             this.headers.setLastModified(date);
-            return this;
+            return (B) this;
         }
 
         @Override
-        public ResponseEntity.BodyBuilder lastModified(Instant date) {
+        public B lastModified(Instant date) {
             this.headers.setLastModified(date);
-            return this;
+            return (B) this;
         }
 
         @Override
-        public ResponseEntity.BodyBuilder lastModified(long date) {
+        public B lastModified(long date) {
             this.headers.setLastModified(date);
-            return this;
+            return (B) this;
         }
 
         @Override
-        public ResponseEntity.BodyBuilder location(URI location) {
+        public B location(URI location) {
             this.headers.setLocation(location);
-            return this;
+            return (B) this;
         }
 
         @Override
-        public ResponseEntity.BodyBuilder cacheControl(CacheControl cacheControl) {
+        public B cacheControl(CacheControl cacheControl) {
             this.headers.setCacheControl(cacheControl);
-            return this;
+            return (B) this;
         }
 
         @Override
-        public ResponseEntity.BodyBuilder varyBy(String... requestHeaders) {
+        public B varyBy(String... requestHeaders) {
             this.headers.setVary(Arrays.asList(requestHeaders));
-            return this;
+            return (B) this;
         }
 
+        /**
+         * Build the response entity with no body.
+         *
+         * @return the response entity
+         * @see BodyBuilder#body(Object)
+         */
         @Override
-        public <T> ResponseEntity<T> build() {
+        public <T, R extends HttpEntity<T>> R build() {
             return body(null);
         }
 
@@ -579,7 +577,7 @@ public class ResponseEntity<T> extends HttpEntity<T> {
          * @return the built response entity
          */
         @Override
-        public <R extends ResponseEntity<T>, T> R body(T body) {
+        public <R extends HttpEntity<T>, T> R body(T body) {
             return (R) new ResponseEntity<>(body, this.headers, this.statusCode);
         }
     }

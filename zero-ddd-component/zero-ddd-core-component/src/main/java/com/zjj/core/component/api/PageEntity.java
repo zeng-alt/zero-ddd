@@ -1,7 +1,9 @@
 package com.zjj.core.component.api;
 
 import lombok.Data;
+import org.springframework.http.ProblemDetail;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -12,8 +14,17 @@ import java.util.Collection;
 @Data
 public class PageEntity<T extends Collection<?>> {
 
-    private Integer pageNum;
-    private Integer pageSize;
-    private Long total;
-    private T data;
+    private Integer pageNum = 1;
+    private Integer pageSize = 0;
+    private Long total = 0L;
+    private T data = (T) new ArrayList<>();
+
+
+    public PageEntity() {
+    }
+
+    public PageEntity(T data) {
+        this.data = data;
+        this.total = (long) data.size();
+    }
 }
