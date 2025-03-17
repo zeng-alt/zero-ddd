@@ -63,7 +63,7 @@ public class HttpExcelMethodProcessor extends AbstractMessageConverterMethodArgu
         ExcelImport excelImport = parameter.getParameterAnnotation(ExcelImport.class);
         Type paramType = getHttpExcelType(parameter);
         boolean isMultiple = false;
-        if (TypeUtils.isAssignable(Collection.class, paramType)) {
+        if (TypeUtils.isAssignable(Collection.class, paramType) || TypeUtils.isAssignable(Flowable.class, paramType)) {
             paramType = getHttpExcelType(paramType);
             isMultiple = true;
         }
@@ -99,11 +99,18 @@ public class HttpExcelMethodProcessor extends AbstractMessageConverterMethodArgu
         }
 
         if (!isMultiple) {
-           return RxjavaExcelHelper.importRxjavaExcel(files.iterator().next().getInputStream(), (Class<?>) paramType).doOnError(e -> logger.error("HttpExcelMethodProcessor" + e));
+           return RxjavaExcelHelper
+                   .importRxjavaExcel(files.iterator().next().getInputStream(), (Class<?>) paramType)
+                   .doOnError(e -> logger.error("HttpExcelMethodProcessor" + e));
         }
 
-        return Flowable.fromIterable(files)
-                .flatMap(file -> RxjavaExcelHelper.importRxjavaExcel(files.iterator().next().getInputStream(), (Class<?>) paramType));
+        return Flowable.fromIterable(files.stream().map(file -> {
+            try {
+                return RxjavaExcelHelper.importRxjavaExcel(files.iterator().next().getInputStream(), (Class<?>) paramType);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }).toList());
     }
 
     private Object doInvokeCollection(List<MultipartFile> files, Type paramType, boolean isMultiple) throws IOException {
@@ -142,7 +149,6 @@ public class HttpExcelMethodProcessor extends AbstractMessageConverterMethodArgu
     private Type getHttpExcelType(Type parameterType) {
 
         if (parameterType instanceof ParameterizedType type) {
-            Assert.isAssignable(Collection.class, (Class<?>) type.getRawType());
             if (type.getActualTypeArguments().length != 1) {
                 throw new IllegalArgumentException("Expected single generic parameter on '" + type.getTypeName());
             }

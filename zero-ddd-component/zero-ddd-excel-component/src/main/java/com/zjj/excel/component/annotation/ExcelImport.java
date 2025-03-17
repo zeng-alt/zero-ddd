@@ -1,13 +1,16 @@
 package com.zjj.excel.component.annotation;
 
+import io.reactivex.rxjava3.core.Flowable;
 import org.springframework.core.annotation.AliasFor;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ValueConstants;
 
+import java.util.List;
 import java.lang.annotation.*;
 
 
-/** 使用@{like List}
+/**
+ * 使用{@link List} 只推荐小文件 <br>
+ * 使用{@link Flowable} 推荐方式，响应式
  * @author zengJiaJun
  * @version 1.0
  * @crateTime 2025年03月17日 11:20
@@ -34,6 +37,12 @@ public @interface ExcelImport {
      */
     boolean required() default true;
 
+
+    /**
+     * 是否动态解析，动态解析时，会根据Excel的行数动态解析，<br>
+     * 如果Excel的行数小于等于1000，则使用{@link List}，<br>
+     * 如果Excel的行数大于1000，则使用{@link Flowable} <br>
+     */
     boolean dynamic() default false;
 
     /**

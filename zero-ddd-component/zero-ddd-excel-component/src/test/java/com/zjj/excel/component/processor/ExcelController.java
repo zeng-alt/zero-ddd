@@ -46,4 +46,16 @@ public class ExcelController {
         );
         return ResponseEntity.ok("Uploaded: " + 2 + " users");
     }
+
+
+    @ExcelExport("file.xls")
+    @PostMapping("/uploadMultipleRxjava")
+    public ResponseEntity<String> uploadMultipleRxjavaExcel(@ExcelImport("file") Flowable<Flowable<DemoData>> file) {
+        file.subscribe(
+                item -> item.subscribe(System.out::println),
+                throwable -> System.err.println("Error: " + throwable),  // 错误捕获
+                () -> System.out.println("Completed!")  // 流完成时
+        );
+        return ResponseEntity.ok("Uploaded: " + 2 + " users");
+    }
 }

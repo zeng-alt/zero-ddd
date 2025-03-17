@@ -73,6 +73,16 @@ public class TestHttpExcelMethodProcessor {
     }
 
     @Test
+    public void testMultiExcelImportRxjava() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/excel/uploadMultipleRxjava")
+                        .file(createFile("test.xlsx"))
+                        .file(createFile("test1.xlsx"))
+                        .contentType(MediaType.MULTIPART_FORM_DATA))
+                .andExpect(status().isOk()) // 期望返回 200
+                .andExpect(content().string("Uploaded: 2 users"));
+    }
+
+    @Test
     public void testExcelImportStream() throws FileNotFoundException {
         BlockingQueue<DemoData> queue = new LinkedBlockingQueue<>();
         DemoData POISON_PILL = new DemoData();
