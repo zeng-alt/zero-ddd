@@ -45,11 +45,11 @@ public @interface ExcelImport {
      */
     boolean dynamic() default false;
 
+
     /**
-     * The default value to use as a fallback when the request parameter is
-     * not provided or has an empty value.
-     * <p>Supplying a default value implicitly sets {@link #required} to
-     * {@code false}.
+     * 多个文件时是否合并成List或{@link Flowable}<br/>
+     * 如果为false并且有多个文件，接收参数为{@code List<Object>或者Flowable<Object>},只取第一个文件 <br/>
+     * 接收参数为{@code List<List<Object>>或者Flowable<Flowable<Object>>}, 此参数失效
      */
-    String defaultValue() default ValueConstants.DEFAULT_NONE;
+    boolean merge() default false;
 }

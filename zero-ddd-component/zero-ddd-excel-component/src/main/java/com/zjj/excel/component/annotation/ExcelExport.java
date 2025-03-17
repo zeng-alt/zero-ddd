@@ -15,8 +15,16 @@ import java.lang.annotation.*;
 public @interface ExcelExport {
 
     @AliasFor("name")
-    String value() default "";
+    String[] value() default "";
 
     @AliasFor("value")
-    String name() default "";
+    String[] name() default "";
+
+    /**
+     * 多个文件导出时，文件自动压缩成zip文件<br/>
+     * 单个文件时未设置zipName不生成压缩文件，设置则生成压缩文件
+     */
+    String zipName() default "";
+
+    boolean dynamic() default false;
 }
