@@ -1,6 +1,7 @@
 package com.zjj.tenant.domain.menu;
 
 import com.zjj.autoconfigure.component.core.BaseException;
+import com.zjj.bean.componenet.ApplicationContextHelper;
 import com.zjj.core.component.api.Parent;
 import com.zjj.tenant.domain.menu.event.DisableMenuEvent;
 import com.zjj.tenant.domain.menu.event.EnableMenuEvent;
@@ -8,7 +9,6 @@ import com.zjj.tenant.domain.menu.event.RemoveMenuEvent;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.Value;
-import org.jmolecules.ddd.types.AggregateRoot;
 import org.jmolecules.ddd.types.Association;
 import org.jmolecules.ddd.types.Identifier;
 import org.springframework.util.CollectionUtils;
@@ -16,7 +16,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import static com.zjj.bean.componenet.ApplicationContextHelper.publishEvent;
+
 
 /**
  * @author zengJiaJun
@@ -102,14 +102,14 @@ public class MenuResource implements MenuResourceAggregate, Parent<Long> {
     @Override
     public MenuResourceAggregate disable() {
         this.status = "1";
-        publishEvent(DisableMenuEvent.apply(this, this.id.getId()));
+        ApplicationContextHelper.publisher().publishEvent(DisableMenuEvent.apply(this, this.id.getId()));
         return this;
     }
 
     @Override
     public MenuResourceAggregate enable() {
         this.status = "0";
-        publishEvent(EnableMenuEvent.apply(this, this.id.getId()));
+        ApplicationContextHelper.publisher().publishEvent(EnableMenuEvent.apply(this, this.id.getId()));
         return this;
     }
 
@@ -128,7 +128,7 @@ public class MenuResource implements MenuResourceAggregate, Parent<Long> {
         if (!CollectionUtils.isEmpty(chileMenus)) {
             throw new BaseException("MenuResource.remove");
         }
-        publishEvent(RemoveMenuEvent.apply(this, this.id.getId()));
+        ApplicationContextHelper.publisher().publishEvent(RemoveMenuEvent.apply(this, this.id.getId()));
         return this;
     }
 
