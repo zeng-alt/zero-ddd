@@ -2,6 +2,7 @@ package com.zjj.tenant.domain.tenant;
 
 
 import com.zjj.autoconfigure.component.core.BaseException;
+import com.zjj.bean.componenet.ApplicationContextHelper;
 import com.zjj.bean.componenet.BeanHelper;
 import com.zjj.tenant.domain.tenant.cmd.StockInTenantDataSourceCmd;
 import com.zjj.tenant.domain.tenant.cmd.StockInTenantMenuCmd;
@@ -19,8 +20,6 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import static com.zjj.bean.componenet.ApplicationContextHelper.publishEvent;
 
 
 /**
@@ -111,7 +110,7 @@ public class Tenant implements AggregateRoot<Tenant, TenantId>, TenantAggregate,
             tenantDataSource = BeanHelper.copyToObject(sourceCmd, TenantDataSource.class);
         }
         this.tenantDataSource.valid();
-        publishEvent(CreateTenantDataSourceEvent.of(this.tenantKey, sourceCmd, this.tenantDataSource.getId()));
+        ApplicationContextHelper.publisher().publishEvent(CreateTenantDataSourceEvent.of(this.tenantKey, sourceCmd, this.tenantDataSource.getId()));
         return this;
     }
 
@@ -129,7 +128,7 @@ public class Tenant implements AggregateRoot<Tenant, TenantId>, TenantAggregate,
         this.tenantMenus.clear();
         this.tenantMenus.addAll(set);
 
-        publishEvent(
+        ApplicationContextHelper.getApplicationContext().publishEvent(
                 UpdateTenantMenuEvent
                         .apply(
                                 this,
@@ -143,7 +142,7 @@ public class Tenant implements AggregateRoot<Tenant, TenantId>, TenantAggregate,
     @Override
     public TenantAggregate disable() {
         this.status = "1";
-        publishEvent(DisableTenantEvent.apply(this, this.tenantKey));
+        ApplicationContextHelper.publisher().publishEvent(DisableTenantEvent.apply(this, this.tenantKey));
         return this;
     }
 
@@ -153,7 +152,7 @@ public class Tenant implements AggregateRoot<Tenant, TenantId>, TenantAggregate,
         if (this.tenantDataSource == null) {
             throw new BaseException("数据源为空, 无法启用租户");
         }
-        publishEvent(EnableTenantEvent.apply(this, this.id.getId(), this.tenantDataSource));
+        ApplicationContextHelper.publisher().publishEvent(EnableTenantEvent.apply(this, this.id.getId(), this.tenantDataSource));
         return this;
     }
 
@@ -161,7 +160,7 @@ public class Tenant implements AggregateRoot<Tenant, TenantId>, TenantAggregate,
     public TenantAggregate disableMenu(Long menuId) {
         for (Association<TenantMenu, TenantMenu.TenantMenuId> tenantMenu : this.tenantMenus) {
             if (tenantMenu.getId() != null && tenantMenu.pointsTo(TenantMenu.TenantMenuId.of(menuId))) {
-                publishEvent(DisableTenantMenuEvent.apply(this, tenantMenu.getId().getId(), tenantKey));
+                ApplicationContextHelper.publisher().publishEvent(DisableTenantMenuEvent.apply(this, tenantMenu.getId().getId(), tenantKey));
                 return this;
             }
         }
@@ -174,7 +173,7 @@ public class Tenant implements AggregateRoot<Tenant, TenantId>, TenantAggregate,
     public TenantAggregate enableMenu(Long menuId) {
         for (Association<TenantMenu, TenantMenu.TenantMenuId> tenantMenu : this.tenantMenus) {
             if (tenantMenu.getId() != null && menuId.equals(tenantMenu.getId().getId())) {
-                publishEvent(DisableTenantMenuEvent.apply(this, tenantMenu.getId().getId(), tenantKey));
+                ApplicationContextHelper.publisher().publishEvent(DisableTenantMenuEvent.apply(this, tenantMenu.getId().getId(), tenantKey));
                 return this;
             }
         }

@@ -24,11 +24,11 @@ public abstract class Aggregate<ID> {
 
     public abstract ID getId();
 
-    protected DomainEvent publishEvent(@NonNull DomainEvent event) {
-        Assert.notNull(event, "Domain event must not be null");
-        ApplicationContextHelper.publishEvent(Objects.requireNonNull(event));
-        return event;
-    }
+//    protected DomainEvent publishEvent(@NonNull DomainEvent event) {
+//        Assert.notNull(event, "Domain event must not be null");
+//        ApplicationContextHelper.publisher().publishEvent(Objects.requireNonNull(event));
+//        return event;
+//    }
 
     public boolean isNew() {
         return getId() == null;

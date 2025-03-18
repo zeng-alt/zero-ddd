@@ -7,10 +7,7 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.DefaultSingletonBeanRegistry;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.ApplicationEvent;
-import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.*;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
@@ -23,12 +20,18 @@ import org.springframework.stereotype.Component;
 public class ApplicationContextHelper implements ApplicationContextAware, BeanFactoryPostProcessor {
 
 	private static ApplicationContext applicationContext;
+	public static ApplicationEventPublisher applicationEventPublisher;
 
 	private static ConfigurableListableBeanFactory beanFactory;
 
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		ApplicationContextHelper.applicationContext = applicationContext;
+		ApplicationContextHelper.applicationEventPublisher = applicationContext.getBean(ApplicationEventPublisher.class);
+	}
+
+	public static ApplicationEventPublisher publisher() {
+		return applicationEventPublisher;
 	}
 
 	public static <T> T getBean(Class<T> targetClz) {
@@ -96,18 +99,6 @@ public class ApplicationContextHelper implements ApplicationContextAware, BeanFa
 		}
 		else {
 			throw new UtilException("Can not unregister bean, the factory is not a DefaultSingletonBeanRegistry!");
-		}
-	}
-
-	public static void publishEvent(ApplicationEvent event) {
-		if (null != applicationContext) {
-			applicationContext.publishEvent(event);
-		}
-	}
-
-	public static void publishEvent(Object event) {
-		if (null != applicationContext) {
-			applicationContext.publishEvent(event);
 		}
 	}
 

@@ -1,5 +1,6 @@
 package com.zjj.main.domain.user
 
+import com.zjj.bean.componenet.ApplicationContextHelper
 import com.zjj.domain.component.Aggregate
 
 import scala.beans.BeanProperty
@@ -78,7 +79,8 @@ class UserAgg extends Aggregate[Long] with Serializable {
 
   def assignRoles(roleIds: List[String]): UserAgg = {
     this.roleIds = this.roleIds ++ roleIds
-    publishEvent(null)
+//    publishEvent(null)
+    ApplicationContextHelper.publisher().publishEvent(null);
     this
   }
 

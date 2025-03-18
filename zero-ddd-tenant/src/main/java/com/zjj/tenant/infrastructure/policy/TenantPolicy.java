@@ -34,6 +34,9 @@ public class TenantPolicy {
     }
 
     @ApplicationModuleListener
+    public void on1(CreateTenantDataSourceEvent createTenantDataSourceEvent) {}
+
+    @ApplicationModuleListener
     public void on(CreateTenantDataSourceEvent createTenantDataSourceEvent) {
         TenantDataSourceEntity tenantDataSourceEntity = BeanHelper.copyToObject(createTenantDataSourceEvent, TenantDataSourceEntity.class);
         tenantDataSourceDao.save(tenantDataSourceEntity);
