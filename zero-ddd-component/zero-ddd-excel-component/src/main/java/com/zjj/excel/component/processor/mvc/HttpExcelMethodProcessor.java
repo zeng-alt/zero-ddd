@@ -5,9 +5,13 @@ import com.zjj.excel.component.utils.ExcelHelper;
 import com.zjj.excel.component.utils.RxjavaExcelHelper;
 import io.reactivex.rxjava3.core.Flowable;
 import jakarta.servlet.http.HttpServletRequest;
+import org.apache.commons.lang3.stream.Streams;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.util.*;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
+import org.springframework.util.TypeUtils;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.ModelAndViewContainer;
@@ -18,7 +22,6 @@ import org.springframework.web.servlet.mvc.method.annotation.AbstractMessageConv
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -85,48 +88,59 @@ public class HttpExcelMethodProcessor extends AbstractMessageConverterMethodArgu
 
 
         if (TypeUtils.isAssignable(Collection.class, parameter.getParameterType())) {
-            return doInvokeCollection(files, paramType, isMultiple);
+            return doInvokeCollection(files, paramType, isMultiple, excelImport.merge());
         } else if (TypeUtils.isAssignable(Flowable.class, parameter.getParameterType())) {
-            return doInvokeFlowable(files, paramType, isMultiple);
+            return doInvokeFlowable(files, paramType, isMultiple, excelImport.merge());
         }
 
         return null;
     }
 
-    private Object doInvokeFlowable(List<MultipartFile> files, Type paramType, boolean isMultiple) throws IOException {
+    private Object doInvokeFlowable(List<MultipartFile> files, Type paramType, boolean isMultiple, boolean merge) throws IOException {
         if (CollectionUtils.isEmpty(files)) {
             return Flowable.empty();
         }
 
-        if (!isMultiple) {
-           return RxjavaExcelHelper
-                   .importRxjavaExcel(files.iterator().next().getInputStream(), (Class<?>) paramType)
-                   .doOnError(e -> logger.error("HttpExcelMethodProcessor" + e));
+        Streams.FailableStream<? extends Flowable<?>> listStream
+                = Streams
+                    .failableStream(files)
+                    .map(file -> RxjavaExcelHelper.importRxjavaExcel(file.getInputStream(), (Class<?>) paramType));
+
+        if (isMultiple) {
+            return Flowable.fromIterable(listStream.stream().toList());
         }
 
-        return Flowable.fromIterable(files.stream().map(file -> {
-            try {
-                return RxjavaExcelHelper.importRxjavaExcel(files.iterator().next().getInputStream(), (Class<?>) paramType);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }).toList());
+        if (merge) {
+            return Flowable.fromIterable(listStream.stream().flatMap(Flowable::blockingStream).toList());
+        }
+
+        return RxjavaExcelHelper
+                .importRxjavaExcel(files.iterator().next().getInputStream(), (Class<?>) paramType)
+                .doOnError(e -> logger.error("HttpExcelMethodProcessor" + e));
+
     }
 
-    private Object doInvokeCollection(List<MultipartFile> files, Type paramType, boolean isMultiple) throws IOException {
+    private Object doInvokeCollection(List<MultipartFile> files, Type paramType, boolean isMultiple, boolean merge) throws IOException {
         if (CollectionUtils.isEmpty(files)) {
             return Collections.emptyList();
         }
 
-        if (!isMultiple) {
-            return ExcelHelper.importExcel(files.iterator().next().getInputStream(), (Class<?>) paramType);
+        Streams.FailableStream<? extends List<?>> listStream
+                = Streams
+                        .failableStream(files)
+                        .map(file -> ExcelHelper.importExcel(file.getInputStream(), (Class<?>) paramType));
+
+
+        if (isMultiple) {
+            return listStream.stream().toList();
         }
 
-        List result = new ArrayList();
-        for (MultipartFile file : files) {
-            result.add(ExcelHelper.importExcel(file.getInputStream(), (Class<?>) paramType));
+        if (merge) {
+            return listStream.stream().flatMap(Collection::stream).toList();
         }
-        return result;
+
+        return ExcelHelper.importExcel(files.iterator().next().getInputStream(), (Class<?>) paramType);
+
     }
 
     private Type getHttpExcelType(MethodParameter parameter) {
