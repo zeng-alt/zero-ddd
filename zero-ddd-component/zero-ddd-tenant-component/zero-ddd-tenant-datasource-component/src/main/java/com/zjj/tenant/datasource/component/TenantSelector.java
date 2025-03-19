@@ -49,7 +49,7 @@ final class TenantSelector implements ImportSelector {
         imports.add(SwitchTenantMethodInterceptorRegistrar.class.getName());
 
         if (annotation.mode() == TenantMode.DATABASE) {
-//            imports.add(MasterDataSourceConfiguration.class.getName());
+            imports.add(MasterDataSourceConfiguration.class.getName());
             imports.add(TenantDatabaseAutoConfiguration.class.getName());
             if (annotation.dynamicLiquibase()) {
                 imports.add(TenantManagementAutoConfiguration.class.getName());
@@ -60,7 +60,7 @@ final class TenantSelector implements ImportSelector {
             log.info("Enable database multi-tenancy mode!!!");
         }
         if ((annotation.mode() == TenantMode.SCHEMA)) {
-//            imports.add(MasterDataSourceConfiguration.class.getName());
+            imports.add(MasterDataSourceConfiguration.class.getName());
             imports.add(TenantSchemaAutoConfiguration.class.getName());
             if (annotation.dynamicLiquibase()) {
                 imports.add(TenantManagementAutoConfiguration.class.getName());
@@ -72,7 +72,7 @@ final class TenantSelector implements ImportSelector {
         }
 
         if ((annotation.mode() == TenantMode.MIXED)) {
-//            imports.add(MasterDataSourceConfiguration.class.getName());
+            imports.add(MasterDataSourceConfiguration.class.getName());
             imports.add(TenantMixedAutoConfiguration.class.getName());
             if (annotation.dynamicLiquibase()) {
                 imports.add(TenantManagementAutoConfiguration.class.getName());

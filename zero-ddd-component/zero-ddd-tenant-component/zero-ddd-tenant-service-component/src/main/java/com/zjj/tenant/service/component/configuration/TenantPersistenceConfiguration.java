@@ -1,5 +1,7 @@
 package com.zjj.tenant.service.component.configuration;
 
+import com.zjj.tenant.management.component.config.MasterDataSourceConfiguration;
+import com.zjj.tenant.service.component.exception.CreateTenantDataSourceException;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.cfg.AvailableSettings;
@@ -9,6 +11,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateProperties;
 import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -19,6 +22,7 @@ import org.springframework.orm.hibernate5.SpringBeanContainer;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -28,7 +32,8 @@ import java.util.HashMap;
  * @crateTime 2025年03月16日 13:00
  * @version 1.0
  */
-@AutoConfiguration
+@ConditionalOnBean(name = "masterDataSource")
+@AutoConfiguration(after = MasterDataSourceConfiguration.class)
 @EnableConfigurationProperties({JpaProperties.class, HibernateProperties.class})
 @EnableJpaRepositories(
         basePackages = "com.zjj.tenant.service.component.repository",
@@ -36,7 +41,6 @@ import java.util.HashMap;
         transactionManagerRef = "tenantTransactionManager"
 )
 @RequiredArgsConstructor
-
 public class TenantPersistenceConfiguration {
 
     private final ConfigurableListableBeanFactory beanFactory;
@@ -62,6 +66,10 @@ public class TenantPersistenceConfiguration {
             @Qualifier("tenantJpaProperties") JpaProperties jpaProperties,
             @Qualifier("tenantHibernateProperties") HibernateProperties hibernateProperties
     ) {
+
+//        if (!StringUtils.hasText(jpaProperties.getDatabasePlatform())) {
+//            throw new CreateTenantDataSourceException("multi-tenancy.jpa.database-platform is null");
+//        }
         LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
         factoryBean.setDataSource(tenantServiceDataSource);
         factoryBean.setPackagesToScan(entityPackages);

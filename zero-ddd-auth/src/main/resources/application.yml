@@ -83,3 +83,11 @@ multi-tenancy:
     url-prefix: "jdbc:postgresql://localhost:5432/"
   schema-pattern:
     schema: "PUBLIC"
+  datasource:
+    url: jdbc:postgresql://localhost:5432/zero-tenant
+    username: postgres
+    password: postgres
+    driverClassName: org.postgresql.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+#  jpa:
+#    database-platform: org.hibernate.dialect.PostgreSQLDialect

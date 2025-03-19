@@ -4,6 +4,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import com.zjj.tenant.management.component.config.MasterDataSourceConfiguration;
 import com.zjj.tenant.management.component.spi.TenantDataSourceProvider;
 import com.zjj.tenant.management.component.spi.TenantSingleDataSourceProvider;
+import com.zjj.tenant.service.component.exception.CreateTenantDataSourceException;
 import com.zjj.tenant.service.component.repository.TenantRepository;
 import com.zjj.tenant.service.component.service.SimpleTenantDataSourceService;
 import com.zjj.tenant.service.component.service.SimpleTenantSingleDataSourceService;
@@ -13,11 +14,15 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Primary;
+import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
 
@@ -26,6 +31,7 @@ import javax.sql.DataSource;
  * @crateTime 2025年03月16日 12:55
  * @version 1.0
  */
+@ConditionalOnBean(name = "masterDataSource")
 @AutoConfiguration(after = MasterDataSourceConfiguration.class)
 @Import(MasterDataSourceConfiguration.class)
 public class TenantServiceAutoConfiguration implements BeanDefinitionRegistryPostProcessor {
@@ -38,6 +44,11 @@ public class TenantServiceAutoConfiguration implements BeanDefinitionRegistryPos
 
     @Bean
     public DataSource tenantServiceDataSource(@Qualifier("tenantDataSourceProperties") DataSourceProperties tenantDataSourceProperties) {
+        if (!StringUtils.hasText(tenantDataSourceProperties.getUrl())) {
+            throw new CreateTenantDataSourceException("multi-tenancy.datasource.url is null");
+        }
+
+
         HikariDataSource build = tenantDataSourceProperties
                 .initializeDataSourceBuilder()
                 .type(HikariDataSource.class)
@@ -61,14 +72,16 @@ public class TenantServiceAutoConfiguration implements BeanDefinitionRegistryPos
 
     }
 
-    @Bean
     @Lazy
+    @Bean
+    @Primary
     public TenantDataSourceProvider simpleTenantDataSourceProvider(TenantRepository tenantRepository) {
         return new SimpleTenantDataSourceService(tenantRepository);
     }
 
-    @Bean
     @Lazy
+    @Bean
+    @Primary
     public TenantSingleDataSourceProvider simpleTenantSingleDataSourceProvider(TenantRepository tenantRepository) {
         return new SimpleTenantSingleDataSourceService(tenantRepository);
     }

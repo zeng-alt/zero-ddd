@@ -8,7 +8,6 @@ import com.zjj.tenant.management.component.spi.TenantDataSourceProvider;
 import com.zjj.tenant.management.component.spi.TenantSingleDataSourceProvider;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.ClassUtils;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.cfg.ManagedBeanSettings;
 import org.hibernate.cfg.MappingSettings;
@@ -52,9 +51,6 @@ import java.util.List;
  */
 @AutoConfiguration
 @RequiredArgsConstructor
-//@EnableJpaRepositories(
-//        basePackages = "com.zjj.example.dao"
-//)
 @EnableConfigurationProperties({DataSourceProperties.class, JpaProperties.class, HibernateProperties.class})
 public class MasterDataSourceConfiguration implements BeanClassLoaderAware {
 
@@ -134,7 +130,6 @@ public class MasterDataSourceConfiguration implements BeanClassLoaderAware {
         this.classLoader = classLoader;
     }
 
-
     @Configuration
     @ConditionalOnClass(RemoteTenantClient.class)
     static class TenantDataSourceProviderConfig {
@@ -150,4 +145,5 @@ public class MasterDataSourceConfiguration implements BeanClassLoaderAware {
             return new DefaultTenantDataSourceProvider(remoteTenantClient);
         }
     }
+
 }
