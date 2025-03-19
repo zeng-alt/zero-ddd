@@ -1,3 +1,2 @@
 com.zjj.tenant.service.component.configuration.TenantServiceAutoConfiguration
 com.zjj.tenant.service.component.configuration.TenantPersistenceConfiguration
-com.zjj.tenant.management.component.config.MasterDataSourceConfiguration

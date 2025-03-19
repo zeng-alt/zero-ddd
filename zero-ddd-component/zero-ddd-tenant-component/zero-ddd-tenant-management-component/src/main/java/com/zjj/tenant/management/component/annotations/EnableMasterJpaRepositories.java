@@ -28,7 +28,7 @@ import java.lang.annotation.*;
 @Documented
 @EnableJpaRepositories
 @EntityScan
-@Import(MasterDataSourceConfiguration.class)
+//@Import(MasterDataSourceConfiguration.class)
 public @interface EnableMasterJpaRepositories {
 
 

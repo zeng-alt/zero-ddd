@@ -19,13 +19,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
  * @version 1.0
  * @crateTime 2024年09月27日 21:20
  */
-@EnableMultiTenancy(mode = TenantMode.MIXED)
+@EnableMultiTenancy(mode = TenantMode.COLUMN)
 @EnableTenantJwtCache
 @EnableFeignClients(basePackages = "com.zjj")
 @EnableWebSecurity(debug = true)
-//@EnableJpaRepositories
-//@EnableL2Cache
-@EnableMasterJpaRepositories
 @SpringBootApplication
 public class ZeroDddAuthApplication {
 
