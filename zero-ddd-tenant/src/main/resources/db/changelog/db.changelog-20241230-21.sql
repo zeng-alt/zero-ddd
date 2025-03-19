@@ -13,6 +13,8 @@ alter table if exists tenant_menu
 drop constraint if exists FKqw859jd783qmie5omnsitgtp2;
 
 drop table if exists EVENT_PUBLICATION cascade;
+
+drop table if exists event_publication_archive cascade;
     
 drop table if exists menu_resource cascade;
     
@@ -22,13 +24,23 @@ drop table if exists tenant_data_source cascade;
     
 drop table if exists tenant_menu cascade;
 
+create table event_publication_archive (
+                                           id uuid not null,
+                                           completion_date timestamp(6) with time zone,
+                                           event_type varchar(255),
+                                           listener_id varchar(255),
+                                           publication_date timestamp(6) with time zone,
+                                           serialized_event varchar(1000),
+                                           primary key (id)
+);
+
 create table EVENT_PUBLICATION (
                                        completion_date timestamp(6) with time zone,
                                        publication_date timestamp(6) with time zone,
                                        id uuid not null,
                                        event_type varchar(255),
                                        listener_id varchar(255),
-                                       serialized_event varchar(255),
+                                       serialized_event varchar(1000),
                                        primary key (id)
 );
     

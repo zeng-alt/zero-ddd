@@ -8,6 +8,7 @@ spring:
       republish-outstanding-events-on-restart: true
       externalization:
         enabled: true
+      completion-mode: archive
   messages:
     basename: messages
   # swagger-ui custom path

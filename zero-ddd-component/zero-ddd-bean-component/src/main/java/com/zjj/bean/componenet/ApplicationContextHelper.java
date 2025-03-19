@@ -20,18 +20,16 @@ import org.springframework.stereotype.Component;
 public class ApplicationContextHelper implements ApplicationContextAware, BeanFactoryPostProcessor {
 
 	private static ApplicationContext applicationContext;
-	public static ApplicationEventPublisher applicationEventPublisher;
 
 	private static ConfigurableListableBeanFactory beanFactory;
 
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		ApplicationContextHelper.applicationContext = applicationContext;
-		ApplicationContextHelper.applicationEventPublisher = applicationContext.getBean(ApplicationEventPublisher.class);
 	}
 
 	public static ApplicationEventPublisher publisher() {
-		return applicationEventPublisher;
+		return applicationContext;
 	}
 
 	public static <T> T getBean(Class<T> targetClz) {
