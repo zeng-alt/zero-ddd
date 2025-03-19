@@ -2,11 +2,10 @@ package com.zjj.tenant.datasource.component;
 
 import com.zjj.autoconfigure.component.tenant.TenantMode;
 import com.zjj.tenant.database.component.TenantDatabaseAutoConfiguration;
-import com.zjj.tenant.management.component.config.DataSourceConfiguration;
+import com.zjj.tenant.management.component.config.MasterDataSourceConfiguration;
 import com.zjj.tenant.management.component.config.LiquibaseConfiguration;
 import com.zjj.tenant.management.component.config.TenantManagementAutoConfiguration;
 import com.zjj.tenant.mix.component.TenantMixedAutoConfiguration;
-import com.zjj.tenant.mix.component.TenantMixedRoutingDatasource;
 import com.zjj.tenant.schema.component.TenantSchemaAutoConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -50,7 +49,7 @@ final class TenantSelector implements ImportSelector {
         imports.add(SwitchTenantMethodInterceptorRegistrar.class.getName());
 
         if (annotation.mode() == TenantMode.DATABASE) {
-            imports.add(DataSourceConfiguration.class.getName());
+//            imports.add(MasterDataSourceConfiguration.class.getName());
             imports.add(TenantDatabaseAutoConfiguration.class.getName());
             if (annotation.dynamicLiquibase()) {
                 imports.add(TenantManagementAutoConfiguration.class.getName());
@@ -61,7 +60,7 @@ final class TenantSelector implements ImportSelector {
             log.info("Enable database multi-tenancy mode!!!");
         }
         if ((annotation.mode() == TenantMode.SCHEMA)) {
-            imports.add(DataSourceConfiguration.class.getName());
+//            imports.add(MasterDataSourceConfiguration.class.getName());
             imports.add(TenantSchemaAutoConfiguration.class.getName());
             if (annotation.dynamicLiquibase()) {
                 imports.add(TenantManagementAutoConfiguration.class.getName());
@@ -73,7 +72,7 @@ final class TenantSelector implements ImportSelector {
         }
 
         if ((annotation.mode() == TenantMode.MIXED)) {
-            imports.add(DataSourceConfiguration.class.getName());
+//            imports.add(MasterDataSourceConfiguration.class.getName());
             imports.add(TenantMixedAutoConfiguration.class.getName());
             if (annotation.dynamicLiquibase()) {
                 imports.add(TenantManagementAutoConfiguration.class.getName());

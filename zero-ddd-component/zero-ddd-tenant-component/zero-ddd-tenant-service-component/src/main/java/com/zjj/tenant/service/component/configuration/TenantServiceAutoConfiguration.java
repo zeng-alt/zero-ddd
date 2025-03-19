@@ -1,13 +1,12 @@
 package com.zjj.tenant.service.component.configuration;
 
 import com.zaxxer.hikari.HikariDataSource;
-import com.zjj.tenant.management.component.config.DataSourceConfiguration;
+import com.zjj.tenant.management.component.config.MasterDataSourceConfiguration;
 import com.zjj.tenant.management.component.spi.TenantDataSourceProvider;
 import com.zjj.tenant.management.component.spi.TenantSingleDataSourceProvider;
 import com.zjj.tenant.service.component.repository.TenantRepository;
 import com.zjj.tenant.service.component.service.SimpleTenantDataSourceService;
 import com.zjj.tenant.service.component.service.SimpleTenantSingleDataSourceService;
-import jakarta.persistence.EntityManager;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -27,8 +26,8 @@ import javax.sql.DataSource;
  * @crateTime 2025年03月16日 12:55
  * @version 1.0
  */
-@AutoConfiguration(after = DataSourceConfiguration.class)
-@Import(DataSourceConfiguration.class)
+@AutoConfiguration(after = MasterDataSourceConfiguration.class)
+@Import(MasterDataSourceConfiguration.class)
 public class TenantServiceAutoConfiguration implements BeanDefinitionRegistryPostProcessor {
 
     @Bean
