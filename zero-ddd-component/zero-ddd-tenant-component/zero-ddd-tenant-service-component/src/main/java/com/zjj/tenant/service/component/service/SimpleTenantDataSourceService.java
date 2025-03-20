@@ -2,6 +2,7 @@ package com.zjj.tenant.service.component.service;
 
 import com.zjj.autoconfigure.component.tenant.Tenant;
 import com.zjj.tenant.management.component.spi.TenantDataSourceProvider;
+import com.zjj.tenant.service.component.entity.TenantDataSourceEntity;
 import com.zjj.tenant.service.component.repository.TenantRepository;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -22,12 +23,18 @@ public class SimpleTenantDataSourceService implements TenantDataSourceProvider {
 
     @Override
     public Collection<Tenant> findAll() {
-//        return tenantRepository
-//                .findAll()
-//                .stream()
-//                .map()
-//                .collect(Collectors.toList());
-
-        return Collections.emptyList();
+        return tenantRepository.findAll()
+                .stream()
+                .map(t -> {
+                    TenantDataSourceEntity dataSource = t.getTenantDataSource();
+                    return Tenant.builder()
+                            .tenantId(t.getTenantKey())
+                            .db(dataSource.getDb())
+                            .password(dataSource.getPassword())
+                            .schema(dataSource.getSchema())
+                            .mode(dataSource.getMode())
+                            .build();
+                })
+                .toList();
     }
 }
