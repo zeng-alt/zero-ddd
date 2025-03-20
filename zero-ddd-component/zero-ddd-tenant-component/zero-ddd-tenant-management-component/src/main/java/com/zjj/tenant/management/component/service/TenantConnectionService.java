@@ -1,4 +1,4 @@
-package com.zjj.tenant.database.component;
+package com.zjj.tenant.management.component.service;
 
 import javax.sql.DataSource;
 import java.sql.Connection;

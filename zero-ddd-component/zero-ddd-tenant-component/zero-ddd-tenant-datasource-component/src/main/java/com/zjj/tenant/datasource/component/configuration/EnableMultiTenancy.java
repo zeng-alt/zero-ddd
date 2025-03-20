@@ -1,8 +1,10 @@
-package com.zjj.tenant.datasource.component;
+package com.zjj.tenant.datasource.component.configuration;
 
 
 import com.zjj.autoconfigure.component.tenant.MultiTenancyProperties;
 import com.zjj.autoconfigure.component.tenant.TenantMode;
+import com.zjj.tenant.column.component.TenantColumnAutoConfiguration;
+import com.zjj.tenant.datasource.component.configuration.TenantSelector;
 import com.zjj.tenant.management.component.annotations.EnableMasterJpaRepositories;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -20,7 +22,7 @@ import java.lang.annotation.*;
 @Documented
 @EnableMasterJpaRepositories
 @EnableConfigurationProperties({MultiTenancyProperties.class, LiquibaseProperties.class})
-@Import({TenantSelector.class})
+@Import({TenantSelector.class, TenantColumnAutoConfiguration.class})
 public @interface EnableMultiTenancy {
 
     /**

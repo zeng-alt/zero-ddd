@@ -1,17 +1,14 @@
 package com.zjj.tenant.mix.component;
 
 import com.zjj.autoconfigure.component.tenant.MultiTenancyProperties;
-import com.zjj.tenant.database.component.DynamicDataSourceBasedMultiTenantConnectionProvider;
-import com.zjj.tenant.database.component.TenantDataBaseRoutingDatasource;
-import com.zjj.tenant.management.component.spi.TenantSingleDataSourceProvider;
-import org.hibernate.cfg.AvailableSettings;
-import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
+import com.zjj.tenant.database.component.proovider.DynamicMultiTenantDataSourceConnectionProvider;
+import org.hibernate.cfg.MultiTenancySettings;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernatePropertiesCustomizer;
 import org.springframework.context.annotation.Bean;
@@ -25,18 +22,17 @@ public class TenantMixedAutoConfiguration {
 
     @Primary
     @Bean
-    public TenantMixedRoutingDatasource tenantDataSource(
+    @ConditionalOnBean(name = {"masterDataSource"})
+    public TenantMixedDataSourceRoutingDatasource tenantDataSource(
             @Qualifier("masterDataSource") DataSource dataSource,
             DataSourceProperties dataSourceProperties,
             ConfigurableListableBeanFactory beanFactory,
-//            TenantSingleDataSourceProvider tenantSingleDataSourceProvider,
             MultiTenancyProperties multiTenancyProperties
     ) {
 
-        return new TenantMixedRoutingDatasource(
+        return new TenantMixedDataSourceRoutingDatasource(
                 dataSource,
                 dataSourceProperties,
-//                tenantSingleDataSourceProvider,
                 beanFactory,
                 multiTenancyProperties
         );
@@ -45,15 +41,13 @@ public class TenantMixedAutoConfiguration {
 
 
     @Bean
-    public MultiTenantConnectionProvider<String> multiTenantConnectionProvider(@Autowired @Qualifier("tenantDataSource") TenantMixedRoutingDatasource dataSource) {
-        return new DynamicDataSourceBasedMultiTenantConnectionProvider(dataSource);
+    public MultiTenantConnectionProvider<String> multiTenantConnectionProvider(@Autowired @Qualifier("tenantDataSource") TenantMixedDataSourceRoutingDatasource dataSource) {
+        return new DynamicMultiTenantDataSourceConnectionProvider<>(dataSource);
     }
 
     @Bean
     public HibernatePropertiesCustomizer tenantDatabaseHibernatePropertiesCustomizer(MultiTenantConnectionProvider<String> multiTenantConnectionProvider) {
-        return hibernateProperties -> {
-            hibernateProperties.put(AvailableSettings.MULTI_TENANT_CONNECTION_PROVIDER, multiTenantConnectionProvider);
-        };
+        return hibernateProperties -> hibernateProperties.put(MultiTenancySettings.MULTI_TENANT_CONNECTION_PROVIDER, multiTenantConnectionProvider);
     }
 
 }

@@ -16,12 +16,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
 import org.hibernate.service.UnknownUnwrapTypeException;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -37,21 +35,21 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 @Slf4j
 @Component
-public class SchemaBasedMultiTenantConnectionProvider implements MultiTenantConnectionProvider<String>, TenantDataSourceService {
+public class TenantSchemaMultiTenantConnectionProvider implements MultiTenantConnectionProvider<String>, TenantDataSourceService {
 
-    private static final String VALID_SCHEMA_NAME_REGEXP = "[A-Za-z0-9_]*";
+    private static final String VALID_SCHEMA_NAME_REGEXP = "\\w*";
     private final DataSource datasource;
-    private TenantSingleDataSourceProvider tenantSingleDataSourceProvider;
     private final String master;
     private final String masterTenant;
     private final boolean isUppercase;
-    private final MultiTenancyProperties tenancyProperties;
-    private final TenantInitDataSourceService tenantInitDataSourceService;
+    private final transient MultiTenancyProperties tenancyProperties;
+    private transient TenantSingleDataSourceProvider tenantSingleDataSourceProvider;
+    private final transient TenantInitDataSourceService tenantInitDataSourceService;
 
     private LoadingCache<String, String> tenantSchemas;
 
 
-    public SchemaBasedMultiTenantConnectionProvider(DataSource datasource, MultiTenancyProperties tenancyProperties, TenantSingleDataSourceProvider tenantSingleDataSourceProvider, TenantInitDataSourceService tenantInitDataSourceService) {
+    public TenantSchemaMultiTenantConnectionProvider(DataSource datasource, MultiTenancyProperties tenancyProperties, TenantSingleDataSourceProvider tenantSingleDataSourceProvider, TenantInitDataSourceService tenantInitDataSourceService) {
         this.datasource = datasource;
         this.tenantSingleDataSourceProvider = tenantSingleDataSourceProvider;
         this.tenantInitDataSourceService = tenantInitDataSourceService;

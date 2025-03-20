@@ -1,7 +1,6 @@
-package com.zjj.tenant.database.component;
+package com.zjj.tenant.database.component.exception;
 
 import com.zjj.i18n.component.BaseI18nException;
-import com.zjj.i18n.component.MessageSourceHelper;
 
 /**
  * @author zengJiaJun

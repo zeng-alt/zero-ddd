@@ -1,4 +1,4 @@
-package com.zjj.tenant.database.component;
+package com.zjj.tenant.database.component.proovider;
 
 import com.zjj.i18n.component.config.MessageBaseNameProvider;
 import org.springframework.stereotype.Component;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
  * @crateTime 2024年12月23日 21:11
  */
 @Component
-public class TenantDatabaseBaseNameProvider implements MessageBaseNameProvider {
+public class TenantDatabaseMessageBaseNameProvider implements MessageBaseNameProvider {
 
     @Override
     public String[] getMessageBaseName() {

@@ -37,8 +37,6 @@ import org.springframework.orm.hibernate5.SpringBeanContainer;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.ResourceUtils;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -82,16 +80,14 @@ public class MasterDataSourceConfiguration implements BeanClassLoaderAware {
     @Bean
     @Primary
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(
-//            @Qualifier("masterDataSource") DataSource tenantServiceDataSource
             ObjectProvider<HibernatePropertiesCustomizer> hibernatePropertiesCustomizer,
             EntityScanPackages entityScanPackages,
             Environment environment
     ) {
         LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
-//        factoryBean.setDataSource(tenantServiceDataSource);
         List<String> packageNames = entityScanPackages.getPackageNames();
         // 判断org.springframework.modulith.events这个包是否存在
-        if (classLoader.getResource("org.springframework.modulith.events".replaceAll(".", "/")) != null) {
+        if (classLoader.getResource("org.springframework.modulith.events".replaceAll("\\.", "/")) != null) {
             packageNames.add("org.springframework.modulith.events.updating");
             CompletionMode property = environment.getProperty(CompletionMode.PROPERTY, CompletionMode.class);
             if (property == CompletionMode.ARCHIVE) {
@@ -109,7 +105,7 @@ public class MasterDataSourceConfiguration implements BeanClassLoaderAware {
 
         properties.put(SchemaToolingSettings.HBM2DDL_AUTO, hibernateProperties.getDdlAuto()); // 确保这里有 update
         properties.put(MappingSettings.PHYSICAL_NAMING_STRATEGY, "org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy");
-        properties.put(AvailableSettings.IMPLICIT_NAMING_STRATEGY, "org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy");
+        properties.put(MappingSettings.IMPLICIT_NAMING_STRATEGY, "org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy");
         properties.put(ManagedBeanSettings.BEAN_CONTAINER, new SpringBeanContainer(this.beanFactory));
         hibernatePropertiesCustomizer.orderedStream().forEach(customizer -> customizer.customize(properties));
         factoryBean.setJpaPropertyMap(properties);

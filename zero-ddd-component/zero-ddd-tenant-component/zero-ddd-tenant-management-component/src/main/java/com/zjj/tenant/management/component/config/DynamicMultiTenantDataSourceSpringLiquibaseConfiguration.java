@@ -2,15 +2,11 @@ package com.zjj.tenant.management.component.config;
 
 
 import com.zjj.autoconfigure.component.tenant.Tenant;
-import com.zjj.tenant.management.component.service.TenantCreationException;
 import com.zjj.tenant.management.component.service.TenantDataSourceService;
-import com.zjj.tenant.management.component.service.TenantInitDataSourceService;
 import com.zjj.tenant.management.component.spi.TenantDataSourceProvider;
 import liquibase.exception.LiquibaseException;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.core.io.ResourceLoader;
@@ -25,7 +21,7 @@ import java.util.Collection;
  * multi-tenancy based on a dynamic collection of DataSources.
  */
 @Slf4j
-public class DynamicDatasourceMultiTenantSpringLiquibase implements CommandLineRunner, InitializingBean {
+public class DynamicMultiTenantDataSourceSpringLiquibaseConfiguration implements CommandLineRunner, InitializingBean {
 
 
     private final LiquibaseProperties liquibaseProperties;
@@ -33,7 +29,7 @@ public class DynamicDatasourceMultiTenantSpringLiquibase implements CommandLineR
     private final TenantDataSourceProvider tenantDataSourceProviders;
     private final TenantDataSourceService tenantDataSourceService;
 
-    public DynamicDatasourceMultiTenantSpringLiquibase(LiquibaseProperties liquibaseProperties, ResourceLoader resourceLoader, TenantDataSourceProvider tenantDataSourceProviders, TenantDataSourceService tenantDataSourceService) {
+    public DynamicMultiTenantDataSourceSpringLiquibaseConfiguration(LiquibaseProperties liquibaseProperties, ResourceLoader resourceLoader, TenantDataSourceProvider tenantDataSourceProviders, TenantDataSourceService tenantDataSourceService) {
 
         this.liquibaseProperties = liquibaseProperties;
         this.resourceLoader = resourceLoader;

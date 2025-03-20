@@ -6,21 +6,19 @@ import com.github.benmanes.caffeine.cache.RemovalListener;
 import com.zaxxer.hikari.HikariDataSource;
 import com.zjj.autoconfigure.component.tenant.MultiTenancyProperties;
 import com.zjj.autoconfigure.component.tenant.Tenant;
+import com.zjj.tenant.database.component.exception.TenantDataSourceException;
 import com.zjj.tenant.management.component.SpringLiquibase;
+import com.zjj.tenant.management.component.service.TenantConnectionService;
 import com.zjj.tenant.management.component.service.TenantCreationException;
 import com.zjj.tenant.management.component.service.TenantDataSourceService;
 import com.zjj.tenant.management.component.service.TenantInitDataSourceService;
 import com.zjj.tenant.management.component.spi.TenantSingleDataSourceProvider;
 import com.zjj.tenant.management.component.utils.SpringLiquibaseUtils;
-import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import liquibase.exception.LiquibaseException;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
 import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.core.io.ResourceLoader;
@@ -42,7 +40,7 @@ import java.util.concurrent.TimeUnit;
  * @crateTime 2024年12月04日 11:42
  */
 @Slf4j
-public class TenantDataBaseRoutingDatasource extends AbstractRoutingDataSource implements TenantDataSourceService, TenantConnectionService<String> {
+public class TenantDataSourceRoutingDatasource extends AbstractRoutingDataSource implements TenantDataSourceService, TenantConnectionService<String> {
     private static final String TENANT_POOL_NAME_SUFFIX = "DataSource";
     private static final String VALID_DATABASE_NAME_REGEXP = "\\w*";
     private LoadingCache<String, DataSource> tenantDataSources;
@@ -68,7 +66,7 @@ public class TenantDataBaseRoutingDatasource extends AbstractRoutingDataSource i
 
 
 
-    public TenantDataBaseRoutingDatasource(
+    public TenantDataSourceRoutingDatasource(
             DataSource dataSource,
             DataSourceProperties dataSourceProperties,
 //            TenantSingleDataSourceProvider tenantSingleDataSourceProvider,
@@ -81,7 +79,6 @@ public class TenantDataBaseRoutingDatasource extends AbstractRoutingDataSource i
         this.setDefaultTargetDataSource(dataSource);
         this.setTargetDataSources(new HashMap<>());
         this.dataSourceProperties = dataSourceProperties;
-//        this.tenantSingleDataSourceProvider = null;
         this.beanFactory = beanFactory;
         this.multiTenancyProperties = multiTenancyProperties;
         this.currentTenantIdentifierResolver = currentTenantIdentifierResolver;
@@ -145,7 +142,7 @@ public class TenantDataBaseRoutingDatasource extends AbstractRoutingDataSource i
 
     @Override
     public void verify(Tenant tenant) {
-        if (tenant != null || !tenant.getDb().matches(VALID_DATABASE_NAME_REGEXP)) {
+        if (tenant != null && !tenant.getDb().matches(VALID_DATABASE_NAME_REGEXP)) {
             throw new TenantCreationException("Invalid db name: " + tenant.getDb());
         }
     }
@@ -214,7 +211,6 @@ public class TenantDataBaseRoutingDatasource extends AbstractRoutingDataSource i
     public void afterPropertiesSet() {
         super.afterPropertiesSet();
         createCache();
-//        Assert.notNull(tenantSingleDataSourceProvider, "tenantSingleDataSourceProvider must not be null");
     }
 
     @Override

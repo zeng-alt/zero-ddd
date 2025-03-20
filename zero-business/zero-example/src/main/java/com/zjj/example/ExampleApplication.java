@@ -1,7 +1,7 @@
 package com.zjj.example;
 
 import com.zjj.autoconfigure.component.tenant.TenantMode;
-import com.zjj.tenant.datasource.component.EnableMultiTenancy;
+import com.zjj.tenant.datasource.component.configuration.EnableMultiTenancy;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

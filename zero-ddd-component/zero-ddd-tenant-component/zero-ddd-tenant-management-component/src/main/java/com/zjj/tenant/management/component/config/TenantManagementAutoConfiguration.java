@@ -3,19 +3,13 @@ package com.zjj.tenant.management.component.config;
 import com.zjj.autoconfigure.component.redis.Lock;
 import com.zjj.autoconfigure.component.tenant.Tenant;
 import com.zjj.cache.component.repository.impl.RedisTopicRepositoryImpl;
-import com.zjj.exchange.tenant.client.RemoteTenantClient;
 import com.zjj.tenant.management.component.service.*;
-import com.zjj.tenant.management.component.spi.DefaultTenantDataSourceProvider;
-import com.zjj.tenant.management.component.spi.DefaultTenantSingleDataSourceProvider;
 import com.zjj.tenant.management.component.spi.TenantDataSourceProvider;
-import com.zjj.tenant.management.component.spi.TenantSingleDataSourceProvider;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ResourceLoader;
 
 import java.util.function.Consumer;
@@ -35,14 +29,12 @@ public class TenantManagementAutoConfiguration {
             ResourceLoader resourceLoader,
             TenantDataSourceService tenantDataSourceService,
             RedisTopicRepositoryImpl repository,
-//            TenantInitDataSourceService tenantInitDataSourceService,
             ObjectProvider<Lock> lock
     ) {
         TenantManagementServiceImpl tenantManagementService = new TenantManagementServiceImpl(
                 liquibaseProperties,
                 resourceLoader,
                 tenantDataSourceService,
-//                tenantInitDataSourceService,
                 lock.getIfAvailable()
         );
         repository.addListener("tenant-channel", Tenant.class, new Consumer<Tenant>() {
@@ -56,19 +48,17 @@ public class TenantManagementAutoConfiguration {
     }
 
     @Bean
-    public DynamicDatasourceMultiTenantSpringLiquibase dynamicDatasourceMultiTenantSpringLiquibase(
+    public DynamicMultiTenantDataSourceSpringLiquibaseConfiguration dynamicDatasourceMultiTenantSpringLiquibase(
             LiquibaseProperties liquibaseProperties,
             ResourceLoader resourceLoader,
             TenantDataSourceProvider tenantDataSourceProviders,
-//            TenantInitDataSourceService tenantInitDataSourceService,
             TenantDataSourceService tenantDataSourceService
     ) {
 
-        return new DynamicDatasourceMultiTenantSpringLiquibase(
+        return new DynamicMultiTenantDataSourceSpringLiquibaseConfiguration(
                 liquibaseProperties,
                 resourceLoader,
                 tenantDataSourceProviders,
-//                tenantInitDataSourceService,
                 tenantDataSourceService
         );
     }

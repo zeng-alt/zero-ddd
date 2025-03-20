@@ -2,7 +2,6 @@ package com.zjj.tenant.schema.component;
 
 import com.zjj.autoconfigure.component.tenant.MultiTenancyProperties;
 import com.zjj.autoconfigure.component.tenant.Tenant;
-import com.zjj.tenant.management.component.service.TenantCreationException;
 import com.zjj.tenant.management.component.service.TenantInitDataSourceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

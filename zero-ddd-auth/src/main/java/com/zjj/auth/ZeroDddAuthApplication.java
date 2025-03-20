@@ -1,16 +1,12 @@
 package com.zjj.auth;
 
 import com.zjj.autoconfigure.component.tenant.TenantMode;
-import com.zjj.exchange.tenant.client.RemoteTenantClient;
 import com.zjj.security.tenant.component.EnableTenantJwtCache;
-import com.zjj.tenant.datasource.component.EnableMultiTenancy;
-import com.zjj.tenant.management.component.annotations.EnableMasterJpaRepositories;
+import com.zjj.tenant.datasource.component.configuration.EnableMultiTenancy;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 

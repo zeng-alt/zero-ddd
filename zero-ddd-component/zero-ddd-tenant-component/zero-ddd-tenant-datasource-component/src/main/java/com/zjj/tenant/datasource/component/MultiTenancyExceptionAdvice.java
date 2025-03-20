@@ -1,15 +1,13 @@
 package com.zjj.tenant.datasource.component;
 
-import com.zjj.autoconfigure.component.core.BaseException;
 import com.zjj.autoconfigure.component.core.Response;
 import com.zjj.core.component.api.ExceptionResponse;
-import com.zjj.tenant.database.component.TenantDataSourceException;
+import com.zjj.tenant.database.component.exception.TenantDataSourceException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.transaction.CannotCreateTransactionException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 

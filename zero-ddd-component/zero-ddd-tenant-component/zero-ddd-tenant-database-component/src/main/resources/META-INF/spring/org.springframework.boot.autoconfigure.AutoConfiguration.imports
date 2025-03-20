@@ -1,1 +1,1 @@
-com.zjj.tenant.database.component.TenantDatabaseBaseNameProvider
+com.zjj.tenant.database.component.proovider.TenantDatabaseMessageBaseNameProvider

@@ -7,8 +7,8 @@ import com.zaxxer.hikari.HikariDataSource;
 import com.zjj.autoconfigure.component.tenant.MultiTenancyProperties;
 import com.zjj.autoconfigure.component.tenant.Tenant;
 import com.zjj.autoconfigure.component.tenant.TenantContextHolder;
-import com.zjj.tenant.database.component.TenantConnectionService;
-import com.zjj.tenant.database.component.TenantDataSourceException;
+import com.zjj.tenant.management.component.service.TenantConnectionService;
+import com.zjj.tenant.database.component.exception.TenantDataSourceException;
 import com.zjj.tenant.database.component.TenantDatabaseInitService;
 import com.zjj.tenant.management.component.SpringLiquibase;
 import com.zjj.tenant.management.component.service.TenantDataSourceService;
@@ -16,12 +16,10 @@ import com.zjj.tenant.management.component.service.TenantInitDataSourceService;
 import com.zjj.tenant.management.component.spi.TenantSingleDataSourceProvider;
 import com.zjj.tenant.management.component.utils.SpringLiquibaseUtils;
 import com.zjj.tenant.schema.component.TenantSchemaInitService;
-import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import liquibase.exception.LiquibaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.core.io.ResourceLoader;
@@ -38,7 +36,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
-public class TenantMixedRoutingDatasource extends AbstractRoutingDataSource implements TenantDataSourceService, TenantConnectionService<String> {
+public class TenantMixedDataSourceRoutingDatasource extends AbstractRoutingDataSource implements TenantDataSourceService, TenantConnectionService<String> {
 
     private static final String TENANT_POOL_NAME_SUFFIX = "DataSource";
     private static final String VALID_DATABASE_NAME_REGEXP = "\\w*";
@@ -49,8 +47,6 @@ public class TenantMixedRoutingDatasource extends AbstractRoutingDataSource impl
     private final DataSourceProperties dataSourceProperties;
     private final DataSource masterDataSource;
     private final BeanFactory beanFactory;
-//    private final TenantSingleDataSourceProvider tenantSingleDataSourceProvider;
-//    private final CurrentTenantIdentifierResolver<TenantKey> currentTenantIdentifierResolver;
     private final MultiTenancyProperties multiTenancyProperties;
     private final TenantInitDataSourceService tenantDatabaseInitService;
     private final TenantInitDataSourceService tenantSchemaInitService;
@@ -77,7 +73,7 @@ public class TenantMixedRoutingDatasource extends AbstractRoutingDataSource impl
 //                });
     }
 
-    public TenantMixedRoutingDatasource(
+    public TenantMixedDataSourceRoutingDatasource(
             DataSource dataSource,
             DataSourceProperties dataSourceProperties,
 //            TenantSingleDataSourceProvider tenantSingleDataSourceProvider,
@@ -89,7 +85,6 @@ public class TenantMixedRoutingDatasource extends AbstractRoutingDataSource impl
         this.setTargetDataSources(new HashMap<>());
 
         this.dataSourceProperties = dataSourceProperties;
-//        this.tenantSingleDataSourceProvider = tenantSingleDataSourceProvider;
         this.beanFactory = beanFactory;
         this.multiTenancyProperties = multiTenancyProperties;
         this.tenantDatabaseInitService = new TenantDatabaseInitService(multiTenancyProperties);
@@ -205,14 +200,6 @@ public class TenantMixedRoutingDatasource extends AbstractRoutingDataSource impl
         return ds;
     }
 
-    private boolean isSomeDataSource(Tenant tenant) {
-        DataSource dataSource = tenantDataSources.get(tenant.getTenantId());
-        if (dataSource == null) {
-            return false;
-        }
-        return ((HikariDataSource) dataSource).getPoolName().equals(tenant.getDb());
-    }
-
     @Override
     public void addTenantDataSource(Tenant tenant, DataSource dataSource) {
         DataSource cacheDataSource = this.tenantDataSources.getIfPresent(tenant.getDb());
@@ -280,7 +267,6 @@ public class TenantMixedRoutingDatasource extends AbstractRoutingDataSource impl
 
     @Override
     public void afterPropertiesSet() {
-//        Assert.notNull(tenantSingleDataSourceProvider, "tenantSingleDataSourceProvider must not be null");
         super.afterPropertiesSet();
         createCache();
     }

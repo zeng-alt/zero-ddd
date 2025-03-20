@@ -1,7 +1,8 @@
-package com.zjj.tenant.datasource.component;
+package com.zjj.tenant.datasource.component.configuration;
 
 import com.zjj.autoconfigure.component.tenant.TenantMode;
-import com.zjj.tenant.database.component.TenantDatabaseAutoConfiguration;
+import com.zjj.tenant.database.component.configuration.TenantDatabaseAutoConfiguration;
+import com.zjj.tenant.datasource.component.SwitchTenantMethodInterceptor;
 import com.zjj.tenant.management.component.config.MasterDataSourceConfiguration;
 import com.zjj.tenant.management.component.config.LiquibaseConfiguration;
 import com.zjj.tenant.management.component.config.TenantManagementAutoConfiguration;

@@ -1,6 +1,7 @@
-package com.zjj.tenant.database.component;
+package com.zjj.tenant.database.component.proovider;
 
 
+import com.zjj.tenant.management.component.service.TenantConnectionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.initialization.qual.Initialized;
@@ -14,7 +15,7 @@ import java.sql.SQLException;
 
 @RequiredArgsConstructor
 @Slf4j
-public class DynamicDataSourceBasedMultiTenantConnectionProvider<K>
+public class DynamicMultiTenantDataSourceConnectionProvider<K>
         implements MultiTenantConnectionProvider<K> {
 
     @Serial
