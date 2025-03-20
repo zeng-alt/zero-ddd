@@ -87,7 +87,7 @@ public class MasterDataSourceConfiguration implements BeanClassLoaderAware {
         LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
         List<String> packageNames = entityScanPackages.getPackageNames();
         // 判断org.springframework.modulith.events这个包是否存在
-        if (classLoader.getResource("org.springframework.modulith.events".replaceAll("\\.", "/")) != null) {
+        if (classLoader.getResource("org.springframework.modulith.events.jpa".replace(".", "/")) != null) {
             packageNames.add("org.springframework.modulith.events.updating");
             CompletionMode property = environment.getProperty(CompletionMode.PROPERTY, CompletionMode.class);
             if (property == CompletionMode.ARCHIVE) {
