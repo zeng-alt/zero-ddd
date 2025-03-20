@@ -2,13 +2,13 @@ package com.zjj.tenant.management.component.config;
 
 import com.zaxxer.hikari.HikariDataSource;
 import com.zjj.exchange.tenant.client.RemoteTenantClient;
+import com.zjj.tenant.management.component.service.TenantCreationException;
 import com.zjj.tenant.management.component.spi.DefaultTenantDataSourceProvider;
 import com.zjj.tenant.management.component.spi.DefaultTenantSingleDataSourceProvider;
 import com.zjj.tenant.management.component.spi.TenantDataSourceProvider;
 import com.zjj.tenant.management.component.spi.TenantSingleDataSourceProvider;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.cfg.ManagedBeanSettings;
 import org.hibernate.cfg.MappingSettings;
 import org.hibernate.cfg.SchemaToolingSettings;
@@ -37,6 +37,7 @@ import org.springframework.orm.hibernate5.SpringBeanContainer;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -67,6 +68,9 @@ public class MasterDataSourceConfiguration implements BeanClassLoaderAware {
     @Bean
     @LiquibaseDataSource
     public DataSource masterDataSource(@Qualifier("masterDataSourceProperties") DataSourceProperties dataSourceProperties) {
+        if (!StringUtils.hasText(dataSourceProperties.getUrl())) {
+            throw new TenantCreationException("spring.datasource.url is null");
+        }
         HikariDataSource dataSource = dataSourceProperties
                 .initializeDataSourceBuilder()
                 .type(HikariDataSource.class)

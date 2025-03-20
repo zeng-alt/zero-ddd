@@ -15,6 +15,7 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -31,7 +32,6 @@ import javax.sql.DataSource;
  */
 @ConditionalOnBean(name = "masterDataSource")
 @AutoConfiguration(after = MasterDataSourceConfiguration.class)
-@Import(MasterDataSourceConfiguration.class)
 public class TenantServiceAutoConfiguration implements BeanDefinitionRegistryPostProcessor {
 
     @Bean
