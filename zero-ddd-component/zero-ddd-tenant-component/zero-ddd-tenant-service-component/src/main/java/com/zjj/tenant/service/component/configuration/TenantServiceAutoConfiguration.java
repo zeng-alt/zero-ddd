@@ -19,9 +19,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
-import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
@@ -72,17 +70,17 @@ public class TenantServiceAutoConfiguration implements BeanDefinitionRegistryPos
 
     }
 
-    @Lazy
+    @Bean
+    @Primary
+    public TenantSingleDataSourceProvider simpleTenantSingleDataSourceProvider(TenantRepository tenantRepository) {
+        return new SimpleTenantSingleDataSourceService(tenantRepository);
+    }
+
     @Bean
     @Primary
     public TenantDataSourceProvider simpleTenantDataSourceProvider(TenantRepository tenantRepository) {
         return new SimpleTenantDataSourceService(tenantRepository);
     }
 
-    @Lazy
-    @Bean
-    @Primary
-    public TenantSingleDataSourceProvider simpleTenantSingleDataSourceProvider(TenantRepository tenantRepository) {
-        return new SimpleTenantSingleDataSourceService(tenantRepository);
-    }
+
 }

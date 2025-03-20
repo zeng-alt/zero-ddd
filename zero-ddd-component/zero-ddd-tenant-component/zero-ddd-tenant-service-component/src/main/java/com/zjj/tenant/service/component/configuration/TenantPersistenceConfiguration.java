@@ -1,7 +1,9 @@
 package com.zjj.tenant.service.component.configuration;
 
+import com.zjj.autoconfigure.component.tenant.MultiTenancyProperties;
 import com.zjj.tenant.management.component.config.MasterDataSourceConfiguration;
 import com.zjj.tenant.service.component.exception.CreateTenantDataSourceException;
+import com.zjj.tenant.service.component.repository.TenantRepository;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.cfg.AvailableSettings;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateProperties;
 import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
@@ -36,7 +39,7 @@ import java.util.HashMap;
 @AutoConfiguration(after = MasterDataSourceConfiguration.class)
 @EnableConfigurationProperties({JpaProperties.class, HibernateProperties.class})
 @EnableJpaRepositories(
-        basePackages = "com.zjj.tenant.service.component.repository",
+        basePackages = { "${multi-tenancy.repository.packages:com.zjj.tenant.service.component.repository}" },
         entityManagerFactoryRef = "tenantEntityManagerFactory",
         transactionManagerRef = "tenantTransactionManager"
 )
@@ -45,15 +48,11 @@ public class TenantPersistenceConfiguration {
 
     private final ConfigurableListableBeanFactory beanFactory;
 
-    @Value("${multi-tenancy.entity.packages:com.zjj.tenant.service.component.entity}")
-    private String entityPackages;
-
     @Bean
     @ConfigurationProperties("multi-tenancy.jpa.hibernate")
     public HibernateProperties tenantHibernateProperties() {
         return new HibernateProperties();
     }
-
     @Bean
     @ConfigurationProperties("multi-tenancy.jpa")
     public JpaProperties tenantJpaProperties() {
@@ -64,15 +63,13 @@ public class TenantPersistenceConfiguration {
     public LocalContainerEntityManagerFactoryBean tenantEntityManagerFactory(
             @Qualifier("tenantServiceDataSource") DataSource tenantServiceDataSource,
             @Qualifier("tenantJpaProperties") JpaProperties jpaProperties,
-            @Qualifier("tenantHibernateProperties") HibernateProperties hibernateProperties
+            @Qualifier("tenantHibernateProperties") HibernateProperties hibernateProperties,
+            MultiTenancyProperties multiTenancyProperties
     ) {
 
-//        if (!StringUtils.hasText(jpaProperties.getDatabasePlatform())) {
-//            throw new CreateTenantDataSourceException("multi-tenancy.jpa.database-platform is null");
-//        }
         LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
         factoryBean.setDataSource(tenantServiceDataSource);
-        factoryBean.setPackagesToScan(entityPackages);
+        factoryBean.setPackagesToScan(multiTenancyProperties.getEntity().getPackages());
         factoryBean.setPersistenceUnitName("tenantPersistenceUnit");
         factoryBean.setBeanFactory(beanFactory);
 

@@ -130,7 +130,8 @@ public class MasterDataSourceConfiguration implements BeanClassLoaderAware {
         this.classLoader = classLoader;
     }
 
-    @Configuration
+    @Lazy
+    @Configuration(proxyBeanMethods = false)
     @ConditionalOnClass(RemoteTenantClient.class)
     static class TenantDataSourceProviderConfig {
         @Bean
@@ -141,7 +142,7 @@ public class MasterDataSourceConfiguration implements BeanClassLoaderAware {
 
         @Bean
         @ConditionalOnMissingBean(TenantDataSourceProvider.class)
-        public TenantDataSourceProvider defaultTenantDataSourceProvider(RemoteTenantClient remoteTenantClient) {
+        public TenantDataSourceProvider tenantDataSourceProvider(RemoteTenantClient remoteTenantClient) {
             return new DefaultTenantDataSourceProvider(remoteTenantClient);
         }
     }

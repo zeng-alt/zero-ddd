@@ -19,7 +19,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
  * @version 1.0
  * @crateTime 2024年09月27日 21:20
  */
-@EnableMultiTenancy(mode = TenantMode.COLUMN)
+@EnableMultiTenancy(mode = TenantMode.SCHEMA)
 @EnableTenantJwtCache
 @EnableFeignClients(basePackages = "com.zjj")
 @EnableWebSecurity(debug = true)

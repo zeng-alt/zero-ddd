@@ -14,13 +14,31 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties("multi-tenancy")
 public class MultiTenancyProperties {
 
+    /** TenantDataSourceCapacity */
     private DataSourceCache dataSourceCache = new DataSourceCache();
+    /** SpringLiquibase */
     private DatabasePattern databasePattern = new DatabasePattern();
     private SchemaPattern schemaPattern = new SchemaPattern();
     private String master = "master";
     private Database database;
 
+    /** EnableJpaRepositories */
+    private RepositoryPackages repository = new RepositoryPackages();
+    private EntityPackages entity = new EntityPackages();
+
+    /** filter */
     private String tenantToken = "X-TENANT-ID";
+
+
+    @Data
+    public static class EntityPackages {
+        String[] packages = {"com.zjj.tenant.service.component.entity"};
+    }
+
+    @Data
+    public static class RepositoryPackages {
+        String packages =  "com.zjj.tenant.service.component.repository";
+    }
 
     public enum Database {
 
