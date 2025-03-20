@@ -28,6 +28,13 @@ import java.util.List;
 @Slf4j
 final class TenantSelector implements ImportSelector {
 
+
+    private static final String LOGO = """
+                                           _               \s
+            _|_ _ __  _ __ _|_--- _  _ __ |_) _ __  _ __ _|_
+             |_(/_| |(_|| | |_   (_ (_)||||  (_)| |(/_| | |_
+            """;
+
     public static class SwitchTenantMethodInterceptorRegistrar implements ImportBeanDefinitionRegistrar {
         @Override
         public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
@@ -58,7 +65,7 @@ final class TenantSelector implements ImportSelector {
             if (annotation.enabledLiquibase()) {
                 imports.add(LiquibaseConfiguration.class.getName());
             }
-            log.info("Enable database multi-tenancy mode!!!");
+            log.info("\nEnable database multi-tenancy mode!!!");
         }
         if ((annotation.mode() == TenantMode.SCHEMA)) {
             imports.add(MasterDataSourceConfiguration.class.getName());
@@ -69,7 +76,7 @@ final class TenantSelector implements ImportSelector {
             if (annotation.enabledLiquibase()) {
                 imports.add(LiquibaseConfiguration.class.getName());
             }
-            log.info("Enable schema multi-tenancy mode!!!");
+            log.info("\nEnable schema multi-tenancy mode!!!");
         }
 
         if ((annotation.mode() == TenantMode.MIXED)) {
@@ -81,14 +88,15 @@ final class TenantSelector implements ImportSelector {
             if (annotation.enabledLiquibase()) {
                 imports.add(LiquibaseConfiguration.class.getName());
             }
-            log.info("Enable mixed multi-tenancy mode!!!");
+            log.info("\nEnable mixed multi-tenancy mode!!!");
         }
 
 
         if (annotation.mode() == TenantMode.COLUMN) {
-            log.info("Enable column multi-tenancy mode!!!");
+            log.info("\nEnable column multi-tenancy mode!!!");
         }
 
+        log.info(LOGO);
         return imports.toArray(new String[0]);
     }
 

@@ -9,6 +9,7 @@ import com.zjj.graphql.component.config.EnableGenEntityInput;
 import com.zjj.graphql.component.config.EnableGenEntityQuery;
 import com.zjj.graphql.component.config.EnableGenEntityType;
 import com.zjj.security.tenant.component.EnableTenantJwtCache;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -26,6 +27,7 @@ import java.util.Map;
  * @version 1.0
  * @crateTime 2024年10月29日 21:34
  */
+@Slf4j
 //@EnableAbac
 @EnableTenantJwtCache
 @EnableFeignClients(basePackages = "com.zjj")
@@ -38,6 +40,18 @@ import java.util.Map;
 @EnableScheduling
 //@EnablePersistentDomainEvents
 public class ZeroDddTenantApplication {
+
+    private static final String LOGO = """
+                                                       ██      ██      ██         ██                                         ██
+                                                      ░██     ░██     ░██        ░██                                        ░██
+             ██████  █████  ██████  ██████            ░██     ░██     ░██       ██████  █████  ███████   ██████   ███████  ██████
+            ░░░░██  ██░░░██░░██░░█ ██░░░░██ █████  ██████  ██████  ██████ █████░░░██░  ██░░░██░░██░░░██ ░░░░░░██ ░░██░░░██░░░██░
+               ██  ░███████ ░██ ░ ░██   ░██░░░░░  ██░░░██ ██░░░██ ██░░░██░░░░░   ░██  ░███████ ░██  ░██  ███████  ░██  ░██  ░██
+              ██   ░██░░░░  ░██   ░██   ░██      ░██  ░██░██  ░██░██  ░██        ░██  ░██░░░░  ░██  ░██ ██░░░░██  ░██  ░██  ░██
+             ██████░░██████░███   ░░██████       ░░██████░░██████░░██████        ░░██ ░░██████ ███  ░██░░████████ ███  ░██  ░░██
+            ░░░░░░  ░░░░░░ ░░░     ░░░░░░         ░░░░░░  ░░░░░░  ░░░░░░          ░░   ░░░░░░ ░░░   ░░  ░░░░░░░░ ░░░   ░░    ░░
+                        
+            """;
 
 
 //    @Bean
@@ -102,6 +116,7 @@ public class ZeroDddTenantApplication {
 
     public static void main(String[] args) throws ClassNotFoundException {
         ConfigurableApplicationContext application = SpringApplication.run(ZeroDddTenantApplication.class, args);
+        log.info(LOGO);
 //        new SpringApplicationBuilder(ZeroDddTenantApplication.class)
 //                .applicationStartup(new BufferingApplicationStartup(2048))
 //                .run(args);
