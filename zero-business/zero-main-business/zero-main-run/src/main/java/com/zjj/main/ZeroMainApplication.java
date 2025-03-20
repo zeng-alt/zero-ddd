@@ -19,13 +19,11 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  */
 @EnableTenantJwtCache
 @EnableMultiTenancy(mode = TenantMode.MIXED)
-@EnableJpaRepositories(basePackages = "com.zjj")
 @SpringBootApplication
 @EnableFeignClients(basePackages = "com.zjj")
 @EnableGenEntityType
 @EnableGenEntityInput
 @EnableGenEntityQuery
-//@EnableGenEntityFuzzyQuery
 public class ZeroMainApplication {
 
     public static void main(String[] args) {

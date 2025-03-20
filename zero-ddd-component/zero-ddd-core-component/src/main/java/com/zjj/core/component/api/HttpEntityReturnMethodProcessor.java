@@ -1,6 +1,7 @@
 package com.zjj.core.component.api;
 
 import com.zjj.autoconfigure.component.core.HttpEntityStatus;
+import com.zjj.autoconfigure.component.core.ResponseEntity;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Setter;
@@ -60,7 +61,6 @@ public class HttpEntityReturnMethodProcessor extends AbstractMessageConverterMet
     public void handleReturnValue(@Nullable Object returnValue, MethodParameter returnType,
                                   ModelAndViewContainer mavContainer, NativeWebRequest webRequest) throws Exception {
 
-        mavContainer.setRequestHandled(true);
         if (returnValue == null) {
             return;
         }
@@ -91,13 +91,15 @@ public class HttpEntityReturnMethodProcessor extends AbstractMessageConverterMet
             httpEntity = (HttpEntity<?>) returnValue;
         }
 
+        mavContainer.setRequestHandled(true);
+
         if (httpEntity.getBody() instanceof ProblemDetail detail) {
             if (detail.getInstance() == null) {
                 URI path = URI.create(inputMessage.getServletRequest().getRequestURI());
                 detail.setInstance(path);
             }
             if (log.isWarnEnabled() && httpEntity instanceof ResponseEntity<?> responseEntity) {
-                if (responseEntity.getStatusCode().value() != detail.getStatus()) {
+                if (responseEntity.getStatusCode() != detail.getStatus()) {
                     log.warn(returnType.getExecutable().toGenericString() +
                             " returned ResponseEntity: " + responseEntity + ", but its status" +
                             " doesn't match the ProblemDetail status: " + detail.getStatus());
@@ -159,6 +161,7 @@ public class HttpEntityReturnMethodProcessor extends AbstractMessageConverterMet
 
     private HttpEntity<?> buildProblemDetailResponse(@NonNull HttpStatus status, URI requestUri, String title, String message) {
         ProblemDetail problemDetail = ProblemDetail.forStatus(status);
+        problemDetail.setType(requestUri);
         problemDetail.setInstance(requestUri);
         problemDetail.setTitle(title);
         if (message != null) {

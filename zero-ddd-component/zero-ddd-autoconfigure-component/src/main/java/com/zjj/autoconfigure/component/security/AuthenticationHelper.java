@@ -1,12 +1,17 @@
 package com.zjj.autoconfigure.component.security;
 
 import com.zjj.autoconfigure.component.UtilException;
+import com.zjj.autoconfigure.component.json.JsonHelper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.boot.web.context.WebServerApplicationContext;
+import org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.lang.NonNull;
@@ -48,7 +53,7 @@ public final class AuthenticationHelper {
 
 	public static void renderString(@NonNull HttpServletResponse response, int status, String msg, String data) {
 		try {
-			response.setStatus(HttpStatus.OK.value());
+			response.setStatus(status);
 			response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 			response.setCharacterEncoding("utf-8");
 			String result = """
@@ -60,7 +65,7 @@ public final class AuthenticationHelper {
 					    "success": "%s"
 					}
 					""".formatted(status, msg, data, LocalDateTime.now().format(DATE_TIME_FORMATTER), status == 200);
-			response.getWriter().print(result);
+			response.getWriter().print(data);
 		}
 		catch (IOException e) {
 			throw new UtilException(e);
@@ -72,15 +77,21 @@ public final class AuthenticationHelper {
 			response.setStatus(status);
 			response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 			response.setCharacterEncoding("utf-8");
-			String result = """
-					{
-					    "code":   "%d",
-					    "message":      "%s",
-					    "time":     "%s",
-					    "success": "%s"
-					}
-					""".formatted(status, msg, LocalDateTime.now().format(DATE_TIME_FORMATTER), status == 200);
-			response.getWriter().print(result);
+//			String result = """
+//					{
+//					    "code":   "%d",
+//					    "message":      "%s",
+//					    "time":     "%s",
+//					    "success": "%s"
+//					}
+//					""".formatted(status, msg, LocalDateTime.now().format(DATE_TIME_FORMATTER), status == 200);
+//			if (!HttpStatus.valueOf(status).is2xxSuccessful()) {
+//				ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(status), msg);
+//				response.getWriter().print(JsonHelper.);
+//			} else {
+//				response.getWriter().print(msg);
+//			}
+			response.getWriter().print(msg);
 		}
 		catch (IOException e) {
 			throw new UtilException(e);
@@ -99,7 +110,7 @@ public final class AuthenticationHelper {
 					}
 					""".formatted(status, msg,  request.getMethod(), LocalDateTime.now().format(DATE_TIME_FORMATTER), request.getURI(), status == 200);
 		DataBufferFactory dataBufferFactory = response.bufferFactory();
-		return dataBufferFactory.wrap(result.getBytes(StandardCharsets.UTF_8));
+		return dataBufferFactory.wrap(msg.getBytes(StandardCharsets.UTF_8));
 	}
 
 }

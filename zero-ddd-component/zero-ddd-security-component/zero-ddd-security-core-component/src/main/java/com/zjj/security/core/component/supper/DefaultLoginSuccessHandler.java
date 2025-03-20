@@ -1,5 +1,6 @@
 package com.zjj.security.core.component.supper;
 
+import com.zjj.autoconfigure.component.json.JsonUtils;
 import com.zjj.autoconfigure.component.security.AuthenticationHelper;
 import com.zjj.autoconfigure.component.security.SecurityUser;
 import com.zjj.autoconfigure.component.security.jwt.JwtCacheManage;
@@ -53,7 +54,11 @@ public class DefaultLoginSuccessHandler extends LoginSuccessHandler {
 			securityUser.setExpire(now.plus(expiration, temporalUnit));
 		}
 		jwtCacheManage.put(soleId, principal);
-		AuthenticationHelper.renderString(response, HttpStatus.OK.value(), "登录成功", jwt);
+		AuthenticationHelper.renderString(
+				response,
+				HttpStatus.OK.value(),
+				JsonUtils.toJsonString(Map.of("token", jwt))
+		);
 	}
 
 }

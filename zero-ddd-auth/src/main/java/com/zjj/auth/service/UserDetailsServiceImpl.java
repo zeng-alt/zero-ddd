@@ -4,8 +4,7 @@ import com.zjj.auth.repository.UserRepository;
 import com.zjj.autoconfigure.component.security.SecurityUser;
 import com.zjj.autoconfigure.component.tenant.Tenant;
 import com.zjj.autoconfigure.component.tenant.TenantContextHolder;
-import com.zjj.exchange.tenant.client.RemoteTenantClient;
-import io.vavr.control.Option;
+import com.zjj.tenant.management.component.spi.TenantSingleDataSourceProvider;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +25,12 @@ import java.util.List;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
-    private final RemoteTenantClient remoteTenantClient;
+    private final TenantSingleDataSourceProvider tenantSingleDataSourceProvider;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        remoteTenantClient
+        tenantSingleDataSourceProvider
                 .findById(TenantContextHolder.getTenantId())
                 .forEach(t -> {
                     TenantContextHolder.setDatabase(t.getDb());
@@ -42,7 +41,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .findByUsername(username)
                 .map(user -> {
                     List<String> roles = user.getUserRoles().stream().map(userRole -> userRole.getRole().getRoleKey()).toList();
-                    Tenant tenant = remoteTenantClient.findById(user.getTenantBy()).getOrElse(new Tenant());
+                    Tenant tenant = tenantSingleDataSourceProvider.findById(user.getTenantBy()).getOrElse(new Tenant());
                     return SecurityUser
                             .withUsername(user.getUsername())
                             .password(user.getPassword())

@@ -22,7 +22,6 @@
         <module>zero-ddd-doc-component</module>
         <module>zero-ddd-security-component</module>
         <module>zero-ddd-tenant-component</module>
-        <module>zero-ddd-jpa-component</module>
         <module>zero-ddd-excel-component</module>
         <module>zero-ddd-json-component</module>
         <module>zero-ddd-autoconfigure-component</module>

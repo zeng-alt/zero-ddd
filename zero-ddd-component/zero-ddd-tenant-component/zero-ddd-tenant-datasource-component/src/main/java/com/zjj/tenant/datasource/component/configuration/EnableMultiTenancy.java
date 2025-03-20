@@ -29,7 +29,7 @@ public @interface EnableMultiTenancy {
      * 使用多租户模式
      * @return 模式
      */
-    TenantMode mode() default TenantMode.DATABASE;
+    TenantMode mode() default TenantMode.MIXED;
 
     /**
      * 是否启用master的Liquibase

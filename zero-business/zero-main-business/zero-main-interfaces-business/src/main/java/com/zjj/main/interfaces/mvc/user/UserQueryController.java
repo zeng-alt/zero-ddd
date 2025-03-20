@@ -1,6 +1,7 @@
 package com.zjj.main.interfaces.mvc.user;
 
 import com.zjj.autoconfigure.component.core.Response;
+import com.zjj.autoconfigure.component.core.ResponseEntity;
 import com.zjj.main.interfaces.mvc.user.from.StockInUserFrom;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserQueryController {
 
     @GetMapping("/detail")
-    public Response<StockInUserFrom> detail() {
-        return Response.success(new StockInUserFrom());
+    public ResponseEntity<StockInUserFrom> detail() {
+        return ResponseEntity.ok(new StockInUserFrom());
     }
 }
