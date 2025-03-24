@@ -1,6 +1,8 @@
 package com.zjj.tenant.datasource.component;
 
 
+import org.springframework.core.annotation.AliasFor;
+
 import java.lang.annotation.*;
 
 /**
@@ -13,5 +15,13 @@ import java.lang.annotation.*;
 @Documented
 public @interface SwitchTenant {
 
-    String value() default "";
+    @AliasFor("tenant")
+    String value();
+
+    @AliasFor("value")
+    String tenant() default "";
+
+    String database() default "";
+
+    String schema() default "";
 }

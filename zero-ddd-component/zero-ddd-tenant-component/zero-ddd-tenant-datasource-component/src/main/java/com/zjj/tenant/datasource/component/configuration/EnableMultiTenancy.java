@@ -22,7 +22,7 @@ import java.lang.annotation.*;
 @Documented
 @EnableMasterJpaRepositories
 @EnableConfigurationProperties({MultiTenancyProperties.class, LiquibaseProperties.class})
-@Import({TenantSelector.class, TenantColumnAutoConfiguration.class})
+@Import({TenantSelector.class, TenantColumnAutoConfiguration.class, SwitchTenantAutoConfiguration.class})
 public @interface EnableMultiTenancy {
 
     /**

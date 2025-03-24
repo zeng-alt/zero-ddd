@@ -1,10 +1,12 @@
 package com.zjj.tenant.datasource.component;
 
 import com.zjj.autoconfigure.component.tenant.TenantContextHolder;
+import com.zjj.domain.component.event.TenantEvent;
 import lombok.Setter;
 import org.aopalliance.aop.Advice;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.PointcutAdvisor;
 import org.springframework.aop.framework.AopInfrastructureBean;
@@ -14,6 +16,7 @@ import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.lang.NonNull;
+import org.springframework.modulith.events.ApplicationModuleListener;
 import org.springframework.util.Assert;
 
 import javax.annotation.Nonnull;
@@ -23,20 +26,20 @@ import java.lang.reflect.Method;
 /**
  * @author zengJiaJun
  * @version 1.0
- * @crateTime 2025年01月01日 21:15
+ * @crateTime 2025年03月24日 17:22
  */
-public class SwitchTenantMethodInterceptor implements Ordered, MethodInterceptor, PointcutAdvisor, AopInfrastructureBean {
+public class SwitchTenantEventMethodInterceptor implements Ordered, MethodInterceptor, PointcutAdvisor, AopInfrastructureBean {
 
     @Setter
     private int order = HIGHEST_PRECEDENCE;
     private final Pointcut pointcut;
 
-    public SwitchTenantMethodInterceptor() {
-        this(new ComposablePointcut(Pointcuts.union(new AnnotationMatchingPointcut(null, SwitchTenant.class, true),
-                new AnnotationMatchingPointcut(SwitchTenant.class, true))));
+    public SwitchTenantEventMethodInterceptor() {
+        this(new ComposablePointcut(Pointcuts.union(new AnnotationMatchingPointcut(null, ApplicationModuleListener.class, true),
+                new AnnotationMatchingPointcut(ApplicationModuleListener.class, true))));
     }
 
-    public SwitchTenantMethodInterceptor(Pointcut pointcut) {
+    public SwitchTenantEventMethodInterceptor(Pointcut pointcut) {
         Assert.notNull(pointcut, "pointcut cannot be null");
         this.pointcut = pointcut;
     }
@@ -45,12 +48,17 @@ public class SwitchTenantMethodInterceptor implements Ordered, MethodInterceptor
     @Override
     public Object invoke(@Nonnull MethodInvocation invocation) throws Throwable {
 
-        SwitchTenant switchAnnotation = findSwitchAnnotation(invocation.getMethod());
+        ApplicationModuleListener switchAnnotation = findSwitchAnnotation(invocation.getMethod());
         if (switchAnnotation != null) {
-            String tenantId = switchAnnotation.value();
-            TenantContextHolder.setTenantId(tenantId);
-            TenantContextHolder.setDatabase(switchAnnotation.database());
-            TenantContextHolder.setSchema(switchAnnotation.schema());
+            Object[] arguments = invocation.getArguments();
+            if (!ArrayUtils.isEmpty(arguments)) {
+                Object argument = arguments[0];
+                if (argument instanceof TenantEvent tenantEvent) {
+                    TenantContextHolder.setTenantId(tenantEvent.getTenant$());
+                    TenantContextHolder.setSchema(tenantEvent.getSchema$());
+                    TenantContextHolder.setDatabase(tenantEvent.getDatabase$());
+                }
+            }
         }
         try {
             return invocation.proceed();
@@ -78,7 +86,7 @@ public class SwitchTenantMethodInterceptor implements Ordered, MethodInterceptor
     }
 
 
-    private SwitchTenant findSwitchAnnotation(Method method) {
-        return AnnotatedElementUtils.findMergedAnnotation(method, SwitchTenant.class);
+    private ApplicationModuleListener findSwitchAnnotation(Method method) {
+        return AnnotatedElementUtils.findMergedAnnotation(method, ApplicationModuleListener.class);
     }
 }

@@ -48,6 +48,12 @@
             <artifactId>zero-ddd-security-tenant-component</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.zjj</groupId>
+            <artifactId>zero-ddd-domain-component</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
     </dependencies>
 
 </project>

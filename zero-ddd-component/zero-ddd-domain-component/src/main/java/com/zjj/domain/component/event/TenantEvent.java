@@ -15,10 +15,14 @@ import org.jmolecules.event.types.DomainEvent;
 public abstract class TenantEvent implements DomainEvent {
 
 
-    protected String tenant;
+    protected String tenant$;
+    protected String database$;
+    protected String schema$;
 
     protected TenantEvent() {
-        this.tenant = TenantContextHolder.getTenantId();
+        this.tenant$ = TenantContextHolder.getTenantId();
+        this.database$ = TenantContextHolder.getDatabase();
+        this.schema$ = TenantContextHolder.getSchema();
     }
 
 

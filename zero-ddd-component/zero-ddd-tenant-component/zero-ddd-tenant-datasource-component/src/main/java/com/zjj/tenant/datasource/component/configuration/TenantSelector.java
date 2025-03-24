@@ -1,22 +1,28 @@
 package com.zjj.tenant.datasource.component.configuration;
 
 import com.zjj.autoconfigure.component.tenant.TenantMode;
+import com.zjj.domain.component.config.DomainAutoConfiguration;
 import com.zjj.tenant.database.component.configuration.TenantDatabaseAutoConfiguration;
+import com.zjj.tenant.datasource.component.SwitchTenantEventMethodInterceptor;
 import com.zjj.tenant.datasource.component.SwitchTenantMethodInterceptor;
 import com.zjj.tenant.management.component.config.MasterDataSourceConfiguration;
 import com.zjj.tenant.management.component.config.LiquibaseConfiguration;
 import com.zjj.tenant.management.component.config.TenantManagementAutoConfiguration;
 import com.zjj.tenant.mix.component.TenantMixedAutoConfiguration;
 import com.zjj.tenant.schema.component.TenantSchemaAutoConfiguration;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
-import org.springframework.context.annotation.ImportSelector;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.annotation.*;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.lang.NonNull;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,14 +41,16 @@ final class TenantSelector implements ImportSelector {
              |_(/_| |(_|| | |_   (_ (_)||||  (_)| |(/_| | |_
             """;
 
-    public static class SwitchTenantMethodInterceptorRegistrar implements ImportBeanDefinitionRegistrar {
-        @Override
-        public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
-            BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(SwitchTenantMethodInterceptor.class);
-            builder.setRole(BeanDefinition.ROLE_INFRASTRUCTURE); // 关键：避免过早初始化
-            registry.registerBeanDefinition("switchTenantMethodInterceptor", builder.getBeanDefinition());
-        }
-    }
+//    @AutoConfiguration
+//    public static class SwitchTenantMethodInterceptorRegistrar implements ImportBeanDefinitionRegistrar {
+//
+//        @Override
+//        public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
+//            BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(SwitchTenantMethodInterceptor.class);
+//            builder.setRole(BeanDefinition.ROLE_INFRASTRUCTURE); // 关键：避免过早初始化
+//            registry.registerBeanDefinition("switchTenantMethodInterceptor", builder.getBeanDefinition());
+//        }
+//    }
 
     @Override
     public @NonNull String[] selectImports(AnnotationMetadata importMetadata) {
@@ -54,7 +62,7 @@ final class TenantSelector implements ImportSelector {
         EnableMultiTenancy annotation = importMetadata.getAnnotations().get(EnableMultiTenancy.class).synthesize();
         List<String> imports = new ArrayList<>();
 
-        imports.add(SwitchTenantMethodInterceptorRegistrar.class.getName());
+//        imports.add(SwitchTenantMethodInterceptorRegistrar.class.getName());
 
         if (annotation.mode() == TenantMode.DATABASE) {
             imports.add(MasterDataSourceConfiguration.class.getName());
