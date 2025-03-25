@@ -27,7 +27,7 @@ public class UserRepositoryImpl implements UserRepository {
     private final UserDao userDao;
 
     @Override
-    public Option<UserAgg> findById(long userId) {
+    public Option<UserAgg> findById(Long userId) {
         return BeanHelper.copyToOptionObject(
                 userDao.findById(userId),
                 UserAgg.class,
@@ -36,7 +36,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Option<UserAgg> findByUserName(String username) {
+    public Option<UserAgg> findByUsername(String username) {
         return BeanHelper.copyToOptionObject(
                 userDao.findByUsername(username),
                 UserAgg.class,
@@ -50,7 +50,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public boolean existsByRoles(List<String> roleIds) {
+    public Boolean existsByRoles(List<String> roleIds) {
         return false;
     }
 

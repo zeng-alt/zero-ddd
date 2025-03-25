@@ -148,7 +148,7 @@ public class CustomHttpEntityMethodProcessor extends AbstractMessageConverterMet
         }
 
         if (httpEntity instanceof com.zjj.autoconfigure.component.core.ResponseEntity<?> responseEntity) {
-            int returnStatus = responseEntity.getStatusCode();
+            int returnStatus = responseEntity.getStatus();
             outputMessage.getServletResponse().setStatus(returnStatus);
             if (returnStatus == 200) {
                 HttpMethod method = inputMessage.getMethod();

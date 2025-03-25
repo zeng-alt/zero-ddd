@@ -60,11 +60,9 @@ public class SwitchTenantEventMethodInterceptor implements Ordered, MethodInterc
                 }
             }
         }
-        try {
-            return invocation.proceed();
-        } finally {
-            TenantContextHolder.clear();
-        }
+
+        return invocation.proceed();
+
     }
 
     /**

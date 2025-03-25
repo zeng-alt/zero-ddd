@@ -1,6 +1,7 @@
 package com.zjj.main.interfaces.mvc.role.from;
 
-import com.zjj.main.domain.role.StockInRoleCmd;
+
+import com.zjj.main.domain.role.cmd.StockInRoleCmd;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 

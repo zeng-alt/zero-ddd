@@ -19,7 +19,7 @@ public class ResponseEntityTest {
         assertThat(entity)
                 .isInstanceOf(ResponseEntity.class)
                 .satisfies(e -> {
-                    assertThat(e.getStatusCode()).isEqualTo(200);
+                    assertThat(e.getStatus()).isEqualTo(200);
                     assertThat(e.getBody())
                             .isInstanceOf(String.class)
                             .isEqualTo("1234");

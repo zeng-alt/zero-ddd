@@ -1,23 +1,19 @@
 package com.zjj.security.core.component.supper.reactive;
 
-import com.zjj.autoconfigure.component.security.AuthenticationHelper;
+import com.zjj.autoconfigure.component.json.JsonUtils;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
-import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.server.ServerHttpRequest;
+import org.springframework.http.MediaType;
+import org.springframework.http.ProblemDetail;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.server.DelegatingServerAuthenticationEntryPoint;
 import org.springframework.security.web.server.ServerAuthenticationEntryPoint;
-import org.springframework.util.Assert;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-import java.nio.charset.Charset;
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author zengJiaJun
@@ -31,8 +27,15 @@ public class DefaultReactiveAuthenticationEntryPoint implements ServerAuthentica
     @Override
     public Mono<Void> commence(ServerWebExchange exchange, AuthenticationException ex) {
         ServerHttpResponse response = exchange.getResponse();
+
         response.setStatusCode(HttpStatus.UNAUTHORIZED);
-        DataBuffer dataBuffer = AuthenticationHelper.renderString(exchange.getResponse(), exchange.getRequest(),  HttpStatus.UNAUTHORIZED.value(), "验证失败: " + ex.getCause().getMessage());
+        DataBufferFactory dataBufferFactory = response.bufferFactory();
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, ex.getMessage());
+        problemDetail.setInstance(exchange.getRequest().getURI());
+        problemDetail.setTitle("验证失败");
+
+        DataBuffer dataBuffer = dataBufferFactory.wrap(JsonUtils.toJsonString(problemDetail).getBytes(StandardCharsets.UTF_8));
+
         return exchange.getResponse().writeWith(Mono.just(dataBuffer));
     }
 

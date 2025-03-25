@@ -54,7 +54,7 @@ public class HttpEntityReturnMethodProcessor extends AbstractMessageConverterMet
     @Override
     public boolean supportsReturnType(MethodParameter returnType) {
         Class<?> type = returnType.getParameterType();
-        return (com.zjj.autoconfigure.component.core.ResponseEntity.class.isAssignableFrom(type) && !RequestEntity.class.isAssignableFrom(type)) || String.class.isAssignableFrom(type);
+        return (ResponseEntity.class.isAssignableFrom(type) && !RequestEntity.class.isAssignableFrom(type)) || String.class.isAssignableFrom(type);
     }
 
     @Override
@@ -99,7 +99,7 @@ public class HttpEntityReturnMethodProcessor extends AbstractMessageConverterMet
                 detail.setInstance(path);
             }
             if (log.isWarnEnabled() && httpEntity instanceof ResponseEntity<?> responseEntity) {
-                if (responseEntity.getStatusCode() != detail.getStatus()) {
+                if (responseEntity.getStatus() != detail.getStatus()) {
                     log.warn(returnType.getExecutable().toGenericString() +
                             " returned ResponseEntity: " + responseEntity + ", but its status" +
                             " doesn't match the ProblemDetail status: " + detail.getStatus());
@@ -126,7 +126,7 @@ public class HttpEntityReturnMethodProcessor extends AbstractMessageConverterMet
         }
 
         if (httpEntity instanceof HttpEntityStatus<?> responseEntity) {
-            int returnStatus = responseEntity.getStatusCode();
+            int returnStatus = responseEntity.getStatus();
             outputMessage.getServletResponse().setStatus(returnStatus);
             if (returnStatus == 200) {
                 HttpMethod method = inputMessage.getMethod();

@@ -1,5 +1,6 @@
 package com.zjj.core.component.api;
 
+import com.zjj.autoconfigure.component.core.HttpEntityStatus;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -14,11 +15,11 @@ import java.net.URI;
  * @version 1.0
  * @crateTime 2025年02月20日 15:32
  */
-public class ErrorResponseEntity implements ErrorResponse {
+public class ErrorResponseEntity extends HttpEntityStatus<ProblemDetail> implements ErrorResponse {
 
-    private final HttpStatusCode status;
+//    private final Integer status;
 
-    private final HttpHeaders headers = new HttpHeaders();
+//    private final HttpHeaders headers = new HttpHeaders();
 
     private final ProblemDetail body;
 
@@ -58,8 +59,7 @@ public class ErrorResponseEntity implements ErrorResponse {
     public ErrorResponseEntity(
             HttpStatusCode status, ProblemDetail body, @Nullable Throwable cause,
             @Nullable String messageDetailCode, @Nullable Object[] messageDetailArguments) {
-
-        this.status = status;
+        super(body, new HttpHeaders(), status.value());
         this.body = body;
         this.messageDetailCode = initMessageDetailCode(messageDetailCode);
         this.messageDetailArguments = messageDetailArguments;
@@ -92,13 +92,13 @@ public class ErrorResponseEntity implements ErrorResponse {
 
     @Override
     public HttpStatusCode getStatusCode() {
-        return this.status;
+        return HttpStatus.valueOf(this.status);
     }
 
-    @Override
-    public HttpHeaders getHeaders() {
-        return this.headers;
-    }
+//    @Override
+//    public HttpHeaders getHeaders() {
+//        return this.headers;
+//    }
 
     /**
      * Set the {@link ProblemDetail#setType(URI) type} field of the response body.
@@ -169,6 +169,6 @@ public class ErrorResponseEntity implements ErrorResponse {
 
 
     public String getMessage() {
-        return this.status + (!this.headers.isEmpty() ? ", headers=" + this.headers : "") + ", " + this.body;
+        return this.status + (!this.getHeaders().isEmpty() ? ", headers=" + this.getHeaders() : "") + ", " + this.body;
     }
 }

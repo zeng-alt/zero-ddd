@@ -24,7 +24,7 @@ public class HttpEntityStatus<T> extends HttpEntity<T> {
      * Return the HTTP status code of the response.
      * @return the HTTP status as an HttpStatus enum entry
      */
-    public Integer getStatusCode() {
+    public Integer getStatus() {
         return this.status;
     }
 }

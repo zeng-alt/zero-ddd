@@ -57,7 +57,7 @@ public class DefaultLoginSuccessHandler extends LoginSuccessHandler {
 		AuthenticationHelper.renderString(
 				response,
 				HttpStatus.OK.value(),
-				JsonUtils.toJsonString(Map.of("token", jwt))
+				JsonUtils.toJsonString(Map.of("accessToken", jwt))
 		);
 	}
 

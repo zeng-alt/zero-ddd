@@ -37,7 +37,7 @@ public class RemoteUserServiceImpl implements RemoteUserApi {
                             .currentRole(CollectionUtils.isEmpty(user.getRoleIds()) ? null : user.getRoleIds().iterator().next())
                             .password(user.getPassword())
                             .tenant(user.getTenantBy())
-                            .disabled(!"0".equals(user.status()))
+                            .disabled(!"0".equals(user.getStatus()))
                             .build()
                 )
                 .peek(securityUser -> log.info("findByUsername: {}", securityUser));

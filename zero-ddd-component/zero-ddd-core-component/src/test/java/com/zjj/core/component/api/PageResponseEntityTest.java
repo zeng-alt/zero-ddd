@@ -23,7 +23,7 @@ class PageResponseEntityTest {
         PageResponseEntity<String> entity = PageResponseEntity.ofNullable((String[]) null);
         assertThat(entity)
                 .satisfies(e -> {
-                    assertThat(e.getStatusCode()).isEqualTo(404);
+                    assertThat(e.getStatus()).isEqualTo(404);
                     assertThat(e.getBody())
                             .satisfies(p -> {
                                 assertThat(p.getPageNum()).isEqualTo(1);
@@ -39,7 +39,7 @@ class PageResponseEntityTest {
         entity = PageResponseEntity.ofNullable();
         assertThat(entity)
                 .satisfies(e -> {
-                    assertThat(e.getStatusCode()).isEqualTo(404);
+                    assertThat(e.getStatus()).isEqualTo(404);
                     assertThat(e.getBody())
                             .satisfies(p -> {
                                 assertThat(p.getPageNum()).isEqualTo(1);
@@ -55,7 +55,7 @@ class PageResponseEntityTest {
         entity = PageResponseEntity.ofNullable("123");
         assertThat(entity)
                 .satisfies(e -> {
-                    assertThat(e.getStatusCode()).isEqualTo(200);
+                    assertThat(e.getStatus()).isEqualTo(200);
                     assertThat(e.getBody())
                             .satisfies(p -> {
                                 assertThat(p.getPageNum()).isEqualTo(1);
@@ -72,7 +72,7 @@ class PageResponseEntityTest {
         entity = PageResponseEntity.ofNullable("123", "456");
         assertThat(entity)
                 .satisfies(e -> {
-                    assertThat(e.getStatusCode()).isEqualTo(200);
+                    assertThat(e.getStatus()).isEqualTo(200);
                     assertThat(e.getBody())
                             .satisfies(p -> {
                                 assertThat(p.getPageNum()).isEqualTo(1);
@@ -91,7 +91,7 @@ class PageResponseEntityTest {
     void testCreated() {
         PageResponseEntity<String> entity = PageResponseEntity.ok().page(1, 10).total(100L).data("11223");
         assertThat(entity).satisfies(e -> {
-            assertThat(e.getStatusCode()).isEqualTo(200);
+            assertThat(e.getStatus()).isEqualTo(200);
             assertThat(e.getBody()).satisfies(b -> {
                 assertThat(b.getPageNum()).isEqualTo(1);
                 assertThat(b.getPageSize()).isEqualTo(10);
@@ -107,7 +107,7 @@ class PageResponseEntityTest {
         assertThat(entity)
                 .isInstanceOf(PageResponseEntity.class)
                 .satisfies(e -> {
-                    assertThat(e.getStatusCode()).isEqualTo(200);
+                    assertThat(e.getStatus()).isEqualTo(200);
                     assertThat(e.getBody())
                             .isInstanceOf(PageEntity.class)
                             .extracting(p -> (PageEntity<Collection<String>>) p)

@@ -1,6 +1,7 @@
 package com.zjj.main.interfaces.mvc.user.from;
 
-import com.zjj.main.domain.user.StockInUserCmd;
+
+import com.zjj.main.domain.user.cmd.StockInUserCmd;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 

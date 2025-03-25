@@ -24,25 +24,32 @@ drop table if exists tenant_data_source cascade;
     
 drop table if exists tenant_menu cascade;
 
-create table event_publication_archive (
-                                           id uuid not null,
-                                           completion_date timestamp(6) with time zone,
-                                           event_type varchar(255),
-                                           listener_id varchar(255),
-                                           publication_date timestamp(6) with time zone,
-                                           serialized_event varchar(1000),
-                                           primary key (id)
-);
 
-create table EVENT_PUBLICATION (
-                                       completion_date timestamp(6) with time zone,
-                                       publication_date timestamp(6) with time zone,
-                                       id uuid not null,
-                                       event_type varchar(255),
-                                       listener_id varchar(255),
-                                       serialized_event varchar(1000),
-                                       primary key (id)
-);
+CREATE TABLE IF NOT EXISTS event_publication_archive
+(
+    id               UUID NOT NULL,
+    listener_id      TEXT NOT NULL,
+    event_type       TEXT NOT NULL,
+    serialized_event TEXT NOT NULL,
+    publication_date TIMESTAMP WITH TIME ZONE NOT NULL,
+    completion_date  TIMESTAMP WITH TIME ZONE,
+    PRIMARY KEY (id)
+    );
+CREATE INDEX IF NOT EXISTS event_publication_archive_serialized_event_hash_idx ON event_publication_archive USING hash(serialized_event);
+CREATE INDEX IF NOT EXISTS event_publication_archive_by_completion_date_idx ON event_publication_archive (completion_date);
+
+CREATE TABLE IF NOT EXISTS event_publication
+(
+    id               UUID NOT NULL,
+    listener_id      TEXT NOT NULL,
+    event_type       TEXT NOT NULL,
+    serialized_event TEXT NOT NULL,
+    publication_date TIMESTAMP WITH TIME ZONE NOT NULL,
+    completion_date  TIMESTAMP WITH TIME ZONE,
+    PRIMARY KEY (id)
+    );
+CREATE INDEX IF NOT EXISTS event_publication_serialized_event_hash_idx ON event_publication USING hash(serialized_event);
+CREATE INDEX IF NOT EXISTS event_publication_by_completion_date_idx ON event_publication (completion_date);
     
 create table menu_resource (
                                order_num integer,
