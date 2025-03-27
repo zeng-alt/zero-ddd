@@ -122,8 +122,8 @@ public class EntityConditionQueryDefinitionConfigurer implements TypeDefinitionC
         });
     }
 
-    private void genEntityCondition(List<SDLDefinition> definitions, Collection<EntityGraphqlType> entities) {
-        for (EntityGraphqlType entity : entities) {
+    private void genEntityCondition(List<SDLDefinition> definitions, Collection<EntityGraphqlType<?>> entities) {
+        for (EntityGraphqlType<?> entity : entities) {
             InputObjectTypeDefinition.Builder input = InputObjectTypeDefinition.newInputObjectDefinition().name(entity.getConditionTypeName());
             for (EntityGraphqlAttribute attribute : entity.getAttributes()) {
                 InputValueDefinition.Builder builder = InputValueDefinition

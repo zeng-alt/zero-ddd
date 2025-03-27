@@ -1,6 +1,7 @@
 package com.zjj.graphql.component.context;
 
 import com.zjj.autoconfigure.component.graphql.ExcludeTypeProvider;
+import com.zjj.graphql.component.spi.EntitySaveHandler;
 import com.zjj.graphql.component.utils.RepositoryUtils;
 import com.zjj.graphql.component.utils.TypeMatchUtils;
 import jakarta.persistence.EntityManager;
@@ -8,10 +9,7 @@ import jakarta.persistence.metamodel.*;
 import lombok.Getter;
 import org.hibernate.annotations.Comment;
 import org.hibernate.metamodel.AttributeClassification;
-import org.hibernate.metamodel.model.domain.internal.AbstractAttribute;
-import org.hibernate.metamodel.model.domain.internal.AbstractPluralAttribute;
-import org.hibernate.metamodel.model.domain.internal.SetAttributeImpl;
-import org.hibernate.metamodel.model.domain.internal.SingularAttributeImpl;
+import org.hibernate.metamodel.model.domain.internal.*;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.data.repository.Repository;
@@ -28,35 +26,42 @@ import java.util.stream.Collectors;
 
 public class EntityContext {
 
-    private final Map<String, EntityGraphqlType> entityTypes = new HashMap<>();
+    private final Map<String, EntityGraphqlType<?>> entityTypes = new HashMap<>();
     @Getter
     private final EntityManager entityManager;
     private final List<ExcludeTypeProvider> excludeTypeProviderList;
+    private final List<EntitySaveHandler<?>> saveHandlers;
 
-
-
-
-    public EntityContext(EntityManager entityManager, ObjectProvider<ExcludeTypeProvider> excludeTypeProviders) {
+    public EntityContext(EntityManager entityManager, ObjectProvider<ExcludeTypeProvider> excludeTypeProviders, List<EntitySaveHandler<?>> saveHandlers) {
         this.entityManager = entityManager;
         this.excludeTypeProviderList = excludeTypeProviders.stream().toList();
+        this.saveHandlers  = saveHandlers;
         initEntity();
         parseEntity();
     }
 
 
-    public Collection<EntityGraphqlType> getEntity() {
+    public Collection<EntityGraphqlType<?>> getEntity() {
         return entityTypes.values().stream().filter(entity -> !entity.isEmbedded()).toList();
+    }
+
+
+    public List<? extends EntitySaveHandler<?>> getSaveHandlers(String entityName) {
+        if (!entityTypes.containsKey(entityName)) {
+            return List.of();
+        }
+        return entityTypes.get(entityName).getSaveHandlers();
     }
 
     public EntityType<?> entity(Repository<?, ?> repository) {
         return entityManager.getMetamodel().entity(RepositoryUtils.getEntityType(repository));
     }
 
-    public Collection<EntityGraphqlType> getEmbeddable() {
+    public Collection<EntityGraphqlType<?>> getEmbeddable() {
         return entityTypes.values().stream().filter(EntityGraphqlType::isEmbedded).toList();
     }
 
-    public Collection<EntityGraphqlType> getManagedType() {
+    public Collection<EntityGraphqlType<?>> getManagedType() {
         return entityTypes.values();
     }
 
@@ -76,7 +81,7 @@ public class EntityContext {
         });
     }
 
-    public void forEachManagedType(Consumer<EntityGraphqlType> consumer) {
+    public void forEachManagedType(Consumer<EntityGraphqlType<?>> consumer) {
         entityTypes.values().forEach(consumer);
     }
 
@@ -146,10 +151,14 @@ public class EntityContext {
                 continue;
             }
             EntityGraphqlType.Builder builder = EntityGraphqlType.builder();
+            builder.idType(TypeMatchUtils.matchType(entity.getIdType().getJavaType()));
+            builder.idName(this.findIdName(entity));
             builder.type(entity.getName());
             builder.embedded(false);
             parseManageType(entity, builder);
-            entityTypes.put(entity.getName(), builder.build());
+            EntityGraphqlType build = builder.build();
+            build.initMutation(entity.getJavaType(), saveHandlers);
+            entityTypes.put(entity.getName(), build);
         }
 
         for (EmbeddableType<?> embeddable : entityManager.getMetamodel().getEmbeddables()) {
@@ -162,11 +171,21 @@ public class EntityContext {
         }
     }
 
+    private String findIdName(EntityType<?> entity) {
+        Set<Attribute<?, ?>> attributes = (Set<Attribute<?, ?>>) entity.getAttributes();
+        for (Attribute<?, ?> attribute : attributes) {
+            if (attribute instanceof SingularAttributeImpl.Identifier<?,?> identifier && identifier.isId()) {
+                return attribute.getName();
+            }
+        }
+        return null;
+    }
+
     protected void parseEntity() {
-        for (EntityGraphqlType value : entityTypes.values()) {
+        for (EntityGraphqlType<?> value : entityTypes.values()) {
             for (EntityGraphqlAttribute attribute : value.getAttributes()) {
                 if (attribute.getAssociation() || attribute.getEmbedded()) {
-                    EntityGraphqlType type = entityTypes.get(attribute.getType());
+                    EntityGraphqlType<?> type = entityTypes.get(attribute.getType());
                     attribute.setAssociationType(type);
                 }
             }

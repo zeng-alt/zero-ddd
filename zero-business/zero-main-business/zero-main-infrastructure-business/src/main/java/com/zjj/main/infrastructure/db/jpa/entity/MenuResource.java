@@ -28,11 +28,11 @@ public class MenuResource extends BaseEntity<Long> implements Parent<Long>, Tena
     private Long id;
 
 
-    @OneToOne(orphanRemoval = true)
+    @OneToOne()
     @JoinColumn(name = "permission_id")
     private Permission permission;
 
-    @OneToMany(mappedBy = "resource", orphanRemoval = true)
+    @OneToMany(mappedBy = "resource")
     private Set<Expression> expressions = new LinkedHashSet<>();
 
     /**

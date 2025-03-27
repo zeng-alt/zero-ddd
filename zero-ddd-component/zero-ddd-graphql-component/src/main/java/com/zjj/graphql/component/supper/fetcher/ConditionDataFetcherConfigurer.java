@@ -1,15 +1,11 @@
 package com.zjj.graphql.component.supper.fetcher;
 
-import com.querydsl.core.util.BeanUtils;
 import com.zjj.graphql.component.context.EntityContext;
 import com.zjj.graphql.component.query.condition.QuerydslConditionDataFetcher;
-import com.zjj.graphql.component.query.fuzzy.QuerydslFuzzyDataFetcher;
-import com.zjj.graphql.component.supper.BaseRepository;
-import com.zjj.graphql.component.utils.RepositoryUtils;
+import com.zjj.domain.component.BaseRepository;
 import graphql.schema.idl.RuntimeWiring;
 import jakarta.persistence.metamodel.EntityType;
 import org.springframework.graphql.execution.RuntimeWiringConfigurer;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 

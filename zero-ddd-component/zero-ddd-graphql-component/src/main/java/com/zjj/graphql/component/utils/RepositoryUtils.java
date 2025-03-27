@@ -1,12 +1,11 @@
 package com.zjj.graphql.component.utils;
 
-import com.zjj.graphql.component.supper.BaseRepository;
+import com.zjj.domain.component.BaseRepository;
 import graphql.schema.DataFetchingEnvironment;
 import org.springframework.core.ResolvableType;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.MergedAnnotations;
 import org.springframework.data.domain.ScrollPosition;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.core.RepositoryMetadata;
@@ -21,10 +20,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.function.Function;
 
 /**

@@ -9,6 +9,7 @@ import com.zjj.tenant.management.component.spi.TenantDataSourceProvider;
 import com.zjj.tenant.management.component.spi.TenantSingleDataSourceProvider;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.cfg.ManagedBeanSettings;
 import org.hibernate.cfg.MappingSettings;
 import org.hibernate.cfg.SchemaToolingSettings;
@@ -107,6 +108,7 @@ public class MasterDataSourceConfiguration implements BeanClassLoaderAware {
 
         HashMap<String, Object> properties = new HashMap<>(jpaProperties.getProperties());
 
+        properties.put(AvailableSettings.SHOW_SQL, jpaProperties.isShowSql());
         properties.put(SchemaToolingSettings.HBM2DDL_AUTO, hibernateProperties.getDdlAuto()); // 确保这里有 update
         properties.put(MappingSettings.PHYSICAL_NAMING_STRATEGY, "org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy");
         properties.put(MappingSettings.IMPLICIT_NAMING_STRATEGY, "org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy");

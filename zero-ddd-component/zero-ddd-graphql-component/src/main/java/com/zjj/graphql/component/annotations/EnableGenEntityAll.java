@@ -1,4 +1,4 @@
-package com.zjj.graphql.component.config;
+package com.zjj.graphql.component.annotations;
 
 import java.lang.annotation.*;
 

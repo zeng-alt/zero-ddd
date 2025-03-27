@@ -1,4 +1,4 @@
-package com.zjj.graphql.component.config;
+package com.zjj.graphql.component.annotations;
 
 import com.zjj.graphql.component.supper.definition.EntityInputDefinitionConfigurer;
 import com.zjj.graphql.component.supper.definition.SortDefinitionConfigurer;

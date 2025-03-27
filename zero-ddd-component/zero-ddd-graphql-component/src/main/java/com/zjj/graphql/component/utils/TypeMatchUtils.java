@@ -86,7 +86,10 @@ public class TypeMatchUtils {
 
 
     public static String matchType(Attribute<?, ?> attribute) {
-        Class clasz = attribute.getJavaType();
+        return matchType(attribute.getJavaType());
+    }
+
+    public static String matchType(Class clasz) {
         return Match(clasz).of(
                 Case($(String.class), "String"),
                 Case($(BigInteger.class), "BigInteger"),
@@ -102,7 +105,7 @@ public class TypeMatchUtils {
                 Case($(Instant.class), "Long"),
                 Case($(isIn(Date.class, Timestamp.class)), () -> {
                     System.out.println();
-                    throw new IllegalArgumentException("不支持类型" + clasz.getTypeName() + ", 请 "+ attribute +" 修改成jdk8的时间类型");
+                    throw new IllegalArgumentException("不支持类型" + clasz.getTypeName() + ", 请 "+ clasz +" 修改成jdk8的时间类型");
                 }),
                 Case($(), clasz.getSimpleName())
         );

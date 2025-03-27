@@ -1,6 +1,6 @@
 package com.zjj.tenant.infrastructure.db.jpa;
 
-import com.zjj.graphql.component.supper.BaseRepository;
+import com.zjj.domain.component.BaseRepository;
 import com.zjj.tenant.infrastructure.db.entity.MenuResourceEntity;
 import io.vavr.collection.List;
 import io.vavr.control.Option;
@@ -25,7 +25,7 @@ public interface MenuResourceDao extends BaseRepository<MenuResourceEntity, Long
 
 //    @Modifying
 //    @Query(value = "delete from MenuResource m where m.id=:id")
-    void deleteById(Long id);
+//    MenuResourceEntity deleteById(Long id);
 
     void delete(MenuResourceEntity menuResource);
 }

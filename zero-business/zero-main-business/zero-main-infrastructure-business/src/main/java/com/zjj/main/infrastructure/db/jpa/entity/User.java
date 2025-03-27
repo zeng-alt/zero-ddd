@@ -2,6 +2,8 @@ package com.zjj.main.infrastructure.db.jpa.entity;
 
 import com.zjj.domain.component.BaseEntity;
 import com.zjj.domain.component.TenantAuditable;
+import com.zjj.graphql.component.annotations.MutationEntity;
+import com.zjj.main.infrastructure.db.jpa.mutation.UserEntitySaveHandler;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,6 +26,7 @@ import java.util.Set;
 @SQLDelete(sql = "update main_user set deleted = 1 where id = ?")
 @SQLRestriction(value = "deleted = 0")
 @Table(name = "MAIN_USER")
+@MutationEntity(saveHandlers = {UserEntitySaveHandler.class})
 public class User extends BaseEntity<Long> implements TenantAuditable<String> {
 
     @Id

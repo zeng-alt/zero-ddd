@@ -1,7 +1,8 @@
-package com.zjj.graphql.component.config;
+package com.zjj.graphql.component.annotations;
 
 import com.zjj.graphql.component.supper.definition.EntityMutationDefinitionConfigurer;
 import com.zjj.graphql.component.supper.definition.EntityQueryDefinitionConfigurer;
+import com.zjj.graphql.component.supper.fetcher.EntityMutationFetcherConfigurer;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
@@ -14,6 +15,6 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Import(EntityMutationDefinitionConfigurer.class)
+@Import({EntityMutationDefinitionConfigurer.class, EntityMutationFetcherConfigurer.class})
 public @interface EnableGenEntityMutation {
 }

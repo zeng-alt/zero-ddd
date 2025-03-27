@@ -4,6 +4,7 @@ package com.zjj.graphql.component.config;
 import com.zjj.autoconfigure.component.graphql.ExcludeTypeProvider;
 import com.zjj.graphql.component.context.ConditionTypeContext;
 import com.zjj.graphql.component.context.EntityContext;
+import com.zjj.graphql.component.spi.EntitySaveHandler;
 import com.zjj.graphql.component.supper.*;
 import com.zjj.graphql.component.supper.definition.EntityTypeDefinitionConfigurer;
 import jakarta.persistence.EntityManager;
@@ -16,6 +17,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.graphql.execution.RuntimeWiringConfigurer;
 import org.springframework.graphql.execution.TypeDefinitionConfigurer;
+
+import java.util.List;
 
 /**
  * @author zengJiaJun
@@ -37,8 +40,8 @@ public class GraphQLAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public EntityContext entityContext(EntityManager entityManager, ObjectProvider<ExcludeTypeProvider> excludeTypeProviders) {
-        return new EntityContext(entityManager, excludeTypeProviders);
+    public EntityContext entityContext(EntityManager entityManager, ObjectProvider<ExcludeTypeProvider> excludeTypeProviders, List<EntitySaveHandler<?>> saveHandlerList) {
+        return new EntityContext(entityManager, excludeTypeProviders, saveHandlerList);
     }
 
     @Bean

@@ -1,14 +1,11 @@
 package com.zjj.graphql.component.supper.fetcher;
 
-import com.querydsl.core.util.BeanUtils;
 import com.zjj.graphql.component.context.EntityContext;
 import com.zjj.graphql.component.query.fuzzy.QuerydslFuzzyDataFetcher;
-import com.zjj.graphql.component.supper.BaseRepository;
-import com.zjj.graphql.component.utils.RepositoryUtils;
+import com.zjj.domain.component.BaseRepository;
 import graphql.schema.idl.RuntimeWiring;
 import jakarta.persistence.metamodel.EntityType;
 import org.springframework.graphql.execution.RuntimeWiringConfigurer;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -25,7 +22,6 @@ public record FuzzyDataFetcherConfigurer(List<BaseRepository<?, ?>> repositories
         builder.type("Query", typeWiring -> {
             for (BaseRepository<?, ?> repository : repositories) {
                 EntityType<?> type = entityContext.entity(repository);
-
                 typeWiring.dataFetcher("fuzzyQuery" + type, QuerydslFuzzyDataFetcher.builder(repository).many());
                 typeWiring.dataFetcher("fuzzyFind" + type, QuerydslFuzzyDataFetcher.builder(repository).single());
                 typeWiring.dataFetcher("fuzzyPage" + type, QuerydslFuzzyDataFetcher.builder(repository).scrollable());

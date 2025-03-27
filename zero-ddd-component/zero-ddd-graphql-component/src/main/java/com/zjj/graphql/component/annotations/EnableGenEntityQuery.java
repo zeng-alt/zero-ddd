@@ -1,8 +1,8 @@
-package com.zjj.graphql.component.config;
+package com.zjj.graphql.component.annotations;
 
 import com.zjj.graphql.component.supper.PageRuntimeWiringConfigurer;
 import com.zjj.graphql.component.supper.definition.EntityQueryDefinitionConfigurer;
-import com.zjj.graphql.component.supper.definition.EntityTypeDefinitionConfigurer;
+import com.zjj.graphql.component.supper.fetcher.EntityMutationFetcherConfigurer;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;

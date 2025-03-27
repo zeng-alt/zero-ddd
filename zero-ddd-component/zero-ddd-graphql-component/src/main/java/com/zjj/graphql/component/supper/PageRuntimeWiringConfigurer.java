@@ -1,11 +1,9 @@
 package com.zjj.graphql.component.supper;
 
+import com.zjj.domain.component.BaseRepository;
 import com.zjj.graphql.component.context.EntityContext;
-import com.zjj.graphql.component.utils.RepositoryUtils;
 import graphql.schema.idl.RuntimeWiring;
 import jakarta.persistence.metamodel.EntityType;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Sort;
 import org.springframework.graphql.data.query.QuerydslDataFetcher;
 import org.springframework.graphql.execution.RuntimeWiringConfigurer;
 

@@ -1,13 +1,17 @@
 package com.zjj.bean.componenet;
 
+import com.zjj.autoconfigure.component.UtilException;
 import io.vavr.control.Option;
 import org.springframework.beans.BeanInstantiationException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -20,9 +24,36 @@ import java.util.function.Consumer;
  * @version 1.0
  * @crateTime 2024年10月15日 20:52
  */
-public class BeanHelper {
+public class BeanHelper extends BeanUtils {
 
     private BeanHelper() {}
+
+    public static void copyPropertiesIgnoringNull(Object source, Object target) {
+        PropertyDescriptor[] targetDescriptors = BeanUtils.getPropertyDescriptors(target.getClass());
+
+        for (PropertyDescriptor targetDescriptor : targetDescriptors) {
+            String propertyName = targetDescriptor.getName();
+            // Skip the property if it's a getter or setter method
+            if (targetDescriptor.getReadMethod() == null || targetDescriptor.getWriteMethod() == null) {
+                continue;
+            }
+
+            try {
+                // Get the getter method of the source
+                Method readMethod = targetDescriptor.getReadMethod();
+                Object value = readMethod.invoke(source);
+
+                // Only copy if the value is not null
+                if (value != null && !(value instanceof Optional<?>) && !(value instanceof Collection<?>)) {
+                    // Get the setter method of the target
+                    Method writeMethod = targetDescriptor.getWriteMethod();
+                    writeMethod.invoke(target, value);
+                }
+            } catch (Exception e) {
+                throw new UtilException(e);
+            }
+        }
+    }
 
     @NonNull
     public static <S, T> Option<T> copyToOptionObject(@NonNull Optional<S> source, Class<T> targetClz, BiConsumer<S, T> consumer) {
