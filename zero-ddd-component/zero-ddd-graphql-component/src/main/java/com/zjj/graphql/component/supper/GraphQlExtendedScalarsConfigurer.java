@@ -1,6 +1,8 @@
 package com.zjj.graphql.component.supper;
 
 import com.querydsl.core.util.ReflectionUtils;
+import com.zjj.core.component.type.JsonConversionStrategy;
+import com.zjj.core.component.type.TypeConversionHelper;
 import com.zjj.graphql.component.exception.ScalarFileReadException;
 import graphql.language.StringValue;
 import graphql.scalars.ExtendedScalars;
@@ -54,6 +56,26 @@ public class GraphQlExtendedScalarsConfigurer implements RuntimeWiringConfigurer
             }
         }
         builder.scalar(localDateTime);
+        builder.scalar(targetType);
         log.info("组装Scalars类型");
     }
+
+
+    public static final GraphQLScalarType targetType = GraphQLScalarType.newScalar().name("targetType").description("targetType scalar").coercing(new Coercing<JsonConversionStrategy, String>() {
+        @Override
+        public String serialize(Object input) {
+            JsonConversionStrategy strategy = (JsonConversionStrategy) input;
+            return strategy.getType();
+        }
+
+        @Override
+        public JsonConversionStrategy parseValue(Object input) {
+            return TypeConversionHelper.getStrategy((((StringValue) input).getValue()));
+        }
+
+        @Override
+        public JsonConversionStrategy parseLiteral(Object input) {
+            return TypeConversionHelper.getStrategy((((StringValue) input).getValue()));
+        }
+    }).build();
 }

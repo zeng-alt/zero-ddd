@@ -1,6 +1,8 @@
 package com.zjj.graphql.component.supper;
 
+import com.google.common.collect.Lists;
 import com.querydsl.core.util.ReflectionUtils;
+import com.zjj.core.component.type.TypeConversionHelper;
 import graphql.language.*;
 import graphql.scalars.ExtendedScalars;
 import graphql.schema.Coercing;
@@ -48,7 +50,28 @@ public class ExtendedScalarsDefinitionConfigurer implements TypeDefinitionConfig
 
         definitions.add(ScalarTypeDefinition.newScalarTypeDefinition().name("LocalDateTime").build());
 
+        // add targetType
+        registry.add(getTargetType());
         registry.addAll(definitions);
         log.info("组装Scalars类型");
+    }
+
+    private SDLDefinition getTargetType() {
+        List<EnumValueDefinition> enumValueDefinitions = new ArrayList<>();
+        Set<String> types = TypeConversionHelper.getTypes();
+        for (String type : types) {
+            enumValueDefinitions.add(
+                    EnumValueDefinition
+                            .newEnumValueDefinition()
+                            .name(type)
+                            .build()
+            );
+        }
+
+        return EnumTypeDefinition
+                .newEnumTypeDefinition()
+                .name("TargetType")
+                .enumValueDefinitions(enumValueDefinitions)
+                .build();
     }
 }

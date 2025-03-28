@@ -13,4 +13,5 @@ public class DynamicEntity implements InterfaceDynamicEntity {
     private String name;
     private String nameTemplate;
     private String value;
+    private String type;
 }

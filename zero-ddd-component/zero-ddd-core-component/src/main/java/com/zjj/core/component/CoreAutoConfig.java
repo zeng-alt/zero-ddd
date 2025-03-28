@@ -1,15 +1,25 @@
-package com.zjj.core.component.config;
+package com.zjj.core.component;
 
+import com.zjj.autoconfigure.component.json.JsonHelper;
 import com.zjj.core.component.advice.GlobalServletExceptionAdvice;
 import com.zjj.core.component.api.HttpEntityReturnMethodProcessor;
+import com.zjj.core.component.type.JsonConversionContext;
+import com.zjj.core.component.type.JsonConversionStrategy;
+import com.zjj.core.component.type.JsonConversionStrategyFactory;
+import com.zjj.core.component.type.TypeConversionHelper;
+import com.zjj.core.component.type.strategy.*;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Role;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -30,13 +40,85 @@ import java.util.List;
  * @crateTime 2024年11月28日 21:56
  */
 @AutoConfiguration
-@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
+@AutoConfigurationPackage(basePackages = "com.zjj.core.component.type")
 public class CoreAutoConfig {
 
+    @Bean
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    public BigDecimalTypeJsonConversionStrategy bigDecimalTypeJsonConversionStrategy() {
+        return new BigDecimalTypeJsonConversionStrategy();
+    }
+
+    @Bean
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    public BooleanTypeJsonConversionStrategy booleanTypeJsonConversionStrategy() {
+        return new BooleanTypeJsonConversionStrategy();
+    }
+
+    @Bean
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    public DoubleTypeJsonConversionStrategy doubleTypeJsonConversionStrategy() {
+        return new DoubleTypeJsonConversionStrategy();
+    }
+
+    @Bean
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    public IntegerTypeJsonConversionStrategy integerTypeJsonConversionStrategy() {
+        return new IntegerTypeJsonConversionStrategy();
+    }
+
+    @Bean
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    public LocalDateTimeTypeJsonConversionStrategy localDateTimeTypeJsonConversionStrategy() {
+        return new LocalDateTimeTypeJsonConversionStrategy();
+    }
+
+    @Bean
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    public LocalTimeTypeJsonConversionStrategy localTimeTypeJsonConversionStrategy() {
+        return new LocalTimeTypeJsonConversionStrategy();
+    }
+
+    @Bean
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    public LocalDateTypeJsonConversionStrategy localDateTypeJsonConversionStrategy() {
+        return new LocalDateTypeJsonConversionStrategy();
+    }
+
+    @Bean
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    public StringTypeJsonConversionStrategy stringTypeJsonConversionStrategy() {
+        return new StringTypeJsonConversionStrategy();
+    }
+
+    @Bean
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    public ListTypeJsonConversionStrategy listTypeJsonConversionStrategy(JsonHelper jsonHelper) {
+        return new ListTypeJsonConversionStrategy(jsonHelper);
+    }
+
+    @Bean
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    public TypeConversionHelper typeConversionHelper() {
+        return new TypeConversionHelper();
+    }
+
+    @Bean
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    public JsonConversionStrategyFactory jsonConversionStrategyFactory(ObjectProvider<JsonConversionStrategy> objectProvider) {
+        return new JsonConversionStrategyFactory(objectProvider);
+    }
+
+    @Bean
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    public JsonConversionContext jsonConversionContext(JsonConversionStrategyFactory jsonConversionStrategyFactory) {
+        return new JsonConversionContext(jsonConversionStrategyFactory);
+    }
 
     @Configuration(proxyBeanMethods = false)
     @ConditionalOnClass(WebMvcConfigurer.class)
     @ConditionalOnBean(DelegatingWebMvcConfiguration.class)
+    @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
     @RequiredArgsConstructor
     static class ReturnValueHandler {
 
@@ -73,6 +155,7 @@ public class CoreAutoConfig {
 
     @Configuration(proxyBeanMethods = false)
     @ConditionalOnClass(NoResourceFoundException.class)
+    @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
     static class ServletAdviceConfig {
         @Bean
         @Order(Ordered.HIGHEST_PRECEDENCE)

@@ -48,9 +48,9 @@ public record JacksonHelper(ObjectMapper objectMapper) implements JsonHelper {
 			return null;
 		}
 		try {
-			return objectMapper.convertValue(text, clazz);
+			return objectMapper.readValue(text, clazz);
 		}
-		catch (IllegalArgumentException e) {
+		catch (Exception e) {
 			throw new UtilException(e);
 		}
 	}
@@ -61,9 +61,9 @@ public record JacksonHelper(ObjectMapper objectMapper) implements JsonHelper {
 			return null;
 		}
 		try {
-			return objectMapper.convertValue(bytes, clazz);
+			return objectMapper.readValue(bytes, clazz);
 		}
-		catch (IllegalArgumentException e) {
+		catch (Exception e) {
 			throw new UtilException(e);
 		}
 	}

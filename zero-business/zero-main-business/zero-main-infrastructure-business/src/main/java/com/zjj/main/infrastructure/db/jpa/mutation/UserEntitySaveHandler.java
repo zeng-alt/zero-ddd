@@ -23,9 +23,9 @@ public class UserEntitySaveHandler implements EntitySaveHandler<User> {
     @Override
     public void handler(User entity) {
         if (entity.isNew()) {
-            userDao.findByUsername(entity.getUsername()).forEach(e -> {
-                throw new IllegalArgumentException(e.getUsername() + " 用户名相同");
-            });
+            if (userDao.existsByUsername(entity.getUsername())) {
+                throw new IllegalArgumentException(entity.getUsername() + " 用户名已存在");
+            }
             entity.setPassword(passwordEncoder.encode(entity.getPassword()));
         }
     }

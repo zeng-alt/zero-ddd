@@ -12,5 +12,5 @@ public interface UserDao extends BaseRepository<User, Long> {
 
     Option<User> findByUsername(String username);
 
-    User save(User user);
+    boolean existsByUsername(String username);
 }
