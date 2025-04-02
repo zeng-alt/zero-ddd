@@ -182,30 +182,29 @@
             <scope>runtime</scope>
         </dependency>
 
-        <dependency>
-            <groupId>com.querydsl</groupId>
-            <artifactId>querydsl-apt</artifactId>
-            <optional>true</optional>
-            <classifier>jakarta</classifier>
-        </dependency>
-
-        <dependency>
-            <groupId>com.querydsl</groupId>
-            <artifactId>querydsl-jpa</artifactId>
-            <classifier>jakarta</classifier>
-        </dependency>
-
 <!--        <dependency>-->
-<!--            <groupId>io.github.openfeign.querydsl</groupId>-->
+<!--            <groupId>com.querydsl</groupId>-->
 <!--            <artifactId>querydsl-apt</artifactId>-->
 <!--            <optional>true</optional>-->
+<!--            <classifier>jakarta</classifier>-->
 <!--        </dependency>-->
 
 <!--        <dependency>-->
-<!--            <groupId>io.github.openfeign.querydsl</groupId>-->
+<!--            <groupId>com.querydsl</groupId>-->
 <!--            <artifactId>querydsl-jpa</artifactId>-->
-<!--            <optional>true</optional>-->
+<!--            <classifier>jakarta</classifier>-->
 <!--        </dependency>-->
+
+        <dependency>
+            <groupId>io.github.openfeign.querydsl</groupId>
+            <artifactId>querydsl-apt</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.openfeign.querydsl</groupId>
+            <artifactId>querydsl-jpa</artifactId>
+        </dependency>
 
 
         <dependency>
@@ -402,14 +401,6 @@
             </releases>
         </repository>
 
-        <repository>
-            <id>central-repos1</id>
-            <name>Central Repository 2</name>
-            <url>https://repo1.maven.org/maven2/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-        </repository>
     </repositories>
 
 </project>

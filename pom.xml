@@ -53,7 +53,7 @@
         <jaxb-api.version>2.3.1</jaxb-api.version>
         <guava.version>33.3.0-jre</guava.version>
         <querydsl.version>5.1.0</querydsl.version>
-        <openfeign-querydsl.version>6.9</openfeign-querydsl.version>
+        <openfeign-querydsl.version>6.10.1</openfeign-querydsl.version>
         <graphql.java.version>21.0</graphql.java.version>
         <lock4j.version>2.2.7</lock4j.version>
         <bytebuddy.version>1.14.10</bytebuddy.version>
@@ -329,7 +329,6 @@
                 <artifactId>querydsl-apt</artifactId>
                 <version>${openfeign-querydsl.version}</version>
                 <optional>true</optional>
-                <classifier>jakarta</classifier>
             </dependency>
 
             <dependency>
@@ -337,7 +336,6 @@
                 <artifactId>querydsl-jpa</artifactId>
                 <version>${openfeign-querydsl.version}</version>
                 <optional>true</optional>
-                <classifier>jakarta</classifier>
             </dependency>
 
             <dependency>
@@ -666,19 +664,31 @@
 <!--    </build>-->
 
     <repositories>
+
         <repository>
-            <id>public</id>
-            <name>huawei nexus</name>
-            <url>https://mirrors.huaweicloud.com/repository/maven/</url>
+            <id>central-repos1</id>
+            <name>Central Repository 2</name>
+            <url>https://repo1.maven.org/maven2/</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
         </repository>
 
         <repository>
-            <id>central-repos1</id>
-            <name>Central Repository 2</name>
-            <url>https://repo1.maven.org/maven2/</url>
+            <id>spring</id>
+            <url>https://maven.aliyun.com/repository/spring</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+
+        <repository>
+            <id>public</id>
+            <name>huawei nexus</name>
+            <url>https://mirrors.huaweicloud.com/repository/maven/</url>
             <releases>
                 <enabled>true</enabled>
             </releases>

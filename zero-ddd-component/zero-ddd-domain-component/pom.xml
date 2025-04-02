@@ -118,11 +118,16 @@
 <!--            <classifier>jakarta</classifier>-->
 <!--        </dependency>-->
 
+<!--        <dependency>-->
+<!--            <groupId>com.querydsl</groupId>-->
+<!--            <artifactId>querydsl-jpa</artifactId>-->
+<!--            <classifier>jakarta</classifier>-->
+<!--            <scope>provided</scope>-->
+<!--        </dependency>-->
+
         <dependency>
-            <groupId>com.querydsl</groupId>
+            <groupId>io.github.openfeign.querydsl</groupId>
             <artifactId>querydsl-jpa</artifactId>
-            <classifier>jakarta</classifier>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>

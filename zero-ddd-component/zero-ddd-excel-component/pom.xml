@@ -7,7 +7,6 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <groupId>com.hustcad</groupId>
     <artifactId>zero-ddd-excel-component</artifactId>
     <packaging>jar</packaging>
 
