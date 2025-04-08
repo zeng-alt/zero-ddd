@@ -7,6 +7,7 @@ import org.redisson.api.RTopic;
 import org.redisson.api.RedissonClient;
 import org.redisson.api.listener.MessageListener;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -16,6 +17,7 @@ import java.util.function.Consumer;
  * @version 1.0
  * @crateTime 2024年06月26日 16:36
  */
+@Primary
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class RedisTopicRepositoryImpl implements RedisSubPubRepository {
 

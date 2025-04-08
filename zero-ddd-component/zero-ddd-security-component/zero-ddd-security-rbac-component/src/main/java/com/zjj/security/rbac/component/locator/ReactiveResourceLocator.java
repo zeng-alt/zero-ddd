@@ -18,5 +18,9 @@ public interface ReactiveResourceLocator {
 
     Mono<List<Resource>> load(Mono<Authentication> authentication) throws AuthenticationException;
 
+    default Mono<String> load(Resource resource, Mono<Authentication> authentication) throws AuthenticationException {
+        return Mono.empty();
+    }
+
     boolean supports(Class<?> resource);
 }

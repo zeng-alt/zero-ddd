@@ -1,13 +1,9 @@
 package com.zjj.main.infrastructure.db.jpa.entity;
 
 import com.zjj.core.component.api.Parent;
-import com.zjj.domain.component.BaseEntity;
-import com.zjj.domain.component.TenantAuditable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.TenantId;
-import org.springframework.lang.Nullable;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -20,20 +16,13 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@Table(name = "main_resource")
-public class MenuResource extends BaseEntity<Long> implements Parent<Long>, TenantAuditable<String> {
+@Table(name = "main_menu_resource")
+@DiscriminatorValue("HTTP")
+public class MenuResource extends Resource implements Parent<Long> {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-
-    @OneToOne()
-    @JoinColumn(name = "permission_id")
-    private Permission permission;
-
-    @OneToMany(mappedBy = "resource")
-    private Set<Expression> expressions = new LinkedHashSet<>();
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private Long id;
 
     /**
      * 父菜单
@@ -45,21 +34,40 @@ public class MenuResource extends BaseEntity<Long> implements Parent<Long>, Tena
     /**
      * 子菜单
      */
-
     @OneToMany(mappedBy = "parentMenu")
     private Set<MenuResource> chileMenus = new LinkedHashSet<>();
 
-    @TenantId
-    @Nullable
-    private String tenantBy;
+    private String name;
+    private String code;
+    private String type;
+    private String path;
+    private String redirect;
+    private String icon;
+    private String component;
+    private String layout;
+    private String keepAlive;
+    private String method;
+    private String description;
+    private Boolean show;
+    private Boolean enable;
+    @Column(name = "resource_order")
+    private Integer order;
+
+
 
     @Override
     public Long parent() {
-        return parentMenu == null ? null : parentMenu.getId();
+//        return parentMenu == null ? null : parentMenu.getId();
+        return 0L;
     }
 
     @Override
     public Long current() {
-        return id;
+        return getId();
+    }
+
+    @Override
+    public String getKey() {
+        return "http" + ":" + this.path + ":" + this.method;
     }
 }

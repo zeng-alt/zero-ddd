@@ -54,9 +54,9 @@ public class SwitchTenantEventMethodInterceptor implements Ordered, MethodInterc
             if (!ArrayUtils.isEmpty(arguments)) {
                 Object argument = arguments[0];
                 if (argument instanceof TenantEvent tenantEvent) {
-                    TenantContextHolder.setTenantId(tenantEvent.getTenant$());
-                    TenantContextHolder.setSchema(tenantEvent.getSchema$());
-                    TenantContextHolder.setDatabase(tenantEvent.getDatabase$());
+                    TenantContextHolder.setTenantId(tenantEvent.get_tenant());
+                    TenantContextHolder.setSchema(tenantEvent.get_schema());
+                    TenantContextHolder.setDatabase(tenantEvent.get_database());
                 }
             }
         }

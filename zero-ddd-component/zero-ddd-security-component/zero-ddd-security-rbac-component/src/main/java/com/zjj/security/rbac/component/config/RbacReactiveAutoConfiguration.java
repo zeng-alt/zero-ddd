@@ -8,11 +8,13 @@ import com.zjj.security.rbac.component.handler.ReactiveHttpResourceHandler;
 import com.zjj.security.rbac.component.handler.ReactiveResourceHandler;
 import com.zjj.security.rbac.component.locator.ReactiveGraphqlResourceLocator;
 import com.zjj.security.rbac.component.locator.ReactiveHttpResourceLocator;
+import com.zjj.security.rbac.component.locator.ReactivePermissionLocator;
 import com.zjj.security.rbac.component.locator.ReactiveResourceLocator;
 import com.zjj.security.rbac.component.manager.ReactiveAdminAuthorizationManager;
 import com.zjj.security.rbac.component.manager.ReactiveParseManager;
 import com.zjj.security.rbac.component.manager.ReactiveResourceQueryManager;
 import com.zjj.security.rbac.component.manager.ReactiveRbacAccessAuthorizationManager;
+import com.zjj.security.rbac.component.router.RouteTemplateManager;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -33,6 +35,12 @@ import java.util.List;
 @AutoConfiguration
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
 public class RbacReactiveAutoConfiguration {
+
+
+    @Bean
+    public ReactivePermissionLocator reactivePermissionLocator(RbacCacheManage rbacCacheManage) {
+        return new ReactivePermissionLocator(rbacCacheManage);
+    }
 
 
     @Bean
@@ -60,9 +68,9 @@ public class RbacReactiveAutoConfiguration {
     }
 
     @Bean
-    public ReactiveParseManager reactiveParseManager(ObjectProvider<ReactiveResourceHandler> reactiveResourceHandlers, ReactiveResourceQueryManager reactiveResourceQueryManager) {
+    public ReactiveParseManager reactiveParseManager(ObjectProvider<ReactiveResourceHandler> reactiveResourceHandlers, ReactiveResourceQueryManager reactiveResourceQueryManager, ReactivePermissionLocator permissionLocator, RouteTemplateManager routeTemplateManager) {
         List<ReactiveResourceHandler> list = new ArrayList<>(reactiveResourceHandlers.orderedStream().toList());
-        return new ReactiveParseManager(list, new ReactiveHttpResourceHandler(reactiveResourceQueryManager));
+        return new ReactiveParseManager(list, new ReactiveHttpResourceHandler(reactiveResourceQueryManager, routeTemplateManager, permissionLocator));
     }
 
 

@@ -1,5 +1,6 @@
 package com.zjj.main.infrastructure.db.jpa.dao;
 
+import com.zjj.autoconfigure.component.security.UserProfile;
 import com.zjj.domain.component.BaseRepository;
 import com.zjj.main.infrastructure.db.jpa.entity.User;
 import io.vavr.control.Option;

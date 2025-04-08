@@ -2,6 +2,7 @@ package com.zjj.core.component.advice;
 
 import com.zjj.autoconfigure.component.core.BaseException;
 import com.zjj.autoconfigure.component.core.Response;
+import com.zjj.core.component.api.ErrorResponseEntity;
 import com.zjj.core.component.api.ExceptionResponse;
 import com.zjj.i18n.component.BaseI18nException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,8 +10,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.MessageSourceAccessor;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.net.URI;
 
 @Slf4j
 @RestControllerAdvice
@@ -45,11 +50,12 @@ public class GlobalExceptionAdvice {
     }
 
     @ExceptionHandler(RuntimeException.class)
-    public Response<Void> exception(RuntimeException e, HttpServletRequest request, HttpServletResponse response) {
-        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+    public ErrorResponse exception(RuntimeException e, HttpServletRequest request, HttpServletResponse response) {
         String requestURI = request.getRequestURI();
         log.error("{}: {} 请求未知运行是异常:", request.getMethod(), requestURI, e);
-        return ExceptionResponse.of(messageSourceAccessor.getMessage("GlobalExceptionAdvice.exception.error", e.getMessage()), request);
+        ErrorResponseEntity errorResponse = ErrorResponseEntity.of(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        errorResponse.setInstance(URI.create(request.getRequestURI()));
+        return errorResponse;
     }
 
 //    @ExceptionHandler(NoResourceFoundException.class)

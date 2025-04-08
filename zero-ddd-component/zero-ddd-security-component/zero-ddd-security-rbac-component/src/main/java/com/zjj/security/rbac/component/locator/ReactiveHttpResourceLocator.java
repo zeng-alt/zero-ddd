@@ -5,12 +5,9 @@ import com.zjj.autoconfigure.component.tenant.TenantDetail;
 import com.zjj.autoconfigure.component.security.rbac.HttpResource;
 import com.zjj.autoconfigure.component.security.rbac.Resource;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.Assert;
-import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +37,20 @@ public class ReactiveHttpResourceLocator extends AbstractReactiveResourceLocator
             authoritys = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
         }
         return rbacCacheManage.findAllHttpResource(username, tenantName, authoritys);
+    }
+
+    @Override
+    protected String list1(Resource resource, Object o) {
+        if (o == null) {
+            return null;
+        }
+        String tenantName = null;
+
+        if (o instanceof TenantDetail tenantDetail) {
+            tenantName = tenantDetail.getTenantName();
+        }
+
+        return rbacCacheManage.findPermissionByResource(tenantName, resource.getKey());
     }
 
     @Override

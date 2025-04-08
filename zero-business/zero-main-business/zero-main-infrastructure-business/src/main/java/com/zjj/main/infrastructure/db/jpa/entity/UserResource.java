@@ -29,9 +29,9 @@ public class UserResource extends BaseEntity<Long> implements TenantAuditable<St
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToOne(orphanRemoval = true)
-    @JoinColumn(name = "resource_id")
-    private MenuResource resource;
+//    @OneToOne(orphanRemoval = true)
+//    @JoinColumn(name = "resource_id")
+//    private MenuResource resource;
 
     @OneToMany(mappedBy = "userResource", orphanRemoval = true)
     private Set<UserExpression> userExpressions = new LinkedHashSet<>();

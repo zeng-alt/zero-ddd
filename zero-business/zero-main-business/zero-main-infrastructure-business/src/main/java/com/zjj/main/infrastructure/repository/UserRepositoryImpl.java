@@ -31,7 +31,7 @@ public class UserRepositoryImpl implements UserRepository {
         return BeanHelper.copyToOptionObject(
                 userDao.findById(userId),
                 UserAgg.class,
-                (BiConsumer<User, UserAgg>) (user, userAgg) -> userAgg.setRoleIds(user.getUserRoles().stream().map(userRole -> userRole.getRole().getRoleKey()).collect(Collectors.toSet()))
+                (BiConsumer<User, UserAgg>) (user, userAgg) -> userAgg.setRoleIds(user.getUserRoles().stream().map(userRole -> userRole.getRole().getCode()).collect(Collectors.toSet()))
         );
     }
 
@@ -40,7 +40,7 @@ public class UserRepositoryImpl implements UserRepository {
         return BeanHelper.copyToOptionObject(
                 userDao.findByUsername(username),
                 UserAgg.class,
-                (BiConsumer<User, UserAgg>) (user, userAgg) -> userAgg.setRoleIds(user.getUserRoles().stream().map(userRole -> userRole.getRole().getRoleKey()).collect(Collectors.toSet()))
+                (BiConsumer<User, UserAgg>) (user, userAgg) -> userAgg.setRoleIds(user.getUserRoles().stream().map(userRole -> userRole.getRole().getCode()).collect(Collectors.toSet()))
         );
     }
 

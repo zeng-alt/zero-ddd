@@ -16,10 +16,14 @@ public class TenantAwareTaskDecorator implements TaskDecorator {
     @NonNull
     public Runnable decorate(@NonNull Runnable runnable) {
         String tenantId = TenantContextHolder.getTenantId();
+        String database = TenantContextHolder.getDatabase();
+        String schema = TenantContextHolder.getSchema();
         Authentication authentication = UserContextHolder.getAuthentication();
         return () -> {
             try {
                 TenantContextHolder.setTenantId(tenantId);
+                TenantContextHolder.setDatabase(database);
+                TenantContextHolder.setSchema(schema);
                 UserContextHolder.setAuthentication(authentication);
                 runnable.run();
             } finally {

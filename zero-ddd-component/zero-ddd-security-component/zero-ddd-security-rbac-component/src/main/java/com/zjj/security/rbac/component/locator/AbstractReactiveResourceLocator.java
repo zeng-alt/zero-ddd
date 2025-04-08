@@ -2,15 +2,12 @@ package com.zjj.security.rbac.component.locator;
 
 import com.zjj.autoconfigure.component.security.rbac.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.reactivestreams.Publisher;
 import org.springframework.lang.Nullable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.function.Function;
 
 /**
  * @author zengJiaJun
@@ -21,6 +18,7 @@ import java.util.function.Function;
 public abstract class AbstractReactiveResourceLocator implements ReactiveResourceLocator {
 
     protected abstract List<Resource> list(@Nullable Object o);
+    protected abstract String list1(Resource resource, @Nullable Object o);
 
     protected abstract void verifyInstance(Resource resource);
 
@@ -41,4 +39,12 @@ public abstract class AbstractReactiveResourceLocator implements ReactiveResourc
                 .switchIfEmpty(Mono.empty());
     }
 
+    @Override
+    public Mono<String> load(Resource resource, Mono<Authentication> authentication) throws AuthenticationException {
+        return authentication
+                .filter(this::isNotAnonymous)
+                .map(this::getAuthorizationPrincipal)
+                .flatMap(o -> Mono.just(list1(resource, o)))
+                .switchIfEmpty(Mono.empty());
+    }
 }

@@ -27,4 +27,13 @@ public class ReactiveResourceQueryManager {
                 .flatMap(locator -> locator.load(authentication))
                 .switchIfEmpty(Mono.empty());
     }
+
+    public Mono<String> query1(Resource resource, Mono<Authentication> authentication) {
+        return Flux
+                .fromIterable(this.resourceLocators)
+                .filter(locator -> locator.supports(resource.getClass()))
+                .next()
+                .flatMap(locator -> locator.load(resource, authentication))
+                .switchIfEmpty(Mono.empty());
+    }
 }

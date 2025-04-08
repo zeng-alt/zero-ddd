@@ -30,14 +30,10 @@
             <artifactId>zero-main-infrastructure-business</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.zjj</groupId>
-            <artifactId>zero-ddd-exchange-tenant</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>com.zjj</groupId>
-            <artifactId>zero-ddd-tenant-service-component</artifactId>
+            <artifactId>zero-main-interfaces-business</artifactId>
         </dependency>
 
         <dependency>
@@ -45,14 +41,14 @@
             <artifactId>zero-ddd-security-core-component</artifactId>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>com.zjj</groupId>-->
-<!--            <artifactId>zero-ddd-security-fast-auth-component</artifactId>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>com.zjj</groupId>
+            <artifactId>zero-ddd-security-rbac-client-component</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>com.zjj</groupId>
-            <artifactId>zero-ddd-tenant-datasource-component</artifactId>
+            <artifactId>zero-ddd-security-fast-auth-component</artifactId>
         </dependency>
 
         <!-- SpringCloud Alibaba Nacos -->

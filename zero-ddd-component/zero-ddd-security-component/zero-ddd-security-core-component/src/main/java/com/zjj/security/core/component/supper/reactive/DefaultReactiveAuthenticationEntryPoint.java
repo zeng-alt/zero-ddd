@@ -3,6 +3,7 @@ package com.zjj.security.core.component.supper.reactive;
 import com.zjj.autoconfigure.component.json.JsonUtils;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
@@ -27,7 +28,7 @@ public class DefaultReactiveAuthenticationEntryPoint implements ServerAuthentica
     @Override
     public Mono<Void> commence(ServerWebExchange exchange, AuthenticationException ex) {
         ServerHttpResponse response = exchange.getResponse();
-
+//        exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON);
         response.setStatusCode(HttpStatus.UNAUTHORIZED);
         DataBufferFactory dataBufferFactory = response.bufferFactory();
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, ex.getMessage());

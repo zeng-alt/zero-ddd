@@ -31,7 +31,7 @@ public class RoleRepositoryImpl implements RoleRepository {
     @Override
     public Option<RoleAgg> findByRoleKey(String roleKey) {
         return BeanHelper.copyToOptionObject(
-                roleDao.findByRoleKey(roleKey),
+                roleDao.findByCode(roleKey),
                 RoleAgg.class
         );
     }

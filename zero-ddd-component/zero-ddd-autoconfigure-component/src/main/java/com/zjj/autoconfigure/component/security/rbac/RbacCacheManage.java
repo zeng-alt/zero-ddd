@@ -1,5 +1,6 @@
 package com.zjj.autoconfigure.component.security.rbac;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -45,4 +46,11 @@ public interface RbacCacheManage {
         putGraphqlResource(map, null);
     }
 
+    default Set<String> findPermission(List<String> roleName, String tenant) {
+        return new HashSet<>();
+    }
+
+    default String findPermissionByResource(String tenantName, String key) {
+        return null;
+    }
 }

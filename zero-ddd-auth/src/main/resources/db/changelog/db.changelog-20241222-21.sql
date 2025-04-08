@@ -117,9 +117,9 @@ create table main_role (
                            last_modified_date timestamp(6),
                            created_by varchar(255),
                            last_modified_by varchar(255),
-                           role_key varchar(255),
-                           role_name varchar(255),
-                           status varchar(255),
+                           code varchar(255),
+                           name varchar(255),
+                           enable varchar(255),
                            tenant_by varchar(255) not null,
                            primary key (id)
 )
@@ -339,9 +339,9 @@ values
 
 insert into
     main_role
-(deleted, role_sort, status, role_key, role_name, tenant_by)
+(deleted, role_sort, enable, code, name, tenant_by)
 values
-    (0, 0, '0', 'admin', '管理员', '${tenantName}');
+    (0, 0, 'true', 'admin', '管理员', '${tenantName}');
 
 insert into
     main_user_role

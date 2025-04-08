@@ -24,7 +24,7 @@ public class Expression extends BaseEntity<Long> implements TenantAuditable<Stri
 
     @ManyToOne
     @JoinColumn(name = "resource_id")
-    private MenuResource resource;
+    private Resource resource;
 
     @TenantId
     @Nullable

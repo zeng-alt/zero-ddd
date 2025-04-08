@@ -13,8 +13,8 @@ import org.jmolecules.ddd.types.AggregateRoot;
 public class RoleAgg extends Aggregate<Long> {
 
     private Long id;
-    private String roleName;
-    private String roleKey;
+    private String name;
+    private String code;
     private String roleSort;
     private String status;
     private Integer deleted;

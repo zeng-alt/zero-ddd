@@ -37,7 +37,7 @@ spring:
     console:
       enabled: true
   liquibase:
-    enabled: true
+    enabled: false
     # 如下配置是被spring.datasource赋值的，所以可以不配置
     #    url: jdbc:mysql://localhost:3306/test_db_liquibase?useSSL=false&autoReconnect=true&characterEncoding=utf8
     #    user: root
@@ -45,8 +45,12 @@ spring:
     change-log: classpath:/db/changelog/db.changelog-master.yaml
 
   graphql:
+#    cors:
+#      allow-credentials: true
+#      allowed-origins:
+#        - http://localhost:5173
     graphiql:
-      enabled: true
+      enabled: false
       path: /main/graphiql
     path: /main/graphql
 
@@ -55,15 +59,23 @@ spring:
       file: classpath:redisson.yml
 
 
+springdoc:
+  api-docs:
+    enabled: true    # 确保 API 文档启用
+  swagger-ui:
+    path: /swagger-ui.html  # Swagger UI 访问路径
+
 management:
   endpoint:
+    rbac:
+      access: UNRESTRICTED
     shutdown:
       access: UNRESTRICTED
   endpoints:
     web:
       base-path: /main/actuator
       exposure:
-        include: shutdown
+        include: shutdown, rbac
 
 multi-tenancy:
   database: PostgreSQL

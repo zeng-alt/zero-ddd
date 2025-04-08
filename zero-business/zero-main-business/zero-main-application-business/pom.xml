@@ -43,6 +43,11 @@
             <groupId>com.zjj</groupId>
             <artifactId>zero-ddd-exchange-main</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.zjj</groupId>
+            <artifactId>zero-main-infrastructure-business</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

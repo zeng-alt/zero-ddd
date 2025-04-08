@@ -2,6 +2,7 @@ package com.zjj.main.infrastructure.db.jpa.dao;
 
 import com.zjj.domain.component.BaseRepository;
 import com.zjj.main.infrastructure.db.jpa.entity.ParameterEntity;
+import io.vavr.control.Option;
 import org.springframework.graphql.data.GraphQlRepository;
 
 /**
@@ -11,4 +12,6 @@ import org.springframework.graphql.data.GraphQlRepository;
  */
 @GraphQlRepository
 public interface ParameterEntityDao extends BaseRepository<ParameterEntity, Long> {
+
+    Option<ParameterEntity> findByParameterKey(String parameterKey);
 }

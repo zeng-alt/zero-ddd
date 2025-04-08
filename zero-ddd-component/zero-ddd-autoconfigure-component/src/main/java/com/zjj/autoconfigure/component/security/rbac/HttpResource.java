@@ -8,4 +8,9 @@ import lombok.Data;
  * @crateTime 2024年10月09日 22:50
  */
 public class HttpResource extends AbstractResource {
+
+    @Override
+    public String getKey() {
+        return "http:" + getUri() + ":" + getMethod();
+    }
 }

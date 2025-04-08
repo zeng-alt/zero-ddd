@@ -45,14 +45,11 @@ public class SecurityUser implements UserDetails, TenantDetail, CredentialsConta
     private String database;
     private String schema;
 
-    @JsonIgnore
-    private final Set<GrantedAuthority> authorities;
-
     //存储权限信息
     @Getter
-    private final Set<String> roles;
+    private final Set<GrantedAuthority> roles;
 
-    private String currentRole;
+    private GrantedAuthority currentRole;
 
     private boolean accountNonExpired;
 
@@ -66,9 +63,9 @@ public class SecurityUser implements UserDetails, TenantDetail, CredentialsConta
     /**
      * Calls the more complex constructor with all boolean arguments set to {@code true}.
      */
-    public SecurityUser(String username, String password, Set<String> roles) {
+    public SecurityUser(String username, String password, Set<GrantedAuthority> roles) {
         this(username, password, null, null, null, true, true, true, true, roles, null, null);
-        Iterator<String> iterator = roles.iterator();
+        Iterator<GrantedAuthority> iterator = roles.iterator();
         if (iterator.hasNext()) {
             setCurrentRole(iterator.next());
         }
@@ -96,7 +93,8 @@ public class SecurityUser implements UserDetails, TenantDetail, CredentialsConta
                         @JsonProperty("tenant") String tenant, @JsonProperty("database") String database, @JsonProperty("schema") String schema,
                         @JsonProperty("enabled") boolean enabled, @JsonProperty("accountNonExpired") boolean accountNonExpired,
                         @JsonProperty("credentialsNonExpired") boolean credentialsNonExpired, @JsonProperty("accountNonLocked") boolean accountNonLocked,
-                        @JsonProperty("roles") Set<String> roles, @JsonProperty("currentRole") String currentRole, @JsonProperty("expire") LocalDateTime expire) {
+                        @JsonProperty("roles") Set<GrantedAuthority> roles, @JsonProperty("currentRole") GrantedAuthority currentRole,
+                        @JsonProperty("expire") LocalDateTime expire) {
         Assert.isTrue(username != null && !"".equals(username),
                 "Cannot pass null or empty values to constructor");
         this.username = username;
@@ -110,14 +108,13 @@ public class SecurityUser implements UserDetails, TenantDetail, CredentialsConta
         this.accountNonLocked = accountNonLocked;
         this.roles = roles;
         this.currentRole = currentRole;
-        this.authorities = Collections.unmodifiableSet(sortAuthorities(roles.stream().map(SimpleGrantedAuthority::new).toList()));
         this.expire = expire;
     }
 
     @Override
     @JsonIgnore
-    public Collection<GrantedAuthority> getAuthorities() {
-        return this.authorities;
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roles;
     }
 
     @Override
@@ -200,7 +197,6 @@ public class SecurityUser implements UserDetails, TenantDetail, CredentialsConta
         sb.append("AccountNonExpired=").append(this.accountNonExpired).append(", ");
         sb.append("CredentialsNonExpired=").append(this.credentialsNonExpired).append(", ");
         sb.append("AccountNonLocked=").append(this.accountNonLocked).append(", ");
-        sb.append("Granted Authorities=").append(this.authorities).append("]");
         return sb.toString();
     }
 
@@ -332,8 +328,8 @@ public class SecurityUser implements UserDetails, TenantDetail, CredentialsConta
 
         private String password;
 
-        private List<String> roles = new ArrayList<>();
-        private String currentRole;
+        private List<GrantedAuthority> roles = new ArrayList<>();
+        private GrantedAuthority currentRole;
 
         private boolean accountExpired;
 
@@ -346,7 +342,6 @@ public class SecurityUser implements UserDetails, TenantDetail, CredentialsConta
         private String tenant;
         private String database;
         private String schema;
-
         private Function<String, String> passwordEncoder = (password) -> password;
 
         private LocalDateTime expire;
@@ -421,11 +416,11 @@ public class SecurityUser implements UserDetails, TenantDetail, CredentialsConta
          * @return the {@link SecurityUser.UserBuilder} for method chaining (i.e. to populate
          * additional attributes for this user)
          */
-        public SecurityUser.UserBuilder roles(Collection<String> roles) {
+        public SecurityUser.UserBuilder roles(Collection<GrantedAuthority> roles) {
             return authorities(roles);
         }
 
-        public SecurityUser.UserBuilder roles(String... roles) {
+        public SecurityUser.UserBuilder roles(GrantedAuthority... roles) {
             return authorities(Arrays.stream(roles).toList());
         }
 
@@ -438,7 +433,7 @@ public class SecurityUser implements UserDetails, TenantDetail, CredentialsConta
          */
         public SecurityUser.UserBuilder authorities(GrantedAuthority... authorities) {
             Assert.notNull(authorities, "authorities cannot be null");
-            return authorities(Arrays.stream(authorities).map(GrantedAuthority::getAuthority).toList());
+            return authorities(Arrays.stream(authorities).toList());
         }
 
         /**
@@ -448,7 +443,7 @@ public class SecurityUser implements UserDetails, TenantDetail, CredentialsConta
          * @return the {@link SecurityUser.UserBuilder} for method chaining (i.e. to populate
          * additional attributes for this user)
          */
-        public SecurityUser.UserBuilder authorities(Collection<String> roles) {
+        public SecurityUser.UserBuilder authorities(Collection<GrantedAuthority> roles) {
             Assert.notNull(roles, "roles cannot be null");
             this.roles = new ArrayList<>(roles);
             return this;
@@ -503,7 +498,7 @@ public class SecurityUser implements UserDetails, TenantDetail, CredentialsConta
             return this;
         }
 
-        public SecurityUser.UserBuilder currentRole(String currentRole) {
+        public SecurityUser.UserBuilder currentRole(GrantedAuthority currentRole) {
             this.currentRole = currentRole;
             return this;
         }

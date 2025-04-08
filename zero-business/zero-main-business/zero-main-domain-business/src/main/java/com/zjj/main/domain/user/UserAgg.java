@@ -2,6 +2,8 @@ package com.zjj.main.domain.user;
 
 import com.zjj.bean.componenet.ApplicationContextHelper;
 import com.zjj.domain.component.Aggregate;
+import com.zjj.main.domain.user.event.UpdateUserPasswordEvent;
+import io.micrometer.common.util.StringUtils;
 import lombok.Data;
 
 import java.util.List;
@@ -14,6 +16,7 @@ import java.util.Set;
  */
 @Data
 public class UserAgg extends Aggregate<Long> {
+
     private Long id;
     private String username;
     private String password;
@@ -31,5 +34,21 @@ public class UserAgg extends Aggregate<Long> {
         this.roleIds.addAll(roleIds);
         ApplicationContextHelper.publisher().publishEvent(null);
         return this;
+    }
+
+    public void updatePassword(String password) {
+        // 对密码进行校验
+        if (StringUtils.isEmpty(password)) {
+
+        }
+        if (password.length() < 6) {
+
+        }
+        // 密码必须包含数据和字母
+        if (!password.matches(".*[a-zA-Z]+.*") || !password.matches(".*[0-9]+.*")) {
+
+        }
+
+        ApplicationContextHelper.publisher().publishEvent(UpdateUserPasswordEvent.of(this.id, password));
     }
 }

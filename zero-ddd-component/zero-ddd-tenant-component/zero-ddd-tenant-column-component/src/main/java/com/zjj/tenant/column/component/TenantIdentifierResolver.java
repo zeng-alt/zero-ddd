@@ -1,6 +1,7 @@
 package com.zjj.tenant.column.component;
 
 import com.zjj.autoconfigure.component.tenant.TenantContextHolder;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernatePropertiesCustomizer;
@@ -19,7 +20,7 @@ public class TenantIdentifierResolver implements CurrentTenantIdentifierResolver
             return tenantId;
         } else {
             // Allow bootstrapping the EntityManagerFactory, in which case no tenant is needed
-            return "BOOTSTRAP";
+            return "master";
         }
     }
 

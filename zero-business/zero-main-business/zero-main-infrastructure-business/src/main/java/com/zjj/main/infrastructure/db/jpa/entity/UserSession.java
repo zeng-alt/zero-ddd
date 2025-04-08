@@ -18,10 +18,18 @@ import org.springframework.lang.Nullable;
 @Entity
 @Table(name = "main_user_session")
 public class UserSession extends BaseEntity<Long> implements TenantAuditable<String> {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @OneToOne(orphanRemoval = true)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
 
     @TenantId
     @Nullable

@@ -23,6 +23,8 @@ import org.springframework.context.annotation.Role;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.task.TaskDecorator;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -42,6 +44,20 @@ import java.util.List;
 @AutoConfiguration
 @AutoConfigurationPackage(basePackages = "com.zjj.core.component.type")
 public class CoreAutoConfig {
+
+
+    @Bean
+    public ThreadPoolTaskExecutor bootstrapExecutor(TaskDecorator taskDecorator) {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(10);  // 设置核心线程池大小
+        executor.setMaxPoolSize(50);   // 设置最大线程池大小
+        executor.setQueueCapacity(100);  // 设置队列容量
+        executor.setThreadNamePrefix("async-thread-");
+        executor.setTaskDecorator(taskDecorator);
+        executor.initialize();
+
+        return executor;
+    }
 
     @Bean
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)

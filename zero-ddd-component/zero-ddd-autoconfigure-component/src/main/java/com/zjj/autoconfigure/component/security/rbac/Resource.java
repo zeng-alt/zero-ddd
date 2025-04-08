@@ -28,4 +28,8 @@ public interface Resource {
 		return new PathPatternParserServerWebExchangeMatcher(getUri(), getHttpMethod()).matches(request);
 	}
 
+	default String getKey() {
+		return null;
+	}
+
 }

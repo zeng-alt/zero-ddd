@@ -42,6 +42,11 @@ public class ReactiveGraphqlResourceLocator extends AbstractReactiveResourceLoca
     }
 
     @Override
+    protected String list1(Resource resource, Object o) {
+        return null;
+    }
+
+    @Override
     protected void verifyInstance(Resource resource) {
         Assert.isInstanceOf(GraphqlResource.class, resource,"Only GraphqlResource is supported");
     }

@@ -28,8 +28,11 @@ public class Permission extends BaseEntity<Long> implements TenantAuditable<Stri
     @OneToMany(mappedBy = "permission", orphanRemoval = true)
     private Set<RolePermission> rolePermissions = new LinkedHashSet<>();
 
-    @OneToOne(mappedBy = "permission", orphanRemoval = true)
-    private MenuResource resource;
+    @OneToOne
+    @JoinColumn(name = "resource_id")
+    private Resource resource;
+
+    private String code;
 
     @TenantId
     @Nullable

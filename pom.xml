@@ -437,6 +437,12 @@
 
             <dependency>
                 <groupId>com.zjj</groupId>
+                <artifactId>zero-ddd-security-rbac-client-component</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.zjj</groupId>
                 <artifactId>zero-ddd-security-fast-auth-component</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>

@@ -1,7 +1,6 @@
 package com.zjj.gateway.advice;
 
 import com.zjj.autoconfigure.component.json.JsonHelper;
-import com.zjj.core.component.api.ErrorResponseEntity;
 import org.springframework.boot.autoconfigure.web.ErrorProperties;
 import org.springframework.boot.autoconfigure.web.WebProperties;
 import org.springframework.boot.autoconfigure.web.reactive.error.DefaultErrorWebExceptionHandler;
@@ -10,6 +9,7 @@ import org.springframework.boot.web.reactive.error.ErrorAttributes;
 import org.springframework.cloud.gateway.support.NotFoundException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.reactive.function.server.*;
@@ -34,17 +34,16 @@ public class GateWayExceptionAdvice extends DefaultErrorWebExceptionHandler {
     @Override
     protected Map<String, Object> getErrorAttributes(ServerRequest request, ErrorAttributeOptions options) {
         Throwable error = super.getError(request);
-        ErrorResponseEntity errorResponse = ErrorResponseEntity.of(HttpStatus.INTERNAL_SERVER_ERROR, error.getMessage());
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, error.getMessage());
         if (error instanceof NotFoundException) {
-            errorResponse = ErrorResponseEntity.of(HttpStatus.NOT_FOUND, error.getMessage());
+            problemDetail.setStatus(HttpStatus.NOT_FOUND.value());
         } else if (error instanceof AccessDeniedException) {
-            errorResponse = ErrorResponseEntity.of(HttpStatus.FORBIDDEN, error.getMessage());
+            problemDetail.setStatus(HttpStatus.FORBIDDEN.value());
         } else if (error instanceof AuthenticationException) {
-            errorResponse = ErrorResponseEntity.of(HttpStatus.UNAUTHORIZED, error.getMessage());
+            problemDetail.setStatus(HttpStatus.UNAUTHORIZED.value());
         }
-        errorResponse.setInstance(request.uri());
-        errorResponse.setType(request.uri());
-        return jsonHelper.toMap(errorResponse);
+        problemDetail.setInstance(request.uri());
+        return jsonHelper.toMap(problemDetail);
     }
 
     @Override

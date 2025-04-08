@@ -7,9 +7,8 @@ import com.zjj.autoconfigure.component.security.rbac.RbacCacheManage;
 import com.zjj.autoconfigure.component.security.rbac.Resource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.Ordered;
-import org.springframework.stereotype.Component;
-import org.springframework.util.ClassUtils;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -62,6 +61,23 @@ public class RedisRbacCacheManage implements RbacCacheManage, Ordered {
     @Override
     public void putGraphqlResource(Map<String, GraphqlResource> map, String tenant) {
         redisStringRepository.batchPut(GRAPHQL_RESOURCE_KEY + tenant + ":", map);
+    }
+
+
+    @Override
+    public Set<String> findPermission(List<String> roleName, String tenant) {
+        if (CollectionUtils.isEmpty(roleName)) return new HashSet<>();
+        final String finalTenant = StringUtils.hasText(tenant) ? tenant + ":" : "";
+        List<String> roleKeys = roleName.stream().map(s -> "rbac:" + finalTenant + "role:" + s).toList();
+        List<Set<String>> result = redisStringRepository.getAll(roleKeys);
+        return result.stream().flatMap(Set::stream).collect(Collectors.toSet());
+    }
+
+    @Override
+    public String findPermissionByResource(String tenant, String key) {
+        if (!StringUtils.hasText(key)) return "";
+        final String finalTenant = StringUtils.hasText(tenant) ? tenant + ":" : "";
+        return redisStringRepository.get("rbac:" + finalTenant + key);
     }
 
     @Override

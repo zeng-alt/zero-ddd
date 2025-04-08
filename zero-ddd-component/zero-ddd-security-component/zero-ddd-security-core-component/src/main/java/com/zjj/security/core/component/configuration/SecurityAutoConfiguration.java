@@ -71,7 +71,7 @@ public class SecurityAutoConfiguration {
 	public UserDetailsService inMemoryUserDetailsManager(PasswordEncoder passwordEncoder) {
 
 		return new InMemoryUserDetailsManager(
-				List.of(SecurityUser.withUsername("root").password(passwordEncoder.encode("123456")).roles("ADMIN").build()));
+				List.of(SecurityUser.withUsername("root").password(passwordEncoder.encode("123456")).roles().build()));
 	}
 
 	@Bean

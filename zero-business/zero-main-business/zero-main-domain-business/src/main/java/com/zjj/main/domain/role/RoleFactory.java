@@ -25,7 +25,7 @@ public class RoleFactory {
             roleRepository
                     .findById(cmd.id())
                     .peek(role -> {
-                        if (StringUtils.hasText(cmd.roleKey()) && !role.getRoleKey().equals(cmd.roleKey())) {
+                        if (StringUtils.hasText(cmd.roleKey()) && !role.getCode().equals(cmd.roleKey())) {
                             throw new BaseI18nException("roleKey.cannot.modified");
                         }
                     })

@@ -1,6 +1,5 @@
 package com.zjj.graphql.component.supper;
 
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.graphql.GraphQlSourceBuilderCustomizer;

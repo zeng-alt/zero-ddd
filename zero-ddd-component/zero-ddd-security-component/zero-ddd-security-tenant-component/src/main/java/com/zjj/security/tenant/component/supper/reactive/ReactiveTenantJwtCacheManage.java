@@ -1,6 +1,8 @@
 package com.zjj.security.tenant.component.supper.reactive;
 
 import com.zjj.autoconfigure.component.redis.RedisStringRepository;
+import com.zjj.autoconfigure.component.security.SecurityUser;
+import com.zjj.autoconfigure.component.security.jwt.JwtCacheManage;
 import com.zjj.autoconfigure.component.security.jwt.JwtProperties;
 import com.zjj.autoconfigure.component.security.jwt.ReactiveJwtCacheManage;
 import com.zjj.autoconfigure.component.tenant.ReactiveTenantContextHolder;
@@ -39,7 +41,7 @@ public class ReactiveTenantJwtCacheManage implements ReactiveJwtCacheManage {
                 .map(TenantContext::getTenant)
                 .map(t -> getKey(t, id))
                 .flatMap(k -> {
-                    UserDetails userDetails = redisStringRepository.get(k);
+                    SecurityUser userDetails = redisStringRepository.get(k);
                     if (userDetails == null) {
                         return Mono.error(new BadCredentialsException("用户登录时间过期，重新登录"));
                     }

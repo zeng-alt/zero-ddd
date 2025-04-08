@@ -1,5 +1,6 @@
 package com.zjj.tenant.column.component;
 
+import com.zjj.autoconfigure.component.tenant.MultiTenancyProperties;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
