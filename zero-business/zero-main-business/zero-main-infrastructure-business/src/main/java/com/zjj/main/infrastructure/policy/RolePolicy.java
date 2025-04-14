@@ -1,11 +1,14 @@
 package com.zjj.main.infrastructure.policy;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.zjj.autoconfigure.component.redis.RedisStringRepository;
 import com.zjj.autoconfigure.component.tenant.MultiTenancyProperties;
 import com.zjj.autoconfigure.component.tenant.TenantContextHolder;
 import com.zjj.main.domain.role.event.InitRbacEvent;
 import com.zjj.main.infrastructure.db.jpa.dao.*;
+import com.zjj.main.infrastructure.db.jpa.entity.MenuResource;
 import com.zjj.main.infrastructure.db.jpa.entity.Permission;
+import com.zjj.main.infrastructure.db.jpa.entity.Resource;
 import com.zjj.main.infrastructure.db.jpa.entity.RolePermission;
 import io.vavr.Tuple;
 import io.vavr.Tuple2;
@@ -14,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
+import org.springframework.modulith.events.ApplicationModuleListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.HandlerMapping;
@@ -47,8 +52,10 @@ public class RolePolicy {
     private RedisStringRepository redisStringRepository;
     @Autowired
     private PermissionDao permissionDao;
+    @Autowired
+    private JPAQueryFactory jpaQueryFactory;
 
-//    @ApplicationModuleListener(readOnlyTransaction = true, propagation = Propagation.REQUIRED)
+    @Async
     @EventListener
     @Transactional(readOnly = true)
     public void on(InitRbacEvent event) {
@@ -70,8 +77,16 @@ public class RolePolicy {
         }).collect(Collectors.toMap(t -> t._1, Tuple2::_2));
         redisStringRepository.batchPut(prefix + "role:", roleMap);
 
-        Map<String, String> permissionMap = permissionDao.findAll().collect(Collectors.toMap(p -> p.getResource().getKey(), Permission::getCode));
+        Map<String, String> permissionMap = permissionDao.findAll().filter(p -> {
+            Resource resource = p.getResource();
+            if (resource instanceof MenuResource menuResource) {
+                return "BUTTON".equals(menuResource.getType());
+            }
+            return true;
+        }).collect(Collectors.toMap(p -> p.getResource().getKey(), Permission::getCode));
         redisStringRepository.batchPut(prefix, permissionMap);
+
+        log.info("初始化rbac完成");
     }
 
     //        MenuResource menuResource = new MenuResource();

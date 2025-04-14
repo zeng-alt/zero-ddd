@@ -2,6 +2,7 @@ package com.zjj.security.captcha.component.configuration;
 
 import com.zjj.autoconfigure.component.redis.RedisStringRepository;
 import com.zjj.autoconfigure.component.security.SecurityBuilderCustomizer;
+import com.zjj.core.component.parameter.ParameterService;
 import com.zjj.security.captcha.component.spi.CaptchaFailureHandler;
 import com.zjj.security.captcha.component.spi.CaptchaService;
 import com.zjj.security.captcha.component.spi.CaptchaSuccessHandler;
@@ -52,11 +53,12 @@ public class CaptchaAutoConfiguration {
 	@Bean
 	public SecurityBuilderCustomizer captchaCustomizer(
 			CaptchaProperties captchaProperties,
+			ParameterService parameterService,
 			AuthenticationManager authenticationManager,
 			ObjectProvider<CaptchaSuccessHandler> captchaSuccessHandler,
 			ObjectProvider<CaptchaFailureHandler> captchaFailureHandler) {
 
-		CaptchaAuthenticationFilter captchaAuthenticationFilter = new CaptchaAuthenticationFilter(captchaProperties);
+		CaptchaAuthenticationFilter captchaAuthenticationFilter = new CaptchaAuthenticationFilter(captchaProperties, parameterService);
 		captchaAuthenticationFilter.setAuthenticationManager(authenticationManager);
 		captchaSuccessHandler.ifAvailable(captchaAuthenticationFilter::setSuccessHandler);
 		captchaFailureHandler.ifAvailable(captchaAuthenticationFilter::setFailureHandler);

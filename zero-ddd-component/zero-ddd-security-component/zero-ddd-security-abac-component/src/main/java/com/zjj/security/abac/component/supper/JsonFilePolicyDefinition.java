@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.zjj.autoconfigure.component.security.abac.PolicyDefinition;
 import com.zjj.autoconfigure.component.security.abac.PolicyRule;
+import com.zjj.autoconfigure.component.security.abac.SpelDeserializer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.expression.Expression;
 import org.springframework.util.ResourceUtils;
@@ -62,6 +63,16 @@ public class JsonFilePolicyDefinition implements PolicyDefinition {
     @Override
     public PolicyRule getPolicyRule(String tenant, String key, String typeClass, boolean isPreAuth) {
         return rules.getOrDefault(key, null);
+    }
+
+    @Override
+    public PolicyRule getPolicyRule(String tenant, String key, boolean isPreAuth) {
+        return null;
+    }
+
+    @Override
+    public PolicyRule getPolicyRule(String key, boolean isPreAuth) {
+        return null;
     }
 
     @Override

@@ -22,8 +22,8 @@ import org.springframework.util.Assert;
  */
 @Slf4j
 public class CaptchaAuthenticationProvider implements AuthenticationProvider, InitializingBean, MessageSourceAware {
-    protected MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();
 
+    protected MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();
 
     private CaptchaService captchaService;
 

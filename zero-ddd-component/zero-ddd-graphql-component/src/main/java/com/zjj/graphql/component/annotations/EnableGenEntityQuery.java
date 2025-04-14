@@ -1,8 +1,8 @@
 package com.zjj.graphql.component.annotations;
 
-import com.zjj.graphql.component.supper.PageRuntimeWiringConfigurer;
 import com.zjj.graphql.component.supper.definition.EntityQueryDefinitionConfigurer;
 import com.zjj.graphql.component.supper.fetcher.EntityMutationFetcherConfigurer;
+import com.zjj.graphql.component.supper.fetcher.FindDataFetcherConfigurer;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
@@ -15,6 +15,6 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Import({EntityQueryDefinitionConfigurer.class, PageRuntimeWiringConfigurer.class})
+@Import({EntityQueryDefinitionConfigurer.class, FindDataFetcherConfigurer.class})
 public @interface EnableGenEntityQuery {
 }

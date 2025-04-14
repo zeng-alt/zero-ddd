@@ -1,4 +1,4 @@
-package com.zjj.security.abac.component.supper;
+package com.zjj.autoconfigure.component.security.abac;
 
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;

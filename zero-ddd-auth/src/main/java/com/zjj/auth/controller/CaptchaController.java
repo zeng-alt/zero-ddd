@@ -1,19 +1,15 @@
 package com.zjj.auth.controller;
 
-import com.yufeixuan.captcha.Captcha;
-import com.yufeixuan.captcha.GifCaptcha;
-import com.yufeixuan.captcha.SpecCaptcha;
-import com.zjj.autoconfigure.component.core.Response;
-//import com.zjj.security.captcha.component.spi.CaptchaService;
-import jakarta.servlet.http.HttpServletRequest;
+import cn.hutool.captcha.CaptchaUtil;
+import cn.hutool.captcha.ShearCaptcha;
+import com.zjj.autoconfigure.component.core.ResponseEntity;
+import com.zjj.security.captcha.component.spi.CaptchaService;
 import jakarta.servlet.http.HttpServletResponse;
-import org.redisson.liveobject.resolver.UUIDGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.UUID;
 
@@ -26,8 +22,8 @@ import java.util.UUID;
 @RequestMapping("/auth/v1/captcha")
 public class CaptchaController {
 
-//    @Autowired
-//    private CaptchaService captchaService;
+    @Autowired
+    private CaptchaService captchaService;
 
 
 //    @GetMapping
@@ -48,4 +44,12 @@ public class CaptchaController {
 //        return Response.success(new CaptchaVO(captchaKey, img));
 //
 //    }
+
+    @GetMapping
+    public ResponseEntity<CaptchaVO> captcha(HttpServletResponse response) throws IOException {
+        ShearCaptcha captcha = CaptchaUtil.createShearCaptcha(80, 40, 4, 4);
+        String captchaKey = UUID.randomUUID().toString();
+        captchaService.putCaptcha(captchaKey, captcha.getCode());
+        return ResponseEntity.ok(new CaptchaVO(captchaKey, captcha.getImageBase64()));
+    }
 }

@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.expression.EvaluationContext;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.lang.Nullable;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.AuthorizationManager;
@@ -25,7 +26,7 @@ import java.util.function.Supplier;
 public class AbacAdminAuthManager implements AuthorizationManager<MethodInvocation> {
 
     private final AbacPreAuthorizeExpressionAttributeRegistry registry;
-
+    private final SpelExpressionParser spelExpressionParser = new SpelExpressionParser();
 
     @Override
     public AuthorizationDecision check(Supplier<Authentication> authentication, MethodInvocation mi) {
@@ -63,7 +64,7 @@ public class AbacAdminAuthManager implements AuthorizationManager<MethodInvocati
             return null;
         }
         EvaluationContext context = this.registry.getExpressionHandler().createEvaluationContext(authentication, mi);
-        return (AuthorizationDecision) ExpressionUtils.evaluate(policyRule.getCondition(), context);
+        return (AuthorizationDecision) ExpressionUtils.evaluate(spelExpressionParser.parseExpression(policyRule.getCondition()), context);
     }
 
     @Nullable

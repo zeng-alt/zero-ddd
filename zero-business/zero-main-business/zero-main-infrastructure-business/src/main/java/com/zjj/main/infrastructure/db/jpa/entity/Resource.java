@@ -1,6 +1,7 @@
 package com.zjj.main.infrastructure.db.jpa.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.zjj.autoconfigure.component.security.abac.PolicyRule;
 import com.zjj.domain.component.BaseEntity;
 import com.zjj.domain.component.TenantAuditable;
 import jakarta.persistence.*;
@@ -27,8 +28,10 @@ public class Resource extends BaseEntity<Long> implements TenantAuditable<String
     @Column(name = "resource_type", insertable = false, updatable = false)
     private String resourceType;
 
+    private String code;
+
     @OneToMany(mappedBy = "resource")
-    private Set<Expression> expressions = new LinkedHashSet<>();
+    private Set<PolicyRuleEntity> rules = new LinkedHashSet<>();
 
 //    @OneToOne(mappedBy = "resource")
 //    private Permission permission;

@@ -1,7 +1,6 @@
 package com.zjj.tenant.interfaces.mvc;
 
 import com.zjj.domain.component.AbstractTxController;
-//import com.zjj.security.abac.component.annotation.AbacPreHttpAuthorize;
 import com.zjj.tenant.domain.menu.MenuResourceHandler;
 import com.zjj.tenant.domain.menu.cmd.DisableMenuCmd;
 import com.zjj.tenant.domain.menu.cmd.EnableMenuCmd;

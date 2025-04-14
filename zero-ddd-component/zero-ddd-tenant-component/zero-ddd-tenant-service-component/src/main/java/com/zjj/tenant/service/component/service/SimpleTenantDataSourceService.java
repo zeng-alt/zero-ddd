@@ -4,12 +4,10 @@ import com.zjj.autoconfigure.component.tenant.Tenant;
 import com.zjj.tenant.management.component.spi.TenantDataSourceProvider;
 import com.zjj.tenant.service.component.entity.TenantDataSourceEntity;
 import com.zjj.tenant.service.component.repository.TenantRepository;
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
 /**
  * @author zengJiaJun
@@ -25,6 +23,7 @@ public class SimpleTenantDataSourceService implements TenantDataSourceProvider {
     public Collection<Tenant> findAll() {
         return tenantRepository.findAll()
                 .stream()
+                .filter(t -> Objects.nonNull(t.getTenantDataSource()))
                 .map(t -> {
                     TenantDataSourceEntity dataSource = t.getTenantDataSource();
                     return Tenant.builder()

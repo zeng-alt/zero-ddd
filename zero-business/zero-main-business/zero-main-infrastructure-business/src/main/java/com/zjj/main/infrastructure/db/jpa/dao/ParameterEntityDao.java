@@ -5,6 +5,8 @@ import com.zjj.main.infrastructure.db.jpa.entity.ParameterEntity;
 import io.vavr.control.Option;
 import org.springframework.graphql.data.GraphQlRepository;
 
+import java.util.List;
+
 /**
  * @author zengJiaJun
  * @version 1.0
@@ -14,4 +16,6 @@ import org.springframework.graphql.data.GraphQlRepository;
 public interface ParameterEntityDao extends BaseRepository<ParameterEntity, Long> {
 
     Option<ParameterEntity> findByParameterKey(String parameterKey);
+
+    List<ParameterEntity> findAll();
 }

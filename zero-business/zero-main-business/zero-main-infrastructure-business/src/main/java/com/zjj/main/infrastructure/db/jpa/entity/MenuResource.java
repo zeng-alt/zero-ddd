@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -35,10 +37,10 @@ public class MenuResource extends Resource implements Parent<Long> {
      * 子菜单
      */
     @OneToMany(mappedBy = "parentMenu")
-    private Set<MenuResource> chileMenus = new LinkedHashSet<>();
+    private List<MenuResource> chileMenus = new LinkedList<>();
 
     private String name;
-    private String code;
+//    private String code;
     private String type;
     private String path;
     private String redirect;

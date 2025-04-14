@@ -1,6 +1,9 @@
 package com.zjj.security.captcha.component.supper;
 
+import com.zjj.autoconfigure.component.json.JsonUtils;
 import com.zjj.autoconfigure.component.security.AuthenticationHelper;
+import com.zjj.core.component.parameter.Parameter;
+import com.zjj.core.component.parameter.ParameterService;
 import com.zjj.security.captcha.component.configuration.CaptchaProperties;
 import com.zjj.security.captcha.component.spi.CaptchaFailureHandler;
 import com.zjj.security.captcha.component.spi.CaptchaSuccessHandler;
@@ -12,6 +15,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.core.log.LogMessage;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
@@ -24,6 +29,7 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.List;
 
 /**
@@ -43,13 +49,21 @@ public class CaptchaAuthenticationFilter extends OncePerRequestFilter {
     private String captchaKey = CAPTCHA_KEY;
     private AuthenticationManager authenticationManager;
     private CaptchaSuccessHandler successHandler = (request, response, authentication) -> {};
-    private CaptchaFailureHandler failureHandler = (request, response, exception) -> AuthenticationHelper.renderString(response, 10003, "验证码错误");
+    private CaptchaFailureHandler failureHandler = (request, response, exception) -> {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "验证码错误");
+        problemDetail.setStatus(10003);
+        problemDetail.setInstance(URI.create(request.getRequestURI()));
+        problemDetail.setTitle("验证码错误");
+        AuthenticationHelper.renderString(response, HttpStatus.BAD_REQUEST.value(), "验证码错误", JsonUtils.toJsonString(problemDetail));
+    };
     private CaptchaProperties captchaProperties;
+    private ParameterService parameterService;
     public CaptchaAuthenticationFilter() {}
 
-    public CaptchaAuthenticationFilter(CaptchaProperties captchaProperties) {
+    public CaptchaAuthenticationFilter(CaptchaProperties captchaProperties, ParameterService parameterService) {
         this(captchaProperties.getFilterUrl(), captchaProperties.getCaptchaParameter(), captchaProperties.getCaptchaKeyParameter());
         this.captchaProperties = captchaProperties;
+        this.parameterService = parameterService;
     }
 
     public CaptchaAuthenticationFilter(AuthenticationManager authenticationManager) {
@@ -70,7 +84,9 @@ public class CaptchaAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
-        if (Boolean.FALSE.equals(captchaProperties.getEnable())) {
+        Parameter parameter = this.parameterService.getParameter("captcha");
+        if ((parameter == null && Boolean.FALSE.equals(captchaProperties.getEnable())) ||
+                (parameter != null && Boolean.FALSE.equals(parameter.getValue()))) {
             chain.doFilter(request, response);
             return;
         }

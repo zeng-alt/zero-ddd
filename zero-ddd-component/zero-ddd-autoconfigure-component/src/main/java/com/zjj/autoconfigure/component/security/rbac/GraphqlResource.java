@@ -15,8 +15,14 @@ import java.util.Objects;
 @Setter
 @ToString(callSuper = true)
 public class GraphqlResource extends AbstractResource {
+
     private String type;
     private String functionName;
+
+
+    public GraphqlResource() {
+        this.method = "POST";
+    }
 
     @Override
     public boolean equals(Object o) {

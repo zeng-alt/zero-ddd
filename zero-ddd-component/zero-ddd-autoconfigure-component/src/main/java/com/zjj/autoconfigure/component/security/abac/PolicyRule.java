@@ -1,10 +1,11 @@
 package com.zjj.autoconfigure.component.security.abac;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.expression.Expression;
-import org.springframework.expression.ExpressionParser;
-import org.springframework.expression.common.CompositeStringExpression;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 
 /**
@@ -36,7 +37,7 @@ public class PolicyRule {
 	/*
 	 * Boolean SpEL expression, if evaluated to true, then access granted.
 	 */
-	private Expression  condition;
+	private String condition;
 	
 	public PolicyRule() {
 		
@@ -50,6 +51,6 @@ public class PolicyRule {
 
 	public PolicyRule(Expression condition) {
 		super();
-		this.condition = condition;
+		this.condition = condition.getExpressionString();
 	}
 }

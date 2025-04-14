@@ -1,12 +1,14 @@
 package com.zjj.main.domain.role.event;
 
 import com.zjj.domain.component.event.TenantEvent;
+import org.jmolecules.event.annotation.DomainEvent;
 
 /**
  * @author zengJiaJun
  * @version 1.0
  * @crateTime 2025年04月07日 10:13
  */
+@DomainEvent
 public class InitRbacEvent extends TenantEvent {
 
     public static InitRbacEvent of() {

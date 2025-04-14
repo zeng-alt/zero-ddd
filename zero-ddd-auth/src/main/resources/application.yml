@@ -66,7 +66,7 @@ management:
 
 security:
   captcha:
-    enable: false
+    enable: true
     filter-url:
       - /auth/login/**
   context:

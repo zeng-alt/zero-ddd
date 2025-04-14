@@ -6,21 +6,21 @@ import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
 import com.zjj.autoconfigure.component.redis.RedisStringRepository;
+import com.zjj.cache.component.parameter.RedisParameterServiceImpl;
 import com.zjj.cache.component.supper.RedisAbacCacheManage;
 import com.zjj.cache.component.supper.RedisRbacCacheManage;
+import com.zjj.core.component.parameter.ParameterService;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RedissonClient;
 import org.redisson.client.codec.StringCodec;
 import org.redisson.codec.CompositeCodec;
 import org.redisson.codec.JsonJacksonCodec;
-import org.redisson.codec.TypedJsonJacksonCodec;
 import org.redisson.spring.cache.RedissonSpringCacheManager;
 import org.redisson.spring.cache.RedissonSpringCacheNativeManager;
 import org.redisson.spring.starter.RedissonAutoConfigurationCustomizer;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.cache.CacheManagerCustomizer;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
@@ -40,8 +40,8 @@ public class RedisAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public RedisAbacCacheManage redisAbacCacheManage() {
-		return new RedisAbacCacheManage();
+	public RedisAbacCacheManage redisAbacCacheManage(RedisStringRepository redisStringRepository) {
+		return new RedisAbacCacheManage(redisStringRepository);
 	}
 
 	@Bean
@@ -86,6 +86,12 @@ public class RedisAutoConfiguration {
 		RedissonSpringCacheNativeManager manager = new RedissonSpringCacheNativeManager(redissonClient);
 		customizers.forEach(c -> c.customize(manager));
 		return manager;
+	}
+
+	@Bean
+	@ConditionalOnMissingBean
+	public ParameterService parameterService(RedisStringRepository redisStringRepository) {
+		return new RedisParameterServiceImpl(redisStringRepository);
 	}
 
 	/**

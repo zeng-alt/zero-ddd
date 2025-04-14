@@ -1,10 +1,14 @@
 package com.zjj.domain.component.config;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.zjj.domain.component.command.*;
+import jakarta.persistence.EntityManager;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 
 /**
  * @author zengJiaJun
@@ -43,6 +47,12 @@ public class DomainAutoConfiguration {
 //            }
 //        };
 //    }
+
+    @Bean
+    public JPAQueryFactory jpaQuery(@Qualifier("entityManagerFactory") EntityManager entityManager) {
+        return new JPAQueryFactory(entityManager);
+    }
+
 
     @Bean
     @ConditionalOnMissingBean

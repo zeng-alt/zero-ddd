@@ -1,12 +1,11 @@
 package com.zjj.main;
 
 import com.zjj.autoconfigure.component.tenant.TenantMode;
-import com.zjj.graphql.component.annotations.EnableGenEntityInput;
-import com.zjj.graphql.component.annotations.EnableGenEntityMutation;
-import com.zjj.graphql.component.annotations.EnableGenEntityQuery;
-import com.zjj.graphql.component.annotations.EnableGenEntityType;
+import com.zjj.graphql.component.annotations.*;
+import com.zjj.security.abac.component.annotation.EnableAbac;
 import com.zjj.security.tenant.component.EnableTenantJwtCache;
 import com.zjj.tenant.datasource.component.configuration.EnableMultiTenancy;
+import com.zjj.tenant.management.component.annotations.EnableMasterJpaRepositories;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -19,6 +18,7 @@ import org.springframework.context.ConfigurableApplicationContext;
  * @crateTime 2024年11月14日 21:08
  */
 @Slf4j
+@EnableAbac
 @EnableTenantJwtCache
 @EnableMultiTenancy(mode = TenantMode.MIXED)
 @SpringBootApplication
@@ -26,7 +26,9 @@ import org.springframework.context.ConfigurableApplicationContext;
 @EnableGenEntityType
 @EnableGenEntityInput
 @EnableGenEntityQuery
+@EnableGenEntityFuzzyQuery
 @EnableGenEntityMutation
+@EnableMasterJpaRepositories(basePackages = "com.zjj.main")
 public class ZeroMainApplication {
 
     public static void main(String[] args) {

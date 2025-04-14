@@ -15,6 +15,7 @@
         <module>zero-ddd-cache-component</module>
         <module>zero-ddd-l2-cache-component</module>
         <module>zero-ddd-memory-component</module>
+        <module>zero-ddd-storage-manager-component</module>
     </modules>
 
     <properties>

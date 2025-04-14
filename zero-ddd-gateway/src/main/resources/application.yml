@@ -41,6 +41,8 @@ security:
       - /auth/login/username
       - /auth/logout
       - /auth/v1/captcha
+      - /main/graphiql
+      - /main/graphql
   jwt:
     enabled: true
 

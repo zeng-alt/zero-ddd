@@ -56,15 +56,15 @@ public final class AuthenticationHelper {
 			response.setStatus(status);
 			response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 			response.setCharacterEncoding("utf-8");
-			String result = """
-					{
-					    "code":   "%d",
-					    "message":      "%s",
-					    "data":     "%s",
-					    "time":     "%s",
-					    "success": "%s"
-					}
-					""".formatted(status, msg, data, LocalDateTime.now().format(DATE_TIME_FORMATTER), status == 200);
+//			String result = """
+//					{
+//					    "code":   "%d",
+//					    "message":      "%s",
+//					    "data":     "%s",
+//					    "time":     "%s",
+//					    "success": "%s"
+//					}
+//					""".formatted(status, msg, data, LocalDateTime.now().format(DATE_TIME_FORMATTER), status == 200);
 			response.getWriter().print(data);
 		}
 		catch (IOException e) {

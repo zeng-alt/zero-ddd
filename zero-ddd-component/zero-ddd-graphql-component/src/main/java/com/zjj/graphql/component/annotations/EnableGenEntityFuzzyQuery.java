@@ -1,6 +1,5 @@
 package com.zjj.graphql.component.annotations;
 
-import com.zjj.graphql.component.supper.PageRuntimeWiringConfigurer;
 import com.zjj.graphql.component.supper.definition.EntityFuzzyQueryDefinitionConfigurer;
 import com.zjj.graphql.component.supper.definition.EntityQueryDefinitionConfigurer;
 import com.zjj.graphql.component.supper.fetcher.FuzzyDataFetcherConfigurer;

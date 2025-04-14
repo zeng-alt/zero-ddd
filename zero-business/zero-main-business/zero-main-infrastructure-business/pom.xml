@@ -27,6 +27,11 @@
 
         <dependency>
             <groupId>com.zjj</groupId>
+            <artifactId>zero-ddd-security-abac-component</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.zjj</groupId>
             <artifactId>zero-ddd-exchange-tenant</artifactId>
         </dependency>
 

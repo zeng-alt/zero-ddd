@@ -27,7 +27,7 @@ spring:
     show-sql: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
@@ -50,7 +50,7 @@ spring:
 #      allowed-origins:
 #        - http://localhost:5173
     graphiql:
-      enabled: false
+      enabled: true
       path: /main/graphiql
     path: /main/graphql
 

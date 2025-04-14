@@ -69,6 +69,12 @@ spring:
     redisson:
       file: classpath:redisson.yml
 
+springdoc:
+  api-docs:
+    enabled: true    # 确保 API 文档启用
+  swagger-ui:
+    path: /swagger-ui.html  # Swagger UI 访问路径
+
 management:
   endpoints:
     web:

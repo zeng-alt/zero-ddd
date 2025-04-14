@@ -47,7 +47,8 @@ public class AbacPreAuthorizeExpressionAttributeRegistry extends AbstractAbacExp
             }
         }
 
-        return policyDefinition.getPolicyRule(tenant, policyKey, resourceType, true);
+//        return policyDefinition.getPolicyRule(tenant, policyKey, resourceType, true);
+        return policyDefinition.getPolicyRule(policyKey, true);
     }
 
     @NonNull

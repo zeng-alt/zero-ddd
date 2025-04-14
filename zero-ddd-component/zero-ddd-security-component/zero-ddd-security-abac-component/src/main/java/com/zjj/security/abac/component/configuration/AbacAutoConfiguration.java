@@ -2,9 +2,7 @@ package com.zjj.security.abac.component.configuration;
 
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.zjj.autoconfigure.component.security.abac.EnvironmentAttribute;
-import com.zjj.autoconfigure.component.security.abac.ObjectAttribute;
-import com.zjj.autoconfigure.component.security.abac.PolicyDefinition;
+import com.zjj.autoconfigure.component.security.abac.*;
 import com.zjj.security.abac.component.advice.AbacExceptionAdvice;
 import com.zjj.security.abac.component.annotation.AbacAdminAuth;
 import com.zjj.security.abac.component.annotation.AbacPostAuthorize;
@@ -38,12 +36,13 @@ import java.lang.annotation.Annotation;
 @EnableConfigurationProperties(PolicyProperties.class)
 public class AbacAutoConfiguration {
 
-    @Bean
-    public Module spelModule(){
-        SimpleModule simpleModule = new SimpleModule();
-        simpleModule.addDeserializer(Expression.class, new SpelDeserializer());
-        return simpleModule;
-    }
+//    @Bean
+//    public Module spelModule(){
+//        SimpleModule simpleModule = new SimpleModule();
+//        simpleModule.addSerializer(Expression.class, new SpelSerializer());
+//        simpleModule.addDeserializer(Expression.class, new SpelDeserializer());
+//        return simpleModule;
+//    }
 
 
     @Bean
@@ -59,9 +58,14 @@ public class AbacAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-    public AbacPreAuthorizeExpressionAttributeRegistry abacPreAuthorizeExpressionAttributeRegistry(AbacMethodSecurityExpressionHandler abacMethodSecurityExpressionHandler, PolicyProperties properties, ObjectProvider<PolicyDefinition> policyDefinition, ObjectProvider<ObjectAttribute> objectAttributes) {
-//        return new AbacPreAuthorizeExpressionAttributeRegistry(abacMethodSecurityExpressionHandler, policyDefinition.getIfAvailable(() -> new JsonFilePolicyDefinition(properties.getFilePath())), objectAttributes);
-        return new AbacPreAuthorizeExpressionAttributeRegistry(abacMethodSecurityExpressionHandler, new JsonFilePolicyDefinition(properties.getPreFilePath()), objectAttributes);
+    public AbacPreAuthorizeExpressionAttributeRegistry abacPreAuthorizeExpressionAttributeRegistry(
+            AbacMethodSecurityExpressionHandler abacMethodSecurityExpressionHandler,
+            PolicyProperties properties,
+            ObjectProvider<PolicyDefinition> policyDefinition,
+            ObjectProvider<ObjectAttribute> objectAttributes
+    ) {
+        return new AbacPreAuthorizeExpressionAttributeRegistry(abacMethodSecurityExpressionHandler, policyDefinition.getIfAvailable(() -> new JsonFilePolicyDefinition(properties.getPreFilePath())), objectAttributes);
+//        return new AbacPreAuthorizeExpressionAttributeRegistry(abacMethodSecurityExpressionHandler, new JsonFilePolicyDefinition(properties.getPreFilePath()), objectAttributes);
     }
 
     // TODO
@@ -104,9 +108,14 @@ public class AbacAutoConfiguration {
 
     @Bean
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-    public AbacPostAuthorizeExpressionAttributeRegistry abacPostAuthorizeExpressionAttributeRegistry(MethodSecurityExpressionHandler expressionHandler, PolicyProperties properties, ObjectProvider<ObjectAttribute> objectAttributes, PolicyDefinition policyDefinition) {
-        //        return new AbacPostAuthorizeExpressionAttributeRegistry(abacMethodSecurityExpressionHandler, policyDefinition.getIfAvailable(() -> new JsonFilePolicyDefinition(properties.getFilePath())), objectAttributes);
-        return new AbacPostAuthorizeExpressionAttributeRegistry(expressionHandler, new JsonFilePolicyDefinition(properties.getPostFilePath()), objectAttributes);
+    public AbacPostAuthorizeExpressionAttributeRegistry abacPostAuthorizeExpressionAttributeRegistry(
+            MethodSecurityExpressionHandler expressionHandler,
+            PolicyProperties properties,
+            ObjectProvider<ObjectAttribute> objectAttributes,
+            ObjectProvider<PolicyDefinition> policyDefinition
+    ) {
+                return new AbacPostAuthorizeExpressionAttributeRegistry(expressionHandler, policyDefinition.getIfAvailable(() -> new JsonFilePolicyDefinition(properties.getPostFilePath())), objectAttributes);
+//        return new AbacPostAuthorizeExpressionAttributeRegistry(expressionHandler, new JsonFilePolicyDefinition(properties.getPostFilePath()), objectAttributes);
     }
 
     @Bean

@@ -5,6 +5,7 @@ import com.zjj.security.abac.component.ExpressionUtils;
 import io.vavr.Tuple2;
 import lombok.RequiredArgsConstructor;
 import org.springframework.expression.EvaluationContext;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.AuthorizationManager;
@@ -26,7 +27,7 @@ public final class AbacPostAuthorizationManager
         implements AuthorizationManager<MethodInvocationResult> {
 
     private final AbacPostAuthorizeExpressionAttributeRegistry registry;
-
+    private final SpelExpressionParser spelExpressionParser = new SpelExpressionParser();
 
     /**
      * Determines if access is granted for a specific authentication and object.
@@ -55,7 +56,7 @@ public final class AbacPostAuthorizationManager
             return m;
         }).subscribe(m -> context.setVariable("object", m));
         expressionHandler.setReturnObject(mi.getResult(), context);
-        return (AuthorizationDecision) ExpressionUtils.evaluate(policyRule.getCondition(), context);
+        return (AuthorizationDecision) ExpressionUtils.evaluate(spelExpressionParser.parseExpression(policyRule.getCondition()), context);
     }
 
 }

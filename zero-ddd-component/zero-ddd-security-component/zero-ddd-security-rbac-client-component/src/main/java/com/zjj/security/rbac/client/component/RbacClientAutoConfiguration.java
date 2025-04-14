@@ -3,8 +3,11 @@ package com.zjj.security.rbac.client.component;
 import com.zjj.autoconfigure.component.redis.RedisSubPubRepository;
 import com.zjj.security.rbac.client.component.actuator.RbacClientEndpoint;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.graphql.execution.GraphQlSource;
 
 /**
  * @author zengJiaJun
@@ -31,5 +34,15 @@ public class RbacClientAutoConfiguration {
     @ConditionalOnMissingBean
     RbacClientEndpoint rbacClientEndpoint(RouteTemplateSupper routeTemplateSupper) {
         return RbacClientEndpoint.precomputed(routeTemplateSupper);
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    @ConditionalOnClass(GraphQlSource.class)
+    static class GraphqlResourceConfig {
+
+        @Bean
+        public GraphqlTemplateSupper graphqlTemplateSupper(EndpointPrefix endpointPrefix, RedisSubPubRepository redisSubPubRepository) {
+            return new GraphqlTemplateSupper(endpointPrefix, redisSubPubRepository);
+        }
     }
 }
