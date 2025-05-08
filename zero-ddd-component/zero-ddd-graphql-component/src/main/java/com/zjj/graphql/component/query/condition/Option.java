@@ -19,7 +19,7 @@ public enum Option {
     NOT_IN("not in"),
     LIKE("%%"),
     NOT_LIKE("!%%"),
-    LIFT_LIKE("^%"),
+    LEFT_LIKE("^%"),
     RIGHT_LIKE("%$"),
     BETWEEN("between"),
     NOT_BETWEEN("not between"),

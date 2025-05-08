@@ -125,13 +125,13 @@ public abstract class QuerydslConditionDataFetcher<T> {
 
     private static Map<String, Object> getArgumentValues(DataFetchingEnvironment environment) {
         Map<String, Object> arguments = environment.getArguments();
-
-        for (GraphQLArgument argument : environment.getFieldDefinition().getArguments()) {
-            if (argument.getType() instanceof  GraphQLInputObjectType type) {
+        List<GraphQLArgument> gqArguments = environment.getFieldDefinition().getArguments();
+        for (int i = 0; i < arguments.size(); i++) {
+            if (gqArguments.get(i).getType() instanceof  GraphQLInputObjectType type) {
                 if (type.getName().equals("Sort") || type.getName().equals("PageQuery")) {
                     continue;
                 }
-                String name = environment.getFieldDefinition().getArguments().get(0).getName();
+                String name = gqArguments.get(i).getName();
                 Object value = arguments.get(name);
                 if (value instanceof Map<?, ?>) {
                     return (Map<String, Object>) value;
