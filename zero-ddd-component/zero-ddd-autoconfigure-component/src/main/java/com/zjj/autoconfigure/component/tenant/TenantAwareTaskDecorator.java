@@ -3,7 +3,6 @@ package com.zjj.autoconfigure.component.tenant;
 import com.zjj.autoconfigure.component.security.UserContextHolder;
 import org.springframework.core.task.TaskDecorator;
 import org.springframework.lang.NonNull;
-import org.springframework.security.core.Authentication;
 
 /**
  * @author zengJiaJun
@@ -18,13 +17,11 @@ public class TenantAwareTaskDecorator implements TaskDecorator {
         String tenantId = TenantContextHolder.getTenantId();
         String database = TenantContextHolder.getDatabase();
         String schema = TenantContextHolder.getSchema();
-        Authentication authentication = UserContextHolder.getAuthentication();
         return () -> {
             try {
                 TenantContextHolder.setTenantId(tenantId);
                 TenantContextHolder.setDatabase(database);
                 TenantContextHolder.setSchema(schema);
-                UserContextHolder.setAuthentication(authentication);
                 runnable.run();
             } finally {
                 TenantContextHolder.clear();

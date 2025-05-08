@@ -4,8 +4,6 @@ import com.zjj.autoconfigure.component.core.HttpEntityStatus;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

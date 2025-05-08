@@ -59,9 +59,9 @@ class QuerydslConditionBinding implements MultiValueBinding<Path<? extends Objec
 		}
 
 
-		Map next = (Map) value.iterator().next();
-		Collection v = (Collection) next.get("value");
-		Option option = Option.valueOf(next.get("option").toString());
+		Condition condition = (Condition) value.iterator().next();
+		Collection v = condition.getValue();
+		Option option = condition.getOption();
 
 		if ((!Option.NULL.equals(option) && !Option.NOT_NULL.equals(option)) && (v == null || v.isEmpty())) {
 			return Optional.empty();

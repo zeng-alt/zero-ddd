@@ -7,6 +7,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.security.access.expression.SecurityExpressionRoot;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionOperations;
 import org.springframework.security.core.Authentication;
+import org.springframework.util.function.SupplierUtils;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
@@ -28,7 +29,7 @@ public class AbacSecurityExpressionRoot extends SecurityExpressionRoot implement
     private Object subject;
     private Object returnObject;
     @Setter
-    private List<Object> target;
+    private Map<String, Object> target;
 
     public AbacSecurityExpressionRoot(Authentication a) {
         super(a);
@@ -36,6 +37,7 @@ public class AbacSecurityExpressionRoot extends SecurityExpressionRoot implement
 
     public AbacSecurityExpressionRoot(Supplier<Authentication> authentication) {
         super(authentication);
+        this.subject = SupplierUtils.resolve(authentication).getPrincipal();
     }
 
     @Override

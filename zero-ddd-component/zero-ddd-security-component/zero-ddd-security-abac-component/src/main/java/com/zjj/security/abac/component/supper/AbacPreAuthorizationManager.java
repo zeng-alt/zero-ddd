@@ -4,18 +4,21 @@ import com.zjj.autoconfigure.component.security.abac.PolicyRule;
 import com.zjj.security.abac.component.ExpressionUtils;
 import io.vavr.Tuple2;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.AuthorizationManager;
 import org.springframework.security.core.Authentication;
+import org.springframework.util.CollectionUtils;
 import reactor.core.publisher.Flux;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
+@Slf4j
 @RequiredArgsConstructor  //TODO MethodAuthorizationDeniedHandler
 public class AbacPreAuthorizationManager implements AuthorizationManager<MethodInvocation> {
 
@@ -29,18 +32,10 @@ public class AbacPreAuthorizationManager implements AuthorizationManager<MethodI
 
         PolicyRule policyRule = this.registry.getPolicyRule(authentication, mi);
         if (policyRule == null) {
+            log.warn("{} :policyRule is null", mi.getMethod().toGenericString());
             return null;
         }
-
-        Flux<Tuple2<String, Object>> flux = this.registry.getObjectAttribute(mi);
         EvaluationContext context = this.registry.getExpressionHandler().createEvaluationContext(authentication, mi);
-        Map<String, Object> map = new ConcurrentHashMap<>();
-
-        flux.reduce(map, (m, t) -> {
-            m.put(t._1, t._2);
-            return m;
-        }).subscribe(m -> context.setVariable("object", m));
-
         return (AuthorizationDecision) ExpressionUtils.evaluate(spelExpressionParser.parseExpression(policyRule.getCondition()), context);
     }
 

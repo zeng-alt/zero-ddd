@@ -13,6 +13,7 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.reactive.function.server.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Map;
 
@@ -41,7 +42,10 @@ public class GateWayExceptionAdvice extends DefaultErrorWebExceptionHandler {
             problemDetail.setStatus(HttpStatus.FORBIDDEN.value());
         } else if (error instanceof AuthenticationException) {
             problemDetail.setStatus(HttpStatus.UNAUTHORIZED.value());
+        } else if (error instanceof ResponseStatusException exception) {
+            problemDetail.setStatus(exception.getStatusCode().value());
         }
+
         problemDetail.setInstance(request.uri());
         return jsonHelper.toMap(problemDetail);
     }

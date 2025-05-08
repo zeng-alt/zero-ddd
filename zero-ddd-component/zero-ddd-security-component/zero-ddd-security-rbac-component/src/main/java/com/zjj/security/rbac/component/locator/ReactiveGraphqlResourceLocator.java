@@ -8,9 +8,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author zengJiaJun
@@ -46,6 +49,22 @@ public class ReactiveGraphqlResourceLocator extends AbstractReactiveResourceLoca
         return null;
     }
 
+
+    @Override
+    protected Set<String> list1(Set<Resource> resource, Object o) {
+        if (o == null) {
+            return new HashSet<>();
+        }
+
+        String tenantName = null;
+
+        if (o instanceof TenantDetail tenantDetail) {
+            tenantName = tenantDetail.getTenantName();
+        }
+        Set<String> permission = rbacCacheManage.findPermissionByGraphqlResource(tenantName, resource);
+        return CollectionUtils.isEmpty(permission) ? new HashSet<>() : permission;
+    }
+
     @Override
     protected void verifyInstance(Resource resource) {
         Assert.isInstanceOf(GraphqlResource.class, resource,"Only GraphqlResource is supported");
@@ -57,4 +76,20 @@ public class ReactiveGraphqlResourceLocator extends AbstractReactiveResourceLoca
     }
 
 
+    /**
+     * Get the order value of this object.
+     * <p>Higher values are interpreted as lower priority. As a consequence,
+     * the object with the lowest value has the highest priority (somewhat
+     * analogous to Servlet {@code load-on-startup} values).
+     * <p>Same order values will result in arbitrary sort positions for the
+     * affected objects.
+     *
+     * @return the order value
+     * @see #HIGHEST_PRECEDENCE
+     * @see #LOWEST_PRECEDENCE
+     */
+    @Override
+    public int getOrder() {
+        return 10;
+    }
 }

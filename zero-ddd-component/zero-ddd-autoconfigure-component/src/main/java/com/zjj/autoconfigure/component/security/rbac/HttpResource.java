@@ -11,6 +11,6 @@ public class HttpResource extends AbstractResource {
 
     @Override
     public String getKey() {
-        return "http:" + getUri() + ":" + getMethod();
+        return getUri() + ":" + getMethod();
     }
 }

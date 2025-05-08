@@ -42,7 +42,16 @@ security:
       - /auth/logout
       - /auth/v1/captcha
       - /main/graphiql
-      - /main/graphql
+      #      - /main/graphql
+      #      - /tenant/graphql
+    graphql:
+      main-graphql:
+        query:
+          - findParameter
+      tenant-graphql:
+        query:
+          - queryTenant
+
   jwt:
     enabled: true
 

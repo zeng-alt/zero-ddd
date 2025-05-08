@@ -26,6 +26,8 @@ public interface RbacCacheManage {
 
     public void putRole(Map<String, Set<String>> map, String tenant);
 
+    public void putRole(Map<String, Set<String>> map);
+
     public void putHttpResource(Map<String, HttpResource> map, String tenant);
 
     public void putGraphqlResource(Map<String, GraphqlResource> map, String tenant);
@@ -34,9 +36,7 @@ public interface RbacCacheManage {
         putRole(Map.of(roleName, permission), null);
     }
 
-    default void putRole(Map<String, Set<String>> map) {
-        putRole(map, null);
-    }
+    public String findPermissionByGraphqlResource(String tenant, String key);
 
     default void putHttpResource(Map<String, HttpResource> map) {
         putHttpResource(map, null);
@@ -53,4 +53,10 @@ public interface RbacCacheManage {
     default String findPermissionByResource(String tenantName, String key) {
         return null;
     }
+
+    default Set<String> findPermissionByGraphqlResource(String tenantName, Set<Resource> resources) {
+        return null;
+    }
+
+    void batchPutPermission(Map<String, String> permissionMap);
 }

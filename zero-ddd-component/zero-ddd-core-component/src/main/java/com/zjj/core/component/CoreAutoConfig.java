@@ -24,6 +24,7 @@ import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.task.TaskDecorator;
+import org.springframework.core.task.support.CompositeTaskDecorator;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration;
@@ -47,13 +48,13 @@ public class CoreAutoConfig {
 
 
     @Bean
-    public ThreadPoolTaskExecutor bootstrapExecutor(TaskDecorator taskDecorator) {
+    public ThreadPoolTaskExecutor bootstrapExecutor(ObjectProvider<TaskDecorator> taskDecorators) {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(10);  // 设置核心线程池大小
         executor.setMaxPoolSize(50);   // 设置最大线程池大小
         executor.setQueueCapacity(100);  // 设置队列容量
         executor.setThreadNamePrefix("async-thread-");
-        executor.setTaskDecorator(taskDecorator);
+        executor.setTaskDecorator(new CompositeTaskDecorator(taskDecorators.stream().toList()));
         executor.initialize();
 
         return executor;

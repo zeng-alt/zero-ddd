@@ -55,12 +55,27 @@ public class CaffeineRbacCacheManage implements RbacCacheManage {
     }
 
     @Override
+    public void putRole(Map<String, Set<String>> map) {
+
+    }
+
+    @Override
     public void putHttpResource(Map<String, HttpResource> map, String tenant) {
 
     }
 
     @Override
     public void putGraphqlResource(Map<String, GraphqlResource> map, String tenant) {
+
+    }
+
+    @Override
+    public String findPermissionByGraphqlResource(String tenant, String key) {
+        return null;
+    }
+
+    @Override
+    public void batchPutPermission(Map<String, String> permissionMap) {
 
     }
 }

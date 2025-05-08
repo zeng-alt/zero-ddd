@@ -41,6 +41,7 @@ public class Resource extends BaseEntity<Long> implements TenantAuditable<String
     private String tenantBy;
 
     @JsonIgnore
+    @Transient
     public String getKey() {
         throw new UnsupportedOperationException();
     }

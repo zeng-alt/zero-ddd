@@ -46,10 +46,16 @@ public class AbacMethodSecurityExpressionHandler extends AbstractAbacSecurityExp
         return createSecurityExpressionRoot(() -> authentication, invocation);
     }
 
+    // TODO 优化
     private MethodSecurityExpressionOperations createSecurityExpressionRoot(Supplier<Authentication> authentication,
                                                                             MethodInvocation invocation) {
         AbacSecurityExpressionRoot root = new AbacSecurityExpressionRoot(authentication);
-        root.setTarget(Arrays.stream(invocation.getArguments()).toList());
+        // 拿到方法的参数名
+        HashMap<String, Object> target = new HashMap<>();
+        for (int i = 0; i < invocation.getArguments().length; i++) {
+            target.put(invocation.getMethod().getParameters()[i].getName(), invocation.getArguments()[i]);
+        }
+        root.setTarget(target);
         root.setPermissionEvaluator(getPermissionEvaluator());
         root.setTrustResolver(getTrustResolver());
         root.setRoleHierarchy(getRoleHierarchy());

@@ -69,7 +69,7 @@ public class GraphqlTemplateSupper implements ApplicationContextAware, Initializ
 
                 GraphqlResource graphqlResource = new GraphqlResource();
                 graphqlResource.setFunctionName(name);
-                graphqlResource.setType(type);
+                graphqlResource.setOperation(type);
                 graphqlResource.setUri(endpointPrefix.getPrefix() + "/graphql");
                 graphqlResources.add(graphqlResource);
             }

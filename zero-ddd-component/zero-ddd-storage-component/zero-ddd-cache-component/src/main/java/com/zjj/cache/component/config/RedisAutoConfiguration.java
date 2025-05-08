@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
+import com.zjj.autoconfigure.component.redis.RedisHashRepository;
 import com.zjj.autoconfigure.component.redis.RedisStringRepository;
 import com.zjj.cache.component.parameter.RedisParameterServiceImpl;
 import com.zjj.cache.component.supper.RedisAbacCacheManage;
@@ -46,8 +47,8 @@ public class RedisAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean(RedisRbacCacheManage.class)
-	public RedisRbacCacheManage rbacCacheManage(RedisStringRepository redisStringRepository) {
-		return new RedisRbacCacheManage(redisStringRepository);
+	public RedisRbacCacheManage rbacCacheManage(RedisHashRepository redisHashRepository) {
+		return new RedisRbacCacheManage(redisHashRepository);
 	}
 
 	@Bean

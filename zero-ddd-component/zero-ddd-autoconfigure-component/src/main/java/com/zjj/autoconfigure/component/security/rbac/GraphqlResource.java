@@ -16,7 +16,7 @@ import java.util.Objects;
 @ToString(callSuper = true)
 public class GraphqlResource extends AbstractResource {
 
-    private String type;
+    private String operation;
     private String functionName;
 
 
@@ -25,16 +25,21 @@ public class GraphqlResource extends AbstractResource {
     }
 
     @Override
+    public String getKey() {
+        return uri + ":" + operation + ":" + functionName;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         GraphqlResource that = (GraphqlResource) o;
-        return Objects.equals(type, that.type) && Objects.equals(functionName, that.functionName);
+        return Objects.equals(operation, that.operation) && Objects.equals(functionName, that.functionName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), type, functionName);
+        return Objects.hash(super.hashCode(), operation, functionName);
     }
 }

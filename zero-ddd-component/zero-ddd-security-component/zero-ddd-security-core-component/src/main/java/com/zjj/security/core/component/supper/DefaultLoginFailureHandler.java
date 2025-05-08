@@ -22,13 +22,13 @@ public class DefaultLoginFailureHandler implements AuthenticationFailureHandler 
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException exception) {
 		String message = AuthenticationHelper.getErrorMsg(request).orElse(exception.getMessage());
-		ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, message);
+		ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, message);
 		problemDetail.setInstance(URI.create(request.getRequestURI()));
-		problemDetail.setTitle("登录失败");
+		problemDetail.setTitle(message);
 
 		AuthenticationHelper.renderString(
 				response,
-				HttpStatus.UNAUTHORIZED.value(),
+				HttpStatus.BAD_REQUEST.value(),
 				message,
 				JsonUtils.toJsonString(problemDetail)
 		);

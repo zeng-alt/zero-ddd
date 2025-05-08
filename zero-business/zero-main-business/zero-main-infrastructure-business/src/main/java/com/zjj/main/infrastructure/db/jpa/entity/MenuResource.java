@@ -52,6 +52,7 @@ public class MenuResource extends Resource implements Parent<Long> {
     private String description;
     private Boolean show;
     private Boolean enable;
+    private String menuStyle;
     @Column(name = "resource_order")
     private Integer order;
 
@@ -69,6 +70,7 @@ public class MenuResource extends Resource implements Parent<Long> {
     }
 
     @Override
+    @Transient
     public String getKey() {
         return "http" + ":" + this.path + ":" + this.method;
     }

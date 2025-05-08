@@ -15,6 +15,7 @@ import com.zjj.security.rbac.component.manager.ReactiveParseManager;
 import com.zjj.security.rbac.component.manager.ReactiveResourceQueryManager;
 import com.zjj.security.rbac.component.manager.ReactiveRbacAccessAuthorizationManager;
 import com.zjj.security.rbac.component.router.RouteTemplateManager;
+import com.zjj.security.rbac.component.spi.ReactiveGraphqlWhiteListAuthorizationManager;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -57,14 +58,19 @@ public class RbacReactiveAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(ReactiveGraphqlResourceHandler.class)
-    public ReactiveGraphqlResourceHandler reactiveGraphqlResourceHandler(ReactiveResourceQueryManager reactiveResourceQueryManager, ObjectMapper objectMapper) {
-        return new ReactiveGraphqlResourceHandler(reactiveResourceQueryManager, objectMapper);
+    public ReactiveGraphqlResourceHandler reactiveGraphqlResourceHandler(
+            ReactiveResourceQueryManager reactiveResourceQueryManager,
+            ObjectMapper objectMapper,
+            ReactivePermissionLocator permissionLocator,
+            ReactiveGraphqlWhiteListAuthorizationManager reactiveGraphqlWhiteListAuthorizationManager
+    ) {
+        return new ReactiveGraphqlResourceHandler(reactiveResourceQueryManager, objectMapper, permissionLocator, reactiveGraphqlWhiteListAuthorizationManager);
     }
 
     @Bean
     @ConditionalOnMissingBean(ReactiveResourceQueryManager.class)
     public ReactiveResourceQueryManager reactiveResourceQueryManager(ObjectProvider<ReactiveResourceLocator> reactiveResourceLocators) {
-        return new ReactiveResourceQueryManager(reactiveResourceLocators.stream().toList());
+        return new ReactiveResourceQueryManager(reactiveResourceLocators.orderedStream().toList());
     }
 
     @Bean

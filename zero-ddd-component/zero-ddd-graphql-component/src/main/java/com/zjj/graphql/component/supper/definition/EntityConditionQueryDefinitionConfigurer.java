@@ -94,7 +94,7 @@ public class EntityConditionQueryDefinitionConfigurer implements TypeDefinitionC
                             .inputValueDefinition(
                                     InputValueDefinition
                                             .newInputValueDefinition()
-                                            .name(entity.getConditionName())
+                                            .name("filter")
                                             .type(entity.getConditionType())
                                             .build()
                             )

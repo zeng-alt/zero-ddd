@@ -3,6 +3,7 @@ package com.zjj.security.core.component.configuration;
 import com.zjj.autoconfigure.component.security.AbstractLoginConfigurer;
 import com.zjj.autoconfigure.component.security.SecurityBuilderCustomizer;
 import com.zjj.autoconfigure.component.security.SecurityProperties;
+import com.zjj.security.core.component.UserAwareTaskDecorator;
 import com.zjj.security.core.component.spi.AuthorizationManagerProvider;
 import com.zjj.security.core.component.spi.ReactiveAuthorizationManagerProvider;
 import com.zjj.security.core.component.spi.WhiteListService;
@@ -18,6 +19,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.task.TaskDecorator;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationEventPublisher;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -173,6 +175,12 @@ public class WebSecurityAutoConfiguration {
 		ProviderManager providerManager = new ProviderManager(authenticationProviders, authenticationManager);
 		providerManager.setAuthenticationEventPublisher(authenticationEventPublisher);
 		return providerManager;
+	}
+
+
+	@Bean
+	public TaskDecorator userAwareTaskDecorator() {
+		return new UserAwareTaskDecorator();
 	}
 
 }

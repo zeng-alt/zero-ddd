@@ -36,7 +36,6 @@ public class UserQueryController {
     private final UserDetailVOTransformation transformation;
 
     @GetMapping("/detail")
-    @AbacPreAuthorize("GetUser")
     public ResponseEntity<UserDetailVO> detail(HttpServletRequest request) {
         String soleId = request.getHeader(jwtProperties.getFastToken());
         SecurityUser securityUser = jwtCacheManage.get(soleId, SecurityUser.class);
@@ -45,7 +44,6 @@ public class UserQueryController {
     }
 
     @GetMapping("/detail/{id}")
-    @AbacPreAuthorize("GetUser")
     public ResponseEntity<UserDetailVO> detailById(@PathVariable Long id) {
         return userService
                 .findById(id)

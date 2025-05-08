@@ -60,7 +60,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                             .tenant(user.getTenantBy())
                             .database(tenant.getDb())
                             .schema(tenant.getSchema())
-                            .disabled(!"0".equals(user.getStatus()))
+                            .disabled(!"1".equals(user.getStatus()))
                             .roles(roles)
                             .currentRole(CollectionUtils.isEmpty(roles) ? null : roles.iterator().next())
                             .build();

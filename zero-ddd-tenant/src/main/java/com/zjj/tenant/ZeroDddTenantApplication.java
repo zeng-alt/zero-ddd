@@ -189,13 +189,13 @@ public class ZeroDddTenantApplication {
         graphqlResource.setMethod(HttpMethod.POST.name());
         graphqlResource.setUri("/tenant/graphql");
         graphqlResource.setFunctionName("findTenant");
-        graphqlResource.setType("query");
+        graphqlResource.setOperation("query");
 
         GraphqlResource graphqlResource2 = new GraphqlResource();
         graphqlResource2.setMethod(HttpMethod.POST.name());
         graphqlResource2.setUri("/tenant/graphql");
         graphqlResource2.setFunctionName("run");
-        graphqlResource2.setType("query");
+        graphqlResource2.setOperation("query");
 
         rbacCacheManage.putGraphqlResource(Map.of("query:run", graphqlResource2, "query:findTenant", graphqlResource));
         rbacCacheManage.putRole(Map.of("admin", Sets.newHashSet("delete:menu:resource", "query:run", "query:findTenant")));

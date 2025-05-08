@@ -7,12 +7,12 @@ import com.zjj.main.application.service.MenuResourceService;
 import com.zjj.main.infrastructure.db.jpa.entity.MenuResource;
 import com.zjj.main.interfaces.mvc.resource.menu.transformation.MenuResourceVOTransformation;
 import com.zjj.main.interfaces.mvc.resource.menu.vo.MenuResourceVO;
+import com.zjj.security.abac.component.annotation.AbacPostAuthorize;
+import com.zjj.security.abac.component.annotation.AbacPreAuthorize;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -32,7 +32,8 @@ public class MenuResourceQueryController {
     private final MenuResourceVOTransformation transformation;
 
     @GetMapping("/tree")
-    public ResponseEntity<List<MenuResourceVO>> tree() {
+    @AbacPreAuthorize("GetMenuTree")
+    public ResponseEntity<List<MenuResourceVO>> tree(TestVo testVo) {
         List<MenuResourceVO> result = new LinkedList<>();
         SecurityUser securityUser = UserContextHolder.getSecurityUser();
         String username = securityUser.getUsername();
@@ -41,6 +42,19 @@ public class MenuResourceQueryController {
             result.add(this.transformation.to(menuResource));
         }
         return ResponseEntity.ok(result);
+    }
+
+    @Data
+    public static class TestVo {
+        private String username = "admin1234";
+        private List<String> roles;
+        private UserVo userVo;
+    }
+
+    @Data
+    public static class UserVo {
+        private Integer age;
+        private Double weight;
     }
 
     @GetMapping("/tree/all")

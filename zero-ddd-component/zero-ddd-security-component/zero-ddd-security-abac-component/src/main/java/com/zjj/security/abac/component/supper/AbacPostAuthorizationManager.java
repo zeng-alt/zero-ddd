@@ -4,6 +4,7 @@ import com.zjj.autoconfigure.component.security.abac.PolicyRule;
 import com.zjj.security.abac.component.ExpressionUtils;
 import io.vavr.Tuple2;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
@@ -11,6 +12,7 @@ import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.AuthorizationManager;
 import org.springframework.security.authorization.method.MethodInvocationResult;
 import org.springframework.security.core.Authentication;
+import org.springframework.util.CollectionUtils;
 import reactor.core.publisher.Flux;
 
 import java.util.Map;
@@ -22,6 +24,7 @@ import java.util.function.Supplier;
  * @version 1.0
  * @crateTime 2024年12月12日 20:08
  */
+@Slf4j
 @RequiredArgsConstructor // TODO MethodAuthorizationDeniedHandler
 public final class AbacPostAuthorizationManager
         implements AuthorizationManager<MethodInvocationResult> {
@@ -44,17 +47,12 @@ public final class AbacPostAuthorizationManager
         }
         PolicyRule policyRule = this.registry.getPolicyRule(authentication, mi.getMethodInvocation());
         if (policyRule == null) {
+            log.warn("{} :policyRule is null", mi.getMethodInvocation().getMethod().toGenericString());
             return null;
         }
         MethodSecurityExpressionHandler expressionHandler = this.registry.getExpressionHandler();
-        Flux<Tuple2<String, Object>> flux = this.registry.getObjectAttribute(mi.getMethodInvocation());
+//        Map<String, Object> objects = this.registry.getObjectAttribute(mi.getMethodInvocation());
         EvaluationContext context = this.registry.getExpressionHandler().createEvaluationContext(authentication, mi.getMethodInvocation());
-        Map<String, Object> map = new ConcurrentHashMap<>();
-
-        flux.reduce(map, (m, t) -> {
-            m.put(t._1, t._2);
-            return m;
-        }).subscribe(m -> context.setVariable("object", m));
         expressionHandler.setReturnObject(mi.getResult(), context);
         return (AuthorizationDecision) ExpressionUtils.evaluate(spelExpressionParser.parseExpression(policyRule.getCondition()), context);
     }

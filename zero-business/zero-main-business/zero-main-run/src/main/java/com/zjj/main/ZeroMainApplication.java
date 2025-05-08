@@ -28,6 +28,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 @EnableGenEntityQuery
 @EnableGenEntityFuzzyQuery
 @EnableGenEntityMutation
+@EnableGenEntityConditionQuery
 @EnableMasterJpaRepositories(basePackages = "com.zjj.main")
 public class ZeroMainApplication {
 

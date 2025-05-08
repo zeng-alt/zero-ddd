@@ -86,7 +86,7 @@ public class EntityFuzzyQueryDefinitionConfigurer implements TypeDefinitionConfi
                             .inputValueDefinition(
                                     InputValueDefinition
                                             .newInputValueDefinition()
-                                            .name(entity.getInputName())
+                                            .name("filter")
                                             .type(entity.getInputType())
                                             .build()
                             )

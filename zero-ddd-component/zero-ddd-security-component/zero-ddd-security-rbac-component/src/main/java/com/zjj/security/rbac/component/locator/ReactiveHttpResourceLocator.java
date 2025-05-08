@@ -41,16 +41,17 @@ public class ReactiveHttpResourceLocator extends AbstractReactiveResourceLocator
 
     @Override
     protected String list1(Resource resource, Object o) {
+
         if (o == null) {
-            return null;
+            return "";
         }
         String tenantName = null;
 
         if (o instanceof TenantDetail tenantDetail) {
             tenantName = tenantDetail.getTenantName();
         }
-
-        return rbacCacheManage.findPermissionByResource(tenantName, resource.getKey());
+        String permission = rbacCacheManage.findPermissionByResource(tenantName, resource.getKey());
+        return permission == null ? "" : permission;
     }
 
     @Override
@@ -61,5 +62,11 @@ public class ReactiveHttpResourceLocator extends AbstractReactiveResourceLocator
     @Override
     public boolean supports(Class<?> resource) {
         return (HttpResource.class.isAssignableFrom(resource));
+    }
+
+
+    @Override
+    public int getOrder() {
+        return 30;
     }
 }

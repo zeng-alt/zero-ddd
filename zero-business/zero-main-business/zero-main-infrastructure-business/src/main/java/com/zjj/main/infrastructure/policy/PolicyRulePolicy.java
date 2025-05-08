@@ -4,13 +4,13 @@ import com.zjj.autoconfigure.component.security.abac.AbacCacheManage;
 import com.zjj.autoconfigure.component.security.abac.PolicyRule;
 import com.zjj.main.domain.rule.event.InitPolicyRuleEvent;
 import com.zjj.main.infrastructure.db.jpa.dao.ResourceDao;
+import com.zjj.main.infrastructure.db.jpa.entity.GraphqlResourceEntity;
 import com.zjj.main.infrastructure.db.jpa.entity.PolicyRuleEntity;
 import com.zjj.main.infrastructure.db.jpa.entity.Resource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
-import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,12 +38,9 @@ public class PolicyRulePolicy {
     @EventListener
     @Transactional(readOnly = true)
     public void on(InitPolicyRuleEvent event) {
-        final SpelExpressionParser parser = new SpelExpressionParser();
+
         Map<String, Map<Boolean, Set<PolicyRule>>> collect = resourceDao.findAll().stream().collect(Collectors.toMap(Resource::getCode, r -> {
             Set<PolicyRuleEntity> rules = r.getRules();
-//            if (CollectionUtils.isEmpty(rules)) {
-//                return Set.of();
-//            }
             return rules.stream().collect(Collectors.groupingBy(PolicyRuleEntity::getPreAuth, Collectors.mapping(p -> {
                 PolicyRule policyRule = new PolicyRule();
                 policyRule.setCondition(p.getCondition());

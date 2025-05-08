@@ -4,7 +4,6 @@ import com.zjj.security.rbac.client.component.RouteTemplateSupper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
-import org.springframework.boot.actuate.endpoint.annotation.WriteOperation;
 import org.springframework.util.Assert;
 
 

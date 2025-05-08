@@ -4,10 +4,13 @@ import com.zjj.autoconfigure.component.security.rbac.Resource;
 import com.zjj.security.rbac.component.locator.ReactiveResourceLocator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.TypeUtils;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author zengJiaJun
@@ -35,5 +38,22 @@ public class ReactiveResourceQueryManager {
                 .next()
                 .flatMap(locator -> locator.load(resource, authentication))
                 .switchIfEmpty(Mono.empty());
+    }
+
+    public Mono<Set<String>> query1(Set<Resource> resource, Mono<Authentication> authentication) {
+
+        if (CollectionUtils.isEmpty(resource)) {
+            return Mono.empty();
+        }
+
+        return Flux
+                .fromIterable(this.resourceLocators)
+                .filter(locator -> {
+                    return locator.supports(resource.iterator().next().getClass());
+                })
+                .next()
+                .flatMap(locator -> {
+                    return locator.load(resource, authentication);
+                });
     }
 }

@@ -11,4 +11,6 @@ import org.springframework.graphql.data.GraphQlRepository;
  */
 @GraphQlRepository
 public interface GraphqlResourceDao extends BaseRepository<GraphqlResourceEntity, Long> {
+
+    public GraphqlResourceEntity findAll();
 }

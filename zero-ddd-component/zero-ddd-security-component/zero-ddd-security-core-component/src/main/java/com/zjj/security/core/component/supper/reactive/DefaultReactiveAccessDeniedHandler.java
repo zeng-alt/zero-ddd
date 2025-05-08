@@ -25,7 +25,7 @@ public class DefaultReactiveAccessDeniedHandler implements ServerAccessDeniedHan
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, AccessDeniedException denied) {
         ServerHttpResponse response = exchange.getResponse();
-        exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON);
+//        exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON);
         response.setStatusCode(HttpStatus.FORBIDDEN);
 
         DataBufferFactory dataBufferFactory = response.bufferFactory();

@@ -44,24 +44,45 @@ public abstract class AbstractAbacExpressionAttributeRegistry<T extends PolicyRu
         return getPolicyRule(authentication, method, targetClass);
     }
 
-    public final Flux<Tuple2<String, Object>> getObjectAttribute(MethodInvocation mi) {
+    public final Map<String, Object> getObjectAttribute(MethodInvocation mi) {
         Method method = mi.getMethod();
         Object target = mi.getThis();
         Class<?> targetClass = (target != null) ? target.getClass() : null;
         MethodClassKey cacheKey = new MethodClassKey(method, targetClass);
         Tuple2<String, String> tuple = this.cachedRoleKeys.computeIfAbsent(cacheKey, k -> resolvePolicyKey(method, targetClass));
-        if (!objectAttributeMap.containsKey(tuple._1)) {
-            return Flux.empty();
-        }
 
-        return Flux.create(sink -> {
-            List<ObjectAttribute> objectAttributes = objectAttributeMap.get(tuple._1);
-            for (ObjectAttribute objectAttribute : objectAttributes) {
-                sink.next(new Tuple2<>(objectAttribute.getPolicyKey(), objectAttribute.getObject()));
-            }
-            sink.complete();
-        });
+        return null;
+//        if (!objectAttributeMap.containsKey(tuple._1)) {
+//            return Flux.empty();
+//        }
+//
+//        return Flux.create(sink -> {
+//            List<ObjectAttribute> objectAttributes = objectAttributeMap.get(tuple._1);
+//            for (ObjectAttribute objectAttribute : objectAttributes) {
+//                sink.next(new Tuple2<>(objectAttribute.getPolicyKey(), objectAttribute.getObject()));
+//            }
+//            sink.complete();
+//        });
     }
+
+//    public final Flux<Tuple2<String, Object>> getObjectAttribute(MethodInvocation mi) {
+//        Method method = mi.getMethod();
+//        Object target = mi.getThis();
+//        Class<?> targetClass = (target != null) ? target.getClass() : null;
+//        MethodClassKey cacheKey = new MethodClassKey(method, targetClass);
+//        Tuple2<String, String> tuple = this.cachedRoleKeys.computeIfAbsent(cacheKey, k -> resolvePolicyKey(method, targetClass));
+//        if (!objectAttributeMap.containsKey(tuple._1)) {
+//            return Flux.empty();
+//        }
+//
+//        return Flux.create(sink -> {
+//            List<ObjectAttribute> objectAttributes = objectAttributeMap.get(tuple._1);
+//            for (ObjectAttribute objectAttribute : objectAttributes) {
+//                sink.next(new Tuple2<>(objectAttribute.getPolicyKey(), objectAttribute.getObject()));
+//            }
+//            sink.complete();
+//        });
+//    }
 
     private final T getPolicyRule(Supplier<Authentication> authentication, Method method, Class<?> targetClass) {
         MethodClassKey cacheKey = new MethodClassKey(method, targetClass);

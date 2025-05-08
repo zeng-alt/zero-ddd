@@ -85,26 +85,44 @@ public abstract class QuerydslConditionDataFetcher<T> {
      */
     @SuppressWarnings({"unchecked"})
     protected Predicate buildPredicate(DataFetchingEnvironment environment) {
-        MultiValueMap<String, Object> parameters = new LinkedMultiValueMap<>();
+//        MultiValueMap<String, Condition> parameters = new LinkedMultiValueMap<>();
         QuerydslBindings bindings = new QuerydslBindings();
         EntityPath<?> path = SimpleEntityPathResolver.INSTANCE.createPath(this.domainType.getType());
 
         this.customizer.customize(bindings, path);
 
-        for (Map.Entry<String, Object> entry : getArgumentValues(environment).entrySet()) {
-            Object value = entry.getValue();
-            List<Object> values = (value instanceof List) ? (List<Object>) value : Collections.singletonList(value);
-            parameters.put(entry.getKey(), values);
-        }
+//        for (Map.Entry<String, Object> entry : getArgumentValues(environment).entrySet()) {
+//            Object value = entry.getValue();
+//            List<Object> values = (value instanceof List) ? (List<Object>) value : Collections.singletonList(value);
+//            parameters.put(entry.getKey(), null);
+//        }
+
+        Map<String, Condition> parameters = new LinkedHashMap<>();
+        addParameters(null, getArgumentValues(environment), parameters);
 
         return BUILDER.getPredicate(this.domainType, parameters, bindings);
     }
 
-    /**
-     * For a single argument that is a GraphQL input type, return the sub-map
-     * under the argument name, or otherwise the top-level argument map.
-     */
-    @SuppressWarnings("unchecked")
+    private void addParameters(
+            @Nullable String prefix, Map<String, Object> arguments, Map<String, Condition> parameters) {
+
+        for (Map.Entry<String, Object> entry : arguments.entrySet()) {
+            Object value = entry.getValue();
+            if (value instanceof Map<?, ?> nested) {
+                addParameters(entry.getKey(), (Map<String, Object>) nested, parameters);
+                continue;
+            }
+            if ((arguments.size() == 1 || arguments.size() == 2) && arguments.containsKey("option")) {
+                Condition condition = new Condition();
+                condition.setValue(arguments.get("value") instanceof List<?> ? (List<Object>) arguments.get("value") : Collections.singletonList(arguments.get("value")));
+                condition.setOption(Option.valueOf(arguments.get("option").toString()));
+                parameters.put(((prefix != null) ? prefix : ""), condition);
+            }
+//            List<Object> values = (value instanceof List) ? (List<Object>) value : Collections.singletonList(value);
+//            parameters.put(((prefix != null) ? prefix + "." : "") + entry.getKey(), null);
+        }
+    }
+
     private static Map<String, Object> getArgumentValues(DataFetchingEnvironment environment) {
         Map<String, Object> arguments = environment.getArguments();
 
@@ -113,31 +131,62 @@ public abstract class QuerydslConditionDataFetcher<T> {
                 if (type.getName().equals("Sort") || type.getName().equals("PageQuery")) {
                     continue;
                 }
-                String name = argument.getName();
+                String name = environment.getFieldDefinition().getArguments().get(0).getName();
                 Object value = arguments.get(name);
-                if (value instanceof Map<?, ?> map) {
-                    HashMap<String, Object> result = Maps.newHashMap();
-                    Set<? extends Map.Entry<?, ?>> entries = map.entrySet();
-                    for (Map.Entry<?, ?> entry : entries) {
-                        String key = (String) entry.getKey();
-                        Object value1 = entry.getValue();
-                        if (value1 instanceof Map<?,?> valueMap) {
-                            for (Map.Entry<?, ?> entry1 : valueMap.entrySet()) {
-                                String key1 = (String) entry1.getKey();
-                                result.put(key + "." + key1, entry1.getValue());
-                            }
-                        } else {
-                            result.put(key, entry.getValue());
-                        }
-                    }
-
-                    return result;
+                if (value instanceof Map<?, ?>) {
+                    return (Map<String, Object>) value;
                 }
             }
         }
-
         return arguments;
+//        if (environment.getFieldDefinition().getArguments().size() == 1) {
+//            String name = environment.getFieldDefinition().getArguments().get(0).getName();
+//            Object value = arguments.get(name);
+//            if (value instanceof Map<?, ?>) {
+//                return (Map<String, Object>) value;
+//            }
+//        }
+//        return arguments;
     }
+
+    /**
+     * For a single argument that is a GraphQL input type, return the sub-map
+     * under the argument name, or otherwise the top-level argument map.
+     */
+    @SuppressWarnings("unchecked")
+//    private static Map<String, Object> getArgumentValues(DataFetchingEnvironment environment) {
+//        Map<String, Object> arguments = environment.getArguments();
+//
+//        for (GraphQLArgument argument : environment.getFieldDefinition().getArguments()) {
+//            if (argument.getType() instanceof  GraphQLInputObjectType type) {
+//                if (type.getName().equals("Sort") || type.getName().equals("PageQuery")) {
+//                    continue;
+//                }
+//                String name = argument.getName();
+//                Object value = arguments.get(name);
+//                if (value instanceof Map<?, ?> map) {
+//                    HashMap<String, Object> result = Maps.newHashMap();
+//                    Set<? extends Map.Entry<?, ?>> entries = map.entrySet();
+//                    for (Map.Entry<?, ?> entry : entries) {
+//                        String key = (String) entry.getKey();
+//                        Object value1 = entry.getValue();
+//                        if (value1 instanceof Map<?,?> valueMap) {
+//                            for (Map.Entry<?, ?> entry1 : valueMap.entrySet()) {
+//                                String key1 = (String) entry1.getKey();
+//                                result.put(key + "." + key1, entry1.getValue());
+//                            }
+//                        } else {
+//                            result.put(key, entry.getValue());
+//                        }
+//                    }
+//
+//                    return result;
+//                }
+//            }
+//        }
+//
+//        return arguments;
+//    }
 
     protected boolean requiresProjection(Class<?> resultType) {
         return !resultType.equals(this.domainType.getType());

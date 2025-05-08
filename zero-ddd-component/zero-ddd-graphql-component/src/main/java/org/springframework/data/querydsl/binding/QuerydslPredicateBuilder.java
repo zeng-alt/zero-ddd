@@ -18,6 +18,7 @@ package org.springframework.data.querydsl.binding;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.Predicate;
+import com.zjj.graphql.component.query.condition.Condition;
 import org.springframework.beans.PropertyValues;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.convert.ConversionService;
@@ -126,6 +127,38 @@ public class QuerydslPredicateBuilder {
 		return getPredicate(builder);
 	}
 
+	public Predicate getPredicate(TypeInformation<?> type, Map<String, Condition> values, QuerydslBindings bindings) {
+		Assert.notNull(bindings, "Context must not be null");
+		BooleanBuilder builder = new BooleanBuilder();
+
+		if (values.isEmpty()) {
+			return getPredicate(builder);
+		}
+
+		for (Map.Entry<String, Condition> entry : values.entrySet()) {
+
+			String path = entry.getKey();
+
+			if (!bindings.isPathAvailable(path, type)) {
+				continue;
+			}
+
+			PathInformation propertyPath = bindings.getPropertyPath(path, type);
+
+			if (propertyPath == null) {
+				continue;
+			}
+
+			Collection<Object> value = convertToPropertyPathSpecificType(entry.getValue().getValue(), propertyPath);
+			entry.getValue().setValue(value);
+			Optional<Predicate> predicate = invokeBinding(propertyPath, bindings, entry.getValue());
+
+			predicate.ifPresent(builder::and);
+		}
+
+		return getPredicate(builder);
+	}
+
 	/**
 	 * Returns whether the given {@link Predicate} represents an empty predicate instance.
 	 *
@@ -154,6 +187,14 @@ public class QuerydslPredicateBuilder {
 		return bindings.getBindingForPath(dotPath).orElse(defaultBinding).bind(path, values);
 	}
 
+	private Optional<Predicate> invokeBinding(PathInformation dotPath, QuerydslBindings bindings,
+											  Condition values) {
+
+		Path<?> path = getPath(dotPath, bindings);
+
+		return bindings.getBindingForPath(dotPath).orElse(defaultBinding).bind(path, Collections.singletonList(values));
+	}
+
 	/**
 	 * Returns the {@link Path} for the given {@link PropertyPath} and {@link QuerydslBindings}. Will try to obtain the
 	 * {@link Path} from the bindings first but fall back to reifying it from the PropertyPath in case no specific binding
@@ -179,7 +220,7 @@ public class QuerydslPredicateBuilder {
 	 * @param path must not be {@literal null}.
 	 * @return
 	 */
-	private Collection<Object> convertToPropertyPathSpecificType(List<?> source, PathInformation path) {
+	private Collection<Object> convertToPropertyPathSpecificType(Collection<?> source, PathInformation path) {
 
 		if (source.isEmpty() || isSingleElementCollectionWithEmptyItem(source)) {
 			return Collections.emptyList();
@@ -243,8 +284,8 @@ public class QuerydslPredicateBuilder {
 	 * @param source must not be {@literal null}.
 	 * @return
 	 */
-	private static boolean isSingleElementCollectionWithEmptyItem(List<?> source) {
-		return source.size() == 1 && ObjectUtils.isEmpty(source.get(0));
+	private static boolean isSingleElementCollectionWithEmptyItem(Collection<?> source) {
+		return source.size() == 1 && ObjectUtils.isEmpty(source.iterator().next());
 	}
 
 	/**
