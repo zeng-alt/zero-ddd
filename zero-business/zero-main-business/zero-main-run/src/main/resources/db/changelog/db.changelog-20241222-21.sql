@@ -479,8 +479,8 @@ START 1
 -- ----------------------------
 -- Records of main_parameter
 -- ----------------------------
-INSERT INTO "main_parameter" VALUES (NULL, 1, NULL, NULL, NULL, 'captcha', '验证码', 'Boolean', 'false', '是否开启验证码', '${tenantName}');
-INSERT INTO "main_parameter" VALUES (NULL, 2, '2025-05-14 15:37:30.62984', NULL, 'superAdmin', 'tenant', '租户', 'Boolean', 'true', '是否开启租户', '${tenantName}');
+INSERT INTO "main_parameter" VALUES (NULL, NULL, NULL, NULL, NULL, 'captcha', '验证码', 'Boolean', 'false', '是否开启验证码', '${tenantName}');
+INSERT INTO "main_parameter" VALUES (NULL, NULL, '2025-05-14 15:37:30.62984', NULL, 'superAdmin', 'tenant', '租户', 'Boolean', 'true', '是否开启租户', '${tenantName}');
 
 -- ----------------------------
 -- Table structure for main_permission
