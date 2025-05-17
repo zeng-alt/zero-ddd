@@ -6,6 +6,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -27,6 +28,7 @@ public interface MenuResourceVOTransformation {
         if (CollectionUtils.isEmpty(menuResources)) {
             return null;
         }
+        menuResources.sort(Comparator.comparingInt(MenuResource::getOrder));
         LinkedList<MenuResourceVO> result = new LinkedList<>();
         for (MenuResource menuResource : menuResources) {
             result.add(this.to(menuResource));

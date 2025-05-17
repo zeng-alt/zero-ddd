@@ -4,6 +4,13 @@ server:
 spring:
   application:
     name: zero-ddd-main
+  modulith:
+    detection-strategy: explicitly-annotated
+    events:
+      republish-outstanding-events-on-restart: true
+      externalization:
+        enabled: true
+      completion-mode: archive
 #  datasource:
 #    url: jdbc:h2:mem:mydb
 #    username: sa

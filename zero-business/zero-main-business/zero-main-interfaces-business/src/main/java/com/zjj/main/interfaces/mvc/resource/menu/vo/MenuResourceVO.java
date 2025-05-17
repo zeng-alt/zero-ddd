@@ -29,7 +29,6 @@ public class MenuResourceVO {
     private Boolean show;
     private Boolean enable;
     private String menuStyle;
-    @Column(name = "resource_order")
     private Integer order;
     private List<MenuResourceVO> children;
 }

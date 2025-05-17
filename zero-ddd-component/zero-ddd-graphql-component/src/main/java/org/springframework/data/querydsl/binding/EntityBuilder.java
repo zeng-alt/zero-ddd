@@ -4,9 +4,10 @@ package org.springframework.data.querydsl.binding;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.CollectionPathBase;
 import com.querydsl.core.types.dsl.SimpleExpression;
-import org.springframework.beans.BeanUtils;
+import org.springframework.beans.*;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.Property;
 import org.springframework.core.convert.TypeDescriptor;
@@ -68,45 +69,81 @@ public class EntityBuilder {
         return list;
     }
 
-
-    public <T> T getEntity(TypeInformation<T> type, MultiValueMap<String, ?> values, QuerydslBindings bindings) {
+    public <T> T getEntity(TypeInformation<T> type,
+                           MultiValueMap<String, ?> values,
+                           QuerydslBindings bindings) {
 
         Assert.notNull(bindings, "Context must not be null");
-
-        BooleanBuilder builder = new BooleanBuilder();
-        T t = BeanUtils.instantiateClass(type.getType());
-        String name = type.getType().getName();
-        Map<String, PropertyDescriptor> propertyMap = Arrays.stream(BeanUtils.getPropertyDescriptors(t.getClass())).collect(Collectors.toMap(p -> p.getName(), e -> e));
         if (values.isEmpty()) {
             throw new RuntimeException("实体属性不能为空");
         }
 
+        // 1. 实例化根实体
+        T root = BeanUtils.instantiateClass(type.getType());
+
+        // 2. 收集符合 bindings 的属性
+        MutablePropertyValues pvs = new MutablePropertyValues();
         for (var entry : values.entrySet()) {
-
-            if (isSingleElementCollectionWithEmptyItem(entry.getValue())) {
-                continue;
-            }
-
             String path = entry.getKey();
-
-            if (!bindings.isPathAvailable(path, type)) {
-                continue;
+            if (bindings.isPathAvailable(path, type)) {
+                // 直接把 profile.name / other.nested.path 的 key 放进去
+                pvs.add(path, entry.getValue().get(0));
             }
-
-            PathInformation propertyPath = bindings.getPropertyPath(path, type);
-
-            if (propertyPath == null) {
-                continue;
-            }
-
-            Collection<Object> value = convertToPropertyPathSpecificType(entry.getValue(), propertyPath);
-//            Optional<Predicate> predicate = invokeBinding(propertyPath, bindings, value);
-            invokeBinding(value, propertyMap.get(propertyPath.getLeafProperty()), t);
-//            predicate.ifPresent(builder::and);
         }
+        BeanWrapper wrapper = PropertyAccessorFactory.forBeanPropertyAccess(root);
+        // 3. 用 DataBinder 或 BeanWrapperImpl 注入
+//        BeanWrapper wrapper = new BeanWrapperImpl(root);
+        wrapper.setAutoGrowNestedPaths(true);
 
-        return t;
+        // 可选：如果你在容器里有定制的 ConversionService，可以这样注入
+        wrapper.setConversionService(conversionService);
+
+
+        wrapper.setPropertyValues(pvs);
+
+        return root;
     }
+
+
+
+//    public <T> T getEntity(TypeInformation<T> type, MultiValueMap<String, ?> values, QuerydslBindings bindings) {
+//
+//        Assert.notNull(bindings, "Context must not be null");
+//
+//        BooleanBuilder builder = new BooleanBuilder();
+//        T t = BeanUtils.instantiateClass(type.getType());
+//        String name = type.getType().getName();
+//        Map<String, PropertyDescriptor> propertyMap = Arrays.stream(BeanUtils.getPropertyDescriptors(t.getClass())).collect(Collectors.toMap(p -> p.getName(), e -> e));
+//        if (values.isEmpty()) {
+//            throw new RuntimeException("实体属性不能为空");
+//        }
+//
+//        for (var entry : values.entrySet()) {
+//
+//            if (isSingleElementCollectionWithEmptyItem(entry.getValue())) {
+//                continue;
+//            }
+//
+//            String path = entry.getKey();
+//
+//            if (!bindings.isPathAvailable(path, type)) {
+//                continue;
+//            }
+//
+//            PathInformation propertyPath = bindings.getPropertyPath(path, type);
+//
+//            if (propertyPath == null) {
+//                continue;
+//            }
+//
+//            Collection<Object> value = convertToPropertyPathSpecificType(entry.getValue(), propertyPath);
+////            Optional<Predicate> predicate = invokeBinding(propertyPath, bindings, value);
+//            invokeBinding(value, propertyMap.get(propertyPath.getLeafProperty()), t);
+////            predicate.ifPresent(builder::and);
+//        }
+//
+//        return t;
+//    }
 
     /**
      * Returns whether the given {@link Predicate} represents an empty predicate instance.
