@@ -81,7 +81,7 @@ public class User extends BaseEntity<Long> implements TenantAuditable<String> {
     /**
      * 帐号状态（0正常 1停用）
      */
-    private String status = "0";
+    private Boolean enable = true;
 
     /**
      * 逻辑删除标志位，0 未删除，1 已删除

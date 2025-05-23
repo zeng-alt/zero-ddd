@@ -4,6 +4,7 @@ import com.zjj.core.component.api.Parent;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.util.StringUtils;
 
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -20,7 +21,7 @@ import java.util.Set;
 @Entity
 @Table(name = "main_menu_resource")
 @DiscriminatorValue("HTTP")
-public class MenuResource extends Resource implements Parent<Long> {
+public class MenuResource extends Permission implements Parent<Long> {
 
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,17 +30,17 @@ public class MenuResource extends Resource implements Parent<Long> {
     /**
      * 父菜单
      */
-    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.REMOVE}, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {CascadeType.REFRESH}, fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
     private MenuResource parentMenu;
 
     /**
      * 子菜单
      */
-    @OneToMany(mappedBy = "parentMenu")
+    @OneToMany(mappedBy = "parentMenu", cascade = {CascadeType.REFRESH}, fetch = FetchType.LAZY)
     private List<MenuResource> chileMenus = new LinkedList<>();
 
-    private String name;
+//    private String name;
 //    private String code;
     private String type;
     private String path;
@@ -67,6 +68,12 @@ public class MenuResource extends Resource implements Parent<Long> {
     @Override
     public Long current() {
         return getId();
+    }
+
+
+    @Override
+    public boolean isEmpty() {
+        return !StringUtils.hasText(this.path) || !StringUtils.hasText(this.method);
     }
 
     @Override

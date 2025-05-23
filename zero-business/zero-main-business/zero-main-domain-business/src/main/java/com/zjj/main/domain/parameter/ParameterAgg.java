@@ -10,9 +10,9 @@ import lombok.Data;
  * @crateTime 2025年03月28日 14:10
  */
 @Data
-public class ParameterAgg extends Aggregate<Long> {
+public class ParameterAgg extends Aggregate<ParameterAgg, ParameterId> {
 
-    private Long id;
+    private ParameterId id;
 
     private String parameterName;
     private String parameterKey;

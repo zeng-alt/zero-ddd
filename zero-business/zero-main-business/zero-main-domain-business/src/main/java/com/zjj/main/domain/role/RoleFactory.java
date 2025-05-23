@@ -21,21 +21,25 @@ public class RoleFactory {
     private final RoleRepository roleRepository;
 
     public Option<RoleAgg> create(StockInRoleCmd cmd) {
+
+        RoleAgg roleAgg = null;
+
         if (cmd.id() != null) {
-            roleRepository
+            roleAgg = roleRepository
                     .findById(cmd.id())
                     .peek(role -> {
-                        if (StringUtils.hasText(cmd.roleKey()) && !role.getCode().equals(cmd.roleKey())) {
+                        if (StringUtils.hasText(cmd.code()) && !role.getCode().equals(cmd.code())) {
                             throw new BaseI18nException("roleKey.cannot.modified");
                         }
                     })
                     .map(role -> BeanHelper.copyToObject(role, RoleAgg.class))
                     .getOrElseThrow(() -> new BaseI18nException("role.not.exists", "role.not.exists", cmd.id()));
         }
-        roleRepository
-                .findByRoleKey(cmd.roleKey())
-                .forEach(c -> {throw new BaseI18nException("roleKey.exists", "roleKey.exists", cmd.roleKey());});
 
-        return Option.of(BeanHelper.copyToObject(cmd, RoleAgg.class));
+        if (roleAgg == null && roleRepository.existsByCode(cmd.code())) {
+            throw new BaseI18nException("roleKey.exists", "roleKey.exists", cmd.code());
+        }
+
+        return Option.of(roleAgg).orElse(Option.of(BeanHelper.copyToObject(cmd, RoleAgg.class)));
     }
 }

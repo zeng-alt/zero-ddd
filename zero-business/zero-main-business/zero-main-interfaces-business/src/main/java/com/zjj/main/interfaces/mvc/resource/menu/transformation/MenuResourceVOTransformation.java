@@ -28,7 +28,7 @@ public interface MenuResourceVOTransformation {
         if (CollectionUtils.isEmpty(menuResources)) {
             return null;
         }
-        menuResources.sort(Comparator.comparingInt(MenuResource::getOrder));
+        menuResources.sort(Comparator.comparingInt(m -> m.getOrder() == null ? 0 : m.getOrder()));
         LinkedList<MenuResourceVO> result = new LinkedList<>();
         for (MenuResource menuResource : menuResources) {
             result.add(this.to(menuResource));
@@ -47,8 +47,13 @@ public interface MenuResourceVOTransformation {
         LinkedList<MenuResourceVO> result = new LinkedList<>();
         for (MenuResource menuResource : menuResources) {
             if ("BUTTON".equals(menuResource.getType())) continue;
-            result.add(this.to(menuResource));
+            MenuResourceVO menuResourceVO = this.to(menuResource);
+
+            if (!CollectionUtils.isEmpty(menuResource.getChileMenus())) {
+                menuResourceVO.setChildren(this.toFilterButton(menuResource.getChileMenus()));
+            }
+            result.add(menuResourceVO);
         }
-        return result;
+        return CollectionUtils.isEmpty(result) ? null : result;
     }
 }

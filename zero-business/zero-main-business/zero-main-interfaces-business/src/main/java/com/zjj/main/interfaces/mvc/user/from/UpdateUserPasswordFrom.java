@@ -1,6 +1,7 @@
 package com.zjj.main.interfaces.mvc.user.from;
 
 import com.zjj.main.domain.user.cmd.StockInUserCmd;
+import com.zjj.main.domain.user.cmd.UpdateUserPasswordCmd;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 
@@ -13,7 +14,7 @@ import java.io.Serializable;
  * @crateTime 2025年03月28日 13:53
  */
 @Data
-@AutoMapper(target = StockInUserCmd.class)
+@AutoMapper(target = UpdateUserPasswordCmd.class)
 public class UpdateUserPasswordFrom implements Serializable {
 
     @Serial

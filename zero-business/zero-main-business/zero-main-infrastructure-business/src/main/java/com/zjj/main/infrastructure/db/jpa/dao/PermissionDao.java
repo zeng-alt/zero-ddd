@@ -10,5 +10,7 @@ import java.util.stream.Stream;
 @GraphQlRepository
 public interface PermissionDao extends BaseRepository<Permission, Long> {
 
+    Stream<Permission> findAllByIdIn(Iterable<Long> ids);
+
     Stream<Permission> findAll();
 }

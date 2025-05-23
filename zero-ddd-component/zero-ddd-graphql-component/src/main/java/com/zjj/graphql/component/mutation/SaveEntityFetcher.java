@@ -57,7 +57,7 @@ public class SaveEntityFetcher<T, ID> extends MutationDataFetcher<T, ID> impleme
                 }).getOrElse(t);
             }
             for (EntitySaveHandler<T> handler : handlers) {
-                handler.handler(t);
+                handler.handler(temp);
             }
             return executor.save(temp);
         });

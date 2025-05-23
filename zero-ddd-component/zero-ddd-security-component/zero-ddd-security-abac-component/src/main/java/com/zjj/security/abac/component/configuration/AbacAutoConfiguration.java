@@ -1,8 +1,8 @@
 package com.zjj.security.abac.component.configuration;
 
-import com.fasterxml.jackson.databind.Module;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.zjj.autoconfigure.component.security.abac.*;
+import com.zjj.autoconfigure.component.security.abac.EnvironmentAttribute;
+import com.zjj.autoconfigure.component.security.abac.ObjectAttribute;
+import com.zjj.autoconfigure.component.security.abac.PolicyDefinition;
 import com.zjj.security.abac.component.advice.AbacExceptionAdvice;
 import com.zjj.security.abac.component.annotation.AbacAdminAuth;
 import com.zjj.security.abac.component.annotation.AbacPostAuthorize;
@@ -19,7 +19,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Role;
-import org.springframework.expression.Expression;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.authorization.method.AuthorizationInterceptorsOrder;

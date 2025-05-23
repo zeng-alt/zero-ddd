@@ -32,7 +32,7 @@ public class Role extends BaseEntity<Long> implements TenantAuditable<String> {
     @OneToMany(mappedBy = "role")
     private Set<UserRole> userRoles = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "role")
+    @OneToMany(mappedBy = "role", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     private Set<RolePermission> rolePermissions = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "role")

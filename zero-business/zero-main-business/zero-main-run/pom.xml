@@ -27,6 +27,11 @@
 
         <dependency>
             <groupId>com.zjj</groupId>
+            <artifactId>zero-main-application-business</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.zjj</groupId>
             <artifactId>zero-main-infrastructure-business</artifactId>
         </dependency>
 
@@ -41,10 +46,10 @@
             <artifactId>zero-ddd-security-core-component</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.zjj</groupId>
-            <artifactId>zero-ddd-security-rbac-client-component</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.zjj</groupId>-->
+<!--            <artifactId>zero-ddd-security-rbac-client-component</artifactId>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>com.zjj</groupId>

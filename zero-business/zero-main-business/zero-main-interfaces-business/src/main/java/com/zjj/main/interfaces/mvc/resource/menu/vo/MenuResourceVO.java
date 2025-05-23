@@ -1,6 +1,5 @@
 package com.zjj.main.interfaces.mvc.resource.menu.vo;
 
-import jakarta.persistence.Column;
 import lombok.Data;
 
 import java.util.List;

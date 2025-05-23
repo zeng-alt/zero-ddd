@@ -8,7 +8,7 @@ package com.zjj.autoconfigure.component.tenant;
 public interface TenantKey {
 
    default String getTenantKey() {
-       String tenantId = TenantContextHolder.getTenantId() == null ? "" : TenantContextHolder.getTenantId() + ":";
+       String tenantId = TenantContextHolder.getTenantId() == null ? "master:" : TenantContextHolder.getTenantId() + ":";
 //       String db =  TenantContextHolder.getDatabase() == null ? "" : TenantContextHolder.getDatabase() + ":";
 //       String schema = TenantContextHolder.getSchema() == null ? "" : TenantContextHolder.getSchema() + ":";
        return tenantId;

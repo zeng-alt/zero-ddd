@@ -73,7 +73,7 @@ public class HttpEntityReturnMethodProcessor extends AbstractMessageConverterMet
         if (returnValue instanceof String body) {
             URI requestUri = inputMessage.getURI();
             if ("ok".equals(body)) {
-                httpEntity = ResponseEntity.ok().build();
+                httpEntity = ResponseEntity.ok("ok");
             } else if ("fail".equals(body)) {
                 httpEntity = buildProblemDetailResponse(HttpStatus.INTERNAL_SERVER_ERROR, requestUri, "Internal Server Error", null);
             } else if (body.startsWith("ok:")) {

@@ -3,6 +3,7 @@ package com.zjj.main.domain.user.cmd;
 import org.jmolecules.architecture.cqrs.Command;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author zengJiaJun
@@ -11,7 +12,7 @@ import java.util.List;
  */
 @Command
 public record AssignRoleCmd(
-        Long userId,
-        List<String> roleIds
+        Long roleId,
+        Set<Long> userIds
 ) {
 }

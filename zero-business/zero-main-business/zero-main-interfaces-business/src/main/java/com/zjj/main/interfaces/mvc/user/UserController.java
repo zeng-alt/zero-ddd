@@ -2,14 +2,15 @@ package com.zjj.main.interfaces.mvc.user;
 
 import com.zjj.domain.component.AbstractTxController;
 import com.zjj.domain.component.command.CommandBus;
-import com.zjj.main.domain.user.cmd.StockInUserCmd;
-import com.zjj.main.domain.user.cmd.UpdateUserPasswordCmd;
+import com.zjj.main.domain.user.cmd.*;
 import com.zjj.main.interfaces.mvc.user.from.StockInUserFrom;
 import com.zjj.main.interfaces.mvc.user.from.UpdateUserPasswordFrom;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Set;
 
 /**
  * @author zengJiaJun
@@ -39,6 +40,29 @@ public class UserController extends AbstractTxController {
         this.convert(from)
                 .to(UpdateUserPasswordCmd.class)
                 .accept(this.commandBus::emit);
+        return "ok";
+    }
+
+    @Operation(summary = "授权角色")
+    @PatchMapping("/assign/{userId}")
+    public String assignRole(@PathVariable Long userId, @RequestBody Set<Long> roleIds) {
+        this.commandBus.emit(new AssignUserRoleCmd(userId, roleIds));
+        return "ok";
+    }
+
+
+    @Operation(summary = "批量授权角色")
+    @PatchMapping("/add/role/{roleId}")
+    public String addUserRole(@PathVariable Long roleId, @RequestBody Set<Long> userIds) {
+        this.commandBus.emit(new AssignRoleCmd(roleId, userIds));
+        return "ok";
+    }
+
+
+    @Operation(summary = "批量取消授权角色")
+    @PatchMapping("/remove/role/{roleId}")
+    public String removeUserRole(@PathVariable Long roleId, @RequestBody Set<Long> userIds) {
+        this.commandBus.emit(new CancelAssignRoleCmd(roleId, userIds));
         return "ok";
     }
 

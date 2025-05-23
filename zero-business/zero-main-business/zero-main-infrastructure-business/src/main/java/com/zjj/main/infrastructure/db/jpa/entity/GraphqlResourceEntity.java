@@ -1,11 +1,16 @@
 package com.zjj.main.infrastructure.db.jpa.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.util.StringUtils;
 
+@Getter
+@Setter
 @Entity(name = "GraphqlResource")
 @Table(name = "main_graphql_resource")
 @DiscriminatorValue("GRAPHQL")
-public class GraphqlResourceEntity extends Resource {
+public class GraphqlResourceEntity extends Permission {
 
     @Column
     private String operation;
@@ -14,30 +19,10 @@ public class GraphqlResourceEntity extends Resource {
     @Column
     private String uri;
 
-    public GraphqlResourceEntity() {}
 
-    public String getOperation() {
-        return operation;
-    }
-
-    public void setOperation(String operation) {
-        this.operation = operation;
-    }
-
-    public String getFunctionName() {
-        return functionName;
-    }
-
-    public void setFunctionName(String functionName) {
-        this.functionName = functionName;
-    }
-
-    public String getUri() {
-        return uri;
-    }
-
-    public void setUri(String uri) {
-        this.uri = uri;
+    @Override
+    public boolean isEmpty() {
+        return !StringUtils.hasText(operation) || !StringUtils.hasText(functionName) || !StringUtils.hasText(uri);
     }
 
     @Override

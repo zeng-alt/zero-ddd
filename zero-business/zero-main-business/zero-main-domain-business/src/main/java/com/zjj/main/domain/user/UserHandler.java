@@ -1,9 +1,7 @@
 package com.zjj.main.domain.user;
 
 import com.zjj.i18n.component.BaseI18nException;
-import com.zjj.main.domain.user.cmd.AssignRoleCmd;
-import com.zjj.main.domain.user.cmd.StockInUserCmd;
-import com.zjj.main.domain.user.cmd.UpdateUserPasswordCmd;
+import com.zjj.main.domain.user.cmd.*;
 import lombok.RequiredArgsConstructor;
 import org.jmolecules.architecture.cqrs.CommandHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,12 +34,23 @@ public class UserHandler {
     }
 
     @CommandHandler
+    public void handler(AssignUserRoleCmd cmd) {
+        userRepository.findById(cmd.userId()).forEach(user -> user.assignUserRoles(cmd));
+    }
+
+    @CommandHandler
     public void handler(AssignRoleCmd cmd) {
-        if (!userRepository.existsByRoles(cmd.roleIds())) {
+        if (!userRepository.existsByRoleId(cmd.roleId())) {
             throw new BaseI18nException("user.role.not.exists");
         }
-        userRepository
-                .findById(cmd.userId())
-                .forEach(u -> u.assignRoles(cmd.roleIds()));
+        userRepository.queryByIds(cmd.userIds()).forEach(user -> user.assignRoles(cmd));
+    }
+
+    @CommandHandler
+    public void handler(CancelAssignRoleCmd cmd) {
+        if (!userRepository.existsByRoleId(cmd.roleId())) {
+            throw new BaseI18nException("user.role.not.exists");
+        }
+        userRepository.queryByIds(cmd.userIds()).forEach(user -> user.cancelAssignRoles(cmd));
     }
 }

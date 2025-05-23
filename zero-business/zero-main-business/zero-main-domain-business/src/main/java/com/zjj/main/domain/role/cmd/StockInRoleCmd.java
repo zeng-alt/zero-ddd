@@ -2,6 +2,9 @@ package com.zjj.main.domain.role.cmd;
 
 import org.jmolecules.architecture.cqrs.Command;
 
+import java.util.List;
+import java.util.Set;
+
 /**
  * @author zengJiaJun
  * @version 1.0
@@ -10,10 +13,11 @@ import org.jmolecules.architecture.cqrs.Command;
 @Command
 public record StockInRoleCmd(
         Long id,
-        String roleName,
-        String roleKey,
+        String name,
+        String code,
         String roleSort,
-        String status,
+        Boolean enable,
+        Set<Long> permissionIds,
         Integer deleted
 ) {
 }

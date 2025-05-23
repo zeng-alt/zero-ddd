@@ -13,36 +13,36 @@ import org.springframework.lang.Nullable;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-@Getter
-@Entity
-@Setter
-@Table(name = "main_resource")
-@Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name = "resource_type", discriminatorType = DiscriminatorType.STRING)
-public class Resource extends BaseEntity<Long> implements TenantAuditable<String> {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
-    @Column(name = "resource_type", insertable = false, updatable = false)
-    private String resourceType;
-
-    private String code;
-
-    @OneToMany(mappedBy = "resource")
-    private Set<PolicyRuleEntity> rules = new LinkedHashSet<>();
-
-//    @OneToOne(mappedBy = "resource")
-//    private Permission permission;
-
-    @TenantId
-    @Nullable
-    private String tenantBy;
-
-    @JsonIgnore
-    @Transient
-    public String getKey() {
-        throw new UnsupportedOperationException();
-    }
-}
+//@Getter
+//@Entity
+//@Setter
+//@Table(name = "main_resource")
+//@Inheritance(strategy = InheritanceType.JOINED)
+//@DiscriminatorColumn(name = "resource_type", discriminatorType = DiscriminatorType.STRING)
+//public class Resource extends BaseEntity<Long> implements TenantAuditable<String> {
+//
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.AUTO)
+//    private Long id;
+//
+//    @Column(name = "resource_type", insertable = false, updatable = false)
+//    private String resourceType;
+//
+//    private String code;
+//
+//    @OneToMany(mappedBy = "resource")
+//    private Set<PolicyRuleEntity> rules = new LinkedHashSet<>();
+//
+////    @OneToOne(mappedBy = "resource")
+////    private Permission permission;
+//
+//    @TenantId
+//    @Nullable
+//    private String tenantBy;
+//
+//    @JsonIgnore
+//    @Transient
+//    public String getKey() {
+//        throw new UnsupportedOperationException();
+//    }
+//}

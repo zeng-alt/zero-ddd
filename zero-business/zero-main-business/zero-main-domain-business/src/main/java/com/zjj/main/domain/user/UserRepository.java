@@ -3,6 +3,7 @@ package com.zjj.main.domain.user;
 import io.vavr.control.Option;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author zengJiaJun
@@ -17,5 +18,8 @@ public interface UserRepository {
 
     void save(UserAgg userAgg);
 
-    Boolean existsByRoles(List<String> roleIds);
+
+    List<UserAgg> queryByIds(Set<Long> ids);
+
+    boolean existsByRoleId(Long roleId);
 }

@@ -4,6 +4,8 @@ import com.zjj.domain.component.BaseRepository;
 import com.zjj.main.infrastructure.db.jpa.entity.GraphqlResourceEntity;
 import org.springframework.graphql.data.GraphQlRepository;
 
+import java.util.stream.Stream;
+
 /**
  * @author zengJiaJun
  * @version 1.0
@@ -12,5 +14,8 @@ import org.springframework.graphql.data.GraphQlRepository;
 @GraphQlRepository
 public interface GraphqlResourceDao extends BaseRepository<GraphqlResourceEntity, Long> {
 
-    public GraphqlResourceEntity findAll();
+    Stream<GraphqlResourceEntity> findAllByUri(String uri);
+
+
+    void saveAll(Iterable<GraphqlResourceEntity> graphqlResourceList);
 }

@@ -1,25 +1,15 @@
 package com.zjj.domain.component;
 
-import com.zjj.bean.componenet.ApplicationContextHelper;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
+import org.jmolecules.ddd.types.AggregateRoot;
+import org.jmolecules.ddd.types.Identifier;
 import org.springframework.data.util.ProxyUtils;
-import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
-import org.springframework.util.Assert;
-
-import java.beans.BeanProperty;
-import java.time.LocalDateTime;
-import java.util.Objects;
 
 /**
  * @author zengJiaJun
  * @version 1.0
  * @crateTime 2024年11月15日 21:16
  */
-public abstract class Aggregate<ID> {
+public abstract class Aggregate<T extends AggregateRoot<T, ID>, ID extends Identifier> implements AggregateRoot<T, ID> {
 
 
     public abstract ID getId();

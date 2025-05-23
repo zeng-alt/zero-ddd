@@ -21,6 +21,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.server.authorization.AuthorizationContext;
 import org.springframework.security.web.server.util.matcher.PathPatternParserServerWebExchangeMatcher;
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatcher;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
@@ -66,6 +67,9 @@ public class ReactiveGraphqlResourceHandler extends AbstractReactiveResourceHand
         return this.reactiveResourceQueryManager
                 .query1(targetResource, authentication)
                 .flatMap(ps -> {
+                    if (CollectionUtils.isEmpty(ps)) {
+                        return Mono.just(false);
+                    }
                     return load.map(permissions -> {
 //                        permissions.contains(p);
                         for (String p : ps) {
@@ -134,7 +138,7 @@ public class ReactiveGraphqlResourceHandler extends AbstractReactiveResourceHand
             List<Definition> definitions = new Parser().parseDocument(json).getDefinitions();
             if (definitions == null) return result;
             OperationDefinition definition = (OperationDefinition) definitions.get(0);
-            graphqlResource.setOperation(definition.getOperation().toString());
+            graphqlResource.setOperation(StringUtils.capitalize(definition.getOperation().toString().toLowerCase()));
             for (Selection selection : definition.getSelectionSet().getSelections()) {
                 GraphqlResource temp = BeanHelper.copyToObject(graphqlResource, GraphqlResource.class);
                 temp.setFunctionName(((Field) selection).getName());

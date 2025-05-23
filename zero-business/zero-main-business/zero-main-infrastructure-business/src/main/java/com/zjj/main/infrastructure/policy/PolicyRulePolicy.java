@@ -3,10 +3,10 @@ package com.zjj.main.infrastructure.policy;
 import com.zjj.autoconfigure.component.security.abac.AbacCacheManage;
 import com.zjj.autoconfigure.component.security.abac.PolicyRule;
 import com.zjj.main.domain.rule.event.InitPolicyRuleEvent;
-import com.zjj.main.infrastructure.db.jpa.dao.ResourceDao;
+import com.zjj.main.infrastructure.db.jpa.dao.PermissionDao;
 import com.zjj.main.infrastructure.db.jpa.entity.GraphqlResourceEntity;
+import com.zjj.main.infrastructure.db.jpa.entity.Permission;
 import com.zjj.main.infrastructure.db.jpa.entity.PolicyRuleEntity;
-import com.zjj.main.infrastructure.db.jpa.entity.Resource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class PolicyRulePolicy {
 
-    private final ResourceDao resourceDao;
+//    private final ResourceDao resourceDao;
+    private final PermissionDao permissionDao;
     private final AbacCacheManage abacCacheManage;
 
     @Async
@@ -39,7 +40,7 @@ public class PolicyRulePolicy {
     @Transactional(readOnly = true)
     public void on(InitPolicyRuleEvent event) {
 
-        Map<String, Map<Boolean, Set<PolicyRule>>> collect = resourceDao.findAll().stream().collect(Collectors.toMap(Resource::getCode, r -> {
+        Map<String, Map<Boolean, Set<PolicyRule>>> collect = permissionDao.findAll().collect(Collectors.toMap(Permission::getCode, r -> {
             Set<PolicyRuleEntity> rules = r.getRules();
             return rules.stream().collect(Collectors.groupingBy(PolicyRuleEntity::getPreAuth, Collectors.mapping(p -> {
                 PolicyRule policyRule = new PolicyRule();
@@ -68,5 +69,36 @@ public class PolicyRulePolicy {
         this.abacCacheManage.batchPutRule(prePolicyRule, true);
         this.abacCacheManage.batchPutRule(postPolicyRule, false);
         log.info("初始化abac完成");
+
+
+//        Map<String, Map<Boolean, Set<PolicyRule>>> collect = resourceDao.findAll().stream().collect(Collectors.toMap(Resource::getCode, r -> {
+//            Set<PolicyRuleEntity> rules = r.getRules();
+//            return rules.stream().collect(Collectors.groupingBy(PolicyRuleEntity::getPreAuth, Collectors.mapping(p -> {
+//                PolicyRule policyRule = new PolicyRule();
+//                policyRule.setCondition(p.getCondition());
+//                policyRule.setName(p.getName());
+//                policyRule.setDescription(p.getDescription());
+//                return policyRule;
+//            }, Collectors.toSet())));
+//        }));
+//
+//        Map<String, PolicyRule> prePolicyRule = new HashMap<>();
+//        Map<String, PolicyRule> postPolicyRule = new HashMap<>();
+//        for (Map.Entry<String, Map<Boolean, Set<PolicyRule>>> entity : collect.entrySet()) {
+//            for (Map.Entry<Boolean, Set<PolicyRule>> setEntry : entity.getValue().entrySet()) {
+//                if (CollectionUtils.isEmpty(setEntry.getValue())) {
+//                    continue;
+//                }
+//                if (Boolean.TRUE.equals(setEntry.getKey())) {
+//                    prePolicyRule.put(entity.getKey(), setEntry.getValue().stream().findFirst().get());
+//                } else {
+//                    postPolicyRule.put(entity.getKey(), setEntry.getValue().stream().findFirst().get());
+//                }
+//            }
+//        }
+//
+//        this.abacCacheManage.batchPutRule(prePolicyRule, true);
+//        this.abacCacheManage.batchPutRule(postPolicyRule, false);
+//        log.info("初始化abac完成");
     }
 }

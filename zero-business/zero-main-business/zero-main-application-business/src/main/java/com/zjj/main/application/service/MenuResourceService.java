@@ -15,5 +15,7 @@ public interface MenuResourceService {
 
     public Iterable<MenuResource> tree();
 
+    public Iterable<MenuResource> treeAll();
+
     Iterable<MenuResource> button(Long id);
 }

@@ -35,7 +35,7 @@ public interface UserDetailVOTransformation {
     @Mapping(target = "roles", source = "user", qualifiedByName = "mapGrantedAuthority")
     @Mapping(target = "profile", source = "user")
     @Mapping(target = "tenant", source = "tenantBy")
-    @Mapping(target = "enabled", expression = "java(!\"0\".equals(user.getStatus()))")
+//    @Mapping(target = "enabled", expression = "java(!\"0\".equals(user.getStatus()))")
     public UserDetailVO to(User user);
 
     @Named("mapGrantedAuthority")

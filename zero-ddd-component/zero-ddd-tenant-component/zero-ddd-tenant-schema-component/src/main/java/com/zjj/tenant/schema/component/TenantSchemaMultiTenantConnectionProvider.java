@@ -32,7 +32,6 @@ import java.util.concurrent.TimeUnit;
  * @version 1.0
  * @crateTime 2024年12月23日 21:31
  */
-@RequiredArgsConstructor
 @Slf4j
 @Component
 public class TenantSchemaMultiTenantConnectionProvider implements MultiTenantConnectionProvider<String>, TenantDataSourceService {

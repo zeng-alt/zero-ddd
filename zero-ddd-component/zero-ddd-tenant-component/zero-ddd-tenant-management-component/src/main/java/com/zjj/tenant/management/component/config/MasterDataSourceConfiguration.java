@@ -1,5 +1,6 @@
 package com.zjj.tenant.management.component.config;
 
+import com.google.common.collect.Lists;
 import com.zaxxer.hikari.HikariDataSource;
 import com.zjj.exchange.tenant.client.RemoteTenantClient;
 import com.zjj.tenant.management.component.service.TenantCreationException;
@@ -90,7 +91,7 @@ public class MasterDataSourceConfiguration implements BeanClassLoaderAware {
             Environment environment
     ) {
         LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
-        List<String> packageNames = entityScanPackages.getPackageNames();
+        List<String> packageNames = Lists.newArrayList(entityScanPackages.getPackageNames());
         // 判断org.springframework.modulith.events这个包是否存在
         if (classLoader.getResource("org.springframework.modulith.events.jpa".replace(".", "/")) != null) {
             packageNames.add("org.springframework.modulith.events.updating");

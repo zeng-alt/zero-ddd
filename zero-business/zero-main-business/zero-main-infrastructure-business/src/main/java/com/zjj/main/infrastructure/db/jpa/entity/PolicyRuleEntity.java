@@ -24,9 +24,13 @@ public class PolicyRuleEntity extends BaseEntity<Long> implements TenantAuditabl
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+//    @ManyToOne
+//    @JoinColumn(name = "resource_id")
+//    private Resource resource;
+
     @ManyToOne
-    @JoinColumn(name = "resource_id")
-    private Resource resource;
+    @JoinColumn(name = "permission_id")
+    private Permission permission;
 
     private String name;
     private String description;

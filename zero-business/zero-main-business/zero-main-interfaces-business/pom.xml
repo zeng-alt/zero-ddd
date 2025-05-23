@@ -36,11 +36,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.zjj</groupId>
-            <artifactId>zero-main-application-business</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
         </dependency>
@@ -48,6 +43,11 @@
         <dependency>
             <groupId>com.zjj</groupId>
             <artifactId>zero-ddd-cache-component</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.zjj</groupId>
+            <artifactId>zero-main-application-business</artifactId>
         </dependency>
     </dependencies>
 

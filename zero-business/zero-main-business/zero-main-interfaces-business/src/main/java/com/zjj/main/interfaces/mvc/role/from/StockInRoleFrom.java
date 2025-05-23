@@ -7,6 +7,7 @@ import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author zengJiaJun
@@ -25,23 +26,24 @@ public class StockInRoleFrom implements Serializable {
     /**
      * 角色名称
      */
-    private String roleName;
+    private String name;
 
     /**
      * 角色权限
      */
-    private String roleKey;
+    private String code;
 
     /**
      * 角色排序
      */
     private Integer roleSort;
 
+    private List<Long> permissionIds;
 
     /**
      * 角色状态（0正常 1停用）
      */
-    private String status = "0";
+    private Boolean enable = true;
 
     /**
      * 删除标志（0代表存在 2代表删除）

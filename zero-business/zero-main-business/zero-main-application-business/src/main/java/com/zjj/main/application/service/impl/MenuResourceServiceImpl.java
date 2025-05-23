@@ -35,6 +35,7 @@ public class MenuResourceServiceImpl implements MenuResourceService {
         QPermission permission = QPermission.permission;
         QMenuResource menuResource = QMenuResource.menuResource;
 
+
         return jpaQueryFactory
                 // 同时在 from 中包含 rolePermission 与 menuResource
                 .select(menuResource)
@@ -43,9 +44,7 @@ public class MenuResourceServiceImpl implements MenuResourceService {
                 .join(rolePermission.permission, permission)
                 .where(
                         // 关联 Permission.resource 与 MenuResource，依赖于 JOINED 策略下共享的 ID
-                        permission.resource.id.eq(menuResource.id),
                         // 限定资源类型为 "HTTP"
-                        permission.resource.resourceType.eq("HTTP"),
                         // 角色编码条件
                         rolePermission.role.code.eq(roleCode),
                         // 只取顶级菜单（没有父菜单的）
@@ -60,6 +59,12 @@ public class MenuResourceServiceImpl implements MenuResourceService {
     public Iterable<MenuResource> tree() {
         QMenuResource menuResource = QMenuResource.menuResource;
         return menuResourceDao.findAll(menuResource.parentMenu.isNull().and(menuResource.type.eq("MENU")), menuResource.order.asc());
+    }
+
+    @Override
+    public Iterable<MenuResource> treeAll() {
+        QMenuResource menuResource = QMenuResource.menuResource;
+        return menuResourceDao.findAll(menuResource.parentMenu.isNull(), menuResource.order.asc());
     }
 
     @Override

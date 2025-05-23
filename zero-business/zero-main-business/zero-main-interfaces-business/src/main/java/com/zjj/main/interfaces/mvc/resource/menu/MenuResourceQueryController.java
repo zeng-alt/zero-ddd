@@ -32,7 +32,7 @@ public class MenuResourceQueryController {
     private final MenuResourceVOTransformation transformation;
 
     @GetMapping("/tree")
-    @AbacPreAuthorize("GetMenuTree")
+//    @AbacPreAuthorize("GetMenuTree")
     public ResponseEntity<List<MenuResourceVO>> tree(TestVo testVo) {
         List<MenuResourceVO> result = new LinkedList<>();
         SecurityUser securityUser = UserContextHolder.getSecurityUser();
@@ -57,11 +57,20 @@ public class MenuResourceQueryController {
         private Double weight;
     }
 
-    @GetMapping("/tree/all")
-    public ResponseEntity<List<MenuResourceVO>> treeAll() {
+    @GetMapping("/tree/menu")
+    public ResponseEntity<List<MenuResourceVO>> treeMenu() {
         List<MenuResourceVO> result = new LinkedList<>();
         for (MenuResource menuResource : this.menuResourceService.tree()) {
             result.add(this.transformation.toFilterButton(menuResource));
+        }
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/tree/all")
+    public ResponseEntity<List<MenuResourceVO>> treeAll() {
+        List<MenuResourceVO> result = new LinkedList<>();
+        for (MenuResource menuResource : this.menuResourceService.treeAll()) {
+            result.add(this.transformation.to(menuResource));
         }
         return ResponseEntity.ok(result);
     }

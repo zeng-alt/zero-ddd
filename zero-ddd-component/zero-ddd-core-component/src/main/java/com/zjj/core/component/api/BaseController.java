@@ -1,5 +1,6 @@
 package com.zjj.core.component.api;
 
+import com.zjj.bean.componenet.BeanHelper;
 import io.github.linpeilie.Converter;
 import jakarta.annotation.Resource;
 
@@ -23,6 +24,15 @@ public abstract class BaseController {
 
     public <S, T> T convert(S s, Class<T> t) {
         return converter.convert(s, t);
+    }
+
+    public <S> Convert beanConvert(S s) {
+        return new Convert() {
+            @Override
+            public <T> Consumer<Consumer<T>> to(Class<T> t) {
+                return tConsumer -> tConsumer.accept(BeanHelper.copyToObject(s, t));
+            }
+        };
     }
 
     public <S> Convert convert(S s) {

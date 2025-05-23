@@ -51,12 +51,17 @@ public class DictData extends BaseEntity<Long> implements TenantAuditable<String
     /**
      * 是否默认（Y是 N否）
      */
-    private String isDefault;
+    private Boolean isDefault;
 
     /**
      * 备注
      */
     private String remark;
+
+    /**
+     * 状态（0正常 1停用）
+     */
+    private Boolean status = true;
 
     @TenantId
     @Nullable
