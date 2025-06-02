@@ -23,6 +23,12 @@ public class RoleHandler {
         this.roleFactory.create(cmd).forEach(r -> r.stockIn(cmd));
     }
 
+
+    @CommandHandler
+    public void handler(AuthorizePermissionCmd cmd) {
+        roleRepository.findAllByIdIn(cmd.getRoleIds()).forEach(r -> r.authorizePermission(cmd));
+    }
+
     @CommandHandler
     public void handler(FunctionAuthorizeCmd cmd) {
         roleRepository.findAllByIdIn(cmd.getRoleIds()).forEach(r -> r.functionAuthorize(cmd));

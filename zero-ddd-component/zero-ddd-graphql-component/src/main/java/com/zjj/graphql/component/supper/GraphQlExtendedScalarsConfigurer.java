@@ -35,7 +35,7 @@ public class GraphQlExtendedScalarsConfigurer implements RuntimeWiringConfigurer
 
         @Override
         public LocalDateTime parseValue(Object input) {
-            return LocalDateTime.parse(((StringValue) input).getValue(), formatter);
+            return LocalDateTime.parse(String.valueOf(input), formatter);
         }
 
         @Override

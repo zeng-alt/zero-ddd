@@ -40,6 +40,11 @@ public class RoleFactory {
             throw new BaseI18nException("roleKey.exists", "roleKey.exists", cmd.code());
         }
 
-        return Option.of(roleAgg).orElse(Option.of(BeanHelper.copyToObject(cmd, RoleAgg.class)));
+        if (roleAgg == null) {
+            roleAgg = BeanHelper.copyToObject(cmd, RoleAgg.class);
+            roleRepository.save(roleAgg);
+        }
+
+        return Option.of(roleAgg);
     }
 }

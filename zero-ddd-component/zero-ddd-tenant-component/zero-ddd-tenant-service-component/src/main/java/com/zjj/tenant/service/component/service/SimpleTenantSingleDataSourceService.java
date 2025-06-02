@@ -8,6 +8,8 @@ import io.vavr.control.Option;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Objects;
+
 /**
  * @author zengJiaJun
  * @crateTime 2025年03月16日 12:53
@@ -20,7 +22,10 @@ public class SimpleTenantSingleDataSourceService implements TenantSingleDataSour
 
     @Override
     public Option<Tenant> findById(String tenantKey) {
-        return tenantRepository.findByTenantKey(tenantKey)
+        return tenantRepository
+                .findByTenantKey(tenantKey)
+                .filter(t -> Objects.nonNull(t.getTenantDataSource()))
+                .filter(t -> Boolean.FALSE.equals(t.getTenantDataSource().getEnabled()))
                 .map(t -> {
                     TenantDataSourceEntity dataSource = t.getTenantDataSource();
                     return Tenant.builder()

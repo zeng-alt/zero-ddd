@@ -20,7 +20,7 @@ public interface MenuResourceVOTransformation {
 
 
     @Mapping(target = "parentId", source = "parentMenu.id")
-    @Mapping(target = "children", expression = "java(this.to(menuResource.getChileMenus()))")
+    @Mapping(target = "children", expression = "java(this.to(menuResource.getChildren()))")
     public MenuResourceVO to(MenuResource menuResource);
 
 
@@ -37,7 +37,7 @@ public interface MenuResourceVOTransformation {
     }
 
     @Mapping(target = "parentId", source = "parentMenu.id")
-    @Mapping(target = "children", expression = "java(this.toFilterButton(menuResource.getChileMenus()))")
+    @Mapping(target = "children", expression = "java(this.toFilterButton(menuResource.getChildren()))")
     MenuResourceVO toFilterButton(MenuResource menuResource);
 
     default List<MenuResourceVO> toFilterButton(List<MenuResource> menuResources) {
@@ -46,11 +46,11 @@ public interface MenuResourceVOTransformation {
         }
         LinkedList<MenuResourceVO> result = new LinkedList<>();
         for (MenuResource menuResource : menuResources) {
-            if ("BUTTON".equals(menuResource.getType())) continue;
+//            if ("BUTTON".equals(menuResource.getType())) continue;
             MenuResourceVO menuResourceVO = this.to(menuResource);
 
-            if (!CollectionUtils.isEmpty(menuResource.getChileMenus())) {
-                menuResourceVO.setChildren(this.toFilterButton(menuResource.getChileMenus()));
+            if (!CollectionUtils.isEmpty(menuResource.getChildren())) {
+                menuResourceVO.setChildren(this.toFilterButton(menuResource.getChildren()));
             }
             result.add(menuResourceVO);
         }

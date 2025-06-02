@@ -25,6 +25,7 @@ import java.util.Set;
 @SQLRestriction(value = "deleted = 0")
 @Table(name = "main_role")
 public class Role extends BaseEntity<Long> implements TenantAuditable<String> {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -43,6 +44,9 @@ public class Role extends BaseEntity<Long> implements TenantAuditable<String> {
 
     @OneToMany(mappedBy = "role")
     private Set<RolePrecondition> rolePreconditions = new LinkedHashSet<>();
+
+//    @OneToMany(mappedBy = "role", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+//    private Set<RoleMenu> roleMenus = new LinkedHashSet<>();
 
     /**
      * 角色名称

@@ -1,10 +1,13 @@
 package com.zjj.main.infrastructure.db.jpa.entity;
 
 import com.zjj.core.component.api.Parent;
+import com.zjj.domain.component.BaseEntity;
+import com.zjj.domain.component.TenantAuditable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.util.StringUtils;
+import org.hibernate.annotations.TenantId;
+import org.springframework.lang.Nullable;
 
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -20,8 +23,8 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "main_menu_resource")
-@DiscriminatorValue("HTTP")
-public class MenuResource extends Permission implements Parent<Long> {
+@DiscriminatorValue("MENU")
+public class MenuResource extends Permission {
 
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,7 +41,7 @@ public class MenuResource extends Permission implements Parent<Long> {
      * 子菜单
      */
     @OneToMany(mappedBy = "parentMenu", cascade = {CascadeType.REFRESH}, fetch = FetchType.LAZY)
-    private List<MenuResource> chileMenus = new LinkedList<>();
+    private List<MenuResource> children = new LinkedList<>();
 
 //    private String name;
 //    private String code;
@@ -49,7 +52,6 @@ public class MenuResource extends Permission implements Parent<Long> {
     private String component;
     private String layout;
     private String keepAlive;
-    private String method;
     private String description;
     private Boolean show;
     private Boolean enable;
@@ -57,28 +59,18 @@ public class MenuResource extends Permission implements Parent<Long> {
     @Column(name = "resource_order")
     private Integer order;
 
+//    @OneToMany(mappedBy = "menuResource")
+//    private Set<RoleMenu> roleMenus = new LinkedHashSet<>();
 
+//    @Override
+//    public Long parent() {
+////        return parentMenu == null ? null : parentMenu.getId();
+//        return 0L;
+//    }
 
-    @Override
-    public Long parent() {
-//        return parentMenu == null ? null : parentMenu.getId();
-        return 0L;
-    }
+//    @Override
+//    public Long current() {
+//        return getId();
+//    }
 
-    @Override
-    public Long current() {
-        return getId();
-    }
-
-
-    @Override
-    public boolean isEmpty() {
-        return !StringUtils.hasText(this.path) || !StringUtils.hasText(this.method);
-    }
-
-    @Override
-    @Transient
-    public String getKey() {
-        return "http" + ":" + this.path + ":" + this.method;
-    }
 }

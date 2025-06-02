@@ -34,13 +34,13 @@ public class EntityMutationDefinitionConfigurer implements TypeDefinitionConfigu
                         Lists.newArrayList(
                             FieldDefinition
                                     .newFieldDefinition()
-                                    .name("save" + entity.getType())
+                                    .name("saveAll" + entity.getType())
                                     .inputValueDefinitions(
                                             Lists.newArrayList(
                                                     InputValueDefinition
                                                         .newInputValueDefinition()
                                                         .name(entity.getInputName())
-                                                        .type(entity.getInputType())
+                                                        .type(ListType.newListType(entity.getInputType()).build())
                                                         .build(),
                                                     InputValueDefinition
                                                         .newInputValueDefinition()
@@ -50,8 +50,28 @@ public class EntityMutationDefinitionConfigurer implements TypeDefinitionConfigu
                                                         .build()
                                             )
                                     )
-                                    .type(entity.getEntityType())
+                                    .type(ListType.newListType(entity.getEntityType()).build())
                                     .build(),
+                                FieldDefinition
+                                        .newFieldDefinition()
+                                        .name("save" + entity.getType())
+                                        .inputValueDefinitions(
+                                                Lists.newArrayList(
+                                                        InputValueDefinition
+                                                                .newInputValueDefinition()
+                                                                .name(entity.getInputName())
+                                                                .type(entity.getInputType())
+                                                                .build(),
+                                                        InputValueDefinition
+                                                                .newInputValueDefinition()
+                                                                .name("ignoringNull")
+                                                                .type(TypeName.newTypeName("Boolean").build())
+                                                                .defaultValue(new BooleanValue(true))
+                                                                .build()
+                                                )
+                                        )
+                                        .type(entity.getEntityType())
+                                        .build(),
                                 FieldDefinition
                                         .newFieldDefinition()
                                         .name("delete" + entity.getType() + "Ids")

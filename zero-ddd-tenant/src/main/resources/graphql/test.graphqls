@@ -2,3 +2,7 @@ type Query {
     run: String
 }
 
+type Mutation {
+    saveRun: String
+}
+

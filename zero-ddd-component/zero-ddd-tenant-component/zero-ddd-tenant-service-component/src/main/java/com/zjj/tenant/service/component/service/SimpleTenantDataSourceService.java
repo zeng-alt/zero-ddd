@@ -24,6 +24,7 @@ public class SimpleTenantDataSourceService implements TenantDataSourceProvider {
         return tenantRepository.findAll()
                 .stream()
                 .filter(t -> Objects.nonNull(t.getTenantDataSource()))
+                .filter(t -> Boolean.FALSE.equals(t.getTenantDataSource().getEnabled()))
                 .map(t -> {
                     TenantDataSourceEntity dataSource = t.getTenantDataSource();
                     return Tenant.builder()

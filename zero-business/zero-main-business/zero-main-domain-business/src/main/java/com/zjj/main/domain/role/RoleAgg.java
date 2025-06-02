@@ -52,7 +52,49 @@ public class RoleAgg extends Aggregate<RoleAgg, RoleId> implements Role {
             }
         }
 
-        Set<Long> modifiedSet = CollectionUtils.isEmpty(cmd.permissionIds()) ? new HashSet<>() : new HashSet<>(cmd.permissionIds());
+        this.authorizePermission(cmd.permissionIds(), originalSet);
+
+//        Set<Long> modifiedSet = CollectionUtils.isEmpty(cmd.permissionIds()) ? new HashSet<>() : new HashSet<>(cmd.permissionIds());
+//
+//        // 新增的 ID（modified 中有，original 中没有）
+//        Set<Long> addedIds = new HashSet<>(modifiedSet);
+//        addedIds.removeAll(originalSet);
+//
+//        if (!CollectionUtils.isEmpty(addedIds)) {
+//            StockInRolePermissionEvent event = new StockInRolePermissionEvent();
+//            event.setRoleCode(this.getCode());
+//            event.setPermissionId(addedIds);
+//            ApplicationContextHelper.publisher().publishEvent(event);
+//        }
+//
+//        // 删除的 ID（original 中有，modified 中没有）
+//        Set<Long> removedIds = new HashSet<>(originalSet);
+//        removedIds.removeAll(modifiedSet);
+//
+//        if (!CollectionUtils.isEmpty(removedIds)) {
+//            DeleteRolePermissionEvent event = new DeleteRolePermissionEvent();
+//            event.setRoleCode(this.getCode());
+//            event.setPermissionId(removedIds);
+//            ApplicationContextHelper.publisher().publishEvent(event);
+//        }
+    }
+
+    @Override
+    public void authorizePermission(AuthorizePermissionCmd cmd) {
+        Set<Long> originalSet = new HashSet<>();
+
+        if (!CollectionUtils.isEmpty(this.permissions)) {
+            this.permissions
+                    .stream()
+                    .map(permission -> permission.getId().getId())
+                    .forEach(originalSet::add);
+        }
+        this.authorizePermission(cmd.getPermissionIds(), originalSet);
+    }
+
+
+    private void authorizePermission(Set<Long> permissionIds, Set<Long> originalSet) {
+        Set<Long> modifiedSet = CollectionUtils.isEmpty(permissionIds) ? new HashSet<>() : new HashSet<>(permissionIds);
 
         // 新增的 ID（modified 中有，original 中没有）
         Set<Long> addedIds = new HashSet<>(modifiedSet);
@@ -75,7 +117,6 @@ public class RoleAgg extends Aggregate<RoleAgg, RoleId> implements Role {
             event.setPermissionId(removedIds);
             ApplicationContextHelper.publisher().publishEvent(event);
         }
-
     }
 
     @Override
@@ -113,4 +154,6 @@ public class RoleAgg extends Aggregate<RoleAgg, RoleId> implements Role {
         }
         ApplicationContextHelper.publisher().publishEvent(ServiceCancelAuthorizeEvent.of(cmd.getService(), this.id.getId()));
     }
+
+
 }

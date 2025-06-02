@@ -1,5 +1,6 @@
 package com.zjj.main.application.service;
 
+import com.zjj.main.application.dto.MenuResourceDTO;
 import com.zjj.main.infrastructure.db.jpa.entity.MenuResource;
 
 import java.util.List;
@@ -11,11 +12,13 @@ import java.util.List;
  */
 public interface MenuResourceService {
 
-    public Iterable<MenuResource> tree(String username, String roleCode);
+    public List<MenuResourceDTO> tree(String username, String roleCode);
 
-    public Iterable<MenuResource> tree();
+    public List<MenuResourceDTO> tree();
 
-    public Iterable<MenuResource> treeAll();
+    public List<MenuResourceDTO> treeMenu();
+
+    public List<MenuResourceDTO> treeAll();
 
     Iterable<MenuResource> button(Long id);
 }

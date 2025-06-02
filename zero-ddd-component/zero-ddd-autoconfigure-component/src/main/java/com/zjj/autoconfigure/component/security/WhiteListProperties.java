@@ -37,7 +37,7 @@ public class WhiteListProperties {
                 GraphqlResource graphqlResource = new GraphqlResource();
                 graphqlResource.setUri(uri);
                 graphqlResource.setMethod(HttpMethod.POST.name());
-                graphqlResource.setOperation("QUERY");
+                graphqlResource.setOperation("Query");
                 graphqlResource.setFunctionName(function);
                 result.add(graphqlResource);
             }
@@ -45,7 +45,7 @@ public class WhiteListProperties {
                 GraphqlResource graphqlResource = new GraphqlResource();
                 graphqlResource.setUri(uri);
                 graphqlResource.setMethod(HttpMethod.POST.name());
-                graphqlResource.setOperation("MUTATION");
+                graphqlResource.setOperation("Mutation");
                 graphqlResource.setFunctionName(function);
                 result.add(graphqlResource);
             }

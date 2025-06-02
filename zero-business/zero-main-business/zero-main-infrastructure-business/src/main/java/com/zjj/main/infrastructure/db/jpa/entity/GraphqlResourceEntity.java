@@ -18,6 +18,8 @@ public class GraphqlResourceEntity extends Permission {
     private String functionName;
     @Column
     private String uri;
+    @Column
+    private Long menuId;
 
 
     @Override

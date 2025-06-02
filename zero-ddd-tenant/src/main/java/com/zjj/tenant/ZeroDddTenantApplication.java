@@ -4,10 +4,7 @@ import com.google.common.collect.Sets;
 import com.zjj.autoconfigure.component.security.rbac.GraphqlResource;
 import com.zjj.autoconfigure.component.security.rbac.HttpResource;
 import com.zjj.autoconfigure.component.security.rbac.RbacCacheManage;
-import com.zjj.graphql.component.annotations.EnableGenEntityFuzzyQuery;
-import com.zjj.graphql.component.annotations.EnableGenEntityInput;
-import com.zjj.graphql.component.annotations.EnableGenEntityQuery;
-import com.zjj.graphql.component.annotations.EnableGenEntityType;
+import com.zjj.graphql.component.annotations.*;
 import com.zjj.security.tenant.component.EnableTenantJwtCache;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +34,7 @@ import java.util.Map;
 @EnableGenEntityInput
 @EnableGenEntityQuery
 @EnableGenEntityFuzzyQuery
+@EnableGenEntityMutation
 @EnableScheduling
 //@EnablePersistentDomainEvents
 public class ZeroDddTenantApplication {

@@ -11,6 +11,7 @@ import com.zjj.main.interfaces.mvc.user.transformation.UserDetailVOTransformatio
 import com.zjj.main.interfaces.mvc.user.vo.UserDetailVO;
 import com.zjj.security.abac.component.annotation.AbacPreAuthorize;
 import com.zjj.security.abac.component.annotation.AbacPreHttpAuthorize;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +36,7 @@ public class UserQueryController {
     private final UserService userService;
     private final UserDetailVOTransformation transformation;
 
+    @Operation(summary = "获取当前用户信息")
     @GetMapping("/detail")
     public ResponseEntity<UserDetailVO> detail(HttpServletRequest request) {
         String soleId = request.getHeader(jwtProperties.getFastToken());
@@ -43,6 +45,7 @@ public class UserQueryController {
         return ResponseEntity.ok(transformation.to(securityUser, userProfile));
     }
 
+    @Operation(summary = "根据id获取用户信息")
     @GetMapping("/detail/{id}")
     public ResponseEntity<UserDetailVO> detailById(@PathVariable Long id) {
         return userService

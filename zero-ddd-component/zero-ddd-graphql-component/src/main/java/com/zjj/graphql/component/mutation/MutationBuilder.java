@@ -79,6 +79,10 @@ public class MutationBuilder<T, ID, R> {
         return new SaveEntityFetcher<>(this.executor, this.domainType, (Class<T>) this.resultType, this.idType, this.customizer, this.template, handlers);
     }
 
+    public DataFetcher<Iterable<T>> saveAll(List<EntitySaveHandler<T>> handlers) {
+        return new SaveAllEntityFetcher<>(this.executor, this.domainType, (Class<T>) this.resultType, this.idType, this.customizer, this.template, handlers);
+    }
+
     public DataFetcher<T> save() {
         return save(List.of());
     }

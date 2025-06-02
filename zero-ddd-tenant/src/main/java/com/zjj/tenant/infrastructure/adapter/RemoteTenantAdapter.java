@@ -10,6 +10,7 @@ import org.jmolecules.architecture.hexagonal.Adapter;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author zengJiaJun
@@ -25,7 +26,10 @@ public class RemoteTenantAdapter implements RemoteTenantApi {
 
     @Override
     public Option<Tenant> findById(String tenantKey) {
-        return tenantDao.findByTenantKey(tenantKey)
+        return tenantDao
+                .findByTenantKey(tenantKey)
+                .filter(t -> Objects.nonNull(t.getTenantDataSource()))
+                .filter(t -> Boolean.FALSE.equals(t.getTenantDataSource().getEnabled()))
                 .map(t -> {
                     TenantDataSourceEntity dataSource = t.getTenantDataSource();
                     return Tenant.builder()
@@ -42,6 +46,9 @@ public class RemoteTenantAdapter implements RemoteTenantApi {
     public List<Tenant> findAll() {
         return tenantDao.findAll()
                 .stream()
+                .filter(t -> Objects.nonNull(t.getTenantDataSource()))
+                .filter(t -> Boolean.FALSE.equals(t.getTenantDataSource().getEnabled()))
+                .filter(t -> t.getTenantDataSource().getEnabled())
                 .map(t -> {
                     TenantDataSourceEntity dataSource = t.getTenantDataSource();
                     return Tenant.builder()

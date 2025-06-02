@@ -22,6 +22,7 @@ public record EntityMutationFetcherConfigurer(List<BaseRepository> repositories,
             for (BaseRepository repository : repositories) {
                 EntityType<?> type = entityContext.entity(repository);
                 typeWiring.dataFetcher("save" + type, MutationDataFetcher.builder(repository, template).save(entityContext.getSaveHandlers(type.getName())));
+                typeWiring.dataFetcher("saveAll" + type, MutationDataFetcher.builder(repository, template).saveAll(entityContext.getSaveHandlers(type.getName())));
                 typeWiring.dataFetcher("delete" + type + "Ids", MutationDataFetcher.builder(repository, template).deleteId());
             }
             return typeWiring;

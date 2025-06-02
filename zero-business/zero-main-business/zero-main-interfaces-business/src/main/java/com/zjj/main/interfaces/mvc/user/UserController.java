@@ -43,7 +43,7 @@ public class UserController extends AbstractTxController {
         return "ok";
     }
 
-    @Operation(summary = "授权角色")
+    @Operation(summary = "授权用户角色")
     @PatchMapping("/assign/{userId}")
     public String assignRole(@PathVariable Long userId, @RequestBody Set<Long> roleIds) {
         this.commandBus.emit(new AssignUserRoleCmd(userId, roleIds));
@@ -51,7 +51,7 @@ public class UserController extends AbstractTxController {
     }
 
 
-    @Operation(summary = "批量授权角色")
+    @Operation(summary = "批量授权用户角色")
     @PatchMapping("/add/role/{roleId}")
     public String addUserRole(@PathVariable Long roleId, @RequestBody Set<Long> userIds) {
         this.commandBus.emit(new AssignRoleCmd(roleId, userIds));
@@ -59,7 +59,7 @@ public class UserController extends AbstractTxController {
     }
 
 
-    @Operation(summary = "批量取消授权角色")
+    @Operation(summary = "批量取消授权用户角色")
     @PatchMapping("/remove/role/{roleId}")
     public String removeUserRole(@PathVariable Long roleId, @RequestBody Set<Long> userIds) {
         this.commandBus.emit(new CancelAssignRoleCmd(roleId, userIds));

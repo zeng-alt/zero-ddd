@@ -8,10 +8,7 @@ import com.zjj.main.domain.role.event.InitRbacEvent;
 import com.zjj.main.infrastructure.db.jpa.dao.GraphqlResourceDao;
 import com.zjj.main.infrastructure.db.jpa.dao.PermissionDao;
 import com.zjj.main.infrastructure.db.jpa.dao.RoleDao;
-import com.zjj.main.infrastructure.db.jpa.entity.GraphqlResourceEntity;
-import com.zjj.main.infrastructure.db.jpa.entity.MenuResource;
-import com.zjj.main.infrastructure.db.jpa.entity.Permission;
-import com.zjj.main.infrastructure.db.jpa.entity.RolePermission;
+import com.zjj.main.infrastructure.db.jpa.entity.*;
 import com.zjj.security.rbac.client.component.GraphqlTemplateSupper;
 import io.vavr.Tuple;
 import io.vavr.Tuple2;
@@ -72,13 +69,17 @@ public class RolePolicy {
             return Tuple.of(code, permissions);
         }).collect(Collectors.toMap(t -> t._1, Tuple2::_2));
         rbacCacheManage.putRole(roleMap);
-        Map<String, String> permissionMap = permissionDao.findAll().filter(p -> !p.isEmpty()).filter(p -> {
-//            Resource resource = p.getResource();
-            if (p instanceof MenuResource menuResource) {
-                return "BUTTON".equals(menuResource.getType());
-            }
-            return true;
-        }).collect(Collectors.toMap(p -> p.getKey(), Permission::getCode));
+        Map<String, String> permissionMap = permissionDao
+                .findAll()
+                .filter(p -> !p.isEmpty())
+//                .filter(p -> {
+//        //            Resource resource = p.getResource();
+//                    if (p instanceof HttpResource) {
+//                        return true;
+//                    }
+//                    return true;
+//                })
+                .collect(Collectors.toMap(p -> p.getKey(), Permission::getCode));
         rbacCacheManage.batchPutPermission(permissionMap);
         log.info("初始化rbac完成");
     }

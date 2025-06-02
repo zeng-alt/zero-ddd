@@ -1,9 +1,6 @@
 package com.zjj.main.domain.role;
 
-import com.zjj.main.domain.role.cmd.FunctionAuthorizeCmd;
-import com.zjj.main.domain.role.cmd.FunctionCancelAuthorizeCmd;
-import com.zjj.main.domain.role.cmd.ServiceAuthorizeCmd;
-import com.zjj.main.domain.role.cmd.ServiceCancelAuthorizeCmd;
+import com.zjj.main.domain.role.cmd.*;
 
 /**
  * @author zengJiaJun
@@ -18,4 +15,6 @@ public interface Role {
     void serviceAuthorize(ServiceAuthorizeCmd cmd);
 
     void serviceCancelAuthorize(ServiceCancelAuthorizeCmd cmd);
+
+    void authorizePermission(AuthorizePermissionCmd cmd);
 }

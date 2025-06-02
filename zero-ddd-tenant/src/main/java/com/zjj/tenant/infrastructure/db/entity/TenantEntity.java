@@ -89,12 +89,12 @@ public class TenantEntity  extends BaseEntity<Long> implements Serializable {
     /**
      * 租户状态（0正常 1停用）
      */
-    private String status = "1";
+    private String status;
 
-    @OneToOne(orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "tenant_data_source_id")
     private TenantDataSourceEntity tenantDataSource;
 
-    @OneToMany(mappedBy = "tenant", orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "tenant", cascade = CascadeType.ALL)
     private Set<TenantMenuEntity> tenantMenus = new LinkedHashSet<>();
 }

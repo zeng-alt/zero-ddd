@@ -17,9 +17,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author zengJiaJun
@@ -62,16 +60,40 @@ public abstract class MutationDataFetcher<T, ID> {
         MultiValueMap<String, Object> temp = new LinkedMultiValueMap<>();
         for (Map.Entry<String, List<Object>> entry : parameters.entrySet()) {
             String key = entry.getKey();
-            if (key.indexOf(".") >= 0) {
-                key = key.substring(key.indexOf(".") + 1, key.length());
+            if (key.contains(".")) {
+                key = key.substring(key.indexOf(".") + 1);
             }
             temp.put(key, entry.getValue());
         }
-//        T t = BeanUtils.instantiateClass(this.domainType.getType());
-//        for (Map.Entry<String, List<Object>> entity : parameters.entrySet()) {
-//
-//        }
         return ENTITY_BUILDER.getEntity(this.domainType, temp, bindings);
+    }
+
+
+    protected List<T> buildListEntity(DataFetchingEnvironment environment) {
+        QuerydslBindings bindings = new QuerydslBindings();
+        EntityPath<?> path = SimpleEntityPathResolver.INSTANCE.createPath(this.domainType.getType());
+
+        this.customizer.customize(bindings, path);
+        MultiValueMap<String, Object> parameters = new LinkedMultiValueMap();
+        this.addParameters(null, getArgumentValues(environment), parameters);
+        List<MultiValueMap<String, Object>> entity = new ArrayList<>();
+        parameters.remove("ignoringNull");
+        Map.Entry<String, List<Object>> next = parameters.entrySet().iterator().next();
+        List<Object> value = next.getValue();
+        for (Object o : value) {
+            if (o instanceof Map<?, ?> map) {
+                MultiValueMap<String, Object> temp = new LinkedMultiValueMap<>();
+                for (Map.Entry<?, ?> entry : map.entrySet()) {
+                    String key = (String) entry.getKey();
+                    if (key.contains(".")) {
+                        key = key.substring(key.indexOf(".") + 1);
+                    }
+                    temp.put(key, entry.getValue() instanceof List ? (List<Object>) entry.getValue() : Collections.singletonList(entry.getValue()));
+                }
+                entity.add(temp);
+            }
+        }
+        return entity.stream().map(e -> ENTITY_BUILDER.getEntity(this.domainType, e, bindings)).toList();
     }
 
     @SuppressWarnings("unchecked")
