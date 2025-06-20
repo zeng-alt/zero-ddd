@@ -7,6 +7,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import com.zjj.autoconfigure.component.tenant.MultiTenancyProperties;
 import com.zjj.autoconfigure.component.tenant.Tenant;
 import com.zjj.autoconfigure.component.tenant.TenantContextHolder;
+import com.zjj.core.component.crypto.EncryptionService;
 import com.zjj.tenant.management.component.service.TenantConnectionService;
 import com.zjj.tenant.database.component.exception.TenantDataSourceException;
 import com.zjj.tenant.database.component.TenantDatabaseInitService;
@@ -50,6 +51,7 @@ public class TenantMixedDataSourceRoutingDatasource extends AbstractRoutingDataS
     private final MultiTenancyProperties multiTenancyProperties;
     private final TenantInitDataSourceService tenantDatabaseInitService;
     private final TenantInitDataSourceService tenantSchemaInitService;
+    private final EncryptionService encryptionService;
 
 //    @PostConstruct
     private void createCache() {
@@ -78,7 +80,8 @@ public class TenantMixedDataSourceRoutingDatasource extends AbstractRoutingDataS
             DataSourceProperties dataSourceProperties,
 //            TenantSingleDataSourceProvider tenantSingleDataSourceProvider,
             BeanFactory beanFactory,
-            MultiTenancyProperties multiTenancyProperties
+            MultiTenancyProperties multiTenancyProperties,
+            EncryptionService encryptionService
     ) {
         this.masterDataSource = dataSource;
         this.setDefaultTargetDataSource(dataSource);
@@ -89,6 +92,7 @@ public class TenantMixedDataSourceRoutingDatasource extends AbstractRoutingDataS
         this.multiTenancyProperties = multiTenancyProperties;
         this.tenantDatabaseInitService = new TenantDatabaseInitService(multiTenancyProperties);
         this.tenantSchemaInitService = new TenantSchemaInitService(multiTenancyProperties);
+        this.encryptionService = encryptionService;
     }
 
     @Override
@@ -175,7 +179,7 @@ public class TenantMixedDataSourceRoutingDatasource extends AbstractRoutingDataS
 
     @Override
     public DataSource createDatasource(Tenant tenant) {
-
+        tenant.setPassword(encryptionService.decrypt(tenant.getPassword()));
         tenantDatabaseInitService.initDataSource(tenant, getResolvedDefaultDataSource());
 
         HikariDataSource ds = (HikariDataSource) this.tenantDataSources.getIfPresent(tenant.getDb());

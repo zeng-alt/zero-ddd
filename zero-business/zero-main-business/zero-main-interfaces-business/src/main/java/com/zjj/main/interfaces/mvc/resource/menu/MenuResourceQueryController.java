@@ -8,11 +8,8 @@ import com.zjj.main.application.service.MenuResourceService;
 import com.zjj.main.infrastructure.db.jpa.entity.MenuResource;
 import com.zjj.main.interfaces.mvc.resource.menu.transformation.MenuResourceVOTransformation;
 import com.zjj.main.interfaces.mvc.resource.menu.vo.MenuResourceVO;
-import com.zjj.security.abac.component.annotation.AbacPostAuthorize;
-import com.zjj.security.abac.component.annotation.AbacPreAuthorize;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -72,6 +69,7 @@ public class MenuResourceQueryController {
         return ResponseEntity.ok(this.menuResourceService.treeAll());
     }
 
+
     @Operation(summary = "获取菜单下的按钮")
     @GetMapping("/button/{id}")
     public ResponseEntity<List<MenuResourceVO>> button(@PathVariable Long id) {
@@ -81,5 +79,12 @@ public class MenuResourceQueryController {
         }
         return ResponseEntity.ok(result);
 
+    }
+
+
+    @Operation(summary = "验证菜单路径")
+    @GetMapping("/validate")
+    public ResponseEntity<Boolean> validateMenuPath(@RequestParam("path") String path) {
+        return ResponseEntity.ok(this.menuResourceService.validateMenuPath(path));
     }
 }

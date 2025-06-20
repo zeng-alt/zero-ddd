@@ -1,6 +1,8 @@
 package com.zjj.tenant.domain.tenant;
 
 import com.zjj.autoconfigure.component.tenant.TenantMode;
+import com.zjj.security.abac.component.annotation.Schema;
+import com.zjj.security.abac.component.annotation.SchemaProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.Value;
@@ -14,10 +16,13 @@ import org.jmolecules.ddd.types.Identifier;
  */
 @Getter
 @Setter
+@Schema(name = "数据源")
 public class TenantDataSource implements Entity<Tenant, Long> {
-
+    @SchemaProperty("id")
     private Long id;
+    @SchemaProperty("数据库名")
     private String db;
+    @SchemaProperty("数据库名字")
     private String password;
     private String schema;
     private TenantMode mode;

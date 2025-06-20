@@ -6,6 +6,7 @@ import graphql.language.Type;
 import graphql.language.TypeName;
 import jakarta.persistence.metamodel.Attribute;
 import org.hibernate.metamodel.model.domain.internal.SetAttributeImpl;
+import org.hibernate.metamodel.model.domain.internal.SingularAttributeImpl;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -86,6 +87,11 @@ public class TypeMatchUtils {
 
 
     public static String matchType(Attribute<?, ?> attribute) {
+        if (attribute instanceof SingularAttributeImpl.Identifier identifier) {
+            if (identifier.isId()) {
+                return "ID";
+            }
+        }
         return matchType(attribute.getJavaType());
     }
 

@@ -13,6 +13,7 @@ import java.io.Serializable;
  * @version 1.0
  * @crateTime 2024年11月07日 21:30
  */
+@Deprecated
 @Getter
 public class ExceptionResponse extends Response<Void> implements Serializable {
 

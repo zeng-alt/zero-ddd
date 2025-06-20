@@ -29,6 +29,8 @@ public class MultiTenancyProperties {
     /** filter */
     private String tenantToken = "X-TENANT-ID";
 
+    private String key;
+
 
     @Data
     public static class EntityPackages {

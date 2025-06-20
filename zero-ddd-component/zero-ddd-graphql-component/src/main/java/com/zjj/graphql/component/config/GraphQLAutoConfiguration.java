@@ -48,4 +48,10 @@ public class GraphQLAutoConfiguration {
     public GraphQlSourceBuilderCustomizer autoGenGraphqlBuilderCustomizer(ObjectProvider<TypeDefinitionConfigurer> configurers) {
         return new AutoGenGraphqlCustomizer(configurers);
     }
+
+
+    @Bean
+    public GraphQLExceptionHandler graphQLExceptionHandler() {
+        return new GraphQLExceptionHandler();
+    }
 }

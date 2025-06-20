@@ -3,12 +3,9 @@ package com.zjj.main;
 
 import com.zjj.autoconfigure.component.tenant.TenantMode;
 import com.zjj.graphql.component.annotations.*;
-import com.zjj.main.infrastructure.db.jpa.dao.HttpResourceDao;
-import com.zjj.main.infrastructure.db.jpa.entity.HttpResource;
 import com.zjj.security.abac.component.annotation.EnableAbac;
 import com.zjj.security.tenant.component.EnableTenantJwtCache;
 import com.zjj.tenant.datasource.component.configuration.EnableMultiTenancy;
-import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,20 +13,8 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.method.HandlerMethod;
-import org.springframework.web.servlet.mvc.condition.PathPatternsRequestCondition;
-import org.springframework.web.servlet.mvc.condition.PatternsRequestCondition;
-import org.springframework.web.servlet.mvc.condition.RequestMethodsRequestCondition;
-import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
-import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
-import org.springframework.web.util.pattern.PathPattern;
-
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.RollbackOn;
 
 /**
  * @author zengJiaJun
@@ -39,6 +24,7 @@ import java.util.Set;
 @Slf4j
 @EnableAbac
 @EnableTenantJwtCache
+@EnableTransactionManagement(order = 0, rollbackOn = RollbackOn.ALL_EXCEPTIONS)
 //@EnableMultiTenancy(mode = TenantMode.MIXED)
 @EnableMultiTenancy(mode = TenantMode.MIXED)
 @SpringBootApplication

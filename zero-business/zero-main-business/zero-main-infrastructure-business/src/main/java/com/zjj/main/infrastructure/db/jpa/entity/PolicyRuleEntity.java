@@ -17,7 +17,7 @@ import org.springframework.lang.Nullable;
  */
 @Getter
 @Setter
-@Entity
+@Entity(name = "PolicyRule")
 @Table(name = "main_policy_rule")
 public class PolicyRuleEntity extends BaseEntity<Long> implements TenantAuditable<String> {
     @Id
@@ -30,7 +30,7 @@ public class PolicyRuleEntity extends BaseEntity<Long> implements TenantAuditabl
 
     @ManyToOne
     @JoinColumn(name = "permission_id")
-    private Permission permission;
+    private PermissionRuleEntity permission;
 
     private String name;
     private String description;
@@ -42,6 +42,8 @@ public class PolicyRuleEntity extends BaseEntity<Long> implements TenantAuditabl
      */
 //    @Convert(converter = ExpressionConverter.class)
     private String condition;
+
+    private Boolean enable;
 
     @TenantId
     @Nullable

@@ -46,6 +46,11 @@
             <artifactId>spring-modulith-events-core</artifactId>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.zjj</groupId>
+            <artifactId>zero-ddd-core-component</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

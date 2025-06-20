@@ -19,6 +19,8 @@ public interface AbacCacheManage extends PolicyDefinition {
 
     void putRule(String key, PolicyRule rule, boolean isPreAuth);
 
+    void deleteRule(String key, boolean isPreAuth);
+
     void batchPutRule(Map<String, PolicyRule> map, boolean isPreAuth);
 
     default void putPreAuthRule(String key, PolicyRule rule) {
@@ -28,4 +30,6 @@ public interface AbacCacheManage extends PolicyDefinition {
     default void putPostAuthRule(String key, PolicyRule rule) {
         this.putRule(key, rule, false);
     }
+
+    void clear();
 }

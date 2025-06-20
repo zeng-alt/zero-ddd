@@ -21,4 +21,6 @@ public interface MenuResourceService {
     public List<MenuResourceDTO> treeAll();
 
     Iterable<MenuResource> button(Long id);
+
+    Boolean validateMenuPath(String path);
 }

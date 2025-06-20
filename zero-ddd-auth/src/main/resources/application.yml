@@ -75,6 +75,7 @@ security:
   username-login:
     enabled: true
     login-path: /auth/login/username
+  logout-path: /auth/logout
 
 
 multi-tenancy:

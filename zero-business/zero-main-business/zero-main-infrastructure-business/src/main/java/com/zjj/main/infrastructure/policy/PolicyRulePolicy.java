@@ -3,9 +3,8 @@ package com.zjj.main.infrastructure.policy;
 import com.zjj.autoconfigure.component.security.abac.AbacCacheManage;
 import com.zjj.autoconfigure.component.security.abac.PolicyRule;
 import com.zjj.main.domain.rule.event.InitPolicyRuleEvent;
-import com.zjj.main.infrastructure.db.jpa.dao.PermissionDao;
-import com.zjj.main.infrastructure.db.jpa.entity.GraphqlResourceEntity;
-import com.zjj.main.infrastructure.db.jpa.entity.Permission;
+import com.zjj.main.infrastructure.db.jpa.dao.PermissionRuleEntityDao;
+import com.zjj.main.infrastructure.db.jpa.entity.PermissionRuleEntity;
 import com.zjj.main.infrastructure.db.jpa.entity.PolicyRuleEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +31,7 @@ import java.util.stream.Collectors;
 public class PolicyRulePolicy {
 
 //    private final ResourceDao resourceDao;
-    private final PermissionDao permissionDao;
+    private final PermissionRuleEntityDao permissionRuleEntityDao;
     private final AbacCacheManage abacCacheManage;
 
     @Async
@@ -40,13 +39,15 @@ public class PolicyRulePolicy {
     @Transactional(readOnly = true)
     public void on(InitPolicyRuleEvent event) {
 
-        Map<String, Map<Boolean, Set<PolicyRule>>> collect = permissionDao.findAll().collect(Collectors.toMap(Permission::getCode, r -> {
+        Map<String, Map<Boolean, Set<PolicyRule>>> collect = permissionRuleEntityDao.findAllByRulesNotEmpty().collect(Collectors.toMap(PermissionRuleEntity::getCode, r -> {
             Set<PolicyRuleEntity> rules = r.getRules();
             return rules.stream().collect(Collectors.groupingBy(PolicyRuleEntity::getPreAuth, Collectors.mapping(p -> {
+
                 PolicyRule policyRule = new PolicyRule();
                 policyRule.setCondition(p.getCondition());
                 policyRule.setName(p.getName());
                 policyRule.setDescription(p.getDescription());
+                policyRule.setEnable(p.getEnable());
                 return policyRule;
             }, Collectors.toSet())));
         }));
@@ -65,7 +66,7 @@ public class PolicyRulePolicy {
                 }
             }
         }
-
+        this.abacCacheManage.clear();
         this.abacCacheManage.batchPutRule(prePolicyRule, true);
         this.abacCacheManage.batchPutRule(postPolicyRule, false);
         log.info("初始化abac完成");

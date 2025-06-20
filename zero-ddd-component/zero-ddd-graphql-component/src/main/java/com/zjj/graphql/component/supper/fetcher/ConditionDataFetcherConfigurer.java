@@ -1,6 +1,7 @@
 package com.zjj.graphql.component.supper.fetcher;
 
 import com.zjj.graphql.component.context.EntityContext;
+import com.zjj.graphql.component.context.QueryEntityProject;
 import com.zjj.graphql.component.query.condition.QuerydslConditionDataFetcher;
 import com.zjj.domain.component.BaseRepository;
 import graphql.schema.idl.RuntimeWiring;
@@ -21,7 +22,7 @@ public record ConditionDataFetcherConfigurer(List<BaseRepository> repositories, 
         builder.type("Query", typeWiring -> {
             for (BaseRepository repository : repositories) {
                 EntityType<?> type = entityContext.entity(repository);
-
+                QueryEntityProject queryEntityProject = entityContext.getQueryEntityProject(type.getName());
                 typeWiring.dataFetcher("conditionQuery" + type, QuerydslConditionDataFetcher.builder(repository).many());
                 typeWiring.dataFetcher("conditionFind" + type, QuerydslConditionDataFetcher.builder(repository).single());
                 typeWiring.dataFetcher("conditionPage" + type, QuerydslConditionDataFetcher.builder(repository).scrollable());

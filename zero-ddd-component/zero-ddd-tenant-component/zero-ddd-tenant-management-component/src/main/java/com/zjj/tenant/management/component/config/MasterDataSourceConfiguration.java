@@ -34,11 +34,18 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
+import org.springframework.lang.NonNull;
 import org.springframework.modulith.events.support.CompletionMode;
 import org.springframework.orm.hibernate5.SpringBeanContainer;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.ReactiveTransactionManager;
+import org.springframework.transaction.TransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.RollbackOn;
+import org.springframework.transaction.annotation.TransactionManagementConfigurer;
 import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
@@ -51,6 +58,7 @@ import java.util.List;
  * @crateTime 2024年12月20日 21:14
  */
 @AutoConfiguration
+@EnableTransactionManagement(order = 0, rollbackOn = RollbackOn.ALL_EXCEPTIONS)
 @RequiredArgsConstructor
 @EnableConfigurationProperties({DataSourceProperties.class, JpaProperties.class, HibernateProperties.class})
 public class MasterDataSourceConfiguration implements BeanClassLoaderAware {
@@ -59,6 +67,7 @@ public class MasterDataSourceConfiguration implements BeanClassLoaderAware {
     private final HibernateProperties hibernateProperties;
     private final ConfigurableListableBeanFactory beanFactory;
     private ClassLoader classLoader;
+    private EntityManagerFactory factory;
 
     @Bean
     @Primary
@@ -123,6 +132,7 @@ public class MasterDataSourceConfiguration implements BeanClassLoaderAware {
     @Bean
     @Primary
     public JpaTransactionManager transactionManager(@Qualifier("entityManagerFactory") EntityManagerFactory tenantEntityManagerFactory) {
+        this.factory = tenantEntityManagerFactory;
         JpaTransactionManager transactionManager = new JpaTransactionManager();
         transactionManager.setEntityManagerFactory(tenantEntityManagerFactory);
         return transactionManager;
@@ -132,6 +142,12 @@ public class MasterDataSourceConfiguration implements BeanClassLoaderAware {
     public void setBeanClassLoader(ClassLoader classLoader) {
         this.classLoader = classLoader;
     }
+
+//    @NonNull
+//    @Override
+//    public TransactionManager annotationDrivenTransactionManager() {
+//        return transactionManager(this.factory);
+//    }
 
     @Lazy
     @Configuration(proxyBeanMethods = false)

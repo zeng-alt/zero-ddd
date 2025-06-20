@@ -2,11 +2,9 @@ package com.zjj.gateway;
 
 
 import com.zjj.security.tenant.component.EnableReactiveTenantJwtCache;
-import com.zjj.security.tenant.component.EnableTenantJwtCache;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 //import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;

@@ -17,4 +17,6 @@ public interface Role {
     void serviceCancelAuthorize(ServiceCancelAuthorizeCmd cmd);
 
     void authorizePermission(AuthorizePermissionCmd cmd);
+
+    void delete();
 }

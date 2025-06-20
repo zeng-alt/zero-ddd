@@ -45,12 +45,18 @@ public class EntityContext {
         return entityTypes.values().stream().filter(entity -> !entity.isEmbedded()).toList();
     }
 
-
     public List<? extends EntitySaveHandler<?>> getSaveHandlers(String entityName) {
         if (!entityTypes.containsKey(entityName)) {
             return List.of();
         }
         return entityTypes.get(entityName).getSaveHandlers();
+    }
+
+    public QueryEntityProject getQueryEntityProject(String entityName) {
+        if (!entityTypes.containsKey(entityName)) {
+            return null;
+        }
+        return entityTypes.get(entityName).getQueryEntityProject();
     }
 
     public EntityType<?> entity(Repository<?, ?> repository) {
@@ -151,13 +157,14 @@ public class EntityContext {
                 continue;
             }
             EntityGraphqlType.Builder builder = EntityGraphqlType.builder();
-            builder.idType(TypeMatchUtils.matchType(entity.getIdType().getJavaType()));
+            builder.idType("ID");
             builder.idName(this.findIdName(entity));
             builder.type(entity.getName());
             builder.embedded(false);
             parseManageType(entity, builder);
             EntityGraphqlType build = builder.build();
             build.initMutation(entity.getJavaType(), saveHandlers);
+            build.initQuery(entity.getJavaType());
             entityTypes.put(entity.getName(), build);
         }
 

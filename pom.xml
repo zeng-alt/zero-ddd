@@ -109,6 +109,14 @@
                 <scope>import</scope>
             </dependency>
 
+<!--            <dependency>-->
+<!--                <groupId>org.springdoc</groupId>-->
+<!--                <artifactId>springdoc-openapi-bom</artifactId>-->
+<!--                <version>${springdoc.version}</version>-->
+<!--                <type>pom</type>-->
+<!--                <scope>import</scope>-->
+<!--            </dependency>-->
+
             <dependency>
                 <groupId>org.scala-lang</groupId>
                 <artifactId>scala3-library_3</artifactId>
@@ -239,11 +247,11 @@
                 <scope>provided</scope>
             </dependency>
 
-            <dependency>
-                <groupId>io.swagger.core.v3</groupId>
-                <artifactId>swagger-annotations</artifactId>
-                <version>${swagger.core.version}</version>
-            </dependency>
+<!--            <dependency>-->
+<!--                <groupId>io.swagger.core.v3</groupId>-->
+<!--                <artifactId>swagger-annotations</artifactId>-->
+<!--                <version>${swagger.core.version}</version>-->
+<!--            </dependency>-->
 
             <dependency>
                 <groupId>org.springdoc</groupId>

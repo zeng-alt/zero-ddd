@@ -6,9 +6,9 @@ import com.zjj.main.domain.permission.PermissionAgg;
 import com.zjj.main.domain.permission.PermissionId;
 import com.zjj.main.domain.role.cmd.*;
 import com.zjj.main.domain.role.event.*;
+import jakarta.validation.ValidationException;
 import lombok.Data;
 import org.jmolecules.ddd.types.Association;
-import org.springframework.beans.BeanUtils;
 import org.springframework.util.CollectionUtils;
 
 import java.util.HashSet;
@@ -42,41 +42,11 @@ public class RoleAgg extends Aggregate<RoleAgg, RoleId> implements Role {
                     .forEach(originalSet::add);
         }
 
-        if (this.isNew()) {
-            StockInRoleEvent event = new StockInRoleEvent();
-            BeanUtils.copyProperties(this, event);
-            ApplicationContextHelper.publisher().publishEvent(event);
-        } else {
-            if (!this.code.equals(cmd.code())) {
-                throw new RuntimeException("角色编码不允许修改");
-            }
+        if (!this.code.equals(cmd.code()) && !this.isNew()) {
+            throw new ValidationException("角色编码不允许修改");
         }
 
         this.authorizePermission(cmd.permissionIds(), originalSet);
-
-//        Set<Long> modifiedSet = CollectionUtils.isEmpty(cmd.permissionIds()) ? new HashSet<>() : new HashSet<>(cmd.permissionIds());
-//
-//        // 新增的 ID（modified 中有，original 中没有）
-//        Set<Long> addedIds = new HashSet<>(modifiedSet);
-//        addedIds.removeAll(originalSet);
-//
-//        if (!CollectionUtils.isEmpty(addedIds)) {
-//            StockInRolePermissionEvent event = new StockInRolePermissionEvent();
-//            event.setRoleCode(this.getCode());
-//            event.setPermissionId(addedIds);
-//            ApplicationContextHelper.publisher().publishEvent(event);
-//        }
-//
-//        // 删除的 ID（original 中有，modified 中没有）
-//        Set<Long> removedIds = new HashSet<>(originalSet);
-//        removedIds.removeAll(modifiedSet);
-//
-//        if (!CollectionUtils.isEmpty(removedIds)) {
-//            DeleteRolePermissionEvent event = new DeleteRolePermissionEvent();
-//            event.setRoleCode(this.getCode());
-//            event.setPermissionId(removedIds);
-//            ApplicationContextHelper.publisher().publishEvent(event);
-//        }
     }
 
     @Override
@@ -90,6 +60,11 @@ public class RoleAgg extends Aggregate<RoleAgg, RoleId> implements Role {
                     .forEach(originalSet::add);
         }
         this.authorizePermission(cmd.getPermissionIds(), originalSet);
+    }
+
+    @Override
+    public void delete() {
+        ApplicationContextHelper.publisher().publishEvent(DeleteRoleEvent.of(this.code));
     }
 
 

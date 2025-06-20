@@ -1,8 +1,11 @@
 package com.zjj.core.component;
 
 import com.zjj.autoconfigure.component.json.JsonHelper;
+import com.zjj.autoconfigure.component.tenant.MultiTenancyProperties;
 import com.zjj.core.component.advice.GlobalServletExceptionAdvice;
 import com.zjj.core.component.api.HttpEntityReturnMethodProcessor;
+import com.zjj.core.component.crypto.EncryptionService;
+import com.zjj.core.component.crypto.EncryptionServiceImpl;
 import com.zjj.core.component.type.JsonConversionContext;
 import com.zjj.core.component.type.JsonConversionStrategy;
 import com.zjj.core.component.type.JsonConversionStrategyFactory;
@@ -11,11 +14,13 @@ import com.zjj.core.component.type.strategy.*;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,6 +41,7 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author zengJiaJun
@@ -179,5 +185,15 @@ public class CoreAutoConfig {
         public GlobalServletExceptionAdvice globalServletExceptionAdvice() {
             return new GlobalServletExceptionAdvice();
         }
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public EncryptionService encryptionService(ObjectProvider<MultiTenancyProperties>  properties) {
+        MultiTenancyProperties ifAvailable = properties.getIfAvailable();
+        if (ifAvailable != null && ifAvailable.getKey() != null) {
+            return new EncryptionServiceImpl(ifAvailable.getKey());
+        }
+        return new EncryptionServiceImpl(UUID.randomUUID().toString());
     }
 }

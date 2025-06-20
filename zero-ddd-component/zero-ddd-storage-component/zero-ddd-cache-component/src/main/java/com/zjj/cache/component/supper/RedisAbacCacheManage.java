@@ -45,10 +45,23 @@ public class RedisAbacCacheManage implements AbacCacheManage {
         redisStringRepository.put(key, rule);
     }
 
+
+    @Override
+    public void deleteRule(String key, boolean isPreAuth) {
+        key = ABAC_CACHE_KEY + getTenantKey() + (isPreAuth ? "preAuth:" : "postAuth:") + key;
+        redisStringRepository.remove(key);
+    }
+
     @Override
     public void batchPutRule(Map<String, PolicyRule> map, boolean isPreAuth) {
         String preKey = ABAC_CACHE_KEY + getTenantKey() + (isPreAuth ? "preAuth:" : "postAuth:");
         redisStringRepository.batchPut(preKey, map);
+    }
+
+    @Override
+    public void clear() {
+        String preKey = ABAC_CACHE_KEY + getTenantKey();
+        redisStringRepository.removeAll(preKey);
     }
 
     @Override

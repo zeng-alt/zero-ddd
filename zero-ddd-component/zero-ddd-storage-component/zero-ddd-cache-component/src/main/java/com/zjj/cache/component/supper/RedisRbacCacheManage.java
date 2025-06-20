@@ -57,6 +57,16 @@ public class RedisRbacCacheManage implements RbacCacheManage, TenantKey, Ordered
     }
 
     @Override
+    public void removeRole(String roleName) {
+        redisHashRepository.removeNode("rbac:" + getTenantKey() + "role", roleName);
+    }
+
+    @Override
+    public void removeAllRole() {
+        redisHashRepository.remove("rbac:" + getTenantKey() + "role");
+    }
+
+    @Override
     public void putRole(Map<String, Set<String>> map, String tenant) {
         redisHashRepository.batchPut("rbac:" + getTenantKey() + "role", new HashMap<>(map));
     }
@@ -115,6 +125,13 @@ public class RedisRbacCacheManage implements RbacCacheManage, TenantKey, Ordered
 //        return redisStringRepository.get("rbac:" + finalTenant + key);
 
         return redisHashRepository.get("rbac:" + finalTenant + "graphql", key);
+    }
+
+
+    @Override
+    public void removeAllPermission() {
+        redisHashRepository.remove("rbac:" + getTenantKey() + "graphql");
+        redisHashRepository.remove("rbac:" + getTenantKey() + "http");
     }
 
     public void batchPutPermission(Map<String, String> permissionMap) {

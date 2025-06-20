@@ -23,12 +23,19 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/main/v1/role")
 public class RoleController extends AbstractTxController {
 
-
     private final CommandBus commandBus;
+
     @PostMapping
     @Operation(summary = "保存或更新角色")
     public String saveRole(@RequestBody StockInRoleFrom roleFrom) {
         this.convert(roleFrom).to(StockInRoleCmd.class).accept(this.commandBus::emit);
+        return "ok";
+    }
+
+    @Operation(summary = "根据id删除角色")
+    @DeleteMapping("/{id}")
+    public String deleteRole(@PathVariable Long id) {
+        this.commandBus.emit(new DeleteRoleCmd(id));
         return "ok";
     }
 
@@ -38,6 +45,8 @@ public class RoleController extends AbstractTxController {
         this.beanConvert(from).to(AuthorizePermissionCmd.class).accept(this.commandBus::emit);
         return "ok";
     }
+
+
 
 
     @Operation(summary = "授权所选角色graphql服务权限")

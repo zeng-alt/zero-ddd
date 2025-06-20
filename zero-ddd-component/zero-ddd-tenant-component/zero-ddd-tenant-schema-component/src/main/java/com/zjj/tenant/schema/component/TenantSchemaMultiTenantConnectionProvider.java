@@ -4,6 +4,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.zjj.autoconfigure.component.tenant.MultiTenancyProperties;
 import com.zjj.autoconfigure.component.tenant.Tenant;
+import com.zjj.core.component.crypto.EncryptionService;
 import com.zjj.tenant.management.component.SpringLiquibase;
 import com.zjj.tenant.management.component.service.TenantCreationException;
 import com.zjj.tenant.management.component.service.TenantDataSourceService;
@@ -46,14 +47,22 @@ public class TenantSchemaMultiTenantConnectionProvider implements MultiTenantCon
     private final transient TenantInitDataSourceService tenantInitDataSourceService;
 
     private LoadingCache<String, String> tenantSchemas;
+    private final EncryptionService encryptionService;
 
 
-    public TenantSchemaMultiTenantConnectionProvider(DataSource datasource, MultiTenancyProperties tenancyProperties, TenantSingleDataSourceProvider tenantSingleDataSourceProvider, TenantInitDataSourceService tenantInitDataSourceService) {
+    public TenantSchemaMultiTenantConnectionProvider(
+            DataSource datasource,
+            MultiTenancyProperties tenancyProperties,
+            TenantSingleDataSourceProvider tenantSingleDataSourceProvider,
+            TenantInitDataSourceService tenantInitDataSourceService,
+            EncryptionService encryptionService
+    ) {
         this.datasource = datasource;
         this.tenantSingleDataSourceProvider = tenantSingleDataSourceProvider;
         this.tenantInitDataSourceService = tenantInitDataSourceService;
         this.masterTenant = tenancyProperties.getMaster();
         this.tenancyProperties = tenancyProperties;
+        this.encryptionService = encryptionService;
         try(Connection connection = datasource.getConnection()) {
             this.master = connection.getSchema();
             // 判断master是否是大写
@@ -149,6 +158,7 @@ public class TenantSchemaMultiTenantConnectionProvider implements MultiTenantCon
 
     @Override
     public DataSource createDatasource(Tenant tenant) {
+        tenant.setPassword(encryptionService.decrypt(tenant.getPassword()));
         this.tenantInitDataSourceService.initDataSource(tenant, datasource);
         return datasource;
     }

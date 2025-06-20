@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.expression.Expression;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.util.StringUtils;
 
 /**
  * @author zengJiaJun
@@ -31,6 +32,7 @@ public class PolicyRule {
 
 	public static final PolicyRule MASTER_SUPER_ADMIN_AUTH_RULE
 			= new PolicyRule("MASTER_SUPER_ADMIN_AUTH_RULE", "MASTER_SUPER_ADMIN_AUTH_RULE", new SpelExpressionParser().parseExpression("authentication.principal.username == 'superAdmin' && authentication.principal.tenant == 'master'"));
+
 	private String name;
 	private String description;
 	
@@ -38,6 +40,7 @@ public class PolicyRule {
 	 * Boolean SpEL expression, if evaluated to true, then access granted.
 	 */
 	private String condition;
+	private Boolean enable;
 	
 	public PolicyRule() {
 		
@@ -52,5 +55,10 @@ public class PolicyRule {
 	public PolicyRule(Expression condition) {
 		super();
 		this.condition = condition.getExpressionString();
+	}
+
+	@JsonIgnore
+	public boolean isEmpty() {
+		return !StringUtils.hasText(condition);
 	}
 }

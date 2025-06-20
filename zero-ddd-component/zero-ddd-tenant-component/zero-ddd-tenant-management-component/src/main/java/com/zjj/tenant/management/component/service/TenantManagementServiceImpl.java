@@ -3,6 +3,7 @@ package com.zjj.tenant.management.component.service;
 import com.zaxxer.hikari.HikariDataSource;
 import com.zjj.autoconfigure.component.redis.Lock;
 import com.zjj.autoconfigure.component.tenant.Tenant;
+import com.zjj.core.component.crypto.EncryptionService;
 import liquibase.exception.LiquibaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
@@ -25,11 +26,17 @@ public class TenantManagementServiceImpl implements TenantManagementService, Ini
 
     private final LiquibaseProperties liquibaseProperties;
     private final ResourceLoader resourceLoader;
+
     private final TenantDataSourceService tenantDataSourceService;
 //    private final TenantInitDataSourceService tenantInitDataSourceService;
     private Lock lock;
 
-    public TenantManagementServiceImpl(LiquibaseProperties liquibaseProperties, ResourceLoader resourceLoader, TenantDataSourceService tenantDataSourceService, Lock lock) {
+    public TenantManagementServiceImpl(
+            LiquibaseProperties liquibaseProperties,
+            ResourceLoader resourceLoader,
+            TenantDataSourceService tenantDataSourceService,
+            Lock lock
+    ) {
         this.liquibaseProperties = liquibaseProperties;
         this.resourceLoader = resourceLoader;
         this.tenantDataSourceService = tenantDataSourceService;
@@ -39,6 +46,7 @@ public class TenantManagementServiceImpl implements TenantManagementService, Ini
 
     @Override
     public void createTenant(Tenant tenant) {
+
         tenantDataSourceService.verify(tenant);
 
         DataSource dataSource = null;

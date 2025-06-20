@@ -18,5 +18,7 @@ public interface MenuResourceDao extends BaseRepository<MenuResource, Long> {
 
     List<MenuResource> findByParentMenuIsNull();
 
+//    Boolean findByPath(String path);
+    Boolean existsByPath(String path);
 //    List<MenuResource> findAllByParentMenu_Id(Long id);
 }

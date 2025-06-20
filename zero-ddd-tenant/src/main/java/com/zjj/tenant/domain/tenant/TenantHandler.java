@@ -1,5 +1,7 @@
 package com.zjj.tenant.domain.tenant;
 
+import com.zjj.security.abac.component.ObjectReturn;
+import com.zjj.security.abac.component.annotation.AbacPreAuthorize;
 import com.zjj.tenant.domain.tenant.cmd.*;
 import lombok.RequiredArgsConstructor;
 import org.jmolecules.architecture.cqrs.CommandHandler;
@@ -19,6 +21,7 @@ public class TenantHandler {
     private final TenantFactory tenantFactory;
     private final TenantDataSourceRepository tenantDataSourceRepository;
 
+    @CommandHandler
     public void handler(StockInTenantCmd stockInTenantCmd) {
 //        TenantAggregate tenant = this.tenantFactory.createTenant(stockInTenantCmd);
 //        this.tenantRepository.save(tenant);
@@ -62,6 +65,7 @@ public class TenantHandler {
 //    }
 
 
+    @CommandHandler
     public void handler(StockInTenantMenuCmd cmd) {
 
         this.tenantRepository
@@ -72,6 +76,7 @@ public class TenantHandler {
 
     }
 
+    @CommandHandler
     public void handler(DisableTenantCmd cmd) {
         this.tenantRepository
                 .findById(cmd.id())
@@ -80,6 +85,7 @@ public class TenantHandler {
                 .getOrElseThrow(() -> new IllegalArgumentException(cmd.id() + " 租户不存在, 无法禁用"));
     }
 
+    @CommandHandler
     public void handler(EnableTenantCmd cmd) {
         this.tenantRepository
                 .findById(cmd.id())
@@ -88,6 +94,7 @@ public class TenantHandler {
                 .getOrElseThrow(() -> new IllegalArgumentException(cmd.id() + " 租户不存在, 无法开启"));
     }
 
+    @CommandHandler
     public void handler(DisableTenantMenuCmd cmd) {
         this.tenantRepository
                 .findById(cmd.tenantId())
@@ -96,11 +103,25 @@ public class TenantHandler {
                 .getOrElseThrow(() -> new IllegalArgumentException(cmd.tenantId() + " 租户不存在, 租户无法禁用"));
     }
 
+    @CommandHandler
     public void handler(EnableTenantMenuCmd cmd) {
         this.tenantRepository
                 .findById(cmd.tenantId())
                 .map(t -> t.enableMenu(cmd.menuId()))
                 .map(tenantRepository::save)
                 .getOrElseThrow(() -> new IllegalArgumentException(cmd.tenantId() + " 租户不存在, 租户无法开启"));
+    }
+
+
+    @CommandHandler
+    @AbacPreAuthorize(
+            value = "TestDataSource",
+            objectReturns = {
+                    @ObjectReturn(value = "dataSource", name = "dataSource", argument = {"#cmd.id"}, returnType = TenantDataSource.class)
+            }
+    )
+    public void handler(TestDataSourceConnectionCmd cmd) {
+        this.tenantDataSourceRepository
+                .testDataSourceConnectionCmd(cmd.id());
     }
 }

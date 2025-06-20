@@ -1,6 +1,7 @@
 package com.zjj.tenant.mix.component;
 
 import com.zjj.autoconfigure.component.tenant.MultiTenancyProperties;
+import com.zjj.core.component.crypto.EncryptionService;
 import com.zjj.tenant.database.component.proovider.DynamicMultiTenantDataSourceConnectionProvider;
 import org.hibernate.cfg.MultiTenancySettings;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
@@ -27,14 +28,16 @@ public class TenantMixedAutoConfiguration {
             @Qualifier("masterDataSource") DataSource dataSource,
             DataSourceProperties dataSourceProperties,
             ConfigurableListableBeanFactory beanFactory,
-            MultiTenancyProperties multiTenancyProperties
+            MultiTenancyProperties multiTenancyProperties,
+            EncryptionService encryptionService
     ) {
 
         return new TenantMixedDataSourceRoutingDatasource(
                 dataSource,
                 dataSourceProperties,
                 beanFactory,
-                multiTenancyProperties
+                multiTenancyProperties,
+                encryptionService
         );
     }
 

@@ -73,7 +73,7 @@ public class AbacMethodSecurityExpressionHandler extends AbstractAbacSecurityExp
                 .map(TenantDetail.class::cast)
                 .map(TenantDetail::getTenantName)
                 .orElse(null);
-
+        // TODO要拿到用户的个人信息
         Mono<Object> subject = Optional.ofNullable(subjectAttribute)
                 .map(attr -> Mono.create(sink -> sink.success(attr.getSubject(username, tenant))))
                 .orElse(Mono.empty());

@@ -29,7 +29,7 @@ public class AbacExceptionAdvice {
         log.warn("{}: {} 请求被拒绝: {}", request.getMethod(), request.getRequestURI(), e.getMessage());
         ErrorResponseEntity errorResponseEntity = ErrorResponseEntity.of(HttpStatus.FORBIDDEN, e.getMessage());
         errorResponseEntity.setInstance(URI.create(request.getRequestURI()));
-        errorResponseEntity.setTitle("访问被拒绝");
+        errorResponseEntity.setTitle("没有权限, 访问被拒绝");
         return errorResponseEntity;
     }
 }

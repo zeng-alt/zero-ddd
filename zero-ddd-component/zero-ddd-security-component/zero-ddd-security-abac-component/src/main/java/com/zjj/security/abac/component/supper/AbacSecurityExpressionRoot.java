@@ -25,7 +25,7 @@ import java.util.function.Supplier;
 @Setter
 public class AbacSecurityExpressionRoot extends SecurityExpressionRoot implements MethodSecurityExpressionOperations {
 
-    private Map<String, Object> context = new ConcurrentHashMap<>();
+    private Map<String, Object> env = new ConcurrentHashMap<>();
     private Object subject;
     private Object returnObject;
     @Setter
@@ -63,7 +63,7 @@ public class AbacSecurityExpressionRoot extends SecurityExpressionRoot implement
     public void addContext(Map<String, Object> map) {
         // 过滤value为null或key为null的map
         map.entrySet().removeIf(entry -> entry.getValue() == null || entry.getKey() == null);
-        this.context.putAll(map);
+        this.env.putAll(map);
     }
 
     @Override

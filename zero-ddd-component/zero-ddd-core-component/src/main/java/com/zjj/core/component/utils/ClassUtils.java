@@ -40,7 +40,7 @@ public class ClassUtils {
 		return type;
 	}
 
-	private static List<Type> findAllType(Class<?> clazz) {
+	public static List<Type> findAllType(Class<?> clazz) {
 		List<Type> result = new ArrayList<>();
 		if (clazz == null) return result;
 

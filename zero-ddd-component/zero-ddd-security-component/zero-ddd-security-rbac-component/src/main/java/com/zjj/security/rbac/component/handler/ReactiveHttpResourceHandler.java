@@ -4,7 +4,6 @@ import com.zjj.autoconfigure.component.security.rbac.HttpResource;
 import com.zjj.security.rbac.component.locator.ReactivePermissionLocator;
 import com.zjj.security.rbac.component.manager.ReactiveResourceQueryManager;
 import com.zjj.security.rbac.component.router.RouteTemplateManager;
-import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.server.authorization.AuthorizationContext;
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatcher;

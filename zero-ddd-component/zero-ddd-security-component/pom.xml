@@ -23,6 +23,7 @@
         <module>zero-ddd-security-fast-auth-component</module>
         <module>zero-ddd-security-captcha-component</module>
         <module>zero-ddd-security-rbac-client-component</module>
+        <module>zero-ddd-security-abac-serve-component</module>
     </modules>
 
     <properties>

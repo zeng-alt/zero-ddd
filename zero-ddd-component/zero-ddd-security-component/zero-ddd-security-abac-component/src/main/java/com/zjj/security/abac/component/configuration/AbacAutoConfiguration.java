@@ -7,6 +7,9 @@ import com.zjj.security.abac.component.advice.AbacExceptionAdvice;
 import com.zjj.security.abac.component.annotation.AbacAdminAuth;
 import com.zjj.security.abac.component.annotation.AbacPostAuthorize;
 import com.zjj.security.abac.component.annotation.AbacPreAuthorize;
+import com.zjj.security.abac.component.object.AbacMappingHandlerMapping;
+import com.zjj.security.abac.component.object.AuthorizeObjectManager;
+import com.zjj.security.abac.component.object.AuthorizeObjectMethodProcessor;
 import com.zjj.security.abac.component.supper.*;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.Pointcut;
@@ -70,10 +73,14 @@ public class AbacAutoConfiguration {
     // TODO
     @Bean
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-    public AbacPreAuthorizationManager abacPreMyAuthorizationManager(AbacPreAuthorizeExpressionAttributeRegistry abacPreAuthorizeExpressionAttributeRegistry) {
-        return new AbacPreAuthorizationManager(abacPreAuthorizeExpressionAttributeRegistry);
+    public AbacPreAuthorizationManager abacPreMyAuthorizationManager(AbacPreAuthorizeExpressionAttributeRegistry abacPreAuthorizeExpressionAttributeRegistry, AuthorizeObjectManager authorizeObjectManager) {
+        return new AbacPreAuthorizationManager(abacPreAuthorizeExpressionAttributeRegistry, authorizeObjectManager);
     }
 
+    /*********************************************
+     * 前置授权
+     * *******************************************
+     */
     @Bean
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     public Advisor preAuthorizeMethodInterceptor(AbacPreAuthorizationManager abacPreAuthorizationManager) {
@@ -88,7 +95,6 @@ public class AbacAutoConfiguration {
      * 后置授权
      * *******************************************
      */
-
     @Bean
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     public Advisor postAuthorizeMethodInterceptor(AbacPostAuthorizationManager abacPostAuthorizationManager) {
@@ -101,8 +107,8 @@ public class AbacAutoConfiguration {
 
     @Bean
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-    public AbacPostAuthorizationManager abacPostAuthorizationManager(AbacPostAuthorizeExpressionAttributeRegistry abacPostAuthorizeExpressionAttributeRegistry) {
-        return new AbacPostAuthorizationManager(abacPostAuthorizeExpressionAttributeRegistry);
+    public AbacPostAuthorizationManager abacPostAuthorizationManager(AbacPostAuthorizeExpressionAttributeRegistry abacPostAuthorizeExpressionAttributeRegistry, AuthorizeObjectManager authorizeObjectManager) {
+        return new AbacPostAuthorizationManager(abacPostAuthorizeExpressionAttributeRegistry, authorizeObjectManager);
     }
 
     @Bean
@@ -142,6 +148,22 @@ public class AbacAutoConfiguration {
                 pointcut, adminAuthManager);
         interceptor.setOrder(AuthorizationInterceptorsOrder.FIRST.getOrder());
         return interceptor;
+    }
+
+    @Bean
+    public AuthorizeObjectManager authorizeObjectManager() {
+        return new AuthorizeObjectManager();
+    }
+
+
+    @Bean
+    public AbacMappingHandlerMapping abacMappingHandlerMapping() {
+        return new AbacMappingHandlerMapping();
+    }
+
+    @Bean
+    public AuthorizeObjectMethodProcessor authorizeObjectMethodProcessor(AuthorizeObjectManager authorizeObjectManager, AbacMappingHandlerMapping abacMappingHandlerMapping) {
+        return new AuthorizeObjectMethodProcessor(authorizeObjectManager, abacMappingHandlerMapping);
     }
 
 //    @RouterOperations({

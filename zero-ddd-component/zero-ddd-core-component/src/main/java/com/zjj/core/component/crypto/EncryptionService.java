@@ -1,4 +1,4 @@
-package com.zjj.tenant.management.component.service;
+package com.zjj.core.component.crypto;
 
 /**
  * @author zengJiaJun
@@ -7,5 +7,8 @@ package com.zjj.tenant.management.component.service;
  */
 public interface EncryptionService {
 
-    String decrypt(String strToDecrypt, String secret, String salt);
+    String decrypt(String password);
+
+
+    String encrypt(String password);
 }

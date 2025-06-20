@@ -11,6 +11,7 @@ import org.springframework.graphql.data.pagination.CursorStrategy;
 import org.springframework.lang.Nullable;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.Assert;
+import org.springframework.validation.Validator;
 
 import java.util.List;
 
@@ -75,16 +76,16 @@ public class MutationBuilder<T, ID, R> {
     }
 
 
-    public DataFetcher<T> save(List<EntitySaveHandler<T>> handlers) {
-        return new SaveEntityFetcher<>(this.executor, this.domainType, (Class<T>) this.resultType, this.idType, this.customizer, this.template, handlers);
+    public DataFetcher<T> save(List<EntitySaveHandler<T>> handlers, Validator validator) {
+        return new SaveEntityFetcher<>(this.executor, this.domainType, (Class<T>) this.resultType, this.idType, this.customizer, this.template, handlers, validator);
     }
 
     public DataFetcher<Iterable<T>> saveAll(List<EntitySaveHandler<T>> handlers) {
         return new SaveAllEntityFetcher<>(this.executor, this.domainType, (Class<T>) this.resultType, this.idType, this.customizer, this.template, handlers);
     }
 
-    public DataFetcher<T> save() {
-        return save(List.of());
+    public DataFetcher<T> save(Validator validator) {
+        return save(List.of(), validator);
     }
 
 

@@ -25,4 +25,6 @@ public abstract class RedisHashRepository extends RedisCrudRepository<String, Ob
     public abstract void batchPut(String preKey, Map<String, Object> map);
 
     public abstract <T> T get(String pre, String key);
+
+    public abstract void removeNode(String hashKey, String node);
 }

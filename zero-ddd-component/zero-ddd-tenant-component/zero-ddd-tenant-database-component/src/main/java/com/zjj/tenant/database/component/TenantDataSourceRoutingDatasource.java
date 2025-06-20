@@ -6,6 +6,7 @@ import com.github.benmanes.caffeine.cache.RemovalListener;
 import com.zaxxer.hikari.HikariDataSource;
 import com.zjj.autoconfigure.component.tenant.MultiTenancyProperties;
 import com.zjj.autoconfigure.component.tenant.Tenant;
+import com.zjj.core.component.crypto.EncryptionService;
 import com.zjj.tenant.database.component.exception.TenantDataSourceException;
 import com.zjj.tenant.management.component.SpringLiquibase;
 import com.zjj.tenant.management.component.service.TenantConnectionService;
@@ -50,6 +51,7 @@ public class TenantDataSourceRoutingDatasource extends AbstractRoutingDataSource
     private final CurrentTenantIdentifierResolver<String> currentTenantIdentifierResolver;
     private final MultiTenancyProperties multiTenancyProperties;
     private final TenantInitDataSourceService tenantDatabaseInitService;
+    private final EncryptionService encryptionService;
 
     private void createCache() {
         tenantDataSources = Caffeine.newBuilder()
@@ -73,7 +75,8 @@ public class TenantDataSourceRoutingDatasource extends AbstractRoutingDataSource
             BeanFactory beanFactory,
             MultiTenancyProperties multiTenancyProperties,
             CurrentTenantIdentifierResolver<String> currentTenantIdentifierResolver,
-            TenantInitDataSourceService tenantDatabaseInitService
+            TenantInitDataSourceService tenantDatabaseInitService,
+            EncryptionService encryptionService
     ) {
         this.masterDataSource = dataSource;
         this.setDefaultTargetDataSource(dataSource);
@@ -83,6 +86,7 @@ public class TenantDataSourceRoutingDatasource extends AbstractRoutingDataSource
         this.multiTenancyProperties = multiTenancyProperties;
         this.currentTenantIdentifierResolver = currentTenantIdentifierResolver;
         this.tenantDatabaseInitService = tenantDatabaseInitService;
+        this.encryptionService = encryptionService;
         this.afterPropertiesSet();
     }
 
@@ -149,7 +153,7 @@ public class TenantDataSourceRoutingDatasource extends AbstractRoutingDataSource
 
     @Override
     public DataSource createDatasource(Tenant tenant) {
-
+        tenant.setPassword(encryptionService.decrypt(tenant.getPassword()));
         this.tenantDatabaseInitService.initDataSource(tenant, getResolvedDefaultDataSource());
 
         HikariDataSource ds = dataSourceProperties.initializeDataSourceBuilder().type(HikariDataSource.class).build();

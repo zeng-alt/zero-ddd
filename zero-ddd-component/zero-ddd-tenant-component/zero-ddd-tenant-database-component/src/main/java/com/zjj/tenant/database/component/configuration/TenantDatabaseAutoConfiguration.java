@@ -2,6 +2,7 @@ package com.zjj.tenant.database.component.configuration;
 
 
 import com.zjj.autoconfigure.component.tenant.MultiTenancyProperties;
+import com.zjj.core.component.crypto.EncryptionService;
 import com.zjj.tenant.database.component.proovider.DynamicMultiTenantDataSourceConnectionProvider;
 import com.zjj.tenant.database.component.TenantDataSourceRoutingDatasource;
 import com.zjj.tenant.database.component.TenantDatabaseInitService;
@@ -36,7 +37,8 @@ public class TenantDatabaseAutoConfiguration {
             ConfigurableListableBeanFactory beanFactory,
             MultiTenancyProperties multiTenancyProperties,
             CurrentTenantIdentifierResolver<String> currentTenantIdentifierResolver,
-            TenantInitDataSourceService tenantDatabaseInitService
+            TenantInitDataSourceService tenantDatabaseInitService,
+            EncryptionService encryptionService
     ) {
 
         return new TenantDataSourceRoutingDatasource(
@@ -45,7 +47,8 @@ public class TenantDatabaseAutoConfiguration {
                 beanFactory,
                 multiTenancyProperties,
                 currentTenantIdentifierResolver,
-                tenantDatabaseInitService
+                tenantDatabaseInitService,
+                encryptionService
         );
 
     }

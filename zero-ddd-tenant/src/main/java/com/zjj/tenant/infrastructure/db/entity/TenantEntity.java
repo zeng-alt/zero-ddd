@@ -1,9 +1,14 @@
 package com.zjj.tenant.infrastructure.db.entity;
 
 import com.zjj.domain.component.BaseEntity;
+import com.zjj.graphql.component.annotations.MutationEntity;
+import com.zjj.tenant.infrastructure.db.mutation.TenantEntitySaveHandler;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Comment;
 import org.springframework.lang.Nullable;
 
 import java.io.Serial;
@@ -21,19 +26,20 @@ import java.util.Set;
 @Table(name = "tenant")
 @Getter
 @Setter
+@MutationEntity(saveHandlers = {TenantEntitySaveHandler.class})
 public class TenantEntity  extends BaseEntity<Long> implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
-    @Nullable
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**
      * 租户编号
      */
+    @NotEmpty(message = "租户编号不能为空")
     private String tenantKey;
 
     /**
@@ -49,6 +55,7 @@ public class TenantEntity  extends BaseEntity<Long> implements Serializable {
     /**
      * 企业名称
      */
+    @NotEmpty(message = "企业名称不能为空")
     private String companyName;
 
     /**
@@ -93,6 +100,7 @@ public class TenantEntity  extends BaseEntity<Long> implements Serializable {
 
     @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "tenant_data_source_id")
+    @NotNull(message = "数据源不能为空")
     private TenantDataSourceEntity tenantDataSource;
 
     @OneToMany(mappedBy = "tenant", cascade = CascadeType.ALL)

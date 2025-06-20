@@ -19,6 +19,8 @@ public interface RoleDao extends BaseRepository<Role, Long> {
 
     List<Role> findAllByIdIn(Iterable<Long> ids);
 
+    void deleteByCode(String code);
+
     boolean existsByCode(String code);
 
     boolean existsById(Long id);

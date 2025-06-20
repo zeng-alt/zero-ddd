@@ -33,6 +33,15 @@ spring:
     redisson:
       file: classpath:redisson.yml
 
+
+#springdoc:
+#  swagger-ui:
+#    urls:
+#      - name: tenant
+#        url: /v3/api-docs/tenant
+#      - name: main
+#        url: /v3/api-docs/main
+
 security:
   context:
     enabled-access: true

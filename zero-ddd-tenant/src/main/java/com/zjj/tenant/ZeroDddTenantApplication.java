@@ -5,6 +5,7 @@ import com.zjj.autoconfigure.component.security.rbac.GraphqlResource;
 import com.zjj.autoconfigure.component.security.rbac.HttpResource;
 import com.zjj.autoconfigure.component.security.rbac.RbacCacheManage;
 import com.zjj.graphql.component.annotations.*;
+import com.zjj.security.abac.component.annotation.EnableAbac;
 import com.zjj.security.tenant.component.EnableTenantJwtCache;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,8 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.HttpMethod;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.RollbackOn;
 
 import java.util.Map;
 
@@ -25,7 +28,8 @@ import java.util.Map;
  * @crateTime 2024年10月29日 21:34
  */
 @Slf4j
-//@EnableAbac
+@EnableAbac
+@EnableTransactionManagement(order = 0, rollbackOn = RollbackOn.ALL_EXCEPTIONS)
 @EnableTenantJwtCache
 @EnableFeignClients(basePackages = "com.zjj")
 @EnableJpaRepositories(basePackages = "com.zjj")

@@ -49,6 +49,11 @@ public class TenantJwtCacheManage implements JwtCacheManage {
     }
 
     @Override
+    public void remove(String username, String uuid) {
+        redisStringRepository.remove(getKey(username + ":" + uuid));
+    }
+
+    @Override
     public void renew(String id) {
         redisStringRepository.expire(getKey(id), expireTime);
     }

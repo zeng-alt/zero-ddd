@@ -29,8 +29,6 @@ public class TenantFactory {
                 .orElse(() -> Option.of(stockInTenantCmd))
                 .map(t -> BeanHelper.copyToObject(t, Tenant.class))
                 .forEach(tenant -> ApplicationContextHelper.publisher().publishEvent(CreateTenantEvent.apply(tenant)));
-//                .getOrElseThrow(() -> new IllegalArgumentException("租户转换失败"));
-
     }
 }
 

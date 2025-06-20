@@ -70,7 +70,7 @@ public class LoginAutoConfiguration {
 						.successHandler(loginSuccessAuthenticationHandler)
 				)
 				.logout(logout -> logout
-						.logoutRequestMatcher(new AntPathRequestMatcher(logoutProperties.getLogoutPath(), HttpMethod.GET.name()))
+						.logoutRequestMatcher(new AntPathRequestMatcher(logoutProperties.getLogoutPath(), logoutProperties.getMethod().name()))
 						.addLogoutHandler(logoutHandler)
 						.logoutSuccessHandler(logoutSuccessHandler)
 				);

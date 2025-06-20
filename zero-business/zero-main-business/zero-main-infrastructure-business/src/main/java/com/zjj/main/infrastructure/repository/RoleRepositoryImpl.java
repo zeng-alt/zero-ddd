@@ -28,10 +28,6 @@ import java.util.stream.Collectors;
 public class RoleRepositoryImpl implements RoleRepository {
 
     private final RoleDao roleDao;
-
-
-
-
     @Override
     public Option<RoleAgg> findById(Long roleId) {
         return roleDao.findById(roleId).map(r -> {

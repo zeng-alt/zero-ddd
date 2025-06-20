@@ -1,15 +1,12 @@
 package com.zjj.main.infrastructure.policy;
 
-import com.zjj.autoconfigure.component.redis.RedisStringRepository;
-import com.zjj.autoconfigure.component.security.rbac.GraphqlResource;
 import com.zjj.autoconfigure.component.security.rbac.RbacCacheManage;
-import com.zjj.autoconfigure.component.tenant.MultiTenancyProperties;
 import com.zjj.main.domain.role.event.InitRbacEvent;
 import com.zjj.main.infrastructure.db.jpa.dao.GraphqlResourceDao;
 import com.zjj.main.infrastructure.db.jpa.dao.PermissionDao;
 import com.zjj.main.infrastructure.db.jpa.dao.RoleDao;
-import com.zjj.main.infrastructure.db.jpa.entity.*;
-import com.zjj.security.rbac.client.component.GraphqlTemplateSupper;
+import com.zjj.main.infrastructure.db.jpa.entity.Permission;
+import com.zjj.main.infrastructure.db.jpa.entity.RolePermission;
 import io.vavr.Tuple;
 import io.vavr.Tuple2;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +16,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -68,7 +63,11 @@ public class RolePolicy {
                     .collect(Collectors.toSet());
             return Tuple.of(code, permissions);
         }).collect(Collectors.toMap(t -> t._1, Tuple2::_2));
+
+        rbacCacheManage.removeAllRole();
         rbacCacheManage.putRole(roleMap);
+
+
         Map<String, String> permissionMap = permissionDao
                 .findAll()
                 .filter(p -> !p.isEmpty())
@@ -79,7 +78,9 @@ public class RolePolicy {
 //                    }
 //                    return true;
 //                })
-                .collect(Collectors.toMap(p -> p.getKey(), Permission::getCode));
+                .collect(Collectors.toMap(Permission::getKey, Permission::getCode));
+
+        rbacCacheManage.removeAllPermission();
         rbacCacheManage.batchPutPermission(permissionMap);
         log.info("初始化rbac完成");
     }

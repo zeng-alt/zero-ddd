@@ -1,6 +1,8 @@
 package com.zjj.security.abac.component.annotation;
 
 
+import com.zjj.security.abac.component.ObjectReturn;
+
 import java.lang.annotation.*;
 
 /**
@@ -18,6 +20,8 @@ public @interface AbacPreAuthorize {
      * @return 权限的key
      */
     String value() default "";
+
+    ObjectReturn[] objectReturns() default {};
 
     String resourceType() default "http";
 }

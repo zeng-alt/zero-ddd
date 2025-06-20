@@ -125,11 +125,18 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>jakarta.persistence</groupId>
             <artifactId>jakarta.persistence-api</artifactId>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/cn.hutool/hutool-crypto -->
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-crypto</artifactId>
+            <version>5.8.38</version>
+        </dependency>
     </dependencies>
 
 <!--    <build>-->

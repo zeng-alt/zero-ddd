@@ -70,6 +70,11 @@ public class RedisHashRepositoryImpl extends RedisHashRepository {
         this.putIfAbsent(split[0], split[1]);
     }
 
+    public void removeNode(String hashKey, String node) {
+        RMap<String, Object> rMap = template.getMap(hashKey);
+        rMap.fastRemove(node);
+    }
+
     public void putIfAbsent(String pre, String key, Object value) {
         if (this.get(pre, key) != null) {
             this.put(pre, key, value);

@@ -3,6 +3,8 @@ package com.zjj.main.infrastructure.db.jpa.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.zjj.domain.component.BaseEntity;
 import com.zjj.domain.component.TenantAuditable;
+import com.zjj.graphql.component.annotations.QueryEntity;
+import com.zjj.main.infrastructure.db.jpa.project.PermissionProject;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,6 +26,7 @@ import java.util.Set;
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "resource_type", discriminatorType = DiscriminatorType.STRING)
 //@Table(name = "main_permission")
+@QueryEntity(conditionPageProject = PermissionProject.class)
 public class Permission extends BaseEntity<Long> implements TenantAuditable<String> {
 
     @Id

@@ -90,6 +90,10 @@ logging:
           web:
             FilterChainProxy=DEBUG:
 
+
+multi-tenancy:
+  key: dkhssdhheidjghosdhgkdhiebds
+
 security:
   context:
     enabled-access: false

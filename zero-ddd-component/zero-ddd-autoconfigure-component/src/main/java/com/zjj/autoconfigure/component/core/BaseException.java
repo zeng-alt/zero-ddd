@@ -14,7 +14,7 @@ import java.util.function.Supplier;
 @Getter
 public class BaseException extends RuntimeException {
 
-    private Integer code = 500;
+    private Integer code = 400;
 
 
     public BaseException(String message) {

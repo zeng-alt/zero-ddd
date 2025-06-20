@@ -1,6 +1,7 @@
 package com.zjj.tenant.schema.component;
 
 import com.zjj.autoconfigure.component.tenant.MultiTenancyProperties;
+import com.zjj.core.component.crypto.EncryptionService;
 import com.zjj.tenant.management.component.service.TenantInitDataSourceService;
 import com.zjj.tenant.management.component.spi.TenantSingleDataSourceProvider;
 import org.hibernate.cfg.MultiTenancySettings;
@@ -27,13 +28,15 @@ public class TenantSchemaAutoConfiguration {
             ObjectProvider<DataSource> masterDataSource,
             MultiTenancyProperties tenancyProperties,
             ObjectProvider<TenantSingleDataSourceProvider> tenantSingleDataSourceProvider,
-            TenantInitDataSourceService tenantInitDataSourceService
+            TenantInitDataSourceService tenantInitDataSourceService,
+            EncryptionService encryptionService
     ) {
         return new TenantSchemaMultiTenantConnectionProvider(
                 masterDataSource.getIfAvailable(),
                 tenancyProperties,
                 tenantSingleDataSourceProvider.getIfAvailable(),
-                tenantInitDataSourceService
+                tenantInitDataSourceService,
+                encryptionService
         );
     }
 

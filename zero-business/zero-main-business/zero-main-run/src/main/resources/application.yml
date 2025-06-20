@@ -56,6 +56,11 @@ spring:
 #      allow-credentials: true
 #      allowed-origins:
 #        - http://localhost:5173
+    schema:
+      inspection:
+        enabled: false
+      introspection:
+        enabled: false
     graphiql:
       enabled: true
       path: /main/graphiql
@@ -96,6 +101,7 @@ multi-tenancy:
     password: postgres
     driverClassName: org.postgresql.Driver
     type: com.zaxxer.hikari.HikariDataSource
+  key: dkhssdhheidjghosdhgkdhiebds
 
 security:
   context:

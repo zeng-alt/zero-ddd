@@ -46,6 +46,9 @@ public class EntityGraphqlType<T> implements GraphqlType {
     private boolean enableDelete = true;
     private boolean enableDeleteId = true;
 
+    // query相关
+    private QueryEntityProject queryEntityProject;
+
     EntityGraphqlType(final String type, final Set<EntityGraphqlAttribute> attributes, boolean embedded, String idType, String idName) {
         this.idType = TypeName.newTypeName(idType).build();
         this.idName = idName;
@@ -57,6 +60,25 @@ public class EntityGraphqlType<T> implements GraphqlType {
         inputType = TypeName.newTypeName(getInputTypeName()).build();
         connectionType = TypeName.newTypeName(getConnectionTypeName()).build();
         conditionType = TypeName.newTypeName(getConditionTypeName()).build();
+    }
+
+
+    public void initQuery(Class<T> tClass) {
+        com.zjj.graphql.component.annotations.QueryEntity annotation = AnnotationUtils.findAnnotation(tClass, com.zjj.graphql.component.annotations.QueryEntity.class);
+        if (annotation == null) {
+            return;
+        }
+        QueryEntityProject entity = new QueryEntityProject();
+        entity.setConditionQueryProject(annotation.conditionQueryProject());
+        entity.setConditionFindProject(annotation.conditionFindProject());
+        entity.setConditionPageProject(annotation.conditionPageProject());
+        entity.setFuzzyQueryProject(annotation.fuzzyQueryProject());
+        entity.setFuzzyFindProject(annotation.fuzzyFindProject());
+        entity.setFuzzyPageProject(annotation.fuzzyPageProject());
+        entity.setQueryProject(annotation.queryProject());
+        entity.setFindProject(annotation.findProject());
+        entity.setPageProject(annotation.pageProject());
+        this.queryEntityProject = entity;
     }
 
     public void initMutation(Class<T> tClass, List<EntitySaveHandler<T>> saveHandlers) {

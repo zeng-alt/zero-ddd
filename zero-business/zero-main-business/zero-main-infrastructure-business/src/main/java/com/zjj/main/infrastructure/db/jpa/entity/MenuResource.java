@@ -59,7 +59,17 @@ public class MenuResource extends Permission {
     @Column(name = "resource_order")
     private Integer order;
 
-//    @OneToMany(mappedBy = "menuResource")
+    @Override
+    public boolean isEmpty() {
+        return true;
+    }
+
+    @Override
+    public String getKey() {
+        return null;
+    }
+
+    //    @OneToMany(mappedBy = "menuResource")
 //    private Set<RoleMenu> roleMenus = new LinkedHashSet<>();
 
 //    @Override

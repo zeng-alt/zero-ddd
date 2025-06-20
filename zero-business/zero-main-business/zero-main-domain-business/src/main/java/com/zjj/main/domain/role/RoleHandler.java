@@ -23,6 +23,11 @@ public class RoleHandler {
         this.roleFactory.create(cmd).forEach(r -> r.stockIn(cmd));
     }
 
+    @CommandHandler
+    public void handler(DeleteRoleCmd cmd) {
+        this.roleRepository.findById(cmd.id()).forEach(RoleAgg::delete);
+    }
+
 
     @CommandHandler
     public void handler(AuthorizePermissionCmd cmd) {

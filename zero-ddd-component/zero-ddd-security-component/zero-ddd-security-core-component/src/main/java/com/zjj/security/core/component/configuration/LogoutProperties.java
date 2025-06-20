@@ -2,6 +2,7 @@ package com.zjj.security.core.component.configuration;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 
 /**
@@ -14,4 +15,5 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "security")
 public class LogoutProperties {
     private String logoutPath = "/logout";
+    private HttpMethod method = HttpMethod.POST;
 }

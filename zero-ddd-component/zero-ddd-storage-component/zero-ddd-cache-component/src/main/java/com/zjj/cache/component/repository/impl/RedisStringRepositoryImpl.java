@@ -201,7 +201,9 @@ public class RedisStringRepositoryImpl extends RedisStringRepository {
 	@Override
 	public void unlock(String lockName) {
 		RLock lock = template.getLock(lockName);
-		lock.unlock();
+		if (lock.isHeldByCurrentThread()) {
+			lock.unlock();
+		}
 	}
 
 	@Override

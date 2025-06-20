@@ -1,5 +1,6 @@
 package com.zjj.domain.component.event;
 
+import com.zjj.domain.component.event.endpoint.ModulithEventsActuatorEndpoint;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -14,6 +15,7 @@ import org.springframework.modulith.events.EventExternalizationConfiguration;
 import org.springframework.modulith.events.IncompleteEventPublications;
 import org.springframework.modulith.events.config.EventExternalizationAutoConfiguration;
 import org.springframework.modulith.events.config.EventPublicationAutoConfiguration;
+import org.springframework.modulith.events.core.EventPublicationRepository;
 import org.springframework.modulith.moments.HourHasPassed;
 
 /**
@@ -39,6 +41,21 @@ public class EventSourceAutoConfiguration {
     @ConditionalOnBean({CompletedEventTransfer.class})
     public CompletedEventTransfer completedEventTransfer(CompletedEventPublications completedEventPublications) {
         return new DefaultCompletedEventTransfer(completedEventPublications);
+    }
+
+
+    @Bean
+    @ConditionalOnClass(name = "org.springframework.boot.actuator.endpoint.annotation.Endpoint")
+    @ConditionalOnBean({IncompleteEventPublications.class, EventPublicationRepository.class})
+    @ConditionalOnProperty(
+            name = "modulith.events.actuator.enabled",
+            havingValue = "true",
+            matchIfMissing = true
+    )
+    public ModulithEventsActuatorEndpoint modulithEventsActuatorEndpoint(
+            IncompleteEventPublications incompleteEventPublications,
+            EventPublicationRepository eventPublicationRepository) {
+        return new ModulithEventsActuatorEndpoint(incompleteEventPublications, eventPublicationRepository);
     }
 
 

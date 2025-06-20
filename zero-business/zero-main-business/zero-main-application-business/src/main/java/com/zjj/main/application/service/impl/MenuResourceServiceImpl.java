@@ -160,5 +160,10 @@ public class MenuResourceServiceImpl implements MenuResourceService {
         return menuResourceDao.findAll(menuResource.parentMenu.id.eq(id));
     }
 
+    @Override
+    public Boolean validateMenuPath(String path) {
+        return menuResourceDao.existsByPath(path);
+    }
+
 
 }
