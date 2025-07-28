@@ -3,7 +3,6 @@ package com.zjj.tenant.management.component.config;
 import com.zjj.autoconfigure.component.redis.Lock;
 import com.zjj.autoconfigure.component.tenant.Tenant;
 import com.zjj.cache.component.repository.impl.RedisTopicRepositoryImpl;
-import com.zjj.core.component.crypto.EncryptionService;
 import com.zjj.tenant.management.component.service.*;
 import com.zjj.tenant.management.component.spi.TenantDataSourceProvider;
 import org.springframework.beans.factory.ObjectProvider;

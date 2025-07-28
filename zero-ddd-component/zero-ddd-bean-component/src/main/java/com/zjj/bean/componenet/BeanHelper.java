@@ -10,10 +10,8 @@ import org.springframework.util.Assert;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.lang.reflect.RecordComponent;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -27,6 +25,73 @@ import java.util.function.Consumer;
 public class BeanHelper extends BeanUtils {
 
     private BeanHelper() {}
+
+
+    public static Object instantiateBean(Class<?> clazz) {
+
+        if (clazz == null || clazz.isInterface()) {
+            return null;
+        }
+
+        if (clazz.isRecord()) {
+            // 用 record 构造器反射方式创建
+            return instantiateRecord(clazz);
+        } else {
+            // 普通类
+            return BeanUtils.instantiateClass(clazz);
+        }
+    }
+
+    public static Object instantiateRecord(Class<?> recordClass) {
+        if (!recordClass.isRecord()) {
+            throw new IllegalArgumentException(recordClass.getName() + " is not a record.");
+        }
+
+        try {
+            RecordComponent[] components = recordClass.getRecordComponents();
+
+            Class<?>[] paramTypes = Arrays.stream(components)
+                    .map(RecordComponent::getType)
+                    .toArray(Class[]::new);
+
+            Object[] defaultValues = Arrays.stream(components)
+                    .map(c -> getDefaultValue(c.getType()))
+                    .toArray();
+
+            Constructor<?> constructor = recordClass.getDeclaredConstructor(paramTypes);
+            constructor.setAccessible(true);
+            return constructor.newInstance(defaultValues);
+
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to instantiate record: " + recordClass.getName(), e);
+        }
+    }
+
+    private static Object getDefaultValue(Class<?> type) {
+        if (type == String.class) return "";
+        if (type == int.class || type == Integer.class) return 0;
+        if (type == long.class || type == Long.class) return 0L;
+        if (type == boolean.class || type == Boolean.class) return false;
+        if (type == double.class || type == Double.class) return 0.0;
+        if (type == float.class || type == Float.class) return 0f;
+        if (type == short.class || type == Short.class) return (short) 0;
+        if (type == byte.class || type == Byte.class) return (byte) 0;
+        if (type.isEnum()) return type.getEnumConstants()[0];
+
+        // 嵌套 record → 递归创建
+        if (type.isRecord()) {
+            return instantiateRecord(type);
+        }
+
+        // 普通类 → 用无参构造器创建
+        try {
+            return BeanUtils.instantiateClass(type);
+        } catch (Exception e) {
+            return null; // 没有无参构造器等情况
+        }
+    }
+
+
 
     public static void copyPropertiesIgnoringNull(Object source, Object target) {
         PropertyDescriptor[] targetDescriptors = BeanUtils.getPropertyDescriptors(target.getClass());

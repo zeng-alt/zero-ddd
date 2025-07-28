@@ -1,0 +1,22 @@
+---
+singleServerConfig:
+  idleConnectionTimeout: 10000
+  connectTimeout: 10000
+  timeout: 3000
+  retryAttempts: 3
+  retryInterval: 1500
+  subscriptionsPerConnection: 5
+  clientName: ${spring.application.name}
+  address: "redis://127.0.0.1:16379"
+  password: "M5s-Rr9yt@0V"
+  subscriptionConnectionMinimumIdleSize: 1
+  subscriptionConnectionPoolSize: 50
+  connectionMinimumIdleSize: 24
+  connectionPoolSize: 64
+  database: 0
+  dnsMonitoringInterval: 5000
+threads: 16
+nettyThreads: 32
+#codec: !<org.redisson.codec.Kryo5Codec> {}
+transportMode: "NIO"
+#reliableTopicWatchdogTimeout: 6000

@@ -1,11 +1,7 @@
 package com.zjj.graphql.component.utils;
 
 
-import graphql.language.ListType;
-import graphql.language.Type;
-import graphql.language.TypeName;
 import jakarta.persistence.metamodel.Attribute;
-import org.hibernate.metamodel.model.domain.internal.SetAttributeImpl;
 import org.hibernate.metamodel.model.domain.internal.SingularAttributeImpl;
 
 import java.math.BigDecimal;
@@ -16,7 +12,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Date;
-import java.util.UUID;
 
 import static io.vavr.API.*;
 import static io.vavr.Predicates.isIn;

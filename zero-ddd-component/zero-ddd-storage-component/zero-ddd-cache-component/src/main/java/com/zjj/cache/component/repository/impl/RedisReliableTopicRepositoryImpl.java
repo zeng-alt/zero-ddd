@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.redisson.api.RReliableTopic;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -14,10 +15,15 @@ import java.util.function.Consumer;
  * @version 1.0
  * @crateTime 2024年10月15日 20:36
  */
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@Component
 public class RedisReliableTopicRepositoryImpl implements RedisSubPubRepository {
 
     private final RedissonClient redissonClient;
+
+    @Autowired
+    public RedisReliableTopicRepositoryImpl(RedissonClient template) {
+        this.redissonClient = template;
+    }
 
     @Override
     public <T> String addListener(String channelKey, Class<T> clazz, Consumer<T> consumer) {

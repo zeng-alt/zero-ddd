@@ -1,18 +1,11 @@
 package com.zjj.main.infrastructure.db.jpa.entity;
 
-import com.zjj.core.component.api.Parent;
-import com.zjj.domain.component.BaseEntity;
-import com.zjj.domain.component.TenantAuditable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.TenantId;
-import org.springframework.lang.Nullable;
 
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author zengJiaJun
@@ -33,7 +26,7 @@ public class MenuResource extends Permission {
     /**
      * 父菜单
      */
-    @ManyToOne(cascade = {CascadeType.REFRESH}, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {CascadeType.REFRESH})
     @JoinColumn(name = "parent_id")
     private MenuResource parentMenu;
 

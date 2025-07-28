@@ -1,3 +1,5 @@
+server:
+  port: 8090
 
 spring:
   messages:
@@ -51,6 +53,8 @@ security:
       - /auth/logout
       - /auth/v1/captcha
       - /main/graphiql
+      - /main/v1/user/detail
+      - /main/v1/menu/resource/tree
       #      - /main/graphql
       #      - /tenant/graphql
     graphql:

@@ -1,5 +1,5 @@
 server:
-  port: 8082
+  port: 8083
 
 spring:
   application:
@@ -18,7 +18,7 @@ spring:
 #    driverClassName: org.h2.Driver
 #    type: com.zaxxer.hikari.HikariDataSource
   datasource:
-    url: jdbc:postgresql://localhost:5432/zero-ddd
+    url: jdbc:postgresql://localhost:5432/zero-ddd?currentSchema=schema1
     username: postgres
     password: postgres
     driverClassName: org.postgresql.Driver
@@ -42,9 +42,9 @@ spring:
     defer-datasource-initialization: false
   h2:
     console:
-      enabled: true
+      enabled: false
   liquibase:
-    enabled: false
+    enabled: true
     # 如下配置是被spring.datasource赋值的，所以可以不配置
     #    url: jdbc:mysql://localhost:3306/test_db_liquibase?useSSL=false&autoReconnect=true&characterEncoding=utf8
     #    user: root
@@ -106,6 +106,7 @@ multi-tenancy:
 security:
   context:
     enabled-access: false
+    abac-prefix: "/main"
 
 
 logging:

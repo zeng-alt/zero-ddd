@@ -1,5 +1,7 @@
 package com.zjj.security.abac.component.configuration;
 
+import com.zjj.autoconfigure.component.json.JsonHelper;
+import com.zjj.autoconfigure.component.redis.RedisSubPubRepository;
 import com.zjj.autoconfigure.component.security.abac.EnvironmentAttribute;
 import com.zjj.autoconfigure.component.security.abac.ObjectAttribute;
 import com.zjj.autoconfigure.component.security.abac.PolicyDefinition;
@@ -7,9 +9,7 @@ import com.zjj.security.abac.component.advice.AbacExceptionAdvice;
 import com.zjj.security.abac.component.annotation.AbacAdminAuth;
 import com.zjj.security.abac.component.annotation.AbacPostAuthorize;
 import com.zjj.security.abac.component.annotation.AbacPreAuthorize;
-import com.zjj.security.abac.component.object.AbacMappingHandlerMapping;
-import com.zjj.security.abac.component.object.AuthorizeObjectManager;
-import com.zjj.security.abac.component.object.AuthorizeObjectMethodProcessor;
+import com.zjj.security.abac.component.object.*;
 import com.zjj.security.abac.component.supper.*;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.Pointcut;
@@ -156,14 +156,15 @@ public class AbacAutoConfiguration {
     }
 
 
+    // TODO
     @Bean
-    public AbacMappingHandlerMapping abacMappingHandlerMapping() {
-        return new AbacMappingHandlerMapping();
+    public AbacMappingHandlerMapping abacMappingHandlerMapping(RedisSubPubRepository redisSubPubRepository) {
+        return new AbacJsonMappingHandlerMapping(redisSubPubRepository);
     }
 
     @Bean
-    public AuthorizeObjectMethodProcessor authorizeObjectMethodProcessor(AuthorizeObjectManager authorizeObjectManager, AbacMappingHandlerMapping abacMappingHandlerMapping) {
-        return new AuthorizeObjectMethodProcessor(authorizeObjectManager, abacMappingHandlerMapping);
+    public AuthorizeObjectMethodProcessor authorizeObjectMethodProcessor(AuthorizeObjectManager authorizeObjectManager, AbacMappingHandlerMapping abacMappingHandlerMapping, JsonHelper jsonHelper) {
+        return new AuthorizeObjectMethodProcessor(authorizeObjectManager, abacMappingHandlerMapping, jsonHelper);
     }
 
 //    @RouterOperations({

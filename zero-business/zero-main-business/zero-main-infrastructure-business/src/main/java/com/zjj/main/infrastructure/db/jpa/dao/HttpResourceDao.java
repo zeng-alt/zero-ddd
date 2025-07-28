@@ -16,5 +16,6 @@ public interface HttpResourceDao extends BaseRepository<HttpResource, Long> {
 
     List<HttpResource> findAll();
 
+    List<HttpResource> findAllByMenuId(Long menuId);
     List<HttpResource> findAllByMenuIdIn(List<Long> menuIds);
 }

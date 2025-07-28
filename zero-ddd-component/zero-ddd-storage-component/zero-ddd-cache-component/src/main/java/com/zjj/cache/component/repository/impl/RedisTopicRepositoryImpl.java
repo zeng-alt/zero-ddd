@@ -8,6 +8,7 @@ import org.redisson.api.RedissonClient;
 import org.redisson.api.listener.MessageListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -18,10 +19,15 @@ import java.util.function.Consumer;
  * @crateTime 2024年06月26日 16:36
  */
 @Primary
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@Component
 public class RedisTopicRepositoryImpl implements RedisSubPubRepository {
 
 	private final RedissonClient redissonClient;
+
+	@Autowired
+	public RedisTopicRepositoryImpl(RedissonClient template) {
+		this.redissonClient = template;
+	}
 
 	/**
 	 * 订阅频道并接收消息。

@@ -1,6 +1,8 @@
 package com.zjj.security.abac.component.object;
 
-import com.zjj.autoconfigure.component.security.abac.AbacContextEntity;
+import com.zjj.autoconfigure.component.json.JsonHelper;
+import com.zjj.autoconfigure.component.security.abac.AbacContextJsonEntity;
+import com.zjj.bean.componenet.BeanHelper;
 import com.zjj.security.abac.component.ObjectReturn;
 import com.zjj.security.abac.component.annotation.AbacPreAuthorize;
 import com.zjj.security.abac.component.annotation.ObjectMethod;
@@ -30,8 +32,7 @@ import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -51,6 +52,7 @@ public class AuthorizeObjectMethodProcessor implements SmartInitializingSingleto
     @Nullable
     private ConfigurableListableBeanFactory beanFactory;
     private final AbacMappingHandlerMapping abacMappingHandlerMapping;
+    private final JsonHelper jsonHelper;
     private final Set<Class<?>> nonAnnotatedClasses = ConcurrentHashMap.newKeySet(64);
     @Override
     public void afterSingletonsInstantiated() {
@@ -127,7 +129,34 @@ public class AuthorizeObjectMethodProcessor implements SmartInitializingSingleto
             Assert.state(context != null, "No ApplicationContext set");
 
             for (Map.Entry<Method, AbacPreAuthorize> entry : annotatedMethods.entrySet()) {
-                AbacContextEntity  abacContextEntity = new AbacContextEntity();
+//                AbacContextEntity  abacContextEntity = new AbacContextEntity();
+//                AbacPreAuthorize abacPreAuthorize = entry.getValue();
+//                Method method = entry.getKey();
+//                Method methodToUse = AopUtils.selectInvocableMethod(method, context.getType(beanName));
+//                String key = "pre:" + abacPreAuthorize.value();
+//                ObjectReturn[] objectReturns = abacPreAuthorize.objectReturns();
+//
+//                // 设置返回对象
+//                abacContextEntity.setResultObject(ObjectEntityParser.parse(methodToUse.getReturnType()));
+//
+//                // 设置object
+//                List<AbacContextEntity.ObjectEntity> objectEntities = new ArrayList<>();
+//                if (objectReturns != null) {
+//                    for (ObjectReturn objectReturn : objectReturns) {
+//                        AbacContextEntity.ObjectEntity objectEntity = ObjectEntityParser.parse(objectReturn.name(), objectReturn.returnType());
+//                        objectEntities.add(objectEntity);
+//                    }
+//                }
+//                abacContextEntity.setObjectEntities(objectEntities);
+//
+//                // 设置参数
+//                List<AbacContextEntity.ObjectEntity> arguments = new ArrayList<>();
+//                for (Parameter parameter : methodToUse.getParameters()) {
+//                    arguments.add(ObjectEntityParser.parse(parameter.getName(), parameter.getType()));
+//                }
+//                abacContextEntity.setArguments(arguments);
+
+                AbacContextJsonEntity  abacContextEntity = new AbacContextJsonEntity();
                 AbacPreAuthorize abacPreAuthorize = entry.getValue();
                 Method method = entry.getKey();
                 Method methodToUse = AopUtils.selectInvocableMethod(method, context.getType(beanName));
@@ -135,22 +164,38 @@ public class AuthorizeObjectMethodProcessor implements SmartInitializingSingleto
                 ObjectReturn[] objectReturns = abacPreAuthorize.objectReturns();
 
                 // 设置返回对象
-                abacContextEntity.setResultObject(ObjectEntityParser.parse(methodToUse.getReturnType()));
+                if (methodToUse.getReturnType() != Void.TYPE) {
+                    abacContextEntity.setResultObject(jsonHelper.toJsonString(BeanHelper.instantiateBean(methodToUse.getReturnType())));
+                }
 
                 // 设置object
-                List<AbacContextEntity.ObjectEntity> objectEntities = new ArrayList<>();
+//                List<AbacContextEntity.ObjectEntity> objectEntities = new ArrayList<>();
+//                if (objectReturns != null) {
+//                    for (ObjectReturn objectReturn : objectReturns) {
+//                        AbacContextEntity.ObjectEntity objectEntity = ObjectEntityParser.parse(objectReturn.name(), objectReturn.returnType());
+//                        objectEntities.add(objectEntity);
+//                    }
+//                }
+//                abacContextEntity.setObjectEntities(objectEntities);
+                Map<String, String> objectEntities = new HashMap<>();
                 if (objectReturns != null) {
                     for (ObjectReturn objectReturn : objectReturns) {
-                        AbacContextEntity.ObjectEntity objectEntity = ObjectEntityParser.parse(objectReturn.name(), objectReturn.returnType());
-                        objectEntities.add(objectEntity);
+//                        AbacContextEntity.ObjectEntity objectEntity = ObjectEntityParser.parse(objectReturn.name(), objectReturn.returnType());
+                        objectEntities.put(objectReturn.name(), jsonHelper.toJsonString(BeanHelper.instantiateBean(objectReturn.returnType())));
                     }
                 }
                 abacContextEntity.setObjectEntities(objectEntities);
 
                 // 设置参数
-                List<AbacContextEntity.ObjectEntity> arguments = new ArrayList<>();
+//                List<AbacContextEntity.ObjectEntity> arguments = new ArrayList<>();
+//                for (Parameter parameter : methodToUse.getParameters()) {
+//                    arguments.add(ObjectEntityParser.parse(parameter.getName(), parameter.getType()));
+//                }
+//                abacContextEntity.setArguments(arguments);
+
+                Map<String, String> arguments = new HashMap<>();
                 for (Parameter parameter : methodToUse.getParameters()) {
-                    arguments.add(ObjectEntityParser.parse(parameter.getName(), parameter.getType()));
+                    arguments.put(parameter.getName(), jsonHelper.toJsonString(BeanHelper.instantiateBean(parameter.getType())));
                 }
                 abacContextEntity.setArguments(arguments);
 
@@ -161,7 +206,6 @@ public class AuthorizeObjectMethodProcessor implements SmartInitializingSingleto
                 log.debug(annotatedMethods.size() + " @ObjectReturn methods processed on bean '" +
                         beanName + "': " + annotatedMethods);
             }
-
         }
     }
 

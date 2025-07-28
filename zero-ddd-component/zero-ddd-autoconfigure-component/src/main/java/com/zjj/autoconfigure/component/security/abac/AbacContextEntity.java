@@ -11,7 +11,7 @@ import java.util.List;
  * @crateTime 2025年06月10日 16:19
  */
 @Data
-public class AbacContextEntity implements Serializable {
+public class AbacContextEntity implements Serializable, ContextEntity<List<AbacContextEntity.ObjectEntity>, AbacContextEntity.ObjectEntity, List<AbacContextEntity.ObjectEntity>> {
 
     private List<ObjectEntity> objectEntities;
     private ObjectEntity resultObject;

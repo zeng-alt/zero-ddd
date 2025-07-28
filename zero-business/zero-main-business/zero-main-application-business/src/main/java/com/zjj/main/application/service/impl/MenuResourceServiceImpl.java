@@ -6,9 +6,11 @@ import com.zjj.main.application.service.MenuResourceService;
 import com.zjj.main.infrastructure.db.jpa.dao.*;
 import com.zjj.main.infrastructure.db.jpa.entity.*;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.Hibernate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -26,40 +28,23 @@ import java.util.stream.Collectors;
 public class MenuResourceServiceImpl implements MenuResourceService {
 
     private final MenuResourceDao menuResourceDao;
-    private final PermissionDao permissionDao;
     private final RoleDao roleDao;
-    private final JPAQueryFactory jpaQueryFactory;
     private final HttpResourceDao httpResourceDao;
     private final GraphqlResourceDao graphqlResourceDao;
 
+    // TODO 优化成一次sql查询
+    @Transactional(readOnly = true)
     public List<MenuResourceDTO> tree(String username, String roleCode) {
 
         if ("superAdmin".equals(username)) {
             return this.tree();
         }
-        QRolePermission rolePermission = QRolePermission.rolePermission;
-        QPermission permission = QPermission.permission;
-        QMenuResource menuResource = QMenuResource.menuResource;
+        List<Permission> fetch = roleDao.findByCode(roleCode).map(role -> role.getRolePermissions().stream().map(r -> r.getPermission()).toList()).getOrElseThrow(() -> new RuntimeException("角色不存在"));
+        List<MenuResource> menuResources = fetch.stream().filter(p -> p.getClass().isAssignableFrom(MenuResource.class)).map(p -> (MenuResource) p).toList();
+        Map<Long, List<HttpResource>> httpResourceMap = fetch.stream().filter(p -> p.getClass().isAssignableFrom(HttpResource.class)).map(h -> (HttpResource) h).collect(Collectors.groupingBy(h -> h.getMenuId() == null ? 0L : h.getMenuId()));
+        Map<Long, List<GraphqlResourceEntity>> graphqlResourceMap = fetch.stream().filter(p -> p.getClass().isAssignableFrom(GraphqlResourceEntity.class)).map(h -> (GraphqlResourceEntity) h).collect(Collectors.groupingBy(h -> h.getMenuId() == null ? 0L : h.getMenuId()));;
 
-        return null;
-
-//        return jpaQueryFactory
-//                // 同时在 from 中包含 rolePermission 与 menuResource
-//                .select(menuResource)
-//                .from(rolePermission, menuResource)
-//                // 关联 RolePermission 与 Permission
-//                .join(rolePermission.permission, permission)
-//                .where(
-//                        // 关联 Permission.resource 与 MenuResource，依赖于 JOINED 策略下共享的 ID
-//                        // 限定资源类型为 "HTTP"
-//                        // 角色编码条件
-//                        rolePermission.role.code.eq(roleCode),
-//                        // 只取顶级菜单（没有父菜单的）
-//                        menuResource.parentMenu.isNull()
-////                        menuResource.type.eq("MENU")
-//                )
-//                .orderBy(menuResource.order.asc())
-//                .fetch();
+        return this.toTree(getRootMenu(menuResources), httpResourceMap, graphqlResourceMap);
     }
 
     @Override
@@ -130,6 +115,26 @@ public class MenuResourceServiceImpl implements MenuResourceService {
         return menuResourceDTO;
     }
 
+
+    private List<MenuResource> getRootMenu(List<MenuResource> menuResources) {
+        List<MenuResource> result = new ArrayList<>();
+        for (MenuResource menuResource : menuResources) {
+            MenuResource parentMenu = menuResource.getParentMenu();
+            if (parentMenu != null) continue;
+            if (!Hibernate.isInitialized(parentMenu)) {
+                if (parentMenu.getId() == null) {
+                    continue;
+                }
+            }
+            result.add(menuResource);
+        }
+        return result;
+    }
+
+    private List<MenuResourceDTO> toTree(List<MenuResourceDTO> rootMenuResources, List<MenuResourceDTO> mnuResources, Map<Long, List<HttpResource>> httpResourceMap, Map<Long, List<GraphqlResourceEntity>> graphqlResourceMap) {
+       return null;
+    }
+
     private List<MenuResourceDTO> toTree(List<MenuResource> menuResources, Map<Long, List<HttpResource>> httpResourceMap, Map<Long, List<GraphqlResourceEntity>> graphqlResourceMap) {
         List<MenuResourceDTO> result = new ArrayList<>();
         for (MenuResource menuResource : menuResources) {
@@ -158,6 +163,8 @@ public class MenuResourceServiceImpl implements MenuResourceService {
     public Iterable<MenuResource> button(Long id) {
         QMenuResource menuResource = QMenuResource.menuResource;
         return menuResourceDao.findAll(menuResource.parentMenu.id.eq(id));
+//        return httpResourceDao.findAllByMenuId(id);
+//        return QHttpResource.httpResource.menuId.eq(id)
     }
 
     @Override

@@ -7,7 +7,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
 import com.zjj.autoconfigure.component.redis.RedisHashRepository;
 import com.zjj.autoconfigure.component.redis.RedisStringRepository;
+import com.zjj.autoconfigure.component.redis.RedisSubPubRepository;
 import com.zjj.cache.component.parameter.RedisParameterServiceImpl;
+import com.zjj.cache.component.repository.impl.RedisTopicRepositoryImpl;
 import com.zjj.cache.component.supper.RedisAbacCacheManage;
 import com.zjj.cache.component.supper.RedisRbacCacheManage;
 import com.zjj.core.component.parameter.ParameterService;
@@ -26,6 +28,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 import java.util.List;
@@ -94,6 +97,12 @@ public class RedisAutoConfiguration {
 	public ParameterService parameterService(RedisStringRepository redisStringRepository) {
 		return new RedisParameterServiceImpl(redisStringRepository);
 	}
+
+//	@Primary
+//	@Bean
+//	public RedisSubPubRepository redisSubPubRepository(RedissonClient redissonClient) {
+//		return new RedisTopicRepositoryImpl(redissonClient);
+//	}
 
 	/**
 	 * 异常处理器

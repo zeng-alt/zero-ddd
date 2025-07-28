@@ -12,7 +12,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityCoreVersion;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,10 +36,9 @@ public class SecurityUser implements UserDetails, TenantDetail, CredentialsConta
 
     private static final Log logger = LogFactory.getLog(SecurityUser.class);
 
+
     private String password;
-
     private final String username;
-
     private final String tenant;
     private String database;
     private String schema;

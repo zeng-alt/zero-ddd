@@ -1,25 +1,16 @@
 package com.zjj.security.abac.component.object;
 
-
 import com.zjj.autoconfigure.component.security.abac.AbacContextEntity;
-
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import com.zjj.autoconfigure.component.security.abac.ContextEntity;
 
 /**
  * @author zengJiaJun
  * @version 1.0
- * @crateTime 2025年06月10日 16:05
+ * @crateTime 2025年07月02日 14:29
  */
-public class AbacMappingHandlerMapping {
+public interface AbacMappingHandlerMapping<T extends ContextEntity> {
 
-    private final Map<String, AbacContextEntity> nameLookup = new ConcurrentHashMap<>();
+    public void register(String name, T abacContextEntity);
 
-
-    public void register(String name, AbacContextEntity abacContextEntity) {
-        this.nameLookup.put(name, abacContextEntity);
-    }
-
-    public void send() {}
+    public void send();
 }

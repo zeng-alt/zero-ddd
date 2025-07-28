@@ -1,9 +1,7 @@
 package com.zjj.cache.component.supper;
 
-import com.google.common.collect.Maps;
 import com.zjj.autoconfigure.component.UtilException;
 import com.zjj.autoconfigure.component.redis.RedisHashRepository;
-import com.zjj.autoconfigure.component.redis.RedisStringRepository;
 import com.zjj.autoconfigure.component.security.rbac.GraphqlResource;
 import com.zjj.autoconfigure.component.security.rbac.HttpResource;
 import com.zjj.autoconfigure.component.security.rbac.RbacCacheManage;
