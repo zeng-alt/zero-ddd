@@ -51,12 +51,13 @@ public class AuthorizeObjectMethodProcessor implements SmartInitializingSingleto
     private ConfigurableApplicationContext applicationContext;
     @Nullable
     private ConfigurableListableBeanFactory beanFactory;
-    private final AbacMappingHandlerMapping abacMappingHandlerMapping;
+    private AbacMappingHandlerMapping abacMappingHandlerMapping;
     private final JsonHelper jsonHelper;
     private final Set<Class<?>> nonAnnotatedClasses = ConcurrentHashMap.newKeySet(64);
     @Override
     public void afterSingletonsInstantiated() {
         ConfigurableListableBeanFactory beanFactory = this.beanFactory;
+        this.abacMappingHandlerMapping = beanFactory.getBean(AbacMappingHandlerMapping.class);
         Assert.state(beanFactory != null, "No ConfigurableListableBeanFactory set");
         String[] beanNames = beanFactory.getBeanNamesForType(Object.class);
         for (String beanName : beanNames) {

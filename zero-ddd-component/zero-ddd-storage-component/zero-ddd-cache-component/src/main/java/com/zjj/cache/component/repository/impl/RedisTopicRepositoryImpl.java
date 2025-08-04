@@ -7,6 +7,7 @@ import org.redisson.api.RTopic;
 import org.redisson.api.RedissonClient;
 import org.redisson.api.listener.MessageListener;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
@@ -22,12 +23,22 @@ import java.util.function.Consumer;
 @Component
 public class RedisTopicRepositoryImpl implements RedisSubPubRepository {
 
-	private final RedissonClient redissonClient;
+	private RedissonClient redissonClient;
 
-	@Autowired
-	public RedisTopicRepositoryImpl(RedissonClient template) {
-		this.redissonClient = template;
+	public RedisTopicRepositoryImpl(@Lazy @Autowired RedissonClient redissonClient) {
+		this.redissonClient = redissonClient;
 	}
+
+//	@Lazy
+//	@Autowired
+//	public void setRedissonClient(RedissonClient redissonClient) {
+//		this.redissonClient = redissonClient;
+//	}
+
+	//	@Autowired
+//	public RedisTopicRepositoryImpl(RedissonClient template) {
+//		this.redissonClient = template;
+//	}
 
 	/**
 	 * 订阅频道并接收消息。

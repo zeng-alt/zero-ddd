@@ -1,16 +1,20 @@
 package com.zjj.security.abac.component.configuration;
 
 import com.zjj.autoconfigure.component.json.JsonHelper;
+import com.zjj.autoconfigure.component.redis.RedisStringRepository;
 import com.zjj.autoconfigure.component.redis.RedisSubPubRepository;
 import com.zjj.autoconfigure.component.security.abac.EnvironmentAttribute;
 import com.zjj.autoconfigure.component.security.abac.ObjectAttribute;
 import com.zjj.autoconfigure.component.security.abac.PolicyDefinition;
+//import com.zjj.cache.component.repository.impl.RedisReliableTopicRepositoryImpl;
+//import com.zjj.cache.component.repository.impl.RedisTopicRepositoryImpl;
 import com.zjj.security.abac.component.advice.AbacExceptionAdvice;
 import com.zjj.security.abac.component.annotation.AbacAdminAuth;
 import com.zjj.security.abac.component.annotation.AbacPostAuthorize;
 import com.zjj.security.abac.component.annotation.AbacPreAuthorize;
 import com.zjj.security.abac.component.object.*;
 import com.zjj.security.abac.component.supper.*;
+//import org.redisson.spring.starter.RedissonAutoConfiguration;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.support.ComposablePointcut;
@@ -18,6 +22,7 @@ import org.springframework.aop.support.Pointcuts;
 import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -36,6 +41,8 @@ import java.lang.annotation.Annotation;
  * @crateTime 2024年12月12日 21:29
  */
 @EnableConfigurationProperties(PolicyProperties.class)
+//@AutoConfigureAfter(RedissonAutoConfiguration.class)
+//@AutoConfigureAfter(RedissonAutoConfiguration.class)
 public class AbacAutoConfiguration {
 
 //    @Bean
@@ -49,7 +56,7 @@ public class AbacAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(AbacMethodSecurityExpressionHandler.class)
-    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+//    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     public AbacMethodSecurityExpressionHandler abacMethodSecurityExpressionHandler(ObjectProvider<EnvironmentAttribute> environmentAttributes, ObjectProvider<PermissionEvaluator> permissionEvaluator) {
         AbacMethodSecurityExpressionHandler handler = new AbacMethodSecurityExpressionHandler();
         handler.setEnvironmentAttributes(environmentAttributes.stream().toList());
@@ -59,7 +66,7 @@ public class AbacAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+//    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     public AbacPreAuthorizeExpressionAttributeRegistry abacPreAuthorizeExpressionAttributeRegistry(
             AbacMethodSecurityExpressionHandler abacMethodSecurityExpressionHandler,
             PolicyProperties properties,
@@ -72,7 +79,7 @@ public class AbacAutoConfiguration {
 
     // TODO
     @Bean
-    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+//    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     public AbacPreAuthorizationManager abacPreMyAuthorizationManager(AbacPreAuthorizeExpressionAttributeRegistry abacPreAuthorizeExpressionAttributeRegistry, AuthorizeObjectManager authorizeObjectManager) {
         return new AbacPreAuthorizationManager(abacPreAuthorizeExpressionAttributeRegistry, authorizeObjectManager);
     }
@@ -82,7 +89,7 @@ public class AbacAutoConfiguration {
      * *******************************************
      */
     @Bean
-    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+//    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     public Advisor preAuthorizeMethodInterceptor(AbacPreAuthorizationManager abacPreAuthorizationManager) {
         ComposablePointcut pointcut = new ComposablePointcut(classOrMethod(AbacPreAuthorize.class));
         AuthorizationManagerBeforeMethodInterceptor interceptor = new AuthorizationManagerBeforeMethodInterceptor(
@@ -96,7 +103,7 @@ public class AbacAutoConfiguration {
      * *******************************************
      */
     @Bean
-    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+//    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     public Advisor postAuthorizeMethodInterceptor(AbacPostAuthorizationManager abacPostAuthorizationManager) {
         ComposablePointcut pointcut = new ComposablePointcut(classOrMethod(AbacPostAuthorize.class));
         AuthorizationManagerAfterMethodInterceptor interceptor = new AuthorizationManagerAfterMethodInterceptor(
@@ -106,13 +113,13 @@ public class AbacAutoConfiguration {
     }
 
     @Bean
-    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+//    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     public AbacPostAuthorizationManager abacPostAuthorizationManager(AbacPostAuthorizeExpressionAttributeRegistry abacPostAuthorizeExpressionAttributeRegistry, AuthorizeObjectManager authorizeObjectManager) {
         return new AbacPostAuthorizationManager(abacPostAuthorizeExpressionAttributeRegistry, authorizeObjectManager);
     }
 
     @Bean
-    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+//    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     public AbacPostAuthorizeExpressionAttributeRegistry abacPostAuthorizeExpressionAttributeRegistry(
             MethodSecurityExpressionHandler expressionHandler,
             PolicyProperties properties,
@@ -129,7 +136,7 @@ public class AbacAutoConfiguration {
     }
 
     @Bean
-    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+//    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     public DefaultEnvironmentAttribute defaultEnvironmentAttribute() {
         return new DefaultEnvironmentAttribute();
     }
@@ -156,15 +163,19 @@ public class AbacAutoConfiguration {
     }
 
 
-    // TODO
     @Bean
     public AbacMappingHandlerMapping abacMappingHandlerMapping(RedisSubPubRepository redisSubPubRepository) {
         return new AbacJsonMappingHandlerMapping(redisSubPubRepository);
     }
 
+//    @Bean
+//    public AuthorizeObjectMethodProcessor authorizeObjectMethodProcessor(AuthorizeObjectManager authorizeObjectManager, AbacMappingHandlerMapping abacMappingHandlerMapping, JsonHelper jsonHelper) {
+//        return new AuthorizeObjectMethodProcessor(authorizeObjectManager, abacMappingHandlerMapping, jsonHelper);
+//    }
+
     @Bean
-    public AuthorizeObjectMethodProcessor authorizeObjectMethodProcessor(AuthorizeObjectManager authorizeObjectManager, AbacMappingHandlerMapping abacMappingHandlerMapping, JsonHelper jsonHelper) {
-        return new AuthorizeObjectMethodProcessor(authorizeObjectManager, abacMappingHandlerMapping, jsonHelper);
+    public AuthorizeObjectMethodProcessor authorizeObjectMethodProcessor(AuthorizeObjectManager authorizeObjectManager, JsonHelper jsonHelper) {
+        return new AuthorizeObjectMethodProcessor(authorizeObjectManager, jsonHelper);
     }
 
 //    @RouterOperations({

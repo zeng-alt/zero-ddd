@@ -15,12 +15,12 @@ import java.util.function.Consumer;
  * @version 1.0
  * @crateTime 2024年10月15日 20:36
  */
-@Component
+//@Component
 public class RedisReliableTopicRepositoryImpl implements RedisSubPubRepository {
 
     private final RedissonClient redissonClient;
 
-    @Autowired
+//    @Autowired
     public RedisReliableTopicRepositoryImpl(RedissonClient template) {
         this.redissonClient = template;
     }

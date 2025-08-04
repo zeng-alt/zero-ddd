@@ -9,6 +9,7 @@ import com.zjj.autoconfigure.component.redis.RedisHashRepository;
 import com.zjj.autoconfigure.component.redis.RedisStringRepository;
 import com.zjj.autoconfigure.component.redis.RedisSubPubRepository;
 import com.zjj.cache.component.parameter.RedisParameterServiceImpl;
+import com.zjj.cache.component.repository.impl.RedisReliableTopicRepositoryImpl;
 import com.zjj.cache.component.repository.impl.RedisTopicRepositoryImpl;
 import com.zjj.cache.component.supper.RedisAbacCacheManage;
 import com.zjj.cache.component.supper.RedisRbacCacheManage;
@@ -28,6 +29,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
@@ -98,6 +100,11 @@ public class RedisAutoConfiguration {
 		return new RedisParameterServiceImpl(redisStringRepository);
 	}
 
+//	@Bean
+//	public RedisSubPubRepository redisReliableTopicRepositoryImpl(RedissonClient redissonClient) {
+//		return new RedisReliableTopicRepositoryImpl(redissonClient);
+//	}
+//
 //	@Primary
 //	@Bean
 //	public RedisSubPubRepository redisSubPubRepository(RedissonClient redissonClient) {
