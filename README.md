@@ -3,6 +3,7 @@
 1. 在线网址:  https://zengjiajun.gitbook.io/zero-ddd/
 2. gitub地址: https://github.com/zeng-alt/zero-ddd-doc
 3. git地址:       https://github.com/zeng-alt/zero-ddd-doc.git
+4. 前端地址: https://github.com/zeng-alt/vue-naive-admin
 
 ## 旨在打造一款支持CQRS的功能全备的重量级架构
 
