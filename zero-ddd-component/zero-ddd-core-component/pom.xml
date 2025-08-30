@@ -30,6 +30,21 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-web</artifactId>-->
+<!--            <exclusions>-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.springframework.boot</groupId>-->
+<!--                    <artifactId>spring-boot-starter-tomcat</artifactId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
+<!--        </dependency>-->
+
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-undertow</artifactId>-->
+<!--        </dependency>-->
 
         <!-- Hibernate Validator -->
         <dependency>
@@ -47,12 +62,6 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aspects</artifactId>
-        </dependency>
-
-
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
         </dependency>
 
         <dependency>
@@ -98,23 +107,26 @@
 
         <dependency>
             <groupId>com.zjj</groupId>
-            <artifactId>zero-ddd-i18n-component</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.zjj</groupId>
             <artifactId>zero-ddd-bean-component</artifactId>
         </dependency>
 
         <dependency>
             <groupId>com.zjj</groupId>
             <artifactId>zero-ddd-json-component</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.zjj</groupId>
+            <artifactId>zero-ddd-i18n-component</artifactId>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>io.github.linpeilie</groupId>
             <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
         </dependency>
+
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
@@ -136,6 +148,11 @@
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-crypto</artifactId>
             <version>5.8.38</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
         </dependency>
     </dependencies>
 

@@ -59,6 +59,9 @@
         <lock4j.version>2.2.7</lock4j.version>
         <bytebuddy.version>1.14.10</bytebuddy.version>
         <spring.checkstyle.plugin>0.0.29</spring.checkstyle.plugin>
+        <camunda.version>7.23.0</camunda.version>
+        <js.version>22.3.0</js.version>
+        <groovy.version>4.0.28</groovy.version>
     </properties>
 
     <dependencies>
@@ -106,6 +109,14 @@
                 <groupId>org.jmolecules</groupId>
                 <artifactId>jmolecules-bom</artifactId>
                 <version>2023.2.1</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.camunda.connect</groupId>
+                <artifactId>camunda-connect-bom</artifactId>
+                <version>${camunda.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -173,6 +184,69 @@
                 <groupId>javax.xml.bind</groupId>
                 <artifactId>jaxb-api</artifactId>
                 <version>${jaxb-api.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.camunda.bpm.springboot</groupId>
+                <artifactId>camunda-bpm-spring-boot-starter</artifactId>
+                <version>${camunda.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.camunda.bpm.springboot</groupId>
+                <artifactId>camunda-bpm-spring-boot-starter-rest</artifactId>
+                <version>${camunda.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.camunda.bpm.springboot</groupId>
+                <artifactId>camunda-bpm-spring-boot-starter-webapp</artifactId>
+                <version>${camunda.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.camunda.bpm</groupId>
+                <artifactId>camunda-engine-plugin-connect</artifactId>
+                <version>${camunda.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.camunda.bpm</groupId>
+                <artifactId>camunda-engine-plugin-spin</artifactId>
+                <version>${camunda.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.camunda.spin</groupId>
+                <artifactId>camunda-spin-dataformat-json-jackson</artifactId>
+                <version>${camunda.version}</version>
+            </dependency>
+
+            <!--监听camunda topic-->
+            <dependency>
+                <groupId>org.camunda.bpm</groupId>
+                <artifactId>camunda-external-task-client</artifactId>
+                <version>${camunda.version}</version> <!-- 版本请对应你的Camunda版本 -->
+            </dependency>
+
+            <dependency>
+                <groupId>org.graalvm.js</groupId>
+                <artifactId>js-scriptengine</artifactId>
+                <version>${js.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.graalvm.js</groupId>
+                <artifactId>js</artifactId>
+                <version>${js.version}</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/org.apache.groovy/groovy-all -->
+            <dependency>
+                <groupId>org.apache.groovy</groupId>
+                <artifactId>groovy-all</artifactId>
+                <version>${groovy.version}</version>
+                <type>pom</type>
             </dependency>
 
             <dependency>

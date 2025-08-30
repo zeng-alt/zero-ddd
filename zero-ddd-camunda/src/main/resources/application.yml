@@ -3,9 +3,9 @@ server:
 
 spring:
   application:
-    name: zero-ddd-auth
+    name: zero-ddd-camunda
   datasource:
-    url: jdbc:postgresql://localhost:5432/zero-ddd?currentSchema=schema1
+    url: jdbc:postgresql://localhost:5432/zero-ddd?currentSchema=public
     username: postgres
     password: postgres
     driverClassName: org.postgresql.Driver
@@ -56,19 +56,31 @@ management:
       exposure:
         include: shutdown
 
+camunda:
+  bpm:
+    authorization:
+      enabled: false  # 先禁用
+    identity-provider:
+      enabled: false   # 使用默认的
 
-security:
-  captcha:
-    enable: true
-    filter-url:
-      - /auth/login/**
-  context:
-    enabled-access: false
-    enabled-login-handler: true
-  username-login:
-    enabled: true
-    login-path: /auth/login/username
-  logout-path: /auth/logout
+#camunda:
+#  bpm:
+#    admin-user:
+#      id: demo
+#      password: demo
+#      firstName: Demo
+#    filter:
+#      create: All tasks
+#    webapp:
+#      index-redirect-enabled: false
+#    job-execution:
+#      enabled: true
+#      core-pool-size: 5
+#      wait-time-in-millis: 5000
+#    authorization:
+#      enabled: true
+#      identity-provider:
+#        enabled: true  # 禁用默认身份提供者
 
 
 multi-tenancy:
@@ -85,3 +97,7 @@ multi-tenancy:
     type: com.zaxxer.hikari.HikariDataSource
 #  jpa:
 #    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+security:
+  context:
+    enabledAccess: false

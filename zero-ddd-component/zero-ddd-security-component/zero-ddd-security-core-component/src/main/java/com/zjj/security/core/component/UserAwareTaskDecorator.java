@@ -4,6 +4,7 @@ import com.zjj.autoconfigure.component.security.UserContextHolder;
 import com.zjj.autoconfigure.component.tenant.TenantContextHolder;
 import org.springframework.core.task.TaskDecorator;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecutor;
 
 /**
  * @author zengJiaJun
@@ -14,6 +15,7 @@ public class UserAwareTaskDecorator implements TaskDecorator {
 
     @Override
     public Runnable decorate(Runnable runnable) {
+//        new DelegatingSecurityContextAsyncTaskExecutor()
         Authentication authentication = UserContextHolder.getAuthentication();
         return () -> {
             try {

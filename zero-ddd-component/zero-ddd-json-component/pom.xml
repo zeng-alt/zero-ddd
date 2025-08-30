@@ -39,14 +39,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-autoconfigure</artifactId>
-            <scope>provided</scope>
         </dependency>
 
 
         <dependency>
             <groupId>com.zjj</groupId>
             <artifactId>zero-ddd-autoconfigure-component</artifactId>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>

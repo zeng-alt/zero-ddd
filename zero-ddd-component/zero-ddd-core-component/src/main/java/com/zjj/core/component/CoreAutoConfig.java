@@ -2,6 +2,7 @@ package com.zjj.core.component;
 
 import com.zjj.autoconfigure.component.json.JsonHelper;
 import com.zjj.autoconfigure.component.tenant.MultiTenancyProperties;
+import com.zjj.core.component.advice.GlobalExceptionAdvice;
 import com.zjj.core.component.advice.GlobalServletExceptionAdvice;
 import com.zjj.core.component.api.HttpEntityReturnMethodProcessor;
 import com.zjj.core.component.crypto.EncryptionService;
@@ -11,6 +12,8 @@ import com.zjj.core.component.type.JsonConversionStrategy;
 import com.zjj.core.component.type.JsonConversionStrategyFactory;
 import com.zjj.core.component.type.TypeConversionHelper;
 import com.zjj.core.component.type.strategy.*;
+import com.zjj.i18n.component.config.LocaleConfiguration;
+import com.zjj.json.component.config.JsonConfiguration;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.ObjectProvider;
@@ -18,6 +21,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -48,9 +52,16 @@ import java.util.UUID;
  * @version 1.0
  * @crateTime 2024年11月28日 21:56
  */
-@AutoConfiguration
-@AutoConfigurationPackage(basePackages = "com.zjj.core.component.type")
+@Configuration
+@AutoConfigureAfter({JsonConfiguration.class, LocaleConfiguration.class})
+//@AutoConfigurationPackage(basePackages = "com.zjj.core.component.type")
 public class CoreAutoConfig {
+
+//    @Bean
+//    @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
+//    public GlobalExceptionAdvice globalExceptionAdvice(MessageSourceAccessor messageSourceAccessor) {
+//        return new GlobalExceptionAdvice(messageSourceAccessor);
+//    }
 
 
     @Bean

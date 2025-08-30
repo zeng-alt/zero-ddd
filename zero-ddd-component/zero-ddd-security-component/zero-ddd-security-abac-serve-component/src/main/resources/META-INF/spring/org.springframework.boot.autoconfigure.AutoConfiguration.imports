@@ -1,1 +1,2 @@
 com.zjj.security.abac.serve.component.AbacTemplateConfig
+com.zjj.security.abac.serve.component.AbacServeEndpoint

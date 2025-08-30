@@ -30,6 +30,11 @@ spring:
           order: 0
           predicates:
             - Path=/auth/**
+        - id: zero-ddd-camunda
+          uri: lb://zero-ddd-camunda
+          order: 0
+          predicates:
+            - Path=/engine-rest/**
 
   redis:
     redisson:

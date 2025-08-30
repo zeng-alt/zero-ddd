@@ -19,6 +19,7 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 
 import java.math.BigDecimal;
@@ -33,6 +34,7 @@ import java.time.format.DateTimeFormatter;
  * @version 1.0
  * @crateTime 2024年07月05日 20:44
  */
+@Configuration
 @AutoConfiguration(before = JacksonAutoConfiguration.class)
 public class JsonConfiguration {
 

@@ -4,8 +4,10 @@ import com.zjj.autoconfigure.component.core.ResponseAdviceProvider;
 import jakarta.validation.Validator;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.context.MessageSourceAutoConfiguration;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
@@ -16,7 +18,8 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
  * @version 1.0
  * @crateTime 2024年11月06日 20:50
  */
-@AutoConfiguration()
+@Configuration
+@AutoConfiguration(after = MessageSourceAutoConfiguration.class)
 public class LocaleConfiguration {
 
 
