@@ -29,6 +29,17 @@
             <artifactId>spring-data-commons</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>app.tozzi</groupId>
+            <artifactId>jpa-search-helper</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>org.apache.commons</artifactId>
+                    <groupId>commons-lang3</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
 <!--        <dependency>-->
 <!--            <groupId>com.querydsl</groupId>-->
 <!--            <artifactId>querydsl-jpa</artifactId>-->

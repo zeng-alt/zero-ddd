@@ -60,8 +60,7 @@ camunda:
   bpm:
     authorization:
       enabled: false  # 先禁用
-    identity-provider:
-      enabled: false   # 使用默认的
+
 
 #camunda:
 #  bpm:

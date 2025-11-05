@@ -24,7 +24,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 <!--        <spring-boot.version>3.3.5</spring-boot.version>-->
-        <spring-boot.version>3.4.3</spring-boot.version>
+        <spring-boot.version>3.4.10</spring-boot.version>
         <java.version>17</java.version>
 <!--        <spring-cloud.version>2023.0.3</spring-cloud.version>-->
         <spring-cloud.version>2024.0.0</spring-cloud.version>
@@ -51,6 +51,7 @@
         <dynamic-datasource.version>4.3.1</dynamic-datasource.version>
         <spring-security.verison>3.3.1</spring-security.verison>
         <jjwt.version>0.12.6</jjwt.version>
+        <temporal.version>1.31.0</temporal.version>
         <jaxb-api.version>2.3.1</jaxb-api.version>
         <guava.version>33.3.0-jre</guava.version>
         <querydsl.version>5.1.0</querydsl.version>
@@ -157,9 +158,22 @@
             </dependency>
 
             <dependency>
+                <groupId>io.temporal</groupId>
+                <artifactId>temporal-spring-boot-starter</artifactId>
+                <version>${temporal.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
                 <version>${springdoc.version}</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/app.tozzi/jpa-search-helper -->
+            <dependency>
+                <groupId>app.tozzi</groupId>
+                <artifactId>jpa-search-helper</artifactId>
+                <version>3.5.3</version>
             </dependency>
 
 

@@ -19,16 +19,11 @@ public class UserService {
     private final UserRepository userRepository;
 
     public long countUsers(String userId, String userEmail, String userFirstName, String groupId) {
-        return 1;
+        return userRepository.count();
     }
 
     public List<MainUser> findUsers(String userId, String userEmail, String userFirstName, String groupId, Page page) {
-        MainUser mainUser = new MainUser();
-        mainUser.setId(userId);
-        mainUser.setFirstName("admin");
-        mainUser.setLastName("admin");
-
-        return List.of(mainUser);
+        return userRepository.queryById(userId);
     }
 
     public boolean validatePassword(String userId, String password) {
@@ -36,10 +31,10 @@ public class UserService {
     }
 
     public MainUser findById(String userId) {
-        MainUser mainUser = new MainUser();
-        mainUser.setId(userId);
-        mainUser.setFirstName("admin");
-        mainUser.setLastName("admin");
-        return mainUser;
+//        MainUser mainUser = new MainUser();
+//        mainUser.setId(userId);
+//        mainUser.setFirstName("admin");
+//        mainUser.setLastName("admin");
+        return userRepository.findById(userId);
     }
 }

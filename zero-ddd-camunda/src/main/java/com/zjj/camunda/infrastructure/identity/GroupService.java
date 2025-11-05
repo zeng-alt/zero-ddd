@@ -19,22 +19,23 @@ public class GroupService {
     private final GroupRepository groupRepository;
 
     public long countGroups(String groupId, String groupName, String userId) {
-        return 1;
+        return groupRepository.count();
     }
 
     public List<MainGroup> findGroups(String groupId, String groupName, String userId, Page page) {
-        MainGroup mainGroup = new MainGroup();
-        mainGroup.setId("admin");
-        mainGroup.setType("admin");
-        mainGroup.setName("管理员");
-        return List.of(mainGroup);
+//        MainGroup mainGroup = new MainGroup();
+//        mainGroup.setId("admin");
+//        mainGroup.setType("admin");
+//        mainGroup.setName("管理员");
+        return groupRepository.queryById(groupId);
     }
 
     public MainGroup findById(String groupId) {
-        MainGroup mainGroup = new MainGroup();
-        mainGroup.setId("admin");
-        mainGroup.setType("admin");
-        mainGroup.setName("管理员");
-        return mainGroup;
+//        MainGroup mainGroup = new MainGroup();
+//        mainGroup.setId("admin");
+//        mainGroup.setType("admin");
+//        mainGroup.setName("管理员");
+//        return mainGroup;
+        return groupRepository.findById(groupId);
     }
 }

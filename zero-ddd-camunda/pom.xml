@@ -86,6 +86,21 @@
             <artifactId>spring-boot-starter-undertow</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.zjj</groupId>
+            <artifactId>zero-ddd-tenant-datasource-component</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.zjj</groupId>
+            <artifactId>zero-ddd-cache-component</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.zjj</groupId>
+            <artifactId>zero-ddd-tenant-service-component</artifactId>
+        </dependency>
+
 
         <!-- 流程引擎-->
         <dependency>

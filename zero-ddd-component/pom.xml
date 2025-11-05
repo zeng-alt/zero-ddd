@@ -30,5 +30,6 @@
         <module>zero-ddd-i18n-component</module>
         <module>zero-ddd-message-queue-component</module>
         <module>zero-ddd-storage-component</module>
+        <module>zero-ddd-event-component</module>
     </modules>
 </project>

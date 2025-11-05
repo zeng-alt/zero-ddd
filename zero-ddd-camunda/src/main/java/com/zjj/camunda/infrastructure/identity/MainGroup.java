@@ -11,13 +11,24 @@ import org.camunda.bpm.engine.identity.Group;
 @Entity
 @Table(name = "main_role")
 public class MainGroup implements Group {
-    
+
     @Id
+    @Column(name = "id")
+    private Long groupId;
+
+    @Column(name = "code")
     private String id;
     
     @Column(name = "name")
     private String name;
-    
-    @Column(name = "code")
-    private String type;
+
+    @Override
+    public String getType() {
+        return null;
+    }
+
+    @Override
+    public void setType(String string) {
+
+    }
 }

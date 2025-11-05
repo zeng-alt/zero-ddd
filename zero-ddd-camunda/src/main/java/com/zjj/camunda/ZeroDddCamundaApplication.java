@@ -3,6 +3,8 @@ package com.zjj.camunda;
 //import com.zjj.autoconfigure.component.tenant.TenantMode;
 //import com.zjj.security.tenant.component.EnableTenantJwtCache;
 //import com.zjj.tenant.datasource.component.configuration.EnableMultiTenancy;
+import com.zjj.autoconfigure.component.tenant.TenantMode;
+import com.zjj.tenant.datasource.component.configuration.EnableMultiTenancy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,7 +18,7 @@ import org.springframework.context.ConfigurableApplicationContext;
  * @crateTime 2025年07月28日 15:58
  */
 @Slf4j
-//@EnableMultiTenancy(mode = TenantMode.MIXED)
+@EnableMultiTenancy(mode = TenantMode.COLUMN)
 //@EnableTenantJwtCache
 //@EnableFeignClients(basePackages = "com.zjj")
 //@EnableWebSecurity(debug = true)
