@@ -1,5 +1,7 @@
 package com.zjj.main.domain.rule;
 
+import java.util.Map;
+
 /**
  * @author zengJiaJun
  * @version 1.0
@@ -7,4 +9,5 @@ package com.zjj.main.domain.rule;
  */
 public interface PolicyRule {
 
+    boolean evaluate(Map<String, Object> context);
 }
